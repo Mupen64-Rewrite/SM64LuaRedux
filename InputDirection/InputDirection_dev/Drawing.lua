@@ -167,4 +167,18 @@ function Drawing.drawMiscData(x, y)
 	wgui.text(x + 132, y + 75, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
 	wgui.text(x + 132, y + 90, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
 	wgui.text(x + 132, y + 105, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
+
+	wgui.text(x, y + 150, "Read-write: ")
+	if emu.isreadonly() then 
+		readwritestatus = "disabled" 
+		wgui.setcolor(Settings.Theme.Text)
+	else 
+		readwritestatus = "enabled"
+		wgui.setcolor(Settings.Theme.ReadWriteText)
+	end
+	wgui.text(x + 68, y + 150, readwritestatus)
+
+	wgui.setcolor(Settings.Theme.Text)
+	wgui.text(x, y + 230, "RNG Value: " .. Memory.RNGValue)
+	wgui.text(x, y + 245, "RNG Index: " .. get_index(Memory.RNGValue))
 end

@@ -22,12 +22,11 @@ end
 
 Buttons = {
 	{
-		name = "ignore y",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.IGNORE_Y],
 		box = {
 			Drawing.Screen.Width + 130,
-			460,
+			477,
 			75,
 			20
 		},
@@ -46,7 +45,6 @@ Buttons = {
 		end
 	},
 	{
-		name = ".99",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.POINT_99],
 		box = {
@@ -71,7 +69,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "always .99",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.ALWAYS_99],
 		box = {
@@ -95,7 +92,6 @@ Buttons = {
 		end
 	},
 	{
-		name = ".99 left",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.LEFT_99],
 		box = {
@@ -120,7 +116,6 @@ Buttons = {
 		end
 	},
 	{
-		name = ".99 right",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.RIGHT_99],
 		box = {
@@ -145,7 +140,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "dyaw",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DYAW],
 		box = {
@@ -169,7 +163,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "arcotan strain",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.ARCTANSTRAIN],
 		box = {
@@ -195,7 +188,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "reverse arcotan strain",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ARCTAN],
 		box = {
@@ -219,7 +211,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "increment arcotan ratio",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
 		box = {
@@ -239,7 +230,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "decrement arcotan ratio",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
 		box = {
@@ -259,7 +249,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "increment arcotan displacement",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
 		box = {
@@ -279,7 +268,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "decrement arcotan displacement",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
 		box = {
@@ -299,7 +287,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "increment arcotan length",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
 		box = {
@@ -319,7 +306,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "decrement arcotan length",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
 		box = {
@@ -339,7 +325,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "increment arcotan start frame",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
 		box = {
@@ -359,7 +344,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "decrement arcotan start frame",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
 		box = {
@@ -379,7 +363,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "increment arcotan step",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
 		box = {
@@ -399,7 +382,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "decrement arcotan step",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
 		box = {
@@ -419,12 +401,11 @@ Buttons = {
 		end
 	},
 	{
-		name = "dist moved",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DIST_MOVED],
 		box = {
 			Drawing.Screen.Width + 5,
-			460,
+			477,
 			120,
 			20
 		},
@@ -447,7 +428,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "disabled",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DISABLED],
 		box = {
@@ -467,7 +447,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "match yaw",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MATCH_YAW],
 		box = {
@@ -487,7 +466,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "reverse angle",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ANGLE],
 		box = {
@@ -507,7 +485,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "match angle",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MATCH_ANGLE],
 		box = {
@@ -527,7 +504,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "match angle value",
 		type = ButtonType.textArea,
 		inputSize = 5,
 		box = {
@@ -589,7 +565,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "magnitude value",
 		type = ButtonType.textArea,
 		inputSize = 3,
 		box = {
@@ -656,7 +631,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "speedkick magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MAG48],
 		box = {
@@ -677,7 +651,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "reset magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.RESET_MAG],
 		box = {
@@ -697,7 +670,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "high magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.HIGH_MAG],
 		box = {
@@ -721,7 +693,6 @@ Buttons = {
 		end
 	},
 	{
-		name = "swim",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.SWIM],
 		box = {
@@ -743,5 +714,139 @@ Buttons = {
 				Settings.Layout.Button.swimming = true
 			end
 		end
-	}
+	},
+	{
+		type = ButtonType.button,
+		text = Settings.Layout.Button.items[Settings.Layout.Button.SET_RNG],
+		box = {
+			Drawing.Screen.Width + 12,
+			505,
+			84,
+			30
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.SET_RNG == true
+		end,
+		onclick = function(self)
+			if (Settings.Layout.Button.SET_RNG == true) then
+				Settings.Layout.Button.SET_RNG = false
+			else
+				Settings.Layout.Button.SET_RNG = true
+			end
+		end
+	},
+	{
+		type = ButtonType.button,
+		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_VALUE],
+		box = {
+			Drawing.Screen.Width + 91,
+			505,
+			17,
+			30
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.set_rng_mode.value == true
+		end,
+		onclick = function(self)
+			if (Settings.Layout.Button.set_rng_mode.value == true) then
+				Settings.Layout.Button.set_rng_mode.value = false
+			else
+				Settings.Layout.Button.set_rng_mode.value = true
+				Settings.Layout.Button.set_rng_mode.index = false
+			end
+		end
+	},
+	{
+		type = ButtonType.button,
+		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_INDEX],
+		box = {
+			Drawing.Screen.Width + 108,
+			505,
+			17,
+			30
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.set_rng_mode.index == true
+		end,
+		onclick = function(self)
+			if (Settings.Layout.Button.set_rng_mode.index == true) then
+				Settings.Layout.Button.set_rng_mode.index = false
+			else
+				Settings.Layout.Button.set_rng_mode.index = true
+				Settings.Layout.Button.set_rng_mode.value = false
+			end
+		end
+	},
+	{
+		type = ButtonType.textArea,
+		inputSize = 5,
+		box = {
+			Drawing.Screen.Width + 131,
+			505,
+			85,
+			30
+		},
+		value = function()
+			return Settings.setRNG
+		end,
+		enabled = function()
+			return Settings.Layout.Button.SET_RNG == true
+		end,
+		editing = function()
+			return Settings.Layout.TextArea.selectedItem == Settings.Layout.TextArea.RNG
+		end,
+		onclick = function(self, char)
+			if (Settings.Layout.TextArea.selectedItem ~= Settings.Layout.TextArea.RNG) then
+				Settings.Layout.TextArea.selectedItem = Settings.Layout.TextArea.RNG
+				Settings.Layout.TextArea.selectedChar = 1 -- on first click set to leading digit
+			else
+				Settings.Layout.TextArea.selectedChar = char
+			end
+			Settings.Layout.TextArea.blinkTimer = 0
+			Settings.Layout.TextArea.showUnderscore = true
+		end,
+		onkeypress = function(self, key)
+			local rng = Settings.setRNG or 0
+			local oldkey = math.floor(rng / math.pow(10, self.inputSize - Settings.Layout.TextArea.selectedChar)) % 10
+			rng = rng + (key - oldkey) * math.pow(10, self.inputSize - Settings.Layout.TextArea.selectedChar)
+			Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar + 1
+			if Settings.Layout.TextArea.selectedChar > self.inputSize then
+				Settings.Layout.TextArea.selectedItem = 0
+			end
+			Settings.setRNG = rng
+		end,
+		onarrowpress = function(self, key)
+			if (key == "left") then
+				Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar - 1
+				if (Settings.Layout.TextArea.selectedChar == 0) then
+					Settings.Layout.TextArea.selectedChar = self.inputSize
+				end
+				Settings.Layout.TextArea.showUnderscore = false
+			elseif (key == "right") then
+				Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar + 1
+				if (Settings.Layout.TextArea.selectedChar == self.inputSize + 1) then
+					Settings.Layout.TextArea.selectedChar = 1
+				end
+				Settings.Layout.TextArea.showUnderscore = false
+			elseif (key == "up") then
+				local oldkey = getDigit(Settings.setRNG, self.inputSize)
+				Settings.setRNG = updateDigit(Settings.setRNG, self.inputSize, oldkey + 1)
+				Settings.Layout.TextArea.showUnderscore = true
+			elseif (key == "down") then
+				local oldkey = getDigit(Settings.setRNG, self.inputSize)
+				Settings.setRNG = updateDigit(Settings.setRNG, self.inputSize, oldkey - 1)
+				Settings.Layout.TextArea.showUnderscore = true
+			end
+			Settings.Layout.TextArea.blinkTimer = -1
+		end
+	},
 }

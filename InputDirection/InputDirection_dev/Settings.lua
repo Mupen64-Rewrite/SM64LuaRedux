@@ -1,65 +1,14 @@
 Settings = {
 	goalAngle = 0,
 	goalMag = 127,
+	setRNG = false,
 	ShowEffectiveAngles = false
 }
-
---[[
-{} means the hotkey is disabled.
-To bind to key combinations list them. Ex: {"control", "M"}
-Numbers will always edit value fields, and arrow keys
-arrow keys will always change selected digits in value fields.
-For a list of valid keys (case-sensitive) see:
-  https://docs.google.com/document/d/1SWd-oAFBKsGmwUs0qGiOrk3zfX9wYHhi3x5aKPQS_o0/edit#bookmark=id.jcojkq7g066s
-]]--
-Settings.Hotkeys = {
-	["dist moved"] = {},
-	["ignore y"] = {},
-
-	[".99"] = {},
-	["always .99"] = {},
-	[".99 left"] = {},
-	[".99 right"] = {},
-
-	["disabled"] = {},
-	["match yaw"] = {},
-	["reverse angle"] = {},
-
-	["match angle"] = {},
-	["match angle value"] = {},
-	["dyaw"] = {},
-	
-	["arcotan strain"] = {},
-	["reverse arcotan strain"] = {},
-	
-	["increment arcotan ratio"] = {},
-	["decrement arcotan ratio"] = {},
-	
-	["increment arcotan displacement"] = {},
-	["decrement arcotan displacement"] = {},
-	
-	["increment arcotan length"] = {},
-	["decrement arcotan length"] = {},
-	
-	["increment arcotan start frame"] = {},
-	["decrement arcotan start frame"] = {},
-	
-	["increment arcotan step"] = {},
-	["decrement arcotan step"] = {},
-
-	["magnitude value"] = {},
-	["speedkick magnitude"] = {},
-	["reset magnitude"] = {},
-	["high magnitude"] = {},
-
-	["swim"] = {}
-}
-
-
 
 Settings.Themes = {
 	Light = {
 		Text = "#000000",
+		ReadWriteText = "#FF0000",
 		Background = "#CCCCFF",
 		Button = {
 			--Text = "#000000", -- optional, defaults to Theme.Text
@@ -93,6 +42,7 @@ Settings.Themes = {
 	},
 	Dark = { -- Theme by ShadoXFM
 		Text = "#FFFFFF",
+		ReadWriteText = "#FF0000",
 		Background = "#222222",
 		Button = {
 			Text = "#000000",
@@ -122,8 +72,73 @@ Settings.Themes = {
 			Outline = "#888888"
 		}
 	},
+	CustomDark = { -- Theme by tjk
+		Text = "#FFFFFF",
+		ReadWriteText = "#05DDE2",
+		Background = "#222222",
+		Button = {
+			Text = "#000000",
+			InvertedText = "#FFFFFF",
+			Outline = "#888888",
+			Top = "#F2F2F2",
+			Bottom = "#EDEDED",
+			Pressed = {
+				Top = "#05DDE2",
+				Bottom = "#00D4D8"
+			}
+		},
+		Joystick = {
+			Circle = "#444444",
+			Background = "#222222",
+			MagBoundary = "#666666",
+			Crosshair = "#FFFFFF",
+			Stick = "#dedcdc",
+			Dot = "#05DDE2",
+		},
+		InputField = {
+			EditingText = "#000000",
+			Editing = "#FFDD00",
+			Enabled = "#666666",
+			Disabled = "#444444",
+			OutsideOutline = "#000000",
+			Outline = "#888888"
+		}
+	},
+	MidnightPurple = { -- Theme by tjk
+		Text = "#FFFFFF",
+		ReadWriteText = "#ed02e9", -- should be a bit brighter than Button.Pressed.Top
+		Background = "#361e35",
+		Button = {
+			Text = "#000000",
+			InvertedText = "#FFFFFF",
+			Outline = "#888888",
+			Top = "#a892a8",
+			Bottom = "#9c869b",
+			Pressed = {
+				Top = "#a803a6",
+				Bottom = "#9e009b"
+			}
+		},
+		Joystick = {
+			Circle = "#444444",
+			Background = "#222222",
+			MagBoundary = "#666666",
+			Crosshair = "#FFFFFF",
+			Stick = "#c2a43a",
+			Dot = "#ebe8eb",
+		},
+		InputField = {
+			EditingText = "#000000",
+			Editing = "#FFDD00",
+			Enabled = "#666666",
+			Disabled = "#444444",
+			OutsideOutline = "#000000",
+			Outline = "#888888"
+		}
+	},
 	IcyBlue = { -- Theme by Manama
 		Text = "#000000",
+		ReadWriteText = "#FFFFFF",
 		Background = "#757a9c",
 		Button = {
 			InvertedText = "#FFFFFF",
@@ -184,7 +199,10 @@ Settings.Layout = {
 			'+',
 			'-',
 			'I',
-			'High Mag '
+			'High Mag ',
+			'Set RNG  ',
+			'V ',
+			'I'
 		},
 		selectedItem = 1,
 
@@ -215,6 +233,9 @@ Settings.Layout = {
 		DECARCE = 25,
 		REVERSE_ARCTAN = 26,
 		HIGH_MAG = 27,
+		SET_RNG = 28,
+		USE_VALUE = 29,
+		USE_INDEX = 30,
 
 		dist_button = {
 			enabled = false,
@@ -242,10 +263,14 @@ Settings.Layout = {
 			arctanexp = 0,
 			highmag = false
 		},
+		set_rng_mode = {
+			value = false,
+			index = true,
+		},
 		swimming = false
 	},
 	TextArea = {
-		items = {'Match Angle', 'Magnitude'},
+		items = {'Match Angle', 'Magnitude', 'RNG'},
 		selectedItem = 0,
 		selectedChar = 1,
 		blinkTimer = 0,
@@ -253,6 +278,7 @@ Settings.Layout = {
 		showUnderscore = true,
 
 		MATCH_ANGLE = 1,
-		MAGNITUDE = 2
+		MAGNITUDE = 2,
+		RNG = 3
 	}
 }

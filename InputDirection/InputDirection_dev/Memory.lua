@@ -37,6 +37,7 @@ function Memory.Refresh()
 		Memory.Mario.FSpeed = memory.readfloat(0x00B3B1C4)
 		Memory.Mario.Buffered = memory.readbyte(0x00B67054)
 		Memory.Mario.GlobalTimer = memory.readdword(0x00B2D5D4)
+		Memory.RNGValue = memory.readword(0x00B8EEE0)
 	else
 		Memory.Camera.Angle = memory.readword(0x00B3B3A4)
 		Memory.Mario.FacingYaw = memory.readword(0x00B39E2E)
@@ -52,6 +53,7 @@ function Memory.Refresh()
 		Memory.Mario.FSpeed = memory.readfloat(0x00B39E54)
 		Memory.Mario.Buffered = memory.readbyte(0x00B65CE4)
 		Memory.Mario.GlobalTimer = memory.readdword(0x00B2C694)
+		Memory.RNGValue = memory.readword(0x00B8EEE0)
 	end
 end
 

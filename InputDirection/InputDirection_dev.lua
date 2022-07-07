@@ -4,7 +4,7 @@
 -- Special thanks to Pannenkoek2012 and Peter Fedak for angle calculation support.
 -- Also thanks to MKDasher to making the code very clean
 -- Other contributors:
---	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama
+--	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk
 
 PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
 
@@ -22,6 +22,8 @@ dofile (PATH .. "Program.lua")
 dofile (PATH .. "MoreMaths.lua")
 dofile (PATH .. "Actions.lua")
 dofile (PATH .. "Swimming.lua")
+dofile (PATH .. "RNGToIndex.lua")
+dofile (PATH .. "IndexToRNG.lua")
 
 Settings.Theme = Settings.Themes.Light -- Settings.Themes.Dark for dark mode
 Settings.ShowEffectiveAngles = false -- show angles floored to the nearest multiple of 16
@@ -31,6 +33,7 @@ Memory.UpdatePrevPos()
 function main()
 	Program.initFrame()
 	Program.main()
+	Program.rngSetter()
 	Joypad.send()
 	Swimming.swim("A")
 end
