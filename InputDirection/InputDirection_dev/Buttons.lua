@@ -22,6 +22,7 @@ end
 
 Buttons = {
 	{
+		name = "ignore y",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.IGNORE_Y],
 		box = {
@@ -45,6 +46,7 @@ Buttons = {
 		end
 	},
 	{
+		name = ".99",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.POINT_99],
 		box = {
@@ -69,6 +71,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "always .99",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.ALWAYS_99],
 		box = {
@@ -92,6 +95,7 @@ Buttons = {
 		end
 	},
 	{
+		name = ".99 left",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.LEFT_99],
 		box = {
@@ -116,6 +120,7 @@ Buttons = {
 		end
 	},
 	{
+		name = ".99 right",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.RIGHT_99],
 		box = {
@@ -140,6 +145,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "dyaw",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DYAW],
 		box = {
@@ -163,6 +169,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "arcotan strain",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.ARCTANSTRAIN],
 		box = {
@@ -188,6 +195,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "reverse arcotan strain",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ARCTAN],
 		box = {
@@ -211,6 +219,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "increment arcotan ratio",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
 		box = {
@@ -230,6 +239,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "decrement arcotan ratio",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
 		box = {
@@ -249,6 +259,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "increment arcotan displacement",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
 		box = {
@@ -268,6 +279,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "decrement arcotan displacement",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
 		box = {
@@ -287,6 +299,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "increment arcotan length",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
 		box = {
@@ -306,6 +319,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "decrement arcotan length",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
 		box = {
@@ -325,6 +339,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "increment arcotan start frame",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
 		box = {
@@ -344,6 +359,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "decrement arcotan start frame",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
 		box = {
@@ -363,6 +379,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "increment arcotan step",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
 		box = {
@@ -382,6 +399,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "decrement arcotan step",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
 		box = {
@@ -401,6 +419,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "dist moved",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DIST_MOVED],
 		box = {
@@ -428,6 +447,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "disabled",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DISABLED],
 		box = {
@@ -447,6 +467,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "match yaw",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MATCH_YAW],
 		box = {
@@ -466,6 +487,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "reverse angle",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ANGLE],
 		box = {
@@ -485,6 +507,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "match angle",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MATCH_ANGLE],
 		box = {
@@ -504,6 +527,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "match angle value",
 		type = ButtonType.textArea,
 		inputSize = 5,
 		box = {
@@ -565,6 +589,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "magnitude value",
 		type = ButtonType.textArea,
 		inputSize = 3,
 		box = {
@@ -631,6 +656,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "speedkick magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MAG48],
 		box = {
@@ -651,6 +677,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "reset magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.RESET_MAG],
 		box = {
@@ -670,6 +697,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "high magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.HIGH_MAG],
 		box = {
@@ -693,6 +721,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "swim",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.SWIM],
 		box = {
@@ -716,6 +745,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "set rng",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.SET_RNG],
 		box = {
@@ -739,6 +769,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "use value",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_VALUE],
 		box = {
@@ -763,6 +794,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "use index",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_INDEX],
 		box = {
@@ -787,6 +819,7 @@ Buttons = {
 		end
 	},
 	{
+		name = "set rng input",
 		type = ButtonType.textArea,
 		inputSize = 5,
 		box = {
@@ -848,5 +881,5 @@ Buttons = {
 			end
 			Settings.Layout.TextArea.blinkTimer = -1
 		end
-	},
+	}
 }

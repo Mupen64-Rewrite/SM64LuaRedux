@@ -4,7 +4,7 @@
 -- Special thanks to Pannenkoek2012 and Peter Fedak for angle calculation support.
 -- Also thanks to MKDasher to making the code very clean
 -- Other contributors:
---	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk
+--	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama
 
 PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
 
