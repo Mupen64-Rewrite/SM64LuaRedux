@@ -58,7 +58,9 @@ Settings.Hotkeys = {
 	["set rng"] = {},
 	["use value"] = {},
 	["use index"] = {},
-	["set rng input"] = {}
+	["set rng input"] = {},
+
+	["record ghost"] = {}
 }
 
 
@@ -66,7 +68,7 @@ Settings.Hotkeys = {
 Settings.Themes = {
 	Light = {
 		Text = "#000000",
-		ReadWriteText = "#FF0000",
+		ReadWriteText = "#FF0000", -- should be the same as or a bit brighter than Button.Pressed.Top
 		Background = "#CCCCFF",
 		Button = {
 			--Text = "#000000", -- optional, defaults to Theme.Text
@@ -194,7 +196,7 @@ Settings.Themes = {
 	},
 	MidnightPurple = { -- Theme by tjk
 		Text = "#FFFFFF",
-		ReadWriteText = "#ed02e9", -- should be a bit brighter than Button.Pressed.Top
+		ReadWriteText = "#ed02e9",
 		Background = "#361e35",
 		Button = {
 			Text = "#000000",
@@ -260,7 +262,8 @@ Settings.Layout = {
 			'High Mag ',
 			'Set RNG  ',
 			'V ',
-			'I'
+			'I',
+			'Record Ghost'
 		},
 		selectedItem = 1,
 
@@ -294,6 +297,7 @@ Settings.Layout = {
 		SET_RNG = 28,
 		USE_VALUE = 29,
 		USE_INDEX = 30,
+		RECORD_GHOST = 31,
 
 		dist_button = {
 			enabled = false,

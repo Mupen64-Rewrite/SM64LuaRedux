@@ -4,7 +4,7 @@
 -- Special thanks to Pannenkoek2012 and Peter Fedak for angle calculation support.
 -- Also thanks to MKDasher to making the code very clean
 -- Other contributors:
---	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama
+--	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk
 
 PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
 
@@ -24,6 +24,7 @@ dofile (PATH .. "Actions.lua")
 dofile (PATH .. "Swimming.lua")
 dofile (PATH .. "RNGToIndex.lua")
 dofile (PATH .. "IndexToRNG.lua")
+dofile (PATH .. "recordghost.lua")
 
 Settings.Theme = Settings.Themes.Light -- Settings.Themes.Dark for dark mode
 Settings.ShowEffectiveAngles = false -- show angles floored to the nearest multiple of 16
@@ -36,6 +37,10 @@ function main()
 	Program.rngSetter()
 	Joypad.send()
 	Swimming.swim("A")
+	
+	if recording_ghost then
+		Ghost.main()
+	end
 end
 
 function drawing()

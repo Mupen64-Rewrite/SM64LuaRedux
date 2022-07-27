@@ -5,6 +5,8 @@ ButtonType = {
 	textArea = 1
 }
 
+recording_ghost = false
+
 local pow = math.pow
 
 local function getDigit(value, length, digit)
@@ -26,8 +28,8 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.IGNORE_Y],
 		box = {
-			Drawing.Screen.Width + 130,
-			477,
+			Drawing.Screen.Width + 137,
+			565,
 			75,
 			20
 		},
@@ -423,8 +425,8 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DIST_MOVED],
 		box = {
-			Drawing.Screen.Width + 5,
-			477,
+			Drawing.Screen.Width + 12,
+			565,
 			120,
 			20
 		},
@@ -750,7 +752,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.SET_RNG],
 		box = {
 			Drawing.Screen.Width + 12,
-			505,
+			494,
 			84,
 			30
 		},
@@ -774,7 +776,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_VALUE],
 		box = {
 			Drawing.Screen.Width + 91,
-			505,
+			494,
 			17,
 			30
 		},
@@ -799,7 +801,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_INDEX],
 		box = {
 			Drawing.Screen.Width + 108,
-			505,
+			494,
 			17,
 			30
 		},
@@ -824,7 +826,7 @@ Buttons = {
 		inputSize = 5,
 		box = {
 			Drawing.Screen.Width + 131,
-			505,
+			494,
 			85,
 			30
 		},
@@ -881,5 +883,45 @@ Buttons = {
 			end
 			Settings.Layout.TextArea.blinkTimer = -1
 		end
-	}
+	},
+	{
+		name = "record ghost",
+		type = ButtonType.button,
+		text = "",
+		box = {
+			Drawing.Screen.Width + 16,
+			465,
+			95,
+			20
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.RECORD_GHOST == true
+		end,
+		onclick = function(self)
+			i = 0
+			if (Settings.Layout.Button.RECORD_GHOST == true) then
+				Settings.Layout.Button.RECORD_GHOST = false
+				recording_ghost = false
+				if (i == 0) then
+					Ghost.write_file()
+					i = i + 1
+				end
+			else
+				Settings.Layout.Button.RECORD_GHOST = true
+				recording_ghost = true
+				i = 0
+			end
+		end
+	},
 }
+
+function Buttons.getGhostButtonText()
+	if recording_ghost then
+		return "End Recording"
+	else
+		return Settings.Layout.Button.items[31]
+	end
+end

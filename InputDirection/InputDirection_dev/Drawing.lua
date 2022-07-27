@@ -28,7 +28,11 @@ function Drawing.paint()
 	wgui.rect(Drawing.Screen.Width, 0, Drawing.Screen.Width + Drawing.WIDTH_OFFSET, Drawing.Screen.Height - 20)
 	for i = 1, table.getn(Buttons), 1 do
 		if Buttons[i].type == ButtonType.button then
-			Drawing.drawButton(Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4], Buttons[i].text, Buttons[i].pressed())
+			if Buttons[i].name == "record ghost" then
+				Drawing.drawButton(Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4], Buttons.getGhostButtonText(), Buttons[i].pressed())
+			else
+				Drawing.drawButton(Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4], Buttons[i].text, Buttons[i].pressed())
+			end
 		elseif Buttons[i].type == ButtonType.textArea then
 			local value = Buttons[i].value()
 			Drawing.drawTextArea(Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4], value and string.format("%0".. tostring(Buttons[i].inputSize) .."d", value) or string.rep('-', Buttons[i].inputSize), Buttons[i].enabled(), Buttons[i].editing())
@@ -157,18 +161,13 @@ function Drawing.drawMiscData(x, y)
 
 	wgui.text(x, y + 120, "Action: " .. Engine.GetCurrentAction())
 
-	distmoved = Engine.GetTotalDistMoved()
-	if (Settings.Layout.Button.dist_button.enabled == false) then
-		distmoved = Settings.Layout.Button.dist_button.dist_moved_save
-	end
-	wgui.text(x, y + 135, "Moved Dist: " .. distmoved)
 	wgui.text(x + 172, y, "E: " .. Settings.Layout.Button.strain_button.arctanexp)
 	wgui.text(x + 132, y + 60, "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5))
 	wgui.text(x + 132, y + 75, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
 	wgui.text(x + 132, y + 90, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
 	wgui.text(x + 132, y + 105, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
 
-	wgui.text(x, y + 150, "Read-write: ")
+	wgui.text(x, y + 136, "Read-write: ")
 	if emu.isreadonly() then 
 		readwritestatus = "disabled" 
 		wgui.setcolor(Settings.Theme.Text)
@@ -176,9 +175,15 @@ function Drawing.drawMiscData(x, y)
 		readwritestatus = "enabled"
 		wgui.setcolor(Settings.Theme.ReadWriteText)
 	end
-	wgui.text(x + 68, y + 150, readwritestatus)
+	wgui.text(x + 68, y + 136, readwritestatus)
 
 	wgui.setcolor(Settings.Theme.Text)
-	wgui.text(x, y + 230, "RNG Value: " .. Memory.RNGValue)
-	wgui.text(x, y + 245, "RNG Index: " .. get_index(Memory.RNGValue))
+	wgui.text(x, y + 220, "RNG Value: " .. Memory.RNGValue)
+	wgui.text(x, y + 235, "RNG Index: " .. get_index(Memory.RNGValue))
+
+	distmoved = Engine.GetTotalDistMoved()
+	if (Settings.Layout.Button.dist_button.enabled == false) then
+		distmoved = Settings.Layout.Button.dist_button.dist_moved_save
+	end
+	wgui.text(x, y + 280, "Moved Dist: " .. distmoved)
 end

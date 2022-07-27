@@ -399,3 +399,42 @@ function Engine.scaleInputsForMagnitude(result, goal_mag, use_high_mag)
 
 	result.X, result.Y = closest_x, closest_y 
 end
+
+-- Lag Frame Counter --
+
+local vi_count = 0
+local inp_count = 0
+local frame_count_vi = {}
+local frame_count_inp = {}
+
+function Engine.ResetLagVars()
+	vi_count = 0
+	inp_count = 0
+	frame_count_vi = {}
+	frame_count_inp = {}
+end
+
+local function vi()
+	frame_count_vi[#frame_count_vi] = emu.framecount()
+	if emu.getpause() then
+		return 0
+	else
+		vi_count = vi_count + 1
+	end
+end
+
+local function inp()
+	frame_count_inp[#frame_count_inp] = emu.framecount()
+	if emu.getpause() then
+		return 0
+	else
+		inp_count = inp_count + 1
+	end
+end
+
+function Engine.GetLagFrames()
+	return vi_count - (inp_count * 2)
+end
+
+emu.atinput(inp)
+emu.atvi(vi)
