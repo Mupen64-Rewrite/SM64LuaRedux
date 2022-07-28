@@ -12,8 +12,7 @@ OBJ_PITCH_OFFSET = 0x1A
 OBJ_YAW_OFFSET = 0x1C
 OBJ_ROLL_OFFSET = 0x1E
 
--- PATH_ROOT = debug.getinfo(1).source:sub(2):match("(.*\\)")
-PATH_ROOT = "D:\\2A Speedrunning\\Frame STROOP Refactor\\"
+PATH_ROOT = debug.getinfo(1).source:sub(2):match("(.*\\)")
 targetFileName = PATH_ROOT.."tmp.ghost"
 recordedFrames = {}
 recordingBaseFrame = nil
