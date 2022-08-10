@@ -15,7 +15,8 @@ Memory = {
 
 GameVersion = {
 	U = 1,
-	J = 2
+	J = 2,
+	S = 3
 }
 
 function Memory.Refresh()
@@ -38,7 +39,7 @@ function Memory.Refresh()
 		Memory.Mario.Buffered = memory.readbyte(0x00B67054)
 		Memory.Mario.GlobalTimer = memory.readdword(0x00B2D5D4)
 		Memory.RNGValue = memory.readword(0x00B8EEE0)
-	else
+	elseif Memory.Version == GameVersion.J then
 		Memory.Camera.Angle = memory.readword(0x00B3B3A4)
 		Memory.Mario.FacingYaw = memory.readword(0x00B39E2E)
 		Memory.Mario.IntendedYaw = memory.readword(0x00B39E24)
@@ -54,6 +55,22 @@ function Memory.Refresh()
 		Memory.Mario.Buffered = memory.readbyte(0x00B65CE4)
 		Memory.Mario.GlobalTimer = memory.readdword(0x00B2C694)
 		Memory.RNGValue = memory.readword(0x00B8EEE0)
+	else
+		Memory.Camera.Angle = memory.readword(0x8031EE6C)
+		Memory.Mario.FacingYaw = memory.readword(0x8031D9EE)
+		Memory.Mario.IntendedYaw = memory.readword(0x8031D9E4)
+		Memory.Mario.HSpeed = memory.readdword(0x8031DA14)
+		Memory.Mario.VSpeed = memory.readdword(0x8031DA0C)
+		Memory.Mario.XSlideSpeed = memory.readdword(0x8031DA18)
+		Memory.Mario.ZSlideSpeed = memory.readdword(0x8031DA1C)
+		Memory.Mario.X = memory.readdword(0x8031D9FC)
+		Memory.Mario.Y = memory.readdword(0x8031DA00)
+		Memory.Mario.Z = memory.readdword(0x8031DA04)
+		Memory.Mario.Action = memory.readdword(0x8031D9CC)
+		Memory.Mario.FSpeed = memory.readfloat(0x8031DA14)
+		Memory.Mario.Buffered = memory.readbyte(0x80353484)
+		Memory.Mario.GlobalTimer = memory.readdword(0x8030CD04)
+		Memory.RNGValue = memory.readword(0x8038BBC0)
 	end
 end
 
@@ -64,8 +81,10 @@ function Memory.CheckVersion()
 	
 	if memory.readdword(0x00B22B24) == 1174429700 then -- J version
 		Memory.Version = GameVersion.J
-	else -- U version
+	elseif memory.readdword(0x00B22B24) == 2410020892 then -- U version
 		Memory.Version = GameVersion.U
+	else
+		Memory.Version = GameVersion.S
 	end
 end
  
