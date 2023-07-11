@@ -64,15 +64,24 @@ function Drawing.paint()
             --     text = tostring(button.value()),
             -- })
             local value = button.value()
-            Mupen_lua_ugui.control_data[i] = {
-                caret_index = Settings.Layout.TextArea.selectedChar,
-                selection_start = -1,
-                selection_end = -1,
-            }
+
+           
 
             local previous_active_control_id = Mupen_lua_ugui.active_control_uid
             if button.editing() and button.enabled() then
+                Mupen_lua_ugui.control_data[i] = {
+                    caret_index = Settings.Layout.TextArea.selectedChar,
+                    selection_start = Settings.Layout.TextArea.selectedChar,
+                    selection_end = Settings.Layout.TextArea.selectedChar + 1,
+                }
                 Mupen_lua_ugui.active_control_uid = i
+
+            else
+                Mupen_lua_ugui.control_data[i] = {
+                    caret_index = 0,
+                    selection_start = nil,
+                    selection_end = nil,
+                }
             end
             
             Mupen_lua_ugui.stylers.windows_10.draw_textbox({
