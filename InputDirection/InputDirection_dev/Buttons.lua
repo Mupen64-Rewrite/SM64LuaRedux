@@ -113,12 +113,7 @@ Buttons = {
 			return Settings.Layout.Button.strain_button.left == true
 		end,
 		onclick = function(self)
-			if (Settings.Layout.Button.strain_button.left == false or Settings.Layout.Button.strain_button.right == true) then
-				Settings.Layout.Button.strain_button.left = true
-				Settings.Layout.Button.strain_button.right = false
-			else
-				Settings.Layout.Button.strain_button.left = false
-			end
+			Settings.Layout.Button.strain_button.left = not Settings.Layout.Button.strain_button.left
 		end
 	},
 	{
@@ -138,12 +133,7 @@ Buttons = {
 			return Settings.Layout.Button.strain_button.right == true
 		end,
 		onclick = function(self)
-			if (Settings.Layout.Button.strain_button.right == false or Settings.Layout.Button.strain_button.left == true) then
-				Settings.Layout.Button.strain_button.right = true
-				Settings.Layout.Button.strain_button.left = false
-			else
-				Settings.Layout.Button.strain_button.right = false
-			end
+			Settings.Layout.Button.strain_button.right = not Settings.Layout.Button.strain_button.right
 		end
 	},
 	{
@@ -887,11 +877,11 @@ Buttons = {
 	{
 		name = "record ghost",
 		type = ButtonType.button,
-		text = "",
+		text = "Start ghost recording",
 		box = {
 			Drawing.Screen.Width + 16,
 			465,
-			95,
+			120,
 			20
 		},
 		enabled = function()
@@ -903,6 +893,7 @@ Buttons = {
 		onclick = function(self)
 			i = 0
 			if (Settings.Layout.Button.RECORD_GHOST == true) then
+                self.text = "Start ghost recording"
 				Settings.Layout.Button.RECORD_GHOST = false
 				recording_ghost = false
 				if (i == 0) then
@@ -910,6 +901,7 @@ Buttons = {
 					i = i + 1
 				end
 			else
+                self.text = "Stop ghost recording"
 				Settings.Layout.Button.RECORD_GHOST = true
 				recording_ghost = true
 				i = 0

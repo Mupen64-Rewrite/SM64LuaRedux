@@ -69,163 +69,16 @@ Settings.Themes = {
 	Light = {
 		Text = "#000000",
 		ReadWriteText = "#FF0000", -- should be the same as or a bit brighter than Button.Pressed.Top
-		Background = "#CCCCFF",
-		Button = {
-			--Text = "#000000", -- optional, defaults to Theme.Text
-			InvertedText = "#FFFFFF",
-			Outline = "#888888",
-			-- making the bottom portion of the button slightly darker
-			-- makes it subtly look like a button
-			Top = "#F2F2F2",
-			Bottom = "#E8E8E8",
-			Pressed = {
-				Top = "#FF0000",
-				Bottom = "#EE0000"
-			}
-		},
-		Joystick = {
-			Circle = "#FFFFFF",
-			Background = "#DDDDDD", -- shade outside circle
-			MagBoundary = "#DDDDFF",
-			Crosshair = "#000000",
-			Stick = "#0000FF",
-			Dot = "#FF0000", -- end of the joystick
-		},
+		Background = "#fdfdfd",
 		InputField = { -- where you enter the facing angle or mag
 			--EditingText = "#000000", -- optional, defaults to Theme.Text
-			Editing = "#FFFF00",
-			Enabled = "#FFFFFF",
-			Disabled = "#AAAAAA",
-			OutsideOutline = "#000000", -- outermost
-			Outline = "#888888" -- inner (creates depth)
-		}
-	},
-	Dark = { -- Theme by ShadoXFM
-		Text = "#FFFFFF",
-		ReadWriteText = "#FF0000",
-		Background = "#222222",
-		Button = {
-			Text = "#000000",
-			InvertedText = "#FFFFFF",
-			Outline = "#888888",
-			Top = "#F2F2F2",
-			Bottom = "#EDEDED",
-			Pressed = {
-				Top = "#FF0000",
-				Bottom = "#EE0000"
-			}
-		},
-		Joystick = {
-			Circle = "#444444",
-			Background = "#222222",
-			MagBoundary = "#666666",
-			Crosshair = "#FFFFFF",
-			Stick = "#00FF08",
-			Dot = "#FF0000",
-		},
-		InputField = {
-			EditingText = "#000000",
-			Editing = "#FFDD00",
-			Enabled = "#666666",
-			Disabled = "#444444",
-			OutsideOutline = "#000000",
-			Outline = "#888888"
-		}
-	},
-	IcyBlue = { -- Theme by Manama
-		Text = "#000000",
-		ReadWriteText = "#FFFFFF",
-		Background = "#757a9c",
-		Button = {
-			InvertedText = "#FFFFFF",
-			Outline = "#000000",
-			Top = "#b4bae0",
-			Bottom = "#959cc2",
-			Pressed = {
-				Top = "#6984FF",
-				Bottom = "#576ED9"
-			}
-		},
-		Joystick = {
-			Circle = "#888EB5",
-			Background = "#6B6F8C",
-			MagBoundary = "#DDDDFF",
-			Crosshair = "#0fffff",
-			Stick = "#FFFFFF",
-			Dot = "#FFFFFF",
-		},
-		InputField = {
-			Editing = "#BDC5FF",
+			Editing = "#FFFFFF",
 			Enabled = "#FFFFFF",
 			Disabled = "#FFFFFF",
-			OutsideOutline = "#000000",
-			Outline = "#888888"
+			OutsideOutline = "#7A7A7A", -- outermost
+			Outline = "#7A7A7A" -- inner (creates depth)
 		}
 	},
-	CustomDark = { -- Theme by tjk
-		Text = "#FFFFFF",
-		ReadWriteText = "#05DDE2",
-		Background = "#222222",
-		Button = {
-			Text = "#000000",
-			InvertedText = "#FFFFFF",
-			Outline = "#888888",
-			Top = "#F2F2F2",
-			Bottom = "#EDEDED",
-			Pressed = {
-				Top = "#05DDE2",
-				Bottom = "#00D4D8"
-			}
-		},
-		Joystick = {
-			Circle = "#444444",
-			Background = "#222222",
-			MagBoundary = "#666666",
-			Crosshair = "#FFFFFF",
-			Stick = "#dedcdc",
-			Dot = "#05DDE2",
-		},
-		InputField = {
-			EditingText = "#000000",
-			Editing = "#FFDD00",
-			Enabled = "#666666",
-			Disabled = "#444444",
-			OutsideOutline = "#000000",
-			Outline = "#888888"
-		}
-	},
-	MidnightPurple = { -- Theme by tjk
-		Text = "#FFFFFF",
-		ReadWriteText = "#ed02e9",
-		Background = "#361e35",
-		Button = {
-			Text = "#000000",
-			InvertedText = "#FFFFFF",
-			Outline = "#888888",
-			Top = "#a892a8",
-			Bottom = "#9c869b",
-			Pressed = {
-				Top = "#a803a6",
-				Bottom = "#9e009b"
-			}
-		},
-		Joystick = {
-			Circle = "#444444",
-			Background = "#222222",
-			MagBoundary = "#666666",
-			Crosshair = "#FFFFFF",
-			Stick = "#c2a43a",
-			Dot = "#ebe8eb",
-		},
-		InputField = {
-			EditingText = "#000000",
-			Editing = "#FFDD00",
-			Enabled = "#666666",
-			Disabled = "#444444",
-			OutsideOutline = "#000000",
-			Outline = "#888888"
-		}
-	}
 }
 
 Settings.Theme = Settings.Themes.Light -- default
@@ -233,20 +86,20 @@ Settings.Theme = Settings.Themes.Light -- default
 Settings.Layout = {
 	Button = {
 		items = { -- spaces are used to adjust text placement
-			'Disabled  ',
-			'Match Yaw  ',
-			'Match Angle ',
+			'Disabled',
+			'Match Yaw',
+			'Match Angle',
 			'Reverse Angle',
-			'    Speedkick',
-			'Reset Mag ',
-			'Swim ',
-			'ignore Y',
+			'Speedkick',
+			'Reset Mag',
+			'Swim',
+			'Ignore Y',
 			'.99',
-			'Always ',
+			'Always',
 			'Left',
 			'Right',
-			'Dyaw ',
-			'  get dist moved',
+			'DYaw',
+			'Get moved distance',
 			'AtanStrain',
 			'+',
 			'-',
@@ -259,9 +112,9 @@ Settings.Layout = {
 			'+',
 			'-',
 			'I',
-			'High Mag ',
-			'Set RNG  ',
-			'V ',
+			'High Mag',
+			'Set RNG',
+			'V',
 			'I',
 			'Record Ghost'
 		},

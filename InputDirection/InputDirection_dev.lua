@@ -7,7 +7,9 @@
 --	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk
 
 PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
+CURRENT_PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\"
 
+dofile (CURRENT_PATH .. "mupen-lua-ugui.lua")
 dofile (PATH .. "Drawing.lua")
 Drawing.resizeScreen()
 
@@ -44,13 +46,22 @@ function main()
 end
 
 function drawing()
-	Drawing.paint()
-end
+    local keys = input.get()
+    Mupen_lua_ugui.begin_frame(BreitbandGraphics.renderers.d2d, Mupen_lua_ugui.stylers.windows_10, {
+        pointer = {
+            position = {
+                x = keys.xmouse,
+                y = keys.ymouse,
+            },
+            is_primary_down = keys.leftclick,
+        },
+        keyboard = {
+            held_keys = keys,
+        },
+    })
 
-function update()
-	if Input.update() then
-		Drawing.paint()
-	end
+    Drawing.paint()
+    Input.update()
 end
 
 function close()
@@ -58,8 +69,7 @@ function close()
 end
 
 emu.atinput(main)
-emu.atvi(drawing,false)
-emu.atinterval(update, false)
+emu.atupdatescreen(drawing)
 emu.atstop(close)
 if emu.atloadstate then
 	emu.atloadstate(drawing, false)

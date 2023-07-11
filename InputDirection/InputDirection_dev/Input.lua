@@ -63,11 +63,11 @@ function Input.check(xmouse, ymouse)
 	for i = 1, table.getn(Buttons), 1 do
 		if Buttons[i].enabled() then
 			if Buttons[i].type == ButtonType.button then
-				if Input.isInRange(xmouse, ymouse, Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4]) then
-					changes = true
-					Buttons[i]:onclick()
-					Settings.Layout.TextArea.selectedItem = 0
-				end
+				-- if Input.isInRange(xmouse, ymouse, Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4]) then
+				-- 	changes = true
+				-- 	Buttons[i]:onclick()
+				-- 	Settings.Layout.TextArea.selectedItem = 0
+				-- end
 			elseif Buttons[i].type == ButtonType.textArea then
 				if Input.isInRange(xmouse, ymouse, Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4]) then
 					changes = true
