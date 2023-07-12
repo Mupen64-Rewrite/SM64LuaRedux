@@ -28,9 +28,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.IGNORE_Y],
 		box = {
-			Drawing.Screen.Width + 137,
-			565,
-			75,
+			Drawing.Screen.Width + 141,
+			547,
+			74,
 			20
 		},
 		enabled = function()
@@ -52,9 +52,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.POINT_99],
 		box = {
-			Drawing.Screen.Width + 185,
+			Drawing.Screen.Width + 187,
 			5,
-			32,
+			30,
 			22
 		},
 		enabled = function()
@@ -77,9 +77,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.ALWAYS_99],
 		box = {
-			Drawing.Screen.Width + 129,
+			Drawing.Screen.Width + 137,
 			5,
-			56,
+			47,
 			22
 		},
 		enabled = function()
@@ -101,9 +101,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.LEFT_99],
 		box = {
-			Drawing.Screen.Width + 130,
+			Drawing.Screen.Width + 137,
 			31,
-			40,
+			35,
 			22
 		},
 		enabled = function()
@@ -121,9 +121,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.RIGHT_99],
 		box = {
-			Drawing.Screen.Width + 170,
+			Drawing.Screen.Width + 175,
 			31,
-			47,
+			42,
 			22
 		},
 		enabled = function()
@@ -141,9 +141,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DYAW],
 		box = {
-			Drawing.Screen.Width + 130,
+			Drawing.Screen.Width + 137,
 			57,
-			43,
+			40,
 			22
 		},
 		enabled = function()
@@ -165,10 +165,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.ARCTANSTRAIN],
 		box = {
-			Drawing.Screen.Width + 130,
+			Drawing.Screen.Width + 137,
 			83,
-			71,
-			20
+			64,
+			22
 		},
 		enabled = function()
 			return true
@@ -191,10 +191,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ARCTAN],
 		box = {
-			Drawing.Screen.Width + 202,
+			Drawing.Screen.Width + 204,
 			83,
-			15,
-			20
+			13,
+			22
 		},
 		enabled = function()
 			return true
@@ -215,10 +215,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
 		box = {
-			Drawing.Screen.Width + 126,
-			370,
+			Drawing.Screen.Width + 147,
+			361,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -235,10 +235,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
 		box = {
-			Drawing.Screen.Width + 137,
-			370,
+			Drawing.Screen.Width + 159,
+			361,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -255,10 +255,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
 		box = {
-			Drawing.Screen.Width + 126,
-			385,
+			Drawing.Screen.Width + 147,
+			375,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -275,10 +275,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
 		box = {
-			Drawing.Screen.Width + 137,
-			385,
+			Drawing.Screen.Width + 159,
+			375,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -295,10 +295,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
 		box = {
-			Drawing.Screen.Width + 126,
-			400,
+			Drawing.Screen.Width + 147,
+			389,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -315,10 +315,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
 		box = {
-			Drawing.Screen.Width + 137,
-			400,
+			Drawing.Screen.Width + 159,
+			389,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -335,10 +335,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
 		box = {
-			Drawing.Screen.Width + 126,
-			415,
+			Drawing.Screen.Width + 147,
+			403,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -355,10 +355,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
 		box = {
-			Drawing.Screen.Width + 137,
-			415,
+			Drawing.Screen.Width + 159,
+			403,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -375,10 +375,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
 		box = {
-			Drawing.Screen.Width + 165,
-			310,
+			Drawing.Screen.Width + 147,
+			304,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -395,10 +395,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
 		box = {
-			Drawing.Screen.Width + 176,
-			310,
+			Drawing.Screen.Width + 159,
+			304,
 			10,
-			13
+			12
 		},
 		enabled = function()
 			return true
@@ -415,9 +415,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DIST_MOVED],
 		box = {
-			Drawing.Screen.Width + 12,
-			565,
-			120,
+			Drawing.Screen.Width + 8,
+			547,
+			130,
 			20
 		},
 		enabled = function()
@@ -445,7 +445,7 @@ Buttons = {
 		box = {
 			Drawing.Screen.Width + 5,
 			5,
-			120,
+			128,
 			30
 		},
 		enabled = function()
@@ -465,7 +465,7 @@ Buttons = {
 		box = {
 			Drawing.Screen.Width + 5,
 			40,
-			120,
+			128,
 			30
 		},
 		enabled = function()
@@ -485,7 +485,7 @@ Buttons = {
 		box = {
 			Drawing.Screen.Width + 5,
 			75,
-			120,
+			128,
 			30
 		},
 		enabled = function()
@@ -505,7 +505,7 @@ Buttons = {
 		box = {
 			Drawing.Screen.Width + 5,
 			110,
-			120,
+			128,
 			30
 		},
 		enabled = function()
@@ -523,9 +523,9 @@ Buttons = {
 		type = ButtonType.textArea,
 		inputSize = 5,
 		box = {
-			Drawing.Screen.Width + 131,
+			Drawing.Screen.Width + 137,
 			110,
-			85,
+			80,
 			30
 		},
 		value = function()
@@ -585,10 +585,10 @@ Buttons = {
 		type = ButtonType.textArea,
 		inputSize = 3,
 		box = {
-			Drawing.Screen.Width + 154,
+			Drawing.Screen.Width + 153,
 			165,
-			50,
-			25
+			49,
+			26
 		},
 		value = function()
 			return Settings.goalMag
@@ -652,10 +652,10 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.MAG48],
 		box = {
-			Drawing.Screen.Width + 142,
+			Drawing.Screen.Width + 143,
 			230,
-			75,
-			14
+			69,
+			13
 		},
 		enabled = function()
 			return true
@@ -669,34 +669,14 @@ Buttons = {
 		end
 	},
 	{
-		name = "reset magnitude",
-		type = ButtonType.button,
-		text = Settings.Layout.Button.items[Settings.Layout.Button.RESET_MAG],
-		box = {
-			Drawing.Screen.Width + 142,
-			262,
-			75,
-			14
-		},
-		enabled = function()
-			return true
-		end,
-		pressed = function()
-			return false
-		end,
-		onclick = function(self)
-			Settings.goalMag = 127
-		end
-	},
-	{
 		name = "high magnitude",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.HIGH_MAG],
 		box = {
-			Drawing.Screen.Width + 142,
-			246,
-			75,
-			14
+			Drawing.Screen.Width + 143,
+			245,
+			69,
+			13
 		},
 		enabled = function()
 			return true
@@ -713,13 +693,33 @@ Buttons = {
 		end
 	},
 	{
+		name = "reset magnitude",
+		type = ButtonType.button,
+		text = Settings.Layout.Button.items[Settings.Layout.Button.RESET_MAG],
+		box = {
+			Drawing.Screen.Width + 143,
+			260,
+			69,
+			13
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return false
+		end,
+		onclick = function(self)
+			Settings.goalMag = 127
+		end
+	},
+	{
 		name = "swim",
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.SWIM],
 		box = {
-			Drawing.Screen.Width + 174,
+			Drawing.Screen.Width + 180,
 			57,
-			43,
+			37,
 			22
 		},
 		enabled = function()
@@ -741,9 +741,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.SET_RNG],
 		box = {
-			Drawing.Screen.Width + 12,
-			494,
-			84,
+			Drawing.Screen.Width + 8,
+			482,
+			86,
 			30
 		},
 		enabled = function()
@@ -765,8 +765,8 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_VALUE],
 		box = {
-			Drawing.Screen.Width + 91,
-			494,
+			Drawing.Screen.Width + 97,
+			482,
 			17,
 			30
 		},
@@ -790,8 +790,8 @@ Buttons = {
 		type = ButtonType.button,
 		text = Settings.Layout.Button.items[Settings.Layout.Button.USE_INDEX],
 		box = {
-			Drawing.Screen.Width + 108,
-			494,
+			Drawing.Screen.Width + 117,
+			482,
 			17,
 			30
 		},
@@ -815,9 +815,9 @@ Buttons = {
 		type = ButtonType.textArea,
 		inputSize = 5,
 		box = {
-			Drawing.Screen.Width + 131,
-			494,
-			85,
+			Drawing.Screen.Width + 137,
+			482,
+			78,
 			30
 		},
 		value = function()
@@ -877,12 +877,12 @@ Buttons = {
 	{
 		name = "record ghost",
 		type = ButtonType.button,
-		text = "Start ghost recording",
+		text = "Record Ghost",
 		box = {
 			Drawing.Screen.Width + 16,
-			465,
-			120,
-			20
+			454,
+			100,
+			21
 		},
 		enabled = function()
 			return true
