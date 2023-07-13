@@ -65,7 +65,7 @@ function Drawing.paint()
             -- })
             local value = button.value()
 
-           
+
 
             local previous_active_control_id = Mupen_lua_ugui.active_control_uid
             if button.editing() and button.enabled() then
@@ -75,7 +75,6 @@ function Drawing.paint()
                     selection_end = Settings.Layout.TextArea.selectedChar + 1,
                 }
                 Mupen_lua_ugui.active_control_uid = i
-
             else
                 Mupen_lua_ugui.control_data[i] = {
                     caret_index = 0,
@@ -83,7 +82,7 @@ function Drawing.paint()
                     selection_end = nil,
                 }
             end
-            
+
             Mupen_lua_ugui.stylers.windows_10.draw_textbox({
                 uid = i,
                 is_enabled = button.enabled(),
@@ -169,6 +168,15 @@ function Drawing.drawAnalogStick(x, y)
             y = MoreMaths.Remap(-Joypad.input.Y, -128, 128, 0, 1),
         }
     })
+    if Settings.goalMag and Settings.goalMag < 127 then
+        local r = Settings.goalMag + 6
+        BreitbandGraphics.renderers.d2d.draw_ellipse({
+            x = x - r / 2,
+            y = y - r / 2,
+            width = r,
+            height = r
+        }, BreitbandGraphics.colors.red, 2)
+    end
     wgui.setcolor(Settings.Colors.Text)
     wgui.setfont(10, "Courier", "")
     local stick_y = Joypad.input.Y == 0 and "0" or -Joypad.input.Y
