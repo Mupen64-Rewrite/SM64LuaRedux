@@ -28,7 +28,7 @@ function Drawing.paint()
         y = 0,
         width = Drawing.Screen.Width + Drawing.WIDTH_OFFSET,
         height = Drawing.Screen.Height - 20
-    }, BreitbandGraphics.hex_to_color(Settings.Theme.Background))
+    }, BreitbandGraphics.hex_to_color(Settings.Colors.Background))
 
     for i = 1, #Buttons, 1 do
         local button = Buttons[i]
@@ -102,7 +102,7 @@ function Drawing.paint()
     end
 
     Drawing.drawAnalogStick(Drawing.Screen.Width + Drawing.WIDTH_OFFSET / 3 - 5, 209)
-    wgui.setcolor(Settings.Theme.Text)
+    wgui.setcolor(Settings.Colors.Text)
     wgui.setfont(10, "Arial", "")
     wgui.text(Drawing.Screen.Width + 149, 146, "Magnitude")
     Memory.Refresh()
@@ -125,19 +125,19 @@ function Drawing.drawAngles(x, y)
 end
 
 function Drawing.drawTextArea(x, y, width, length, text, enabled, editing)
-    wgui.setcolor(Settings.Theme.Text)
+    wgui.setcolor(Settings.Colors.Text)
     wgui.setfont(16, "Courier", "b")
     if (editing) then
-        wgui.setbrush(Settings.Theme.InputField.Editing)
-        if (Settings.Theme.InputField.EditingText) then wgui.setcolor(Settings.Theme.InputField.EditingText) end
+        wgui.setbrush(Settings.Colors.InputField.Editing)
+        if (Settings.Colors.InputField.EditingText) then wgui.setcolor(Settings.Colors.InputField.EditingText) end
     elseif (enabled) then
-        wgui.setbrush(Settings.Theme.InputField.Enabled)
+        wgui.setbrush(Settings.Colors.InputField.Enabled)
     else
-        wgui.setbrush(Settings.Theme.InputField.Disabled)
+        wgui.setbrush(Settings.Colors.InputField.Disabled)
     end
-    wgui.setpen(Settings.Theme.InputField.OutsideOutline)
+    wgui.setpen(Settings.Colors.InputField.OutsideOutline)
     wgui.rect(x + 1, y + 1, x + width + 1, y + length + 1)
-    wgui.setpen(Settings.Theme.InputField.Outline)
+    wgui.setpen(Settings.Colors.InputField.Outline)
     wgui.line(x + 2, y + 2, x + 2, y + length)
     wgui.line(x + 2, y + 2, x + width, y + 2)
     if (editing) then
@@ -169,7 +169,7 @@ function Drawing.drawAnalogStick(x, y)
             y = MoreMaths.Remap(-Joypad.input.Y, -128, 128, 0, 1),
         }
     })
-    wgui.setcolor(Settings.Theme.Text)
+    wgui.setcolor(Settings.Colors.Text)
     wgui.setfont(10, "Courier", "")
     local stick_y = Joypad.input.Y == 0 and "0" or -Joypad.input.Y
     wgui.text(x + 102 - 2.5 * (string.len(Joypad.input.X)), y - 16, "x:" .. Joypad.input.X)
@@ -210,14 +210,14 @@ function Drawing.drawMiscData(x, y)
     wgui.text(x, y + 132, "Read-write: ")
     if emu.isreadonly() then
         readwritestatus = "disabled"
-        wgui.setcolor(Settings.Theme.Text)
+        wgui.setcolor(Settings.Colors.Text)
     else
         readwritestatus = "enabled"
-        wgui.setcolor(Settings.Theme.ReadWriteText)
+        wgui.setcolor(Settings.Colors.ReadWriteText)
     end
     wgui.text(x + 64, y + 132, readwritestatus)
 
-    wgui.setcolor(Settings.Theme.Text)
+    wgui.setcolor(Settings.Colors.Text)
     wgui.text(x, y + 211, "RNG Value: " .. Memory.RNGValue)
     wgui.text(x, y + 225, "RNG Index: " .. get_index(Memory.RNGValue))
 

@@ -53,7 +53,7 @@ The all-in-one lua script that lets you precisely control your inputs - regardle
 
 As an example: if Mario is facing angle 54600 and `Match Angle` set to 2000, with `Dyaw` and `Right` selected, it will hold the input coresponding to angle 52600.
 
-You can add your own colour schemes, or adjust the existing ones in `Settings.lua`. To switch to dark mode, put `Settings.Theme = Settings.Themes.Dark` inside the main script.
+You can add your own colour schemes, or adjust the existing ones in `Settings.lua`. To switch to dark mode, put `Settings.Colors = Settings.Themes.Dark` inside the main script.
 
 ![DarkTheme](https://cdn.discordapp.com/attachments/196442189604192256/825851592141307955/InputLuaDarkTheme.png)
 
