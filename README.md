@@ -1,6 +1,12 @@
-# SM64 Input Direction Lua
+# SM64 Input Direction Lua 
+### ⚡ Powered by [mupen-lua-ugui](https://github.com/Aurumaker72/mupen-lua-ugui)
 
-## Powered by [mupen-lua-ugui](https://github.com/Aurumaker72/mupen-lua-ugui)
+
+# New features
+
+- Compatible with 1.1.3 out-of-the-box
+- Customizable visual styles
+
 
 The all-in-one lua script that lets you precisely control your inputs - regardless of camera angles! Simply download these files and [mupen64-rr-lua](https://github.com/mkdasher/mupen64-rr-lua-/releases), then run `InputDirection_dev.lua` to get started.
 
