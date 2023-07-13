@@ -1,5 +1,5 @@
 249 249 249 background color
-fade transition
+no transition
 raised frame
 
 normal
@@ -26,22 +26,22 @@ edit frame
 
 normal
 20 1 5 5 bounds
-21 2 3 3 center
+22 3 1 1 center
 0 0 0 text color
 
 hover
 20 6 5 5 bounds
-21 7 3 3 center
+22 8 1 1 center
 0 0 0 text color
 
 active
 20 11 5 5 bounds
-21 12 3 3 center
+22 13 1 1 center
 0 0 0 text color
 
 disabled
 20 16 5 5 bounds
-21 17 3 3 center
+22 18 1 1 center
 160 160 160 text color
 
 track

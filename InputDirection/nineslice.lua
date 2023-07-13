@@ -1,4 +1,3 @@
-
 ustyles = {}
 section_name_path = ""
 local control_transitions = {}
@@ -147,11 +146,22 @@ function parse_ustyles(path)
     data['thumb_vertical'][Mupen_lua_ugui.visual_states.active] = rectangle_from_line(lines[94])
     data['thumb_vertical'][Mupen_lua_ugui.visual_states.disabled] = rectangle_from_line(lines[97])
 
+    data['use_dwm_fade_transition'] = lines[2][1] == "fade"
+
     return data
 end
 
+local function get_ustyle_path()
+    return section_name_path .. '.ustyles'
+end
+
 local function move_color_towards(color, target, speed)
-    local difference_sum = math.abs(color.r - target.r) + math.abs(color.g - target.g) + math.abs(color.b - target.b) + math.abs(color.a - target.a)
+    if not ustyles[get_ustyle_path()]['use_dwm_fade_transition'] then
+        -- return  target color immediately
+        return target
+    end
+    local difference_sum = math.abs(color.r - target.r) + math.abs(color.g - target.g) + math.abs(color.b - target.b) +
+        math.abs(color.a - target.a)
     local avg = difference_sum / 3
     if avg < 5 then
         return target
@@ -164,9 +174,7 @@ local function move_color_towards(color, target, speed)
     }
 end
 
-local function get_ustyle_path()
-    return section_name_path .. '.ustyles'
-end
+
 
 local function draw_nineslice(identifier, slices, opacity, rectangle)
     if opacity == 0 then
@@ -335,6 +343,7 @@ Mupen_lua_ugui.stylers.windows_10.draw_thumb = function(control, visual_state, i
     end
     update_transition(control, visual_state)
     for key, _ in pairs(control_transitions[control.uid]) do
-        BreitbandGraphics.renderers.d2d.draw_image(head_rectangle, info[key], section_name_path .. '.png', control_transitions[control.uid][key], 'linear')
+        BreitbandGraphics.renderers.d2d.draw_image(head_rectangle, info[key], section_name_path .. '.png',
+            control_transitions[control.uid][key], 'linear')
     end
 end
