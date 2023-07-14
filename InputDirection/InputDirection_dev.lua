@@ -40,6 +40,7 @@ local tabs = {
     "Settings"
 }
 local tab_index = 1
+ustyle = {}
 
 Program.initFrame()
 Memory.UpdatePrevPos()
@@ -59,6 +60,15 @@ function drawing()
     section_name_path = folder('InputDirection_dev.lua') .. 'res\\' .. Settings.VisualStyles[Settings.VisualStyleIndex]
     if not ustyles[section_name_path .. '.ustyles'] then
         ustyles[section_name_path .. '.ustyles'] = parse_ustyles(section_name_path .. '.ustyles')
+    end
+    
+    ustyle = ustyles[section_name_path .. '.ustyles']
+
+    for key, _ in pairs(Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors) do
+        Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[key] = ustyle.raised_frame_text_colors[key]
+    end
+    for key, _ in pairs(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors) do
+        Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[key] = ustyle.edit_frame_text_colors[key]
     end
 
     local keys = input.get()

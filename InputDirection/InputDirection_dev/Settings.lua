@@ -8,8 +8,9 @@ Settings = {
         "windows-aero",
         "windows-10",
         "windows-11",
+        "windows-11-dark",
     },
-    VisualStyleIndex = 4
+    VisualStyleIndex = 5
 }
 
 --[[

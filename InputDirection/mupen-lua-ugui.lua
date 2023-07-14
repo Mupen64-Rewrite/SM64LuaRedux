@@ -34,7 +34,17 @@ BreitbandGraphics = {
             b = value,
         }
     end,
-
+    ---Inverts a color
+    ---@param value table The color value to invert, with byte-range channels (0-255)
+    ---@return _ table The inverted color
+    invert_color = function (value)
+        return {
+            r = 255 - value.r,
+            g = 255 - value.r,
+            b = 255 - value.r,
+            a = value.a,
+        }
+    end,
     --- A collection of common colors as tables with red, green and blue channels channels ranging from `0` to `255`
     colors = {
         white = {
@@ -186,7 +196,7 @@ BreitbandGraphics = {
             ---@param font_name string The font name
             ---@param text string The text
             draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-                text)
+                                 text)
                 if text == nil then
                     text = ''
                 end
@@ -485,7 +495,7 @@ Mupen_lua_ugui = {
     input_state = {},
     previous_input_state = {},
     active_control_uid = nil,
-    previous_pointer_primary_down_position = {x = 0, y = 0},
+    previous_pointer_primary_down_position = { x = 0, y = 0 },
     hittest_ignore_rectangles = {},
     has_primary_input_been_handled = false,
     end_frame_callbacks = {},
@@ -525,14 +535,24 @@ Mupen_lua_ugui = {
         --- A customizable styler, which emulates the Windows 10 visual style
         windows_10 = {
             textbox_padding = 2,
-            button_disabled_text_color = BreitbandGraphics.repeated_to_color(160),
             track_thickness = 2,
             bar_width = 6,
             bar_height = 16,
             item_height = 15,
             font_size = 12,
             font_name = 'MS Shell Dlg 2',
-
+            raised_frame_text_colors = {
+                [1] = BreitbandGraphics.colors.black,
+                [2] = BreitbandGraphics.colors.black,
+                [3] = BreitbandGraphics.colors.black,
+                [0] = BreitbandGraphics.repeated_to_color(160),
+            },
+            edit_frame_text_colors = {
+                [1] = BreitbandGraphics.colors.black,
+                [2] = BreitbandGraphics.colors.black,
+                [3] = BreitbandGraphics.colors.black,
+                [0] = BreitbandGraphics.repeated_to_color(160),
+            },
             draw_raised_frame = function(control, visual_state)
                 local back_color = BreitbandGraphics.repeated_to_color(225)
                 local border_color = BreitbandGraphics.repeated_to_color(173)
@@ -607,7 +627,8 @@ Mupen_lua_ugui = {
 
                 -- item y position:
                 -- y = (20 * (i - 1)) - (y_translation * ((20 * #control.items) - control.rectangle.height))
-                local y_translation = Mupen_lua_ugui.control_data[control.uid].y_translation and Mupen_lua_ugui.control_data[control.uid].y_translation or 0
+                local y_translation = Mupen_lua_ugui.control_data[control.uid].y_translation and
+                Mupen_lua_ugui.control_data[control.uid].y_translation or 0
 
                 local index_begin = (y_translation *
                         ((Mupen_lua_ugui.stylers.windows_10.item_height * #control.items) - rectangle.height)) /
@@ -653,7 +674,7 @@ Mupen_lua_ugui = {
                     end
 
                     if visual_state == Mupen_lua_ugui.visual_states.disabled then
-                        text_color = Mupen_lua_ugui.stylers.windows_10.button_disabled_text_color
+                        text_color = Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[Mupen_lua_ugui.visual_states.disabled]
                     end
 
 
@@ -662,7 +683,7 @@ Mupen_lua_ugui = {
                             y = rectangle.y + y,
                             width = rectangle.width,
                             height = Mupen_lua_ugui.stylers.windows_10.item_height,
-                        }, 'start', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                        }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                         Mupen_lua_ugui.stylers.windows_10.font_name,
                         control.items[i])
                 end
@@ -706,9 +727,8 @@ Mupen_lua_ugui = {
                 Mupen_lua_ugui.stylers.windows_10.draw_raised_frame(control, visual_state)
 
                 Mupen_lua_ugui.renderer.draw_text(control.rectangle, 'center', 'center',
-                    {clip = true},
-                    visual_state == Mupen_lua_ugui.visual_states.disabled and
-                    Mupen_lua_ugui.stylers.windows_10.button_disabled_text_color or BreitbandGraphics.colors.black,
+                    { clip = true },
+                    Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
             end,
@@ -722,24 +742,24 @@ Mupen_lua_ugui = {
                 Mupen_lua_ugui.stylers.windows_10.draw_button(copy)
 
                 local visual_state = Mupen_lua_ugui.get_visual_state(control)
-                local text_color = visual_state == Mupen_lua_ugui.visual_states.disabled and
-                Mupen_lua_ugui.stylers.windows_10.button_disabled_text_color or BreitbandGraphics.colors.black
 
                 -- draw the arrows
                 Mupen_lua_ugui.renderer.draw_text({
-                    x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
-                    height = control.rectangle.height,
-                }, 'start', 'center', {}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
-                'Segoe UI Mono', '<')
+                        x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding,
+                        y = control.rectangle.y,
+                        width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
+                        height = control.rectangle.height,
+                    }, 'start', 'center', {}, Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[visual_state],
+                    Mupen_lua_ugui.stylers.windows_10.font_size,
+                    'Segoe UI Mono', '<')
                 Mupen_lua_ugui.renderer.draw_text({
-                    x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
-                    height = control.rectangle.height,
-                }, 'end', 'center', {}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
-                'Segoe UI Mono', '>')
+                        x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding,
+                        y = control.rectangle.y,
+                        width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
+                        height = control.rectangle.height,
+                    }, 'end', 'center', {}, Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[visual_state],
+                    Mupen_lua_ugui.stylers.windows_10.font_size,
+                    'Segoe UI Mono', '>')
             end,
             draw_textbox = function(control)
                 local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -784,8 +804,8 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', {clip = true}, visual_state == Mupen_lua_ugui.visual_states.disabled and
-                    Mupen_lua_ugui.stylers.windows_10.button_disabled_text_color or BreitbandGraphics.colors.black,
+                    }, 'start', 'start', { clip = true },
+                    Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
 
@@ -825,7 +845,7 @@ Mupen_lua_ugui = {
                             y = control.rectangle.y,
                             width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                             height = control.rectangle.height,
-                        }, 'start', 'start', {clip = true}, BreitbandGraphics.colors.white,
+                        }, 'start', 'start', { clip = true }, BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state]),
                         Mupen_lua_ugui.stylers.windows_10.font_size,
                         Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
                     Mupen_lua_ugui.renderer.pop_clip()
@@ -942,7 +962,8 @@ Mupen_lua_ugui = {
                 local track_border_color = BreitbandGraphics.repeated_to_color(214)
                 if not is_horizontal then
                     track_rectangle = {
-                        x = control.rectangle.x + control.rectangle.width / 2 - Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
+                        x = control.rectangle.x + control.rectangle.width / 2 -
+                        Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
                         y = control.rectangle.y,
                         width = Mupen_lua_ugui.stylers.windows_10.track_thickness,
                         height = control.rectangle.height,
@@ -950,7 +971,8 @@ Mupen_lua_ugui = {
                 else
                     track_rectangle = {
                         x = control.rectangle.x,
-                        y = control.rectangle.y + control.rectangle.height / 2 - Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
+                        y = control.rectangle.y + control.rectangle.height / 2 -
+                        Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
                         width = control.rectangle.width,
                         height = Mupen_lua_ugui.stylers.windows_10.track_thickness,
                     }
@@ -973,7 +995,8 @@ Mupen_lua_ugui = {
                 end
 
                 local head_rectangle = {}
-                local effective_bar_height = math.min((is_horizontal and control.rectangle.height or control.rectangle.width) * 2,
+                local effective_bar_height = math.min(
+                    (is_horizontal and control.rectangle.height or control.rectangle.width) * 2,
                     Mupen_lua_ugui.stylers.windows_10.bar_height)
                 if not is_horizontal then
                     head_rectangle = {
@@ -1018,15 +1041,14 @@ Mupen_lua_ugui = {
 
                 Mupen_lua_ugui.stylers.windows_10.draw_raised_frame(control, visual_state)
 
-                local text_color = visual_state == Mupen_lua_ugui.visual_states.disabled and
-                    Mupen_lua_ugui.stylers.windows_10.button_disabled_text_color or BreitbandGraphics.colors.black
+                local text_color = Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[visual_state]
 
                 Mupen_lua_ugui.renderer.draw_text({
                         x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                         y = control.rectangle.y,
                         width = control.rectangle.width,
                         height = control.rectangle.height,
-                    }, 'start', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                    }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name,
                     control.items[control.selected_index])
 
@@ -1035,7 +1057,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 4,
                         height = control.rectangle.height,
-                    }, 'end', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                    }, 'end', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                     'Segoe UI Mono', 'v')
 
                 if Mupen_lua_ugui.control_data[control.uid].is_open then

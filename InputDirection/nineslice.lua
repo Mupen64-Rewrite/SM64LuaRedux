@@ -36,11 +36,11 @@ function parse_ustyles(path)
         }
     end
 
-    local function color_from_line(line)
+    local function color_from_line(index)
         return {
-            r = tonumber(line[1]),
-            g = tonumber(line[2]),
-            b = tonumber(line[3]),
+            r = tonumber(lines[index][1]),
+            g = tonumber(lines[index][2]),
+            b = tonumber(lines[index][3]),
         }
     end
 
@@ -109,44 +109,57 @@ function parse_ustyles(path)
 
 
     local data = {
-        ['background_color'] = color_from_line(lines[1]),
+        background_color = color_from_line(1),
+        foreground_color = color_from_line(4),
+        use_dwm_fade_transition = lines[2][1] == "fade",
 
-        ['raised_frame'] = {},
-        ['edit_frame'] = {},
-        ['track'] = {},
-        ['thumb_horizontal'] = {},
-        ['thumb_vertical'] = {},
+        raised_frame = {},
+        edit_frame = {},
+        track = {},
+        thumb_horizontal = {},
+        thumb_vertical = {},
+
+        raised_frame_text_colors = {},
+        edit_frame_text_colors = {},
     }
 
-    data['raised_frame'][Mupen_lua_ugui.visual_states.normal] = get_nineslice_rect_collection(6)
-    data['raised_frame'][Mupen_lua_ugui.visual_states.hovered] = get_nineslice_rect_collection(11)
-    data['raised_frame'][Mupen_lua_ugui.visual_states.active] = get_nineslice_rect_collection(16)
-    data['raised_frame'][Mupen_lua_ugui.visual_states.disabled] = get_nineslice_rect_collection(21)
+    data.raised_frame[Mupen_lua_ugui.visual_states.normal] = get_nineslice_rect_collection(6)
+    data.raised_frame[Mupen_lua_ugui.visual_states.hovered] = get_nineslice_rect_collection(11)
+    data.raised_frame[Mupen_lua_ugui.visual_states.active] = get_nineslice_rect_collection(16)
+    data.raised_frame[Mupen_lua_ugui.visual_states.disabled] = get_nineslice_rect_collection(21)
 
-    data['edit_frame'][Mupen_lua_ugui.visual_states.normal] = get_nineslice_rect_collection(28)
-    data['edit_frame'][Mupen_lua_ugui.visual_states.hovered] = get_nineslice_rect_collection(33)
-    data['edit_frame'][Mupen_lua_ugui.visual_states.active] = get_nineslice_rect_collection(38)
-    data['edit_frame'][Mupen_lua_ugui.visual_states.disabled] = get_nineslice_rect_collection(43)
+    data.raised_frame_text_colors[Mupen_lua_ugui.visual_states.normal] = color_from_line(8)
+    data.raised_frame_text_colors[Mupen_lua_ugui.visual_states.hovered] = color_from_line(13)
+    data.raised_frame_text_colors[Mupen_lua_ugui.visual_states.active] = color_from_line(18)
+    data.raised_frame_text_colors[Mupen_lua_ugui.visual_states.disabled] = color_from_line(23)
 
-    data['track']['thickness'] = number_from_line(lines[49])
-    data['track'][Mupen_lua_ugui.visual_states.normal] = get_nineslice_rect_collection(52)
-    data['track'][Mupen_lua_ugui.visual_states.hovered] = get_nineslice_rect_collection(56)
-    data['track'][Mupen_lua_ugui.visual_states.active] = get_nineslice_rect_collection(60)
-    data['track'][Mupen_lua_ugui.visual_states.disabled] = get_nineslice_rect_collection(64)
+    data.edit_frame[Mupen_lua_ugui.visual_states.normal] = get_nineslice_rect_collection(28)
+    data.edit_frame[Mupen_lua_ugui.visual_states.hovered] = get_nineslice_rect_collection(33)
+    data.edit_frame[Mupen_lua_ugui.visual_states.active] = get_nineslice_rect_collection(38)
+    data.edit_frame[Mupen_lua_ugui.visual_states.disabled] = get_nineslice_rect_collection(43)
 
-    data['thumb_horizontal']['size'] = vector2_from_line(lines[69])
-    data['thumb_horizontal'][Mupen_lua_ugui.visual_states.normal] = rectangle_from_line(lines[72])
-    data['thumb_horizontal'][Mupen_lua_ugui.visual_states.hovered] = rectangle_from_line(lines[75])
-    data['thumb_horizontal'][Mupen_lua_ugui.visual_states.active] = rectangle_from_line(lines[78])
-    data['thumb_horizontal'][Mupen_lua_ugui.visual_states.disabled] = rectangle_from_line(lines[81])
+    data.edit_frame_text_colors[Mupen_lua_ugui.visual_states.normal] = color_from_line(30)
+    data.edit_frame_text_colors[Mupen_lua_ugui.visual_states.hovered] = color_from_line(35)
+    data.edit_frame_text_colors[Mupen_lua_ugui.visual_states.active] = color_from_line(40)
+    data.edit_frame_text_colors[Mupen_lua_ugui.visual_states.disabled] = color_from_line(45)
 
-    data['thumb_vertical']['size'] = vector2_from_line(lines[85])
-    data['thumb_vertical'][Mupen_lua_ugui.visual_states.normal] = rectangle_from_line(lines[88])
-    data['thumb_vertical'][Mupen_lua_ugui.visual_states.hovered] = rectangle_from_line(lines[91])
-    data['thumb_vertical'][Mupen_lua_ugui.visual_states.active] = rectangle_from_line(lines[94])
-    data['thumb_vertical'][Mupen_lua_ugui.visual_states.disabled] = rectangle_from_line(lines[97])
+    data.track['thickness'] = number_from_line(lines[49])
+    data.track[Mupen_lua_ugui.visual_states.normal] = get_nineslice_rect_collection(52)
+    data.track[Mupen_lua_ugui.visual_states.hovered] = get_nineslice_rect_collection(56)
+    data.track[Mupen_lua_ugui.visual_states.active] = get_nineslice_rect_collection(60)
+    data.track[Mupen_lua_ugui.visual_states.disabled] = get_nineslice_rect_collection(64)
 
-    data['use_dwm_fade_transition'] = lines[2][1] == "fade"
+    data.thumb_horizontal['size'] = vector2_from_line(lines[69])
+    data.thumb_horizontal[Mupen_lua_ugui.visual_states.normal] = rectangle_from_line(lines[72])
+    data.thumb_horizontal[Mupen_lua_ugui.visual_states.hovered] = rectangle_from_line(lines[75])
+    data.thumb_horizontal[Mupen_lua_ugui.visual_states.active] = rectangle_from_line(lines[78])
+    data.thumb_horizontal[Mupen_lua_ugui.visual_states.disabled] = rectangle_from_line(lines[81])
+
+    data.thumb_vertical['size'] = vector2_from_line(lines[85])
+    data.thumb_vertical[Mupen_lua_ugui.visual_states.normal] = rectangle_from_line(lines[88])
+    data.thumb_vertical[Mupen_lua_ugui.visual_states.hovered] = rectangle_from_line(lines[91])
+    data.thumb_vertical[Mupen_lua_ugui.visual_states.active] = rectangle_from_line(lines[94])
+    data.thumb_vertical[Mupen_lua_ugui.visual_states.disabled] = rectangle_from_line(lines[97])
 
     return data
 end

@@ -85,7 +85,7 @@ function Drawing.paint()
     end
 
     Drawing.drawAnalogStick(Drawing.Screen.Width + Drawing.WIDTH_OFFSET / 3 - 5, 209)
-    wgui.setcolor(Settings.Colors.Text)
+    wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
     wgui.setfont(10, "Arial", "")
     wgui.text(Drawing.Screen.Width + 149, 146, "Magnitude")
     Drawing.drawAngles(Drawing.Screen.Width + 5, 276)
@@ -160,7 +160,7 @@ function Drawing.drawAnalogStick(x, y)
             height = r
         }, BreitbandGraphics.colors.red, 2)
     end
-    wgui.setcolor(Settings.Colors.Text)
+    wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
     wgui.setfont(10, "Courier", "")
     local stick_y = Joypad.input.Y == 0 and "0" or -Joypad.input.Y
     wgui.text(x + 102 - 2.5 * (string.len(Joypad.input.X)), y - 16, "x:" .. Joypad.input.X)
@@ -201,14 +201,14 @@ function Drawing.drawMiscData(x, y)
     wgui.text(x, y + 124, "Read-write: ")
     if emu.isreadonly() then
         readwritestatus = "disabled"
-        wgui.setcolor(Settings.Colors.Text)
+        wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
     else
         readwritestatus = "enabled"
         wgui.setcolor(Settings.Colors.ReadWriteText)
     end
+    wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
     wgui.text(x + 64, y + 124, readwritestatus)
 
-    wgui.setcolor(Settings.Colors.Text)
     wgui.text(x, y + 136, "RNG Value: " .. Memory.RNGValue)
     wgui.text(x, y + 148, "RNG Index: " .. get_index(Memory.RNGValue))
 
