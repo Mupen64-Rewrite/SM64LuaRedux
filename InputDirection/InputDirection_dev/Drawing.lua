@@ -23,12 +23,7 @@ function Drawing.UnResizeScreen()
 end
 
 function Drawing.paint()
-    BreitbandGraphics.renderers.d2d.fill_rectangle({
-        x = Drawing.Screen.Width,
-        y = 0,
-        width = Drawing.Screen.Width + Drawing.WIDTH_OFFSET,
-        height = Drawing.Screen.Height - 20
-    }, BreitbandGraphics.hex_to_color(Settings.Colors.Background))
+    
 
     for i = 1, #Buttons, 1 do
         local button = Buttons[i]
@@ -93,22 +88,21 @@ function Drawing.paint()
     wgui.setcolor(Settings.Colors.Text)
     wgui.setfont(10, "Arial", "")
     wgui.text(Drawing.Screen.Width + 149, 146, "Magnitude")
-    Memory.Refresh()
-    Drawing.drawAngles(Drawing.Screen.Width + 16, 276)
-    Drawing.drawMiscData(Drawing.Screen.Width + 16, 304)
+    Drawing.drawAngles(Drawing.Screen.Width + 5, 276)
+    Drawing.drawMiscData(Drawing.Screen.Width + 5, 304)
 end
 
 function Drawing.drawAngles(x, y)
     if Settings.ShowEffectiveAngles then
         wgui.text(x, y, "Yaw (Facing): " .. Engine.getEffectiveAngle(Memory.Mario.FacingYaw))
         wgui.text(x, y + 14, "Yaw (Intended): " .. Engine.getEffectiveAngle(Memory.Mario.IntendedYaw))
-        wgui.text(x + 132, y, "O: " .. (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536)        --wgui.text(x, y + 30, "Opposite (Facing): " ..  (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536)
-        wgui.text(x + 132, y + 14, "O: " .. (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536) --wgui.text(x, y + 45, "Opposite (Intended): " ..  (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536)
+        wgui.text(x + 140, y, "O: " .. (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536)        --wgui.text(x, y + 30, "Opposite (Facing): " ..  (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536)
+        wgui.text(x + 140, y + 14, "O: " .. (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536) --wgui.text(x, y + 45, "Opposite (Intended): " ..  (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536)
     else
         wgui.text(x, y, "Yaw (Facing): " .. Memory.Mario.FacingYaw)
         wgui.text(x, y + 14, "Yaw (Intended): " .. Memory.Mario.IntendedYaw)
-        wgui.text(x + 132, y, "O: " .. (Memory.Mario.FacingYaw + 32768) % 65536)        --wgui.text(x + 45, y, "Opposite (Facing): " ..  (Memory.Mario.FacingYaw + 32768) % 65536)
-        wgui.text(x + 132, y + 14, "O: " .. (Memory.Mario.IntendedYaw + 32768) % 65536) --wgui.text(x, y + 45, "Opposite (Intended): " ..  (Memory.Mario.IntendedYaw + 32768) % 65536)
+        wgui.text(x + 140, y, "O: " .. (Memory.Mario.FacingYaw + 32768) % 65536)        --wgui.text(x + 45, y, "Opposite (Facing): " ..  (Memory.Mario.FacingYaw + 32768) % 65536)
+        wgui.text(x + 140, y + 14, "O: " .. (Memory.Mario.IntendedYaw + 32768) % 65536) --wgui.text(x, y + 45, "Opposite (Intended): " ..  (Memory.Mario.IntendedYaw + 32768) % 65536)
     end
 end
 
@@ -196,15 +190,15 @@ function Drawing.drawMiscData(x, y)
 
     wgui.text(x, y + 28, "XZ Movement: " .. MoreMaths.Round(Engine.GetDistMoved(), 6))
 
-    wgui.text(x, y + 118, "Action: " .. Engine.GetCurrentAction())
+    wgui.text(x, y + 111, "Action: " .. Engine.GetCurrentAction())
 
-    wgui.text(x + 155, y, "E: " .. Settings.Layout.Button.strain_button.arctanexp)
-    wgui.text(x + 155, y + 56, "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5))
-    wgui.text(x + 155, y + 70, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
-    wgui.text(x + 155, y + 84, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
-    wgui.text(x + 155, y + 98, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
+    wgui.text(x + 170, y, "E: " .. Settings.Layout.Button.strain_button.arctanexp)
+    wgui.text(x + 170, y + 13, "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5))
+    wgui.text(x + 170, y + 26, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
+    wgui.text(x + 170, y + 39, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
+    wgui.text(x + 170, y + 53, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
 
-    wgui.text(x, y + 132, "Read-write: ")
+    wgui.text(x, y + 124, "Read-write: ")
     if emu.isreadonly() then
         readwritestatus = "disabled"
         wgui.setcolor(Settings.Colors.Text)
@@ -212,15 +206,15 @@ function Drawing.drawMiscData(x, y)
         readwritestatus = "enabled"
         wgui.setcolor(Settings.Colors.ReadWriteText)
     end
-    wgui.text(x + 64, y + 132, readwritestatus)
+    wgui.text(x + 64, y + 124, readwritestatus)
 
     wgui.setcolor(Settings.Colors.Text)
-    wgui.text(x, y + 211, "RNG Value: " .. Memory.RNGValue)
-    wgui.text(x, y + 225, "RNG Index: " .. get_index(Memory.RNGValue))
+    wgui.text(x, y + 136, "RNG Value: " .. Memory.RNGValue)
+    wgui.text(x, y + 148, "RNG Index: " .. get_index(Memory.RNGValue))
 
     distmoved = Engine.GetTotalDistMoved()
     if (Settings.Layout.Button.dist_button.enabled == false) then
         distmoved = Settings.Layout.Button.dist_button.dist_moved_save
     end
-    wgui.text(x, y + 266, "Moved Dist: " .. distmoved)
+    wgui.text(x, y + 160, "Moved Dist: " .. distmoved)
 end

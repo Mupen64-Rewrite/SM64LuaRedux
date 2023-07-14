@@ -34,8 +34,12 @@ dofile(PATH .. "RNGToIndex.lua")
 dofile(PATH .. "IndexToRNG.lua")
 dofile(PATH .. "recordghost.lua")
 
-Settings.VisualStyle = "windows-aero"
 Settings.ShowEffectiveAngles = false -- show angles floored to the nearest multiple of 16
+local tabs = {
+    "TAS",
+    "Settings"
+}
+local tab_index = 1
 
 Program.initFrame()
 Memory.UpdatePrevPos()
@@ -52,7 +56,7 @@ function main()
 end
 
 function drawing()
-    section_name_path = folder('InputDirection_dev.lua') .. 'res\\' .. Settings.VisualStyle
+    section_name_path = folder('InputDirection_dev.lua') .. 'res\\' .. Settings.VisualStyles[Settings.VisualStyleIndex]
     if not ustyles[section_name_path .. '.ustyles'] then
         ustyles[section_name_path .. '.ustyles'] = parse_ustyles(section_name_path .. '.ustyles')
     end
@@ -71,8 +75,53 @@ function drawing()
         },
     })
 
-    Drawing.paint()
-    Input.update()
+
+
+    Memory.Refresh()
+
+    BreitbandGraphics.renderers.d2d.fill_rectangle({
+        x = Drawing.Screen.Width,
+        y = 0,
+        width = Drawing.Screen.Width + Drawing.WIDTH_OFFSET,
+        height = Drawing.Screen.Height - 20
+    }, ustyles[section_name_path .. '.ustyles'].background_color)
+
+    if tab_index == 1 then
+        Drawing.paint()
+        Input.update()
+    elseif tab_index == 2 then
+        Settings.VisualStyleIndex = Mupen_lua_ugui.combobox({
+            uid = 12345678,
+            is_enabled = true,
+            rectangle = {
+                x = Drawing.Screen.Width + 5,
+                y = 5,
+                width = 150,
+                height = 23,
+            },
+            items = Settings.VisualStyles,
+            selected_index = Settings.VisualStyleIndex,
+        })
+    else
+        print('what')
+    end
+
+
+
+    tab_index = Mupen_lua_ugui.carrousel_button({
+        uid = 420,
+        is_enabled = true,
+        rectangle = {
+            x = Drawing.Screen.Width + 5,
+            y = 555,
+            width = Drawing.WIDTH_OFFSET - 10,
+            height = 23,
+        },
+        items = tabs,
+        selected_index = tab_index,
+    })
+
+    Mupen_lua_ugui.end_frame()
 end
 
 function close()

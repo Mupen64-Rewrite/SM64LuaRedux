@@ -2,7 +2,14 @@ Settings = {
     goalAngle = 0,
     goalMag = 127,
     setRNG = false,
-    ShowEffectiveAngles = false
+    ShowEffectiveAngles = false,
+    VisualStyles = {
+        "windows-95",
+        "windows-aero",
+        "windows-10",
+        "windows-11",
+    },
+    VisualStyleIndex = 4
 }
 
 --[[
