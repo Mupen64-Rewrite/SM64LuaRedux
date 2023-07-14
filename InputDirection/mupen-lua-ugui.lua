@@ -37,7 +37,7 @@ BreitbandGraphics = {
     ---Inverts a color
     ---@param value table The color value to invert, with byte-range channels (0-255)
     ---@return _ table The inverted color
-    invert_color = function (value)
+    invert_color = function(value)
         return {
             r = 255 - value.r,
             g = 255 - value.r,
@@ -553,6 +553,12 @@ Mupen_lua_ugui = {
                 [3] = BreitbandGraphics.colors.black,
                 [0] = BreitbandGraphics.repeated_to_color(160),
             },
+            list_text_colors = {
+                [1] = BreitbandGraphics.colors.black,
+                [2] = BreitbandGraphics.colors.black,
+                [3] = BreitbandGraphics.colors.white,
+                [0] = BreitbandGraphics.repeated_to_color(160),
+            },
             draw_raised_frame = function(control, visual_state)
                 local back_color = BreitbandGraphics.repeated_to_color(225)
                 local border_color = BreitbandGraphics.repeated_to_color(173)
@@ -628,7 +634,7 @@ Mupen_lua_ugui = {
                 -- item y position:
                 -- y = (20 * (i - 1)) - (y_translation * ((20 * #control.items) - control.rectangle.height))
                 local y_translation = Mupen_lua_ugui.control_data[control.uid].y_translation and
-                Mupen_lua_ugui.control_data[control.uid].y_translation or 0
+                    Mupen_lua_ugui.control_data[control.uid].y_translation or 0
 
                 local index_begin = (y_translation *
                         ((Mupen_lua_ugui.stylers.windows_10.item_height * #control.items) - rectangle.height)) /
@@ -647,11 +653,13 @@ Mupen_lua_ugui = {
                     local y = (Mupen_lua_ugui.stylers.windows_10.item_height * (i - 1)) -
                         (y_translation * ((Mupen_lua_ugui.stylers.windows_10.item_height * #control.items) - rectangle.height))
 
-                    local text_color = BreitbandGraphics.colors.black
-
-                    -- TODO: add clipping support, as proper smooth scrolling is not achievable without clipping
+                    local item_visual_state = Mupen_lua_ugui.visual_states.normal
+                    if not control.is_enabled then
+                        item_visual_state = Mupen_lua_ugui.visual_states.disabled
+                    end
 
                     if selected_index == i then
+                        item_visual_state = Mupen_lua_ugui.visual_states.active
                         local accent_color = {
                             r = 0,
                             g = 120,
@@ -669,12 +677,6 @@ Mupen_lua_ugui = {
                             width = rectangle.width,
                             height = Mupen_lua_ugui.stylers.windows_10.item_height,
                         }, accent_color)
-
-                        text_color = BreitbandGraphics.colors.white
-                    end
-
-                    if visual_state == Mupen_lua_ugui.visual_states.disabled then
-                        text_color = Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[Mupen_lua_ugui.visual_states.disabled]
                     end
 
 
@@ -683,7 +685,9 @@ Mupen_lua_ugui = {
                             y = rectangle.y + y,
                             width = rectangle.width,
                             height = Mupen_lua_ugui.stylers.windows_10.item_height,
-                        }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                        }, 'start', 'center', { clip = true },
+                        Mupen_lua_ugui.stylers.windows_10.list_text_colors[item_visual_state],
+                        Mupen_lua_ugui.stylers.windows_10.font_size,
                         Mupen_lua_ugui.stylers.windows_10.font_name,
                         control.items[i])
                 end
@@ -845,7 +849,9 @@ Mupen_lua_ugui = {
                             y = control.rectangle.y,
                             width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                             height = control.rectangle.height,
-                        }, 'start', 'start', { clip = true }, BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state]),
+                        }, 'start', 'start', { clip = true },
+                        BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors
+                            [visual_state]),
                         Mupen_lua_ugui.stylers.windows_10.font_size,
                         Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
                     Mupen_lua_ugui.renderer.pop_clip()
@@ -963,7 +969,7 @@ Mupen_lua_ugui = {
                 if not is_horizontal then
                     track_rectangle = {
                         x = control.rectangle.x + control.rectangle.width / 2 -
-                        Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
+                            Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
                         y = control.rectangle.y,
                         width = Mupen_lua_ugui.stylers.windows_10.track_thickness,
                         height = control.rectangle.height,
@@ -972,7 +978,7 @@ Mupen_lua_ugui = {
                     track_rectangle = {
                         x = control.rectangle.x,
                         y = control.rectangle.y + control.rectangle.height / 2 -
-                        Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
+                            Mupen_lua_ugui.stylers.windows_10.track_thickness / 2,
                         width = control.rectangle.width,
                         height = Mupen_lua_ugui.stylers.windows_10.track_thickness,
                     }
