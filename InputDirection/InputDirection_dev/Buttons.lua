@@ -216,7 +216,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
 		box = {
 			Drawing.Screen.Width + 147,
-			317,
+			317 + 50,
 			10,
 			12
 		},
@@ -236,7 +236,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
 		box = {
 			Drawing.Screen.Width + 159,
-			317,
+			317 + 50,
 			10,
 			12
 		},
@@ -256,7 +256,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
 		box = {
 			Drawing.Screen.Width + 147,
-			330,
+			330 + 50,
 			10,
 			12
 		},
@@ -276,7 +276,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
 		box = {
 			Drawing.Screen.Width + 159,
-			330,
+			330 + 50,
 			10,
 			12
 		},
@@ -296,7 +296,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
 		box = {
 			Drawing.Screen.Width + 147,
-			344,
+			344 + 50,
 			10,
 			12
 		},
@@ -316,7 +316,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
 		box = {
 			Drawing.Screen.Width + 159,
-			344,
+			344 + 50,
 			10,
 			12
 		},
@@ -336,7 +336,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
 		box = {
 			Drawing.Screen.Width + 147,
-			357,
+			357 + 50,
 			10,
 			12
 		},
@@ -356,7 +356,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
 		box = {
 			Drawing.Screen.Width + 159,
-			357,
+			357 + 50,
 			10,
 			12
 		},
@@ -376,7 +376,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
 		box = {
 			Drawing.Screen.Width + 147,
-			304,
+			304 + 50,
 			10,
 			12
 		},
@@ -396,7 +396,7 @@ Buttons = {
 		text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
 		box = {
 			Drawing.Screen.Width + 159,
-			304,
+			304 + 50,
 			10,
 			12
 		},
@@ -879,9 +879,9 @@ Buttons = {
 		type = ButtonType.button,
 		text = "Record Ghost",
 		box = {
-			Drawing.Screen.Width + 130,
-			370,
-			90,
+			Drawing.Screen.Width + 5,
+			530,
+			Drawing.WIDTH_OFFSET - 10,
 			21
 		},
 		enabled = function()

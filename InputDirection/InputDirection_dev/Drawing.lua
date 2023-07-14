@@ -192,11 +192,11 @@ function Drawing.drawMiscData(x, y)
 
     wgui.text(x, y + 111, "Action: " .. Engine.GetCurrentAction())
 
-    wgui.text(x + 170, y, "E: " .. Settings.Layout.Button.strain_button.arctanexp)
-    wgui.text(x + 170, y + 13, "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5))
-    wgui.text(x + 170, y + 26, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
-    wgui.text(x + 170, y + 39, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
-    wgui.text(x + 170, y + 53, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
+    wgui.text(x + 170, 50 + y, "E: " .. Settings.Layout.Button.strain_button.arctanexp)
+    wgui.text(x + 170, 50 + y + 13, "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5))
+    wgui.text(x + 170, 50 + y + 26, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
+    wgui.text(x + 170, 50 + y + 39, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
+    wgui.text(x + 170, 50 + y + 53, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
 
     wgui.text(x, y + 124, "Read-write: ")
     if emu.isreadonly() then
