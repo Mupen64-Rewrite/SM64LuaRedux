@@ -198,23 +198,12 @@ function Drawing.drawMiscData(x, y)
     wgui.text(x + 170, 50 + y + 39, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
     wgui.text(x + 170, 50 + y + 53, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
 
-    wgui.text(x, y + 124, "Read-write: ")
-    if emu.isreadonly() then
-        readwritestatus = "disabled"
-        wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
-    else
-        readwritestatus = "enabled"
-        wgui.setcolor(Settings.Colors.ReadWriteText)
-    end
-    wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
-    wgui.text(x + 64, y + 124, readwritestatus)
-
-    wgui.text(x, y + 136, "RNG Value: " .. Memory.RNGValue)
-    wgui.text(x, y + 148, "RNG Index: " .. get_index(Memory.RNGValue))
+    wgui.text(x, y + 125, "RNG Value: " .. Memory.RNGValue)
+    wgui.text(x, y + 139, "RNG Index: " .. get_index(Memory.RNGValue))
 
     distmoved = Engine.GetTotalDistMoved()
     if (Settings.Layout.Button.dist_button.enabled == false) then
         distmoved = Settings.Layout.Button.dist_button.dist_moved_save
     end
-    wgui.text(x, y + 160, "Moved Dist: " .. distmoved)
+    wgui.text(x, y + 152, "Moved Dist: " .. distmoved)
 end
