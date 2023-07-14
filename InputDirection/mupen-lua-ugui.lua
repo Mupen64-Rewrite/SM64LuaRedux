@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.0.2
+-- mupen-lua-ugui 1.0.3
 
 if not wgui.fill_rectangle then
     print('BreitbandGraphics requires a Mupen64-rr-lua version newer than 1.1.2\r\n')
@@ -715,6 +715,32 @@ Mupen_lua_ugui = {
             draw_togglebutton = function(control)
                 Mupen_lua_ugui.stylers.windows_10.draw_button(control)
             end,
+            draw_carrousel_button = function(control)
+                -- add a "fake" text field
+                local copy = deep_clone(control)
+                copy.text = control.items[control.selected_index]
+                Mupen_lua_ugui.stylers.windows_10.draw_button(copy)
+
+                local visual_state = Mupen_lua_ugui.get_visual_state(control)
+                local text_color = visual_state == Mupen_lua_ugui.visual_states.disabled and
+                Mupen_lua_ugui.stylers.windows_10.button_disabled_text_color or BreitbandGraphics.colors.black
+
+                -- draw the arrows
+                Mupen_lua_ugui.renderer.draw_text({
+                    x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding,
+                    y = control.rectangle.y,
+                    width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
+                    height = control.rectangle.height,
+                }, 'start', 'center', {}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                'Segoe UI Mono', '<')
+                Mupen_lua_ugui.renderer.draw_text({
+                    x = control.rectangle.x + Mupen_lua_ugui.stylers.windows_10.textbox_padding,
+                    y = control.rectangle.y,
+                    width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
+                    height = control.rectangle.height,
+                }, 'end', 'center', {}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                'Segoe UI Mono', '>')
+            end,
             draw_textbox = function(control)
                 local visual_state = Mupen_lua_ugui.get_visual_state(control)
 
@@ -1097,6 +1123,36 @@ Mupen_lua_ugui = {
         Mupen_lua_ugui.styler.draw_togglebutton(control)
 
         return is_checked
+    end,
+    ---Places a Carrousel Button
+    ---
+    ---Additional fields in the `control` table:
+    ---
+    --- `items` — `string[]` The items
+    --- `selected_index` — `number` The selected index into `items`
+    ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
+    ---@return _ number The new selected index
+    carrousel_button = function(control)
+        local pushed = is_pointer_just_down() and is_pointer_inside(control.rectangle) and
+            not is_pointer_inside_ignored_rectangle() and control.is_enabled and
+            not Mupen_lua_ugui.has_primary_input_been_handled
+
+        local selected_index = control.selected_index
+
+        if pushed then
+            Mupen_lua_ugui.active_control_uid = control.uid
+
+            local relative_x = Mupen_lua_ugui.input_state.pointer.position.x - control.rectangle.x
+            if relative_x > control.rectangle.width / 2 then
+                selected_index = selected_index + 1
+            else
+                selected_index = selected_index - 1
+            end
+        end
+
+        Mupen_lua_ugui.styler.draw_carrousel_button(control)
+
+        return clamp(selected_index, 1, #control.items)
     end,
     ---Places a TextBox
     ---

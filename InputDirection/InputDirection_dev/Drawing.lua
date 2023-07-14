@@ -52,17 +52,6 @@ function Drawing.paint()
                 Settings.Layout.TextArea.selectedItem = 0
             end
         elseif button.type == ButtonType.textArea then
-            -- Mupen_lua_ugui.textbox({
-            --     uid = i,
-            --     is_enabled = button.enabled(),
-            --     rectangle = {
-            --         x = button.box[1],
-            --         y = button.box[2],
-            --         width = button.box[3],
-            --         height = button.box[4]
-            --     },
-            --     text = tostring(button.value()),
-            -- })
             local value = button.value()
 
 
