@@ -3,6 +3,8 @@ Settings = {
     goalMag = 127,
     setRNG = false,
     ShowEffectiveAngles = false,
+    GridSize = 32,
+    GridGap = 1,
     VisualStyles = {
         "windows-95",
         "windows-aero",
@@ -10,7 +12,7 @@ Settings = {
         "windows-11",
         "windows-11-dark",
     },
-    VisualStyleIndex = 5
+    VisualStyleIndex = 4
 }
 
 --[[
@@ -21,7 +23,7 @@ arrow keys will always change selected digits in value fields.
 For a list of valid keys (case-sensitive) see:
   https://docs.google.com/document/d/1SWd-oAFBKsGmwUs0qGiOrk3zfX9wYHhi3x5aKPQS_o0/edit#bookmark=id.jcojkq7g066s
 ]]
-   --
+--
 Settings.Hotkeys = {
     ["dist moved"] = {},
     ["ignore y"] = {},
@@ -78,13 +80,13 @@ Settings.Colors = {
     Text = "#000000",
     ReadWriteText = "#FF0000", -- should be the same as or a bit brighter than Button.Pressed.Top
     Background = "#fdfdfd",
-    InputField = {           -- where you enter the facing angle or mag
+    InputField = {             -- where you enter the facing angle or mag
         --EditingText = "#000000", -- optional, defaults to Theme.Text
         Editing = "#FFFFFF",
         Enabled = "#FFFFFF",
         Disabled = "#FFFFFF",
         OutsideOutline = "#7A7A7A", -- outermost
-        Outline = "#7A7A7A"    -- inner (creates depth)
+        Outline = "#7A7A7A"         -- inner (creates depth)
     }
 }
 
@@ -96,7 +98,7 @@ Settings.Layout = {
             'Match Angle',
             'Reverse Angle',
             'Speedkick',
-            'Reset Mag',
+            'Reset',
             'Swim',
             'Ignore Y',
             '.99',
@@ -105,7 +107,7 @@ Settings.Layout = {
             'Right',
             'DYaw',
             'Get moved distance',
-            'AtanStrain',
+            'Arctan Strain',
             '+',
             '-',
             '+',

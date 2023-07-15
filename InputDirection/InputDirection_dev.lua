@@ -15,12 +15,13 @@ PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\
 CURRENT_PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\"
 
 dofile(CURRENT_PATH .. "mupen-lua-ugui.lua")
+dofile(CURRENT_PATH .. "mupen-lua-ugui-ext.lua")
 dofile(CURRENT_PATH .. "nineslice.lua")
+dofile(PATH .. "Settings.lua")
 dofile(PATH .. "Drawing.lua")
 Drawing.resizeScreen()
 
 dofile(PATH .. "Memory.lua")
-dofile(PATH .. "Settings.lua")
 dofile(PATH .. "Joypad.lua")
 dofile(PATH .. "Angles.lua")
 dofile(PATH .. "Engine.lua")
@@ -61,7 +62,7 @@ function drawing()
     if not ustyles[section_name_path .. '.ustyles'] then
         ustyles[section_name_path .. '.ustyles'] = parse_ustyles(section_name_path .. '.ustyles')
     end
-    
+
     ustyle = ustyles[section_name_path .. '.ustyles']
 
     for key, _ in pairs(Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors) do
@@ -100,18 +101,55 @@ function drawing()
         Drawing.paint()
         Input.update()
     elseif tab_index == 2 then
+        local previous_grid_size = Settings.GridSize
+
         Settings.VisualStyleIndex = Mupen_lua_ugui.combobox({
-            uid = 12345678,
+            uid = 1,
             is_enabled = true,
-            rectangle = {
-                x = Drawing.Screen.Width + 5,
-                y = 5,
-                width = 150,
-                height = 23,
-            },
+            rectangle = grid_rect(0, 0, 4, 1),
             items = Settings.VisualStyles,
             selected_index = Settings.VisualStyleIndex,
         })
+        Settings.GridSize = Mupen_lua_ugui.spinner({
+            uid = 100,
+            is_enabled = true,
+            rectangle = grid_rect(0, 1, 4, 1),
+            value = Settings.GridSize,
+            is_horizontal = false,
+            minimum_value = -128,
+            maximum_value = 128,
+        })
+        Settings.GridGap = Mupen_lua_ugui.spinner({
+            uid = 200,
+            is_enabled = true,
+            rectangle = grid_rect(4, 1, 4, 1),
+            value = Settings.GridGap,
+            is_horizontal = false,
+            minimum_value = 0,
+            maximum_value = 20,
+        })
+        Mupen_lua_ugui.stylers.windows_10.font_name = Mupen_lua_ugui.textbox({
+            uid = 300,
+            is_enabled = true,
+            rectangle = grid_rect(0, 2, 4, 1),
+            text = Mupen_lua_ugui.stylers.windows_10.font_name
+        })
+        Mupen_lua_ugui.stylers.windows_10.font_size = Mupen_lua_ugui.spinner({
+            uid = 400,
+            is_enabled = true,
+            rectangle = grid_rect(4, 2, 4, 1),
+            value = Mupen_lua_ugui.stylers.windows_10.font_size,
+            is_horizontal = false,
+            minimum_value = 0,
+            maximum_value = 28,
+        })
+        if not (Settings.GridSize == previous_grid_size) then
+            -- we cant resize the screen while drawing, as it nukes the d2d context and crashes the emu
+            -- we need to do it **on the ui thread**, outside of drawing ops
+            
+            -- not possible because everything's called from random threads lol
+            -- :(
+        end
     else
         print('what')
     end
@@ -121,12 +159,7 @@ function drawing()
     tab_index = Mupen_lua_ugui.carrousel_button({
         uid = 420,
         is_enabled = true,
-        rectangle = {
-            x = Drawing.Screen.Width + 5,
-            y = 555,
-            width = Drawing.WIDTH_OFFSET - 10,
-            height = 23,
-        },
+        rectangle = grid_rect(0, 16, 8, 1),
         items = tabs,
         selected_index = tab_index,
     })
@@ -142,8 +175,11 @@ emu.atinput(main)
 emu.atupdatescreen(drawing)
 emu.atstop(close)
 if emu.atloadstate then
-    emu.atloadstate(drawing, false)
     emu.atreset(Drawing.resizeScreen, false)
 else
     print("update ur mupen")
 end
+
+emu.atwindowmessage(function(a, b, c, d)
+    Input.at_window_message(a, b, c, d)
+end)

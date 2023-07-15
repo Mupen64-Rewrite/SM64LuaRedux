@@ -1,21 +1,26 @@
 Drawing = {
-    WIDTH_OFFSET = 222,
+    WIDTH_OFFSET = 0,
     Screen = {
+        Width = 0,
         Height = 0,
-        Width = 0
     }
 }
 
+
+
+
+function Drawing.updateSize()
+    Drawing.WIDTH_OFFSET = (Settings.GridSize * 8) + (Settings.GridGap * 8)
+    wgui.resize(Drawing.Screen.Width + Drawing.WIDTH_OFFSET, Drawing.Screen.Height)
+end
+
 function Drawing.resizeScreen()
     screen = wgui.info()
-    Drawing.Screen.Height = screen.height
-    width10 = screen.width % 10
-    if width10 == 0 or width10 == 4 or width10 == 8 then
-        Drawing.Screen.Width = screen.width
-        wgui.resize(screen.width + Drawing.WIDTH_OFFSET, screen.height)
-    else
-        Drawing.Screen.Width = screen.width - Drawing.WIDTH_OFFSET
-    end
+    Drawing.Screen = {
+        Width = screen.width,
+        Height = screen.height,
+    }
+    Drawing.updateSize()
 end
 
 function Drawing.UnResizeScreen()
@@ -23,21 +28,20 @@ function Drawing.UnResizeScreen()
 end
 
 function Drawing.paint()
-    
-
     for i = 1, #Buttons, 1 do
         local button = Buttons[i]
+        local box = button.box()
+
         if button.type == ButtonType.button then
             local previous = button.pressed()
-
             local pressed = Mupen_lua_ugui.toggle_button({
                 uid = i,
                 is_enabled = button.enabled(),
                 rectangle = {
-                    x = button.box[1],
-                    y = button.box[2],
-                    width = button.box[3],
-                    height = button.box[4]
+                    x = box[1],
+                    y = box[2],
+                    width = box[3],
+                    height = box[4]
                 },
                 text = button.text,
                 is_checked = previous
@@ -71,10 +75,10 @@ function Drawing.paint()
                 uid = i,
                 is_enabled = button.enabled(),
                 rectangle = {
-                    x = button.box[1],
-                    y = button.box[2],
-                    width = button.box[3],
-                    height = button.box[4]
+                    x = box[1],
+                    y = box[2],
+                    width = box[3],
+                    height = box[4]
                 },
                 text = value and string.format("%0" .. tostring(button.inputSize) .. "d", value) or
                     string.rep('-', button.inputSize),
@@ -84,12 +88,14 @@ function Drawing.paint()
         end
     end
 
-    Drawing.drawAnalogStick(Drawing.Screen.Width + Drawing.WIDTH_OFFSET / 3 - 5, 209)
+    Drawing.drawAnalogStick(grid(0, 4, 4, 4))
     wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
     wgui.setfont(10, "Arial", "")
-    wgui.text(Drawing.Screen.Width + 149, 146, "Magnitude")
-    Drawing.drawAngles(Drawing.Screen.Width + 5, 276)
-    Drawing.drawMiscData(Drawing.Screen.Width + 5, 304)
+
+    local rect = grid(0, 8, 4, 1)
+    Drawing.drawAngles(rect[1], rect[2])
+    rect = grid(0, 9, 4, 1)
+    Drawing.drawMiscData(rect[1], rect[2])
 end
 
 function Drawing.drawAngles(x, y)
@@ -136,15 +142,15 @@ function Drawing.drawTextArea(x, y, width, length, text, enabled, editing)
     wgui.text(x + width / 2 - 6.5 * string.len(text), y + length / 2 - 8, text)
 end
 
-function Drawing.drawAnalogStick(x, y)
+function Drawing.drawAnalogStick(raw_rect)
     Mupen_lua_ugui.joystick({
         uid = 10000,
         is_enabled = true,
         rectangle = {
-            x = x - 64,
-            y = y - 64,
-            width = 128,
-            height = 128
+            x = raw_rect[1],
+            y = raw_rect[2],
+            width = raw_rect[3],
+            height = raw_rect[4]
         },
         position = {
             x = MoreMaths.Remap(Joypad.input.X, -128, 128, 0, 1),
@@ -154,17 +160,12 @@ function Drawing.drawAnalogStick(x, y)
     if Settings.goalMag and Settings.goalMag < 127 then
         local r = Settings.goalMag + 6
         BreitbandGraphics.renderers.d2d.draw_ellipse({
-            x = x - r / 2,
-            y = y - r / 2,
+            x = raw_rect[1] + raw_rect[2] / 2 - r / 2,
+            y = raw_rect[2] + raw_rect[3] / 2 - r / 2,
             width = r,
             height = r
         }, BreitbandGraphics.colors.red, 2)
     end
-    wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
-    wgui.setfont(10, "Courier", "")
-    local stick_y = Joypad.input.Y == 0 and "0" or -Joypad.input.Y
-    wgui.text(x + 102 - 2.5 * (string.len(Joypad.input.X)), y - 16, "x:" .. Joypad.input.X)
-    wgui.text(x + 102 - 2.5 * (string.len(stick_y)), y - 1, "y:" .. stick_y)
 end
 
 function Drawing.drawMiscData(x, y)
