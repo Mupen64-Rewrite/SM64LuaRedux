@@ -1,8 +1,11 @@
--- mupen-lua-ugui 1.0.3
+-- mupen-lua-ugui 1.0.4
 
-if not wgui.fill_rectangle then
-    print('BreitbandGraphics requires a Mupen64-rr-lua version newer than 1.1.2\r\n')
+if not emu.set_renderer(2) then
+    print('BreitbandGraphics requires mupen64-rr-lua 1.1.4 or above\r\n')
 end
+
+-- Specify D2D renderer
+emu.set_renderer(2)
 
 BreitbandGraphics = {
     --- Converts a color value to its corresponding hexadecimal representation
@@ -127,9 +130,7 @@ BreitbandGraphics = {
             ---@param font_name string The font name
             ---@return _ table The text's bounding box as `{x, y}`
             get_text_size = function(text, font_size, font_name)
-                local a = wgui.get_text_size(text, font_name, font_size, 99999999, 99999999)
-
-                return a;
+                return d2d.get_text_size(text, font_name, font_size, 99999999, 99999999);
             end,
             ---Draws a rectangle's outline
             ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
@@ -137,7 +138,7 @@ BreitbandGraphics = {
             ---@param thickness number The outline's thickness
             draw_rectangle = function(rectangle, color, thickness)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.draw_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+                d2d.draw_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
                     rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, thickness)
             end,
             ---Draws a rectangle
@@ -145,7 +146,7 @@ BreitbandGraphics = {
             ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
             fill_rectangle = function(rectangle, color)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.fill_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+                d2d.fill_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
                     rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0)
             end,
             ---Draws a rounded rectangle's outline
@@ -155,7 +156,7 @@ BreitbandGraphics = {
             ---@param thickness number The outline's thickness
             draw_rounded_rectangle = function(rectangle, color, radii, thickness)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.draw_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+                d2d.draw_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
                     rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0,
                     thickness)
             end,
@@ -165,7 +166,7 @@ BreitbandGraphics = {
             ---@param radii table The corner radii as `{x, y}`
             fill_rounded_rectangle = function(rectangle, color, radii)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.fill_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+                d2d.fill_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
                     rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0)
             end,
             ---Draws an ellipse's outline
@@ -174,7 +175,7 @@ BreitbandGraphics = {
             ---@param thickness number The outline's thickness
             draw_ellipse = function(rectangle, color, thickness)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.draw_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
+                d2d.draw_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
                     rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0,
                     thickness)
             end,
@@ -183,7 +184,7 @@ BreitbandGraphics = {
             ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
             fill_ellipse = function(rectangle, color)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.fill_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
+                d2d.fill_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
                     rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0)
             end,
             ---Draws text
@@ -242,8 +243,8 @@ BreitbandGraphics = {
                     d_text_antialias_mode = 3
                 end
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.set_text_antialias_mode(d_text_antialias_mode)
-                wgui.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+                d2d.set_text_antialias_mode(d_text_antialias_mode)
+                d2d.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
                     rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, text, font_name,
                     font_size, d_weight, d_style, d_horizontal_alignment, d_vertical_alignment, d_options)
             end,
@@ -254,18 +255,18 @@ BreitbandGraphics = {
             ---@param thickness number The line's thickness
             draw_line = function(from, to, color, thickness)
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.draw_line(from.x, from.y, to.x, to.y, float_color.r, float_color.g, float_color.b, 1.0,
+                d2d.draw_line(from.x, from.y, to.x, to.y, float_color.r, float_color.g, float_color.b, 1.0,
                     thickness)
             end,
             ---Pushes a clip layer to the clip stack
             ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
             push_clip = function(rectangle)
-                wgui.push_clip(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+                d2d.push_clip(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
                     rectangle.y + rectangle.height)
             end,
             --- Removes the topmost clip layer from the clip stack
             pop_clip = function()
-                wgui.pop_clip()
+                d2d.pop_clip()
             end,
             ---Draws an image
             ---@param destination_rectangle table The bounding rectangle as `{x, y, width, height}`
@@ -276,136 +277,22 @@ BreitbandGraphics = {
             draw_image = function(destination_rectangle, source_rectangle, path, color, filter)
                 if not BreitbandGraphics.renderers.d2d.bitmap_cache[path] then
                     print('Loaded image from ' .. path)
-                    wgui.load_image(path, path)
+                    d2d.load_image(path, path)
                 end
                 if not filter then
                     filter = 'nearest'
                 end
                 BreitbandGraphics.renderers.d2d.bitmap_cache[path] = path
                 local float_color = BreitbandGraphics.color_to_float(color)
-                wgui.draw_image(destination_rectangle.x, destination_rectangle.y,
+                d2d.draw_image(destination_rectangle.x, destination_rectangle.y,
                     destination_rectangle.x + destination_rectangle.width,
                     destination_rectangle.y + destination_rectangle.height,
                     source_rectangle.x, source_rectangle.y, source_rectangle.x + source_rectangle.width,
                     source_rectangle.y + source_rectangle.height, path, float_color.a, filter == 'nearest' and 0 or 1)
             end,
         },
-        compat = {
-            brush = '#FF0000',
-            pen = '#FF0000',
-            pen_thickness = 1,
-            font_size = 0,
-            font_name = 'Fixedsys',
-            text_color = '#FF0000',
-            text_options = '',
-            any_to_color = function(any)
-                if any:find('#') then
-                    return BreitbandGraphics.hex_to_color(any)
-                else
-                    if BreitbandGraphics.colors[any] then
-                        return BreitbandGraphics.colors[any]
-                    else
-                        print("Can't resolve color " .. any .. ' to anything')
-                    end
-                end
-            end,
-            setbrush = function(color)
-                BreitbandGraphics.renderers.compat.brush = color
-            end,
-            setpen = function(color, thickness)
-                BreitbandGraphics.renderers.compat.pen = color
-                BreitbandGraphics.renderers.compat.pen_thickness = thickness and thickness or 1
-            end,
-            setcolor = function(color)
-                BreitbandGraphics.renderers.compat.text_color = color
-            end,
-            setfont = function(size, name, text_options)
-                BreitbandGraphics.renderers.compat.font_size = size + 2
-                BreitbandGraphics.renderers.compat.font_name = name
-                BreitbandGraphics.renderers.compat.text_options = text_options
-            end,
-            rect = function(x, y, right, bottom)
-                local rectangle = {
-                    x = x,
-                    y = y,
-                    width = right - x,
-                    height = bottom - y,
-                }
-                BreitbandGraphics.renderers.d2d.fill_rectangle(
-                    BreitbandGraphics.inflate_rectangle(rectangle, BreitbandGraphics.renderers.compat.pen_thickness),
-                    BreitbandGraphics.renderers.compat.any_to_color(BreitbandGraphics.renderers.compat.pen))
-                BreitbandGraphics.renderers.d2d.fill_rectangle(rectangle,
-                    BreitbandGraphics.renderers.compat.any_to_color(BreitbandGraphics.renderers.compat.brush))
-            end,
-            text = function(x, y, text)
-                local size = BreitbandGraphics.renderers.d2d.get_text_size(text,
-                    BreitbandGraphics.renderers.compat.font_size, BreitbandGraphics.renderers.compat.font_name)
-                BreitbandGraphics.renderers.d2d.draw_text({
-                        x = x,
-                        y = y,
-                        width = 9999999999,
-                        height = size.height,
-                    }, 'start', 'start', {
-                        is_bold = BreitbandGraphics.renderers.compat.text_options:find('b'),
-                        is_italic = BreitbandGraphics.renderers.compat.text_options:find('i'),
-                    },
-                    BreitbandGraphics.renderers.compat.any_to_color(BreitbandGraphics.renderers.compat.text_color),
-                    BreitbandGraphics.renderers.compat.font_size, BreitbandGraphics.renderers.compat.font_name, text)
-            end,
-            line = function(x, y, x2, y2)
-                BreitbandGraphics.renderers.d2d.draw_line({
-                        x = x,
-                        y = y,
-                    }, {
-                        x = x2,
-                        y = y2,
-                    }, BreitbandGraphics.renderers.compat.any_to_color(BreitbandGraphics.renderers.compat.pen),
-                    BreitbandGraphics.renderers.compat.pen_thickness)
-            end,
-            ellipse = function(x, y, right, bottom)
-                local rectangle = {
-                    x = x,
-                    y = y,
-                    width = right - x,
-                    height = bottom - y,
-                }
-                BreitbandGraphics.renderers.d2d.fill_ellipse(
-                    BreitbandGraphics.inflate_rectangle(rectangle, BreitbandGraphics.renderers.compat.pen_thickness),
-                    BreitbandGraphics.renderers.compat.any_to_color(BreitbandGraphics.renderers.compat.pen))
-                BreitbandGraphics.renderers.d2d.fill_ellipse(rectangle,
-                    BreitbandGraphics.renderers.compat.any_to_color(BreitbandGraphics.renderers.compat.brush))
-            end,
-            loadimage = function(path)
-                return path
-            end,
-            drawimage = function(identifier, x, y, width, height)
-                BreitbandGraphics.renderers.d2d.draw_image({
-                    x = x,
-                    y = y,
-                    width = width,
-                    height = height,
-                }, {
-                    x = 0,
-                    y = 0,
-                    width = 999999,
-                    height = 999999,
-                }, identifier, BreitbandGraphics.colors.white)
-            end,
-        },
     },
 }
-
--- reverse polyfill old gdi functions
-wgui.setbrush = BreitbandGraphics.renderers.compat.setbrush
-wgui.setpen = BreitbandGraphics.renderers.compat.setpen
-wgui.rect = BreitbandGraphics.renderers.compat.rect
-wgui.setcolor = BreitbandGraphics.renderers.compat.setcolor
-wgui.setfont = BreitbandGraphics.renderers.compat.setfont
-wgui.text = BreitbandGraphics.renderers.compat.text
-wgui.line = BreitbandGraphics.renderers.compat.line
-wgui.ellipse = BreitbandGraphics.renderers.compat.ellipse
-wgui.loadimage = BreitbandGraphics.renderers.compat.loadimage
-wgui.drawimage = BreitbandGraphics.renderers.compat.drawimage
 
 -- https://stackoverflow.com/a/26367080/14472122
 local function deep_clone(obj, seen)
@@ -485,10 +372,6 @@ end
 local function remap(value, from1, to1, from2, to2)
     return (value - from1) / (to1 - from1) * (to2 - from2) + from2
 end
-
-
-
-
 
 Mupen_lua_ugui = {
     control_data = {},
@@ -1087,6 +970,9 @@ Mupen_lua_ugui = {
     ---@param styler table A styler, which abides by the mupen-lua-ugui styler contract (recommended: `Mupen_lua_ugui.stylers.windows_10`)
     ---@param input_state table A table describing the state of the user's input devices as `{ pointer = { position = {x, y}, is_primary_down }, keyboard = { held_keys } }`
     begin_frame = function(renderer, styler, input_state)
+        if not Mupen_lua_ugui.input_state then
+            Mupen_lua_ugui.input_state = input_state
+        end
         Mupen_lua_ugui.previous_input_state = deep_clone(Mupen_lua_ugui.input_state)
         Mupen_lua_ugui.input_state = deep_clone(input_state)
         Mupen_lua_ugui.renderer = renderer
