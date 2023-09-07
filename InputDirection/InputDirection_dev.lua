@@ -11,12 +11,19 @@ function folder(thisFileName)
     return (str:match('^.*/(.*).lua$') or str):sub(1, -(thisFileName):len() - 1)
 end
 
+function get_keys(t)
+    local keys = {}
+    for key, _ in pairs(t) do
+        table.insert(keys, key)
+    end
+    return keys
+end
+
 PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
 CURRENT_PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\"
 
 dofile(CURRENT_PATH .. "mupen-lua-ugui.lua")
 dofile(CURRENT_PATH .. "mupen-lua-ugui-ext.lua")
-dofile(CURRENT_PATH .. "nineslice.lua")
 dofile(PATH .. "Settings.lua")
 dofile(PATH .. "Drawing.lua")
 Drawing.resizeScreen()
@@ -41,7 +48,8 @@ local tabs = {
     "Settings"
 }
 local tab_index = 1
-ustyle = {}
+
+Settings.create_styles()
 
 Program.initFrame()
 Memory.UpdatePrevPos()
@@ -58,22 +66,8 @@ function main()
 end
 
 function drawing()
-    section_name_path = folder('InputDirection_dev.lua') .. 'res\\' .. Settings.VisualStyles[Settings.VisualStyleIndex]
-    if not ustyles[section_name_path .. '.ustyles'] then
-        ustyles[section_name_path .. '.ustyles'] = parse_ustyles(section_name_path .. '.ustyles')
-    end
-
-    ustyle = ustyles[section_name_path .. '.ustyles']
-
-    for key, _ in pairs(Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors) do
-        Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[key] = ustyle.raised_frame_text_colors[key]
-    end
-    for key, _ in pairs(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors) do
-        Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[key] = ustyle.edit_frame_text_colors[key]
-    end
-
     local keys = input.get()
-    Mupen_lua_ugui.begin_frame(BreitbandGraphics.renderers.d2d, Mupen_lua_ugui.stylers.windows_10, {
+    Mupen_lua_ugui.begin_frame(BreitbandGraphics, Mupen_lua_ugui.stylers.windows_10, {
         pointer = {
             position = {
                 x = keys.xmouse,
@@ -86,16 +80,14 @@ function drawing()
         },
     })
 
-
-
     Memory.Refresh()
 
-    BreitbandGraphics.renderers.d2d.fill_rectangle({
+    BreitbandGraphics.fill_rectangle({
         x = Drawing.Screen.Width,
         y = 0,
         width = Drawing.Screen.Width + Drawing.WIDTH_OFFSET,
         height = Drawing.Screen.Height - 20
-    }, ustyles[section_name_path .. '.ustyles'].background_color)
+    }, Settings.styles[Settings.active_style_index].background_color)
 
     if tab_index == 1 then
         Drawing.paint()
@@ -103,13 +95,19 @@ function drawing()
     elseif tab_index == 2 then
         local previous_grid_size = Settings.GridSize
 
-        Settings.VisualStyleIndex = Mupen_lua_ugui.combobox({
+        Settings.active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,
             is_enabled = true,
             rectangle = grid_rect(0, 0, 4, 1),
-            items = Settings.VisualStyles,
-            selected_index = Settings.VisualStyleIndex,
+            items = {
+                "Windows 10",
+                "Windows 11",
+                "Windows 10 Dark",
+                "Windows 7",
+            },
+            selected_index = Settings.active_style_index,
         })
+        Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index])
         Settings.GridSize = Mupen_lua_ugui.spinner({
             uid = 100,
             is_enabled = true,
@@ -146,7 +144,7 @@ function drawing()
         if not (Settings.GridSize == previous_grid_size) then
             -- we cant resize the screen while drawing, as it nukes the d2d context and crashes the emu
             -- we need to do it **on the ui thread**, outside of drawing ops
-            
+
             -- not possible because everything's called from random threads lol
             -- :(
         end

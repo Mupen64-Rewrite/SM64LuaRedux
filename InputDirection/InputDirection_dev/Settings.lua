@@ -5,14 +5,13 @@ Settings = {
     ShowEffectiveAngles = false,
     GridSize = 32,
     GridGap = 1,
-    VisualStyles = {
-        "windows-95",
-        "windows-aero",
-        "windows-10",
-        "windows-11",
-        "windows-11-dark",
+    styles = {
+        {},
+        {},
+        {},
+        {},
     },
-    VisualStyleIndex = 4
+    active_style_index = 1
 }
 
 --[[
@@ -204,3 +203,152 @@ Settings.Layout = {
         RNG = 3
     }
 }
+
+
+local function expand(t)
+    return {
+        x = t[1],
+        y = t[2],
+        width = t[3],
+        height = t[4],
+    }
+end
+local function get_windows_10_nineslice_style()
+    return {
+        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-10-atlas.png",
+        background_color = BreitbandGraphics.repeated_to_color(240),
+        item_height = 15,
+        font_size = 12,
+        font_name = 'MS Shell Dlg 2',
+        button = {
+            text_colors = {
+                [1] = BreitbandGraphics.colors.black,
+                [2] = BreitbandGraphics.colors.black,
+                [3] = BreitbandGraphics.colors.black,
+                [0] = BreitbandGraphics.repeated_to_color(131),
+            },
+            states = {
+                [1] = {
+                    source = expand({ 1, 1, 11, 9 }),
+                    center = expand({ 6, 5, 1, 1 }),
+                },
+                [2] = {
+                    source = expand({ 1, 12, 11, 9 }),
+                    center = expand({ 6, 16, 1, 1 }),
+                },
+                [3] = {
+                    source = expand({ 1, 23, 11, 9 }),
+                    center = expand({ 6, 27, 1, 1 }),
+                },
+                [0] = {
+                    source = expand({ 1, 34, 11, 9 }),
+                    center = expand({ 6, 38, 1, 1 }),
+                }
+            }
+        },
+        textbox = {
+            text_colors = {
+                [1] = BreitbandGraphics.colors.black,
+                [2] = BreitbandGraphics.colors.black,
+                [3] = BreitbandGraphics.colors.black,
+                [0] = BreitbandGraphics.repeated_to_color(109),
+            },
+            states = {
+                [1] = {
+                    source = expand({ 74, 1, 5, 5 }),
+                    center = expand({ 76, 3, 1, 1 }),
+                },
+                [2] = {
+                    source = expand({ 74, 6, 5, 5 }),
+                    center = expand({ 76, 8, 1, 1 }),
+                },
+                [3] = {
+                    source = expand({ 74, 11, 5, 5 }),
+                    center = expand({ 76, 13, 1, 1 }),
+                },
+                [0] = {
+                    source = expand({ 74, 16, 5, 5 }),
+                    center = expand({ 76, 18, 1, 1 }),
+                }
+            }
+        },
+    }
+end
+
+local function spread(template)
+    local result = {}
+    for key, value in pairs(template) do
+        result[key] = value
+    end
+
+    return function(table)
+        for key, value in pairs(table) do
+            result[key] = value
+        end
+        return result
+    end
+end
+
+Settings.create_styles = function()
+    Settings.styles[1] = get_windows_10_nineslice_style()
+    Settings.styles[2] = spread(get_windows_10_nineslice_style()) {
+        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-11-atlas.png",
+    }
+    Settings.styles[3] = spread(get_windows_10_nineslice_style()) {
+        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-10-dark-atlas.png",
+        background_color = BreitbandGraphics.repeated_to_color(57),
+    }
+    Settings.styles[3].button.text_colors = {
+        [1] = BreitbandGraphics.colors.white,
+        [2] = BreitbandGraphics.colors.white,
+        [3] = BreitbandGraphics.colors.white,
+        [0] = BreitbandGraphics.repeated_to_color(131),
+    }
+    Settings.styles[3].textbox.text_colors = {
+        [1] = BreitbandGraphics.colors.white,
+        [2] = BreitbandGraphics.colors.white,
+        [3] = BreitbandGraphics.colors.white,
+        [0] = BreitbandGraphics.repeated_to_color(109),
+    }
+
+    Settings.styles[4] = spread(get_windows_10_nineslice_style()) {
+        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-7-atlas.png",
+        background_color = { r = 234, g = 235, b = 236 },
+    }
+    Settings.styles[4].button.states = {
+        [1] = {
+            source = expand({ 1, 1, 11, 21 }),
+            center = expand({ 4, 4, 5, 15 }),
+        },
+        [2] = {
+            source = expand({ 1, 24, 11, 21 }),
+            center = expand({ 4, 27, 5, 15 }),
+        },
+        [3] = {
+            source = expand({ 1, 47, 11, 21 }),
+            center = expand({ 4, 50, 5, 15 }),
+        },
+        [0] = {
+            source = expand({ 1, 70, 11, 21 }),
+            center = expand({ 4, 73, 5, 15 }),
+        }
+    }
+    Settings.styles[4].textbox.states = {
+        [1] = {
+            source = expand({ 34, 1, 5, 5 }),
+            center = expand({ 36, 3, 1, 1 }),
+        },
+        [2] = {
+            source = expand({ 34, 6, 5, 5 }),
+            center = expand({ 36, 8, 1, 1 }),
+        },
+        [3] = {
+            source = expand({ 34, 11, 5, 5 }),
+            center = expand({ 36, 13, 1, 1 }),
+        },
+        [0] = {
+            source = expand({ 34, 16, 5, 5 }),
+            center = expand({ 36, 18, 1, 1 }),
+        }
+    }
+end

@@ -89,7 +89,8 @@ function Drawing.paint()
     end
 
     Drawing.drawAnalogStick(grid(0, 4, 4, 4))
-    wgui.setcolor(BreitbandGraphics.color_to_hex(ustyle.foreground_color))
+    -- HACK: pick somewhat fitting foreground color
+    wgui.setcolor(BreitbandGraphics.color_to_hex(Settings.styles[Settings.active_style_index].textbox.text_colors[0]))
     wgui.setfont(10, "Arial", "")
 
     local rect = grid(0, 8, 4, 1)
@@ -159,7 +160,7 @@ function Drawing.drawAnalogStick(raw_rect)
     })
     if Settings.goalMag and Settings.goalMag < 127 then
         local r = Settings.goalMag + 6
-        BreitbandGraphics.renderers.d2d.draw_ellipse({
+        BreitbandGraphics.draw_ellipse({
             x = raw_rect[1] + raw_rect[2] / 2 - r / 2,
             y = raw_rect[2] + raw_rect[3] / 2 - r / 2,
             width = r,

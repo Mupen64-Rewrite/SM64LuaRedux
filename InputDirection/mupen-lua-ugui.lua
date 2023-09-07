@@ -1,6 +1,6 @@
 -- mupen-lua-ugui 1.0.4
 
-if not emu.set_renderer(2) then
+if not emu.set_renderer then
     print('BreitbandGraphics requires mupen64-rr-lua 1.1.4 or above\r\n')
 end
 
@@ -117,181 +117,183 @@ BreitbandGraphics = {
         }
     end,
 
-    --- A collection of built-in rendering backends
-    ---
-    --- Code consuming this library shouldn't modify the renderer states directly
-    renderers = {
-        --- A renderer backed by Mupen Lua's Direct2D and DirectWrite APIs
-        d2d = {
-            bitmap_cache = {},
-            ---Measures the size of a string
-            ---@param text string The string to be measured
-            ---@param font_size number The font size
-            ---@param font_name string The font name
-            ---@return _ table The text's bounding box as `{x, y}`
-            get_text_size = function(text, font_size, font_name)
-                return d2d.get_text_size(text, font_name, font_size, 99999999, 99999999);
-            end,
-            ---Draws a rectangle's outline
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param thickness number The outline's thickness
-            draw_rectangle = function(rectangle, color, thickness)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.draw_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-                    rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, thickness)
-            end,
-            ---Draws a rectangle
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            fill_rectangle = function(rectangle, color)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.fill_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-                    rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0)
-            end,
-            ---Draws a rounded rectangle's outline
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param radii table The corner radii as `{x, y}`
-            ---@param thickness number The outline's thickness
-            draw_rounded_rectangle = function(rectangle, color, radii, thickness)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.draw_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-                    rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0,
-                    thickness)
-            end,
-            ---Fills a rounded rectangle
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param radii table The corner radii as `{x, y}`
-            fill_rounded_rectangle = function(rectangle, color, radii)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.fill_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-                    rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0)
-            end,
-            ---Draws an ellipse's outline
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param thickness number The outline's thickness
-            draw_ellipse = function(rectangle, color, thickness)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.draw_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
-                    rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0,
-                    thickness)
-            end,
-            ---Draws an ellipse
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            fill_ellipse = function(rectangle, color)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.fill_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
-                    rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0)
-            end,
-            ---Draws text
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param horizontal_alignment string The text's horizontal alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
-            ---@param vertical_alignment string The text's vertical alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
-            ---@param style table The miscellaneous text styling as `{is_bold, is_italic, clip, grayscale, aliased}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param font_size number The font size
-            ---@param font_name string The font name
-            ---@param text string The text
-            draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-                                 text)
-                if text == nil then
-                    text = ''
-                end
+    bitmap_cache = {},
+    ---Measures the size of a string
+    ---@param text string The string to be measured
+    ---@param font_size number The font size
+    ---@param font_name string The font name
+    ---@return _ table The text's bounding box as `{x, y}`
+    get_text_size = function(text, font_size, font_name)
+        return d2d.get_text_size(text, font_name, font_size, 99999999, 99999999);
+    end,
+    ---Draws a rectangle's outline
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param thickness number The outline's thickness
+    draw_rectangle = function(rectangle, color, thickness)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.draw_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, thickness)
+    end,
+    ---Draws a rectangle
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    fill_rectangle = function(rectangle, color)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.fill_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0)
+    end,
+    ---Draws a rounded rectangle's outline
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param radii table The corner radii as `{x, y}`
+    ---@param thickness number The outline's thickness
+    draw_rounded_rectangle = function(rectangle, color, radii, thickness)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.draw_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0,
+            thickness)
+    end,
+    ---Fills a rounded rectangle
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param radii table The corner radii as `{x, y}`
+    fill_rounded_rectangle = function(rectangle, color, radii)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.fill_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0)
+    end,
+    ---Draws an ellipse's outline
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param thickness number The outline's thickness
+    draw_ellipse = function(rectangle, color, thickness)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.draw_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
+            rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0,
+            thickness)
+    end,
+    ---Draws an ellipse
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    fill_ellipse = function(rectangle, color)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.fill_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
+            rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0)
+    end,
+    ---Draws text
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param horizontal_alignment string The text's horizontal alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
+    ---@param vertical_alignment string The text's vertical alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
+    ---@param style table The miscellaneous text styling as `{is_bold, is_italic, clip, grayscale, aliased}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param font_size number The font size
+    ---@param font_name string The font name
+    ---@param text string The text
+    draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
+                         text)
+        if text == nil then
+            text = ''
+        end
 
-                local d_horizontal_alignment = 0
-                local d_vertical_alignment = 0
-                local d_style = 0
-                local d_weight = 400
-                local d_options = 0
-                local d_text_antialias_mode = 1
+        local d_horizontal_alignment = 0
+        local d_vertical_alignment = 0
+        local d_style = 0
+        local d_weight = 400
+        local d_options = 0
+        local d_text_antialias_mode = 1
 
-                if horizontal_alignment == 'center' then
-                    d_horizontal_alignment = 2
-                elseif horizontal_alignment == 'start' then
-                    d_horizontal_alignment = 0
-                elseif horizontal_alignment == 'end' then
-                    d_horizontal_alignment = 1
-                elseif horizontal_alignment == 'stretch' then
-                    d_horizontal_alignment = 3
-                end
+        if horizontal_alignment == 'center' then
+            d_horizontal_alignment = 2
+        elseif horizontal_alignment == 'start' then
+            d_horizontal_alignment = 0
+        elseif horizontal_alignment == 'end' then
+            d_horizontal_alignment = 1
+        elseif horizontal_alignment == 'stretch' then
+            d_horizontal_alignment = 3
+        end
 
-                if vertical_alignment == 'center' then
-                    d_vertical_alignment = 2
-                elseif vertical_alignment == 'start' then
-                    d_vertical_alignment = 0
-                elseif vertical_alignment == 'end' then
-                    d_vertical_alignment = 1
-                end
+        if vertical_alignment == 'center' then
+            d_vertical_alignment = 2
+        elseif vertical_alignment == 'start' then
+            d_vertical_alignment = 0
+        elseif vertical_alignment == 'end' then
+            d_vertical_alignment = 1
+        end
 
-                if style.is_bold then
-                    d_weight = 700
-                end
-                if style.is_italic then
-                    d_style = 2
-                end
-                if style.clip then
-                    d_options = d_options | 0x00000002
-                end
-                if style.grayscale then
-                    d_text_antialias_mode = 2
-                end
-                if style.aliased then
-                    d_text_antialias_mode = 3
-                end
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.set_text_antialias_mode(d_text_antialias_mode)
-                d2d.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-                    rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, text, font_name,
-                    font_size, d_weight, d_style, d_horizontal_alignment, d_vertical_alignment, d_options)
-            end,
-            ---Draws a line
-            ---@param from table The start point as `{x, y}`
-            ---@param to table The end point as `{x, y}`
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param thickness number The line's thickness
-            draw_line = function(from, to, color, thickness)
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.draw_line(from.x, from.y, to.x, to.y, float_color.r, float_color.g, float_color.b, 1.0,
-                    thickness)
-            end,
-            ---Pushes a clip layer to the clip stack
-            ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
-            push_clip = function(rectangle)
-                d2d.push_clip(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-                    rectangle.y + rectangle.height)
-            end,
-            --- Removes the topmost clip layer from the clip stack
-            pop_clip = function()
-                d2d.pop_clip()
-            end,
-            ---Draws an image
-            ---@param destination_rectangle table The bounding rectangle as `{x, y, width, height}`
-            ---@param source_rectangle table The rectangle from the source image as `{x, y, width, height}`
-            ---@param path string The image's absolute path on disk
-            ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
-            ---@param filter string The texture filter to be used while drawing the image. `nearest` | `linear`
-            draw_image = function(destination_rectangle, source_rectangle, path, color, filter)
-                if not BreitbandGraphics.renderers.d2d.bitmap_cache[path] then
-                    print('Loaded image from ' .. path)
-                    d2d.load_image(path, path)
-                end
-                if not filter then
-                    filter = 'nearest'
-                end
-                BreitbandGraphics.renderers.d2d.bitmap_cache[path] = path
-                local float_color = BreitbandGraphics.color_to_float(color)
-                d2d.draw_image(destination_rectangle.x, destination_rectangle.y,
-                    destination_rectangle.x + destination_rectangle.width,
-                    destination_rectangle.y + destination_rectangle.height,
-                    source_rectangle.x, source_rectangle.y, source_rectangle.x + source_rectangle.width,
-                    source_rectangle.y + source_rectangle.height, path, float_color.a, filter == 'nearest' and 0 or 1)
-            end,
-        },
-    },
+        if style.is_bold then
+            d_weight = 700
+        end
+        if style.is_italic then
+            d_style = 2
+        end
+        if style.clip then
+            d_options = d_options | 0x00000002
+        end
+        if style.grayscale then
+            d_text_antialias_mode = 2
+        end
+        if style.aliased then
+            d_text_antialias_mode = 3
+        end
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.set_text_antialias_mode(d_text_antialias_mode)
+        d2d.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, text, font_name,
+            font_size, d_weight, d_style, d_horizontal_alignment, d_vertical_alignment, d_options)
+    end,
+    ---Draws a line
+    ---@param from table The start point as `{x, y}`
+    ---@param to table The end point as `{x, y}`
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param thickness number The line's thickness
+    draw_line = function(from, to, color, thickness)
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.draw_line(from.x, from.y, to.x, to.y, float_color.r, float_color.g, float_color.b, 1.0,
+            thickness)
+    end,
+    ---Pushes a clip layer to the clip stack
+    ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
+    push_clip = function(rectangle)
+        d2d.push_clip(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height)
+    end,
+    --- Removes the topmost clip layer from the clip stack
+    pop_clip = function()
+        d2d.pop_clip()
+    end,
+    ---Draws an image
+    ---@param destination_rectangle table The bounding rectangle as `{x, y, width, height}`
+    ---@param source_rectangle table The rectangle from the source image as `{x, y, width, height}`
+    ---@param path string The image's absolute path on disk
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param filter string The texture filter to be used while drawing the image. `nearest` | `linear`
+    draw_image = function(destination_rectangle, source_rectangle, path, color, filter)
+        if not BreitbandGraphics.bitmap_cache[path] then
+            print('Loaded image from ' .. path)
+            d2d.load_image(path, path)
+            BreitbandGraphics.bitmap_cache[path] = path
+        end
+        if not filter then
+            filter = 'nearest'
+        end
+        local float_color = BreitbandGraphics.color_to_float(color)
+        d2d.draw_image(destination_rectangle.x, destination_rectangle.y,
+            destination_rectangle.x + destination_rectangle.width,
+            destination_rectangle.y + destination_rectangle.height,
+            source_rectangle.x, source_rectangle.y, source_rectangle.x + source_rectangle.width,
+            source_rectangle.y + source_rectangle.height, path, float_color.a, filter == 'nearest' and 0 or 1)
+    end,
+    ---Gets an image's metadata
+    ---@param path string The image's absolute path on disk
+    get_image_info = function(path)
+        if not BreitbandGraphics.bitmap_cache[path] then
+            print('Loaded image from ' .. path)
+            d2d.load_image(path, path)
+            BreitbandGraphics.bitmap_cache[path] = path
+        end
+        return d2d.get_image_info(path)
+    end,
 }
 
 -- https://stackoverflow.com/a/26367080/14472122
@@ -966,7 +968,7 @@ Mupen_lua_ugui = {
     },
 
     ---Begins a new frame
-    ---@param renderer table A BreitbandGraphics rendering backend, which abides by the d2d renderer contract (recommended: `BreitbandGraphics.renderers.d2d`)
+    ---@param renderer table A BreitbandGraphics rendering backend, which abides by the d2d renderer contract (recommended: `BreitbandGraphics`)
     ---@param styler table A styler, which abides by the mupen-lua-ugui styler contract (recommended: `Mupen_lua_ugui.stylers.windows_10`)
     ---@param input_state table A table describing the state of the user's input devices as `{ pointer = { position = {x, y}, is_primary_down }, keyboard = { held_keys } }`
     begin_frame = function(renderer, styler, input_state)
