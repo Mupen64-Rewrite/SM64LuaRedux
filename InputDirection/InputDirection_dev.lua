@@ -41,11 +41,13 @@ dofile(PATH .. "Swimming.lua")
 dofile(PATH .. "RNGToIndex.lua")
 dofile(PATH .. "IndexToRNG.lua")
 dofile(PATH .. "recordghost.lua")
+dofile(PATH .. "Timing.lua")
 
 Settings.ShowEffectiveAngles = false -- show angles floored to the nearest multiple of 16
 local tabs = {
     "TAS",
-    "Settings"
+    "Timing",
+    "Settings",
 }
 local tab_index = 1
 
@@ -56,6 +58,7 @@ Memory.UpdatePrevPos()
 function main()
     Program.initFrame()
     Program.main()
+    Timing.update()
     Program.rngSetter()
     Joypad.send()
     Swimming.swim("A")
@@ -93,6 +96,8 @@ function drawing()
         Drawing.paint()
         Input.update()
     elseif tab_index == 2 then
+        Timing.draw()
+    elseif tab_index == 3 then
         local previous_grid_size = Settings.GridSize
 
         Settings.active_style_index = Mupen_lua_ugui.combobox({

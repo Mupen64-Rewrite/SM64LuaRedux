@@ -100,6 +100,17 @@ function Drawing.paint()
 end
 
 function Drawing.drawAngles(x, y)
+    wgui.text = function(x, y, text)
+        BreitbandGraphics.draw_text({
+            x = x,
+            y = y,
+            width = 9999,
+            height = 9999
+        }, "start", "start", {}, BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].background_color),
+            Settings.styles[Settings.active_style_index].font_size,
+            Settings.styles[Settings.active_style_index].font_name, text)
+    end
+
     if Settings.ShowEffectiveAngles then
         wgui.text(x, y, "Yaw (Facing): " .. Engine.getEffectiveAngle(Memory.Mario.FacingYaw))
         wgui.text(x, y + 14, "Yaw (Intended): " .. Engine.getEffectiveAngle(Memory.Mario.IntendedYaw))
