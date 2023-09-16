@@ -2,9 +2,9 @@
 ### ⚡ Powered by [mupen-lua-ugui](https://github.com/Aurumaker72/mupen-lua-ugui)
 
 
-# New features
+# Info
 
-- Compatible with 1.1.3 out-of-the-box
+- Compatible with 1.1.4 out-of-the-box
 - Customizable visual styles
 - Improved layout
 
