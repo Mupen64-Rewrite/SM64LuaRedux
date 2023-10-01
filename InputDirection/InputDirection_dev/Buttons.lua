@@ -12,9 +12,12 @@ function grid(x, y, x_span, y_span)
         y_span = 1
     end
 
+    local base_x = Drawing.Screen.Width + (Settings.GridSize * x)
+    local base_y = (Settings.GridSize * y)
+
     return {
-        Drawing.Screen.Width + (Settings.GridSize * x) + (Settings.GridGap * x),
-        (Settings.GridSize * y) + (Settings.GridGap * y),
+        base_x + Settings.GridGap,
+        base_y + Settings.GridGap,
         (Settings.GridSize * x_span) - Settings.GridGap * 2,
         (Settings.GridSize * y_span) - Settings.GridGap * 2,
     }
