@@ -1,11 +1,13 @@
-# SM64 Input Direction Lua 
-### ⚡ Powered by [mupen-lua-ugui](https://github.com/Aurumaker72/mupen-lua-ugui)
+# SM64 Lua Redux
 
+SM64 Lua Redux is a fork of [SM64 Lua](https://github.com/mkdasher/SM64Lua) powered by [mupen-lua-ugui](https://github.com/Aurumaker72/mupen-lua-ugui)
 
-# Info
+# Features
 
-- Compatible with 1.1.4 out-of-the-box
+- Compatible with >=1.1.4
 - Customizable visual styles
-- Improved layout
+- Customizable layout
 
-![image](https://github.com/Mupen64-Rewrite/SM64Lua/assets/48759429/9d4463e8-6ad8-4f67-8696-91084eee76af)
+# Demo
+
+![grafik](https://github.com/Mupen64-Rewrite/SM64Lua/assets/48759429/f5c5df1c-5d95-482e-b964-697ff17d9cbd)
