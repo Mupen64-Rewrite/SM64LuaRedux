@@ -322,23 +322,24 @@ local function get_windows_10_nineslice_style()
         scrollbar_thumb = {
             states = {
                 [1] = {
-                    source = expand({ 74, 1, 5, 5 }),
-                    center = expand({ 76, 3, 1, 1 }),
+                    source = expand({ 30, 66, 17, 11 }),
+                    center = expand({ 38, 70, 2, 3 }),
                 },
                 [2] = {
-                    source = expand({ 74, 6, 5, 5 }),
-                    center = expand({ 76, 8, 1, 1 }),
+                    source = expand({ 30, 77, 17, 11 }),
+                    center = expand({ 38, 81, 2, 3 }),
                 },
                 [3] = {
-                    source = expand({ 74, 11, 5, 5 }),
-                    center = expand({ 76, 13, 1, 1 }),
+                    source = expand({ 30, 88, 17, 11 }),
+                    center = expand({ 38, 92, 2, 3 }),
                 },
                 [0] = {
-                    source = expand({ 74, 16, 5, 5 }),
-                    center = expand({ 76, 18, 1, 1 }),
+                    source = expand({ 30, 110, 17, 11 }),
+                    center = expand({ 38, 114, 2, 3 }),
                 }
             }
-        }
+        },
+        scrollbar_rail = expand({ 30, 99, 17, 11 })
     }
 end
 

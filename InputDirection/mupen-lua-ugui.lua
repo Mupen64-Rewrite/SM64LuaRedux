@@ -430,6 +430,7 @@ Mupen_lua_ugui = {
             bar_height = 16,
             item_height = 15,
             font_size = 12,
+            scrollbar_thickness = 17,
             font_name = 'MS Shell Dlg 2',
             raised_frame_text_colors = {
                 [1] = BreitbandGraphics.colors.black,
@@ -606,15 +607,15 @@ Mupen_lua_ugui = {
                     scrollbar_y = clamp(scrollbar_y, 0, rectangle.height - scrollbar_height)
 
                     local container_rectangle = {
-                        x = rectangle.x + rectangle.width - 10,
+                        x = rectangle.x + rectangle.width - Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness,
                         y = rectangle.y,
-                        width = 10,
+                        width = Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness,
                         height = rectangle.height,
                     }
                     local thumb_rectangle = {
-                        x = rectangle.x + rectangle.width - 10,
+                        x = rectangle.x + rectangle.width - Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness,
                         y = rectangle.y + scrollbar_y,
-                        width = 10,
+                        width = Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness,
                         height = scrollbar_height,
                     }
                     Mupen_lua_ugui.styler.draw_scrollbar(container_rectangle, thumb_rectangle, visual_state)
@@ -1413,9 +1414,9 @@ Mupen_lua_ugui = {
         end
 
         local scrollbar_rect = {
-            x = control.rectangle.x + control.rectangle.width - 10,
+            x = control.rectangle.x + control.rectangle.width - Mupen_lua_ugui.styler.scrollbar_thickness,
             y = control.rectangle.y,
-            width = 10,
+            width = Mupen_lua_ugui.styler.scrollbar_thickness,
             height = control.rectangle.height,
         }
 
@@ -1450,7 +1451,7 @@ Mupen_lua_ugui = {
                 inc = 1 / #control.items
             end
             Mupen_lua_ugui.control_data[control.uid].y_translation = Mupen_lua_ugui.control_data[control.uid]
-            .y_translation + inc
+                .y_translation + inc
         end
 
 

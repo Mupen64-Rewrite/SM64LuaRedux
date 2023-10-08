@@ -346,10 +346,19 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
             Mupen_lua_ugui.stylers.windows_10.font_name,
             item)
     end
-
+    Mupen_lua_ugui.stylers.windows_10.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
+        BreitbandGraphics.draw_image(container_rectangle,
+            style.scrollbar_rail,
+            style.path, BreitbandGraphics.colors.white, "nearest")
+            BreitbandGraphics.draw_image_nineslice(thumb_rectangle,
+            style.scrollbar_thumb.states[visual_state].source,
+            style.scrollbar_thumb.states[visual_state].center,
+            style.path, BreitbandGraphics.colors.white, "nearest")
+    end
     Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors = style.button.text_colors
     Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors = style.textbox.text_colors
     Mupen_lua_ugui.stylers.windows_10.font_name = style.font_name
     Mupen_lua_ugui.stylers.windows_10.font_size = style.font_size
     Mupen_lua_ugui.stylers.windows_10.list_text_colors = style.listbox.text_colors
+    Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness = style.scrollbar_rail.width
 end
