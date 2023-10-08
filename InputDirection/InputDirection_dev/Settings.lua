@@ -3,7 +3,7 @@ Settings = {
     goalMag = 127,
     setRNG = false,
     ShowEffectiveAngles = false,
-    GridSize = 32,
+    GridSize = 33,
     GridGap = 1,
     styles = {
         {},

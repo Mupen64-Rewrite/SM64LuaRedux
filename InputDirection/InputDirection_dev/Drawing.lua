@@ -94,34 +94,7 @@ function Drawing.paint()
     wgui.setfont(10, "Arial", "")
 
     local rect = grid(0, 8, 4, 1)
-    Drawing.drawAngles(rect[1], rect[2])
     rect = grid(0, 9, 4, 1)
-    Drawing.drawMiscData(rect[1], rect[2])
-end
-
-function Drawing.drawAngles(x, y)
-    wgui.text = function(x, y, text)
-        BreitbandGraphics.draw_text({
-            x = x,
-            y = y,
-            width = 9999,
-            height = 9999
-        }, "start", "start", {}, BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].background_color),
-            Settings.styles[Settings.active_style_index].font_size,
-            Settings.styles[Settings.active_style_index].font_name, text)
-    end
-
-    if Settings.ShowEffectiveAngles then
-        wgui.text(x, y, "Yaw (Facing): " .. Engine.getEffectiveAngle(Memory.Mario.FacingYaw))
-        wgui.text(x, y + 14, "Yaw (Intended): " .. Engine.getEffectiveAngle(Memory.Mario.IntendedYaw))
-        wgui.text(x + 140, y, "O: " .. (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536)        --wgui.text(x, y + 30, "Opposite (Facing): " ..  (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536)
-        wgui.text(x + 140, y + 14, "O: " .. (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536) --wgui.text(x, y + 45, "Opposite (Intended): " ..  (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536)
-    else
-        wgui.text(x, y, "Yaw (Facing): " .. Memory.Mario.FacingYaw)
-        wgui.text(x, y + 14, "Yaw (Intended): " .. Memory.Mario.IntendedYaw)
-        wgui.text(x + 140, y, "O: " .. (Memory.Mario.FacingYaw + 32768) % 65536)        --wgui.text(x + 45, y, "Opposite (Facing): " ..  (Memory.Mario.FacingYaw + 32768) % 65536)
-        wgui.text(x + 140, y + 14, "O: " .. (Memory.Mario.IntendedYaw + 32768) % 65536) --wgui.text(x, y + 45, "Opposite (Intended): " ..  (Memory.Mario.IntendedYaw + 32768) % 65536)
-    end
 end
 
 function Drawing.drawTextArea(x, y, width, length, text, enabled, editing)
@@ -179,45 +152,4 @@ function Drawing.drawAnalogStick(raw_rect)
             height = r
         }, BreitbandGraphics.colors.red, 1)
     end
-end
-
-function Drawing.drawMiscData(x, y)
-    speed = 0
-    if Memory.Mario.HSpeed ~= 0 then
-        speed = MoreMaths.DecodeDecToFloat(Memory.Mario.HSpeed)
-    end
-    wgui.text(x, y, "H Spd: " .. MoreMaths.Round(speed, 5))
-
-    wgui.text(x, y + 42, "Spd Efficiency: " .. Engine.GetSpeedEfficiency() .. "%")
-
-    speed = 0
-    if Memory.Mario.VSpeed > 0 then
-        speed = MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.VSpeed), 6)
-    end
-    wgui.text(x, y + 56, "Y Spd: " .. speed)
-
-    wgui.text(x, y + 14, "H Sliding Spd: " .. MoreMaths.Round(Engine.GetHSlidingSpeed(), 6))
-
-    wgui.text(x, y + 70, "Mario X: " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.X), 2), 6)
-    wgui.text(x, y + 84, "Mario Y: " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Y), 2), 6)
-    wgui.text(x, y + 98, "Mario Z: " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Z), 2), 6)
-
-    wgui.text(x, y + 28, "XZ Movement: " .. MoreMaths.Round(Engine.GetDistMoved(), 6))
-
-    wgui.text(x, y + 111, "Action: " .. Engine.GetCurrentAction())
-
-    wgui.text(x + 170, 50 + y, "E: " .. Settings.Layout.Button.strain_button.arctanexp)
-    wgui.text(x + 170, 50 + y + 13, "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5))
-    wgui.text(x + 170, 50 + y + 26, "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5))
-    wgui.text(x + 170, 50 + y + 39, "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2))
-    wgui.text(x + 170, 50 + y + 53, "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2))
-
-    wgui.text(x, y + 125, "RNG Value: " .. Memory.RNGValue)
-    wgui.text(x, y + 139, "RNG Index: " .. get_index(Memory.RNGValue))
-
-    distmoved = Engine.GetTotalDistMoved()
-    if (Settings.Layout.Button.dist_button.enabled == false) then
-        distmoved = Settings.Layout.Button.dist_button.dist_moved_save
-    end
-    wgui.text(x, y + 152, "Moved Dist: " .. distmoved)
 end

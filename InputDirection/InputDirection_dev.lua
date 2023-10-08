@@ -94,6 +94,56 @@ function drawing()
 
     if tab_index == 1 then
         Drawing.paint()
+
+        local h_speed = 0
+        if Memory.Mario.HSpeed ~= 0 then
+            h_speed = MoreMaths.DecodeDecToFloat(Memory.Mario.HSpeed)
+        end
+
+        local y_speed = 0
+        if Memory.Mario.VSpeed > 0 then
+            y_speed = MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.VSpeed), 6)
+        end
+
+        local distmoved = Engine.GetTotalDistMoved()
+        if (Settings.Layout.Button.dist_button.enabled == false) then
+            distmoved = Settings.Layout.Button.dist_button.dist_moved_save
+        end
+
+
+        local items = {
+            "Yaw (Facing): " ..
+            (Settings.ShowEffectiveAngles and Engine.getEffectiveAngle(Memory.Mario.FacingYaw) or Memory.Mario.FacingYaw),
+            "Yaw (Intended): " ..
+            (Settings.ShowEffectiveAngles and Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) or Memory.Mario.IntendedYaw),
+            "Yaw (Facing) O: " ..
+            (Settings.ShowEffectiveAngles and (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536 or (Memory.Mario.FacingYaw + 32768) % 65536),
+            "Yaw (Intended) O: " ..
+            (Settings.ShowEffectiveAngles and (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536 or (Memory.Mario.IntendedYaw + 32768) % 65536),
+            "H Spd: " .. MoreMaths.Round(h_speed, 5) .. " (Sliding: " .. MoreMaths.Round(Engine.GetHSlidingSpeed(), 6) .. ")",
+            "Y Spd: " .. MoreMaths.Round(y_speed, 6),
+            "Spd Efficiency: " .. Engine.GetSpeedEfficiency() .. "%",
+            "XYZ " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.X), 2) .. " | " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Y), 2) .. " | " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Z), 2),
+            "XZ Movement: " .. MoreMaths.Round(Engine.GetDistMoved(), 6),
+            "Action: " .. Engine.GetCurrentAction(),
+            "RNG: " .. Memory.RNGValue .. " (index: " .. get_index(Memory.RNGValue) .. ")",
+            "Moved Dist: " .. distmoved,
+            "E: " .. Settings.Layout.Button.strain_button.arctanexp,
+            "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5),
+            "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5),
+            "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2),
+            "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2),
+        }
+
+
+        Mupen_lua_ugui.listbox({
+            uid = 13377331,
+            is_enabled = true,
+            rectangle = grid_rect(0, 8, 7, 6),
+            selected_index = nil,
+            items = items,
+        })
+
         Input.update()
     elseif tab_index == 2 then
         Timing.draw()

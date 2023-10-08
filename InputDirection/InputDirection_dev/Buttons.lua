@@ -218,13 +218,8 @@ Buttons = {
         name = "increment arcotan ratio",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
-        box = function()
-            return {
-                Drawing.Screen.Width + 147,
-                360,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7, 8, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -241,13 +236,8 @@ Buttons = {
         name = "decrement arcotan ratio",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
-        box = function()
-            return {
-                Drawing.Screen.Width + 159,
-                360,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7.5, 8, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -264,13 +254,8 @@ Buttons = {
         name = "increment arcotan displacement",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
-        box = function()
-            return {
-                Drawing.Screen.Width + 147,
-                372,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7, 8.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -287,13 +272,8 @@ Buttons = {
         name = "decrement arcotan displacement",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
-        box = function()
-            return {
-                Drawing.Screen.Width + 159,
-                372,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7.5, 8.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -310,13 +290,8 @@ Buttons = {
         name = "increment arcotan length",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
-        box = function()
-            return {
-                Drawing.Screen.Width + 147,
-                384,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7, 9, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -335,13 +310,8 @@ Buttons = {
         name = "decrement arcotan length",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
-        box = function()
-            return {
-                Drawing.Screen.Width + 159,
-                384,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7.5, 9, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -360,13 +330,8 @@ Buttons = {
         name = "increment arcotan start frame",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
-        box = function()
-            return {
-                Drawing.Screen.Width + 147,
-                396,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7, 9.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -384,13 +349,8 @@ Buttons = {
         name = "decrement arcotan start frame",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
-        box = function()
-            return {
-                Drawing.Screen.Width + 159,
-                396,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7.5, 9.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -408,13 +368,8 @@ Buttons = {
         name = "increment arcotan step",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
-        box = function()
-            return {
-                Drawing.Screen.Width + 147,
-                348,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7, 10, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -431,13 +386,8 @@ Buttons = {
         name = "decrement arcotan step",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
-        box = function()
-            return {
-                Drawing.Screen.Width + 159,
-                348,
-                12,
-                12
-            }
+        box = function ()
+            return grid(7.5, 10, 0.5, 0.5)
         end,
         enabled = function()
             return true
