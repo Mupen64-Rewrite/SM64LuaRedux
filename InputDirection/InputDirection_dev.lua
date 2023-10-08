@@ -21,6 +21,7 @@ function get_keys(t)
     return keys
 end
 
+local mouse_wheel = 0
 PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
 CURRENT_PATH = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\"
 
@@ -83,11 +84,13 @@ function drawing()
                 y = keys.ymouse,
             },
             is_primary_down = keys.leftclick,
+            wheel = mouse_wheel
         },
         keyboard = {
             held_keys = keys,
         },
     })
+    mouse_wheel = 0
 
     Memory.Refresh()
 
@@ -144,6 +147,16 @@ else
     print("update ur mupen")
 end
 
-emu.atwindowmessage(function(a, b, c, d)
-    Input.at_window_message(a, b, c, d)
+emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
+    if msg_id == 522 then                         -- WM_MOUSEWHEEL
+        -- high word (most significant 16 bits) is scroll rotation in multiples of WHEEL_DELTA (120)
+        local scroll = math.floor(wparam / 65536) --(wparam & 0xFFFF0000) >> 16
+        if scroll == 120 then
+            Input.arrowCheck("up")
+            mouse_wheel = 1
+        elseif scroll == 65416 then -- 65536 - 120
+            Input.arrowCheck("down")
+            mouse_wheel = -1
+        end
+    end
 end)

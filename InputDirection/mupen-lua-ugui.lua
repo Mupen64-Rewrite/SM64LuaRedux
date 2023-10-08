@@ -191,7 +191,7 @@ BreitbandGraphics = {
     ---@param font_name string The font name
     ---@param text string The text
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-        text)
+                         text)
         if text == nil then
             text = ''
         end
@@ -343,7 +343,12 @@ local function is_pointer_just_down()
     return Mupen_lua_ugui.input_state.pointer.is_primary_down and
         not Mupen_lua_ugui.previous_input_state.pointer.is_primary_down;
 end
-
+local function is_mouse_wheel_up()
+    return Mupen_lua_ugui.input_state.pointer.wheel == 1
+end
+local function is_mouse_wheel_down()
+    return Mupen_lua_ugui.input_state.pointer.wheel == -1
+end
 local function get_just_pressed_keys()
     local keys = {}
     for key, value in pairs(Mupen_lua_ugui.input_state.keyboard.held_keys) do
@@ -377,10 +382,10 @@ end
 
 Mupen_lua_ugui = {
     control_data = {},
-    input_state = {},
-    previous_input_state = {},
+    input_state = nil,
+    previous_input_state = nil,
     active_control_uid = nil,
-    previous_pointer_primary_down_position = {x = 0, y = 0},
+    previous_pointer_primary_down_position = { x = 0, y = 0 },
     hittest_ignore_rectangles = {},
     has_primary_input_been_handled = false,
     end_frame_callbacks = {},
@@ -536,7 +541,7 @@ Mupen_lua_ugui = {
                         y = rectangle.y,
                         width = rectangle.width,
                         height = rectangle.height,
-                    }, 'start', 'center', {clip = true},
+                    }, 'start', 'center', { clip = true },
                     Mupen_lua_ugui.stylers.windows_10.list_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name,
@@ -628,7 +633,7 @@ Mupen_lua_ugui = {
                 Mupen_lua_ugui.stylers.windows_10.draw_raised_frame(control, visual_state)
 
                 Mupen_lua_ugui.renderer.draw_text(control.rectangle, 'center', 'center',
-                    {clip = true},
+                    { clip = true },
                     Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
@@ -705,7 +710,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', {clip = true},
+                    }, 'start', 'start', { clip = true },
                     Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
@@ -746,7 +751,7 @@ Mupen_lua_ugui = {
                             y = control.rectangle.y,
                             width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                             height = control.rectangle.height,
-                        }, 'start', 'start', {clip = true},
+                        }, 'start', 'start', { clip = true },
                         BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors
                             [visual_state]),
                         Mupen_lua_ugui.stylers.windows_10.font_size,
@@ -951,7 +956,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width,
                         height = control.rectangle.height,
-                    }, 'start', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                    }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name,
                     control.items[control.selected_index])
 
@@ -960,7 +965,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 4,
                         height = control.rectangle.height,
-                    }, 'end', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                    }, 'end', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                     'Segoe UI Mono', 'v')
 
                 if Mupen_lua_ugui.control_data[control.uid].is_open then
@@ -1436,6 +1441,16 @@ Mupen_lua_ugui = {
                     selected_index = new_index
                 end
             end
+
+            local inc = 0
+            if is_mouse_wheel_up() then
+                inc = -1 / #control.items
+            end
+            if is_mouse_wheel_down() then
+                inc = 1 / #control.items
+            end
+            Mupen_lua_ugui.control_data[control.uid].y_translation = Mupen_lua_ugui.control_data[control.uid]
+            .y_translation + inc
         end
 
 
