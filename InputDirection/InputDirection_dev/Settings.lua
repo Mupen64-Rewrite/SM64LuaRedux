@@ -12,7 +12,7 @@ Settings = {
         {},
         {},
     },
-    active_style_index = 5
+    active_style_index = 4
 }
 
 --[[
@@ -456,6 +456,27 @@ Settings.create_styles = function()
             center = expand({ 35, 41, 1, 2 }),
         }
     }
+    Settings.styles[4].scrollbar_thumb = {
+        states = {
+            [1] = {
+                source = expand({ 55, 57, 17, 22 }),
+                center = expand({ 59, 61, 9, 14 }),
+            },
+            [2] = {
+                source = expand({ 55, 79, 17, 22 }),
+                center = expand({ 59, 83, 9, 14 }),
+            },
+            [3] = {
+                source = expand({ 55, 101, 17, 22 }),
+                center = expand({ 59, 105, 9, 14 }),
+            },
+            [0] = {
+                source = expand({ 55, 145, 17, 22 }),
+                center = expand({ 59, 149, 9, 14 }),
+            }
+        }
+    }
+    Settings.styles[4].scrollbar_rail = expand({ 55, 123, 17, 22 })
     Settings.styles[5] = spread(get_windows_10_nineslice_style()) {
         path = folder("InputDirection_dev/Settings.lua") .. "res/windows-3-pink-atlas.png",
         background_color = { r = 54, g = 30, b = 53 },
