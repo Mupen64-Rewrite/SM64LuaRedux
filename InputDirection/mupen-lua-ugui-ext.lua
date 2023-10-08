@@ -187,10 +187,24 @@ end
 
 BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_rectangle, source_rectangle_center, path,
                                                   color, filter)
+    destination_rectangle = {
+        x = math.floor(destination_rectangle.x),
+        y = math.floor(destination_rectangle.y),
+        width = math.ceil(destination_rectangle.width),
+        height = math.ceil(destination_rectangle.height),
+    }
+    source_rectangle = {
+        x = math.floor(source_rectangle.x),
+        y = math.floor(source_rectangle.y),
+        width = math.ceil(source_rectangle.width),
+        height = math.ceil(source_rectangle.height),
+    }
     local corner_size = {
         x = math.abs(source_rectangle_center.x - source_rectangle.x),
         y = math.abs(source_rectangle_center.y - source_rectangle.y),
     }
+
+
     local top_left = {
         x = source_rectangle.x,
         y = source_rectangle.y,
