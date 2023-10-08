@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.0.4
+-- mupen-lua-ugui 1.0.5
 
 if not emu.set_renderer then
     print('BreitbandGraphics requires mupen64-rr-lua 1.1.4 or above\r\n')
@@ -375,6 +375,11 @@ local function remap(value, from1, to1, from2, to2)
     return (value - from1) / (to1 - from1) * (to2 - from2) + from2
 end
 
+local function round_p(val, decimal)
+    local exp = decimal and 10^decimal or 1
+    return math.ceil(val * exp - 0.5) / exp
+  end
+
 Mupen_lua_ugui = {
     control_data = {},
     input_state = {},
@@ -502,7 +507,7 @@ Mupen_lua_ugui = {
                 Mupen_lua_ugui.renderer.fill_rectangle(BreitbandGraphics.inflate_rectangle(rectangle, -1),
                     back_color)
             end,
-            draw_list = function(control, rectangle, selected_index)
+            draw_list_frame = function(rectangle, visual_state)
                 Mupen_lua_ugui.renderer.fill_rectangle(BreitbandGraphics.inflate_rectangle(rectangle, 1), {
                     r = 130,
                     g = 135,
@@ -513,13 +518,48 @@ Mupen_lua_ugui = {
                     g = 255,
                     b = 255,
                 })
+            end,
+            draw_list_item = function(item, rectangle, visual_state)
+                if visual_state == Mupen_lua_ugui.visual_states.active then
+                    local accent_color = {
+                        r = 0,
+                        g = 120,
+                        b = 215,
+                    }
 
+                    if visual_state == Mupen_lua_ugui.visual_states.disabled then
+                        accent_color = BreitbandGraphics.repeated_to_color(204)
+                    end
+
+
+                    Mupen_lua_ugui.renderer.fill_rectangle(rectangle, accent_color)
+                end
+
+
+                Mupen_lua_ugui.renderer.draw_text({
+                        x = rectangle.x + 2,
+                        y = rectangle.y,
+                        width = rectangle.width,
+                        height = rectangle.height,
+                    }, 'start', 'center', { clip = true },
+                    Mupen_lua_ugui.stylers.windows_10.list_text_colors[visual_state],
+                    Mupen_lua_ugui.stylers.windows_10.font_size,
+                    Mupen_lua_ugui.stylers.windows_10.font_name,
+                    item)
+            end,
+            draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
+                Mupen_lua_ugui.renderer.fill_rectangle(container_rectangle, BreitbandGraphics.repeated_to_color(240))
+                Mupen_lua_ugui.renderer.fill_rectangle(thumb_rectangle, BreitbandGraphics.repeated_to_color(204))
+            end,
+            draw_list = function(control, rectangle, selected_index)
                 local visual_state = Mupen_lua_ugui.get_visual_state(control)
+                Mupen_lua_ugui.styler.draw_list_frame(rectangle, visual_state)
 
                 -- item y position:
                 -- y = (20 * (i - 1)) - (y_translation * ((20 * #control.items) - control.rectangle.height))
                 local y_translation = Mupen_lua_ugui.control_data[control.uid].y_translation and
                     Mupen_lua_ugui.control_data[control.uid].y_translation or 0
+
 
                 local index_begin = (y_translation *
                         ((Mupen_lua_ugui.stylers.windows_10.item_height * #control.items) - rectangle.height)) /
@@ -532,7 +572,7 @@ Mupen_lua_ugui = {
                 index_begin = math.max(index_begin, 0)
                 index_end = math.min(index_end, #control.items)
 
-                Mupen_lua_ugui.renderer.push_clip(rectangle)
+                Mupen_lua_ugui.renderer.push_clip(BreitbandGraphics.inflate_rectangle(rectangle, -1))
 
                 for i = math.floor(index_begin), math.ceil(index_end), 1 do
                     local y = (Mupen_lua_ugui.stylers.windows_10.item_height * (i - 1)) -
@@ -545,36 +585,14 @@ Mupen_lua_ugui = {
 
                     if selected_index == i then
                         item_visual_state = Mupen_lua_ugui.visual_states.active
-                        local accent_color = {
-                            r = 0,
-                            g = 120,
-                            b = 215,
-                        }
-
-                        if visual_state == Mupen_lua_ugui.visual_states.disabled then
-                            accent_color = BreitbandGraphics.repeated_to_color(204)
-                        end
-
-
-                        Mupen_lua_ugui.renderer.fill_rectangle({
-                            x = rectangle.x,
-                            y = rectangle.y + y,
-                            width = rectangle.width,
-                            height = Mupen_lua_ugui.stylers.windows_10.item_height,
-                        }, accent_color)
                     end
 
-
-                    Mupen_lua_ugui.renderer.draw_text({
-                            x = rectangle.x + 2,
-                            y = rectangle.y + y,
-                            width = rectangle.width,
-                            height = Mupen_lua_ugui.stylers.windows_10.item_height,
-                        }, 'start', 'center', { clip = true },
-                        Mupen_lua_ugui.stylers.windows_10.list_text_colors[item_visual_state],
-                        Mupen_lua_ugui.stylers.windows_10.font_size,
-                        Mupen_lua_ugui.stylers.windows_10.font_name,
-                        control.items[i])
+                    Mupen_lua_ugui.styler.draw_list_item(control.items[i], {
+                        x = rectangle.x,
+                        y = rectangle.y + y,
+                        width = rectangle.width,
+                        height = Mupen_lua_ugui.stylers.windows_10.item_height,
+                    }, item_visual_state)
                 end
 
 
@@ -588,19 +606,19 @@ Mupen_lua_ugui = {
                     scrollbar_y = scrollbar_y - scrollbar_height / 2
                     scrollbar_y = clamp(scrollbar_y, 0, rectangle.height - scrollbar_height)
 
-                    Mupen_lua_ugui.renderer.fill_rectangle({
+                    local container_rectangle = {
                         x = rectangle.x + rectangle.width - 10,
                         y = rectangle.y,
                         width = 10,
                         height = rectangle.height,
-                    }, BreitbandGraphics.repeated_to_color(240))
-
-                    Mupen_lua_ugui.renderer.fill_rectangle({
+                    }
+                    local thumb_rectangle = {
                         x = rectangle.x + rectangle.width - 10,
                         y = rectangle.y + scrollbar_y,
                         width = 10,
                         height = scrollbar_height,
-                    }, BreitbandGraphics.repeated_to_color(204))
+                    }
+                    Mupen_lua_ugui.styler.draw_scrollbar(container_rectangle, thumb_rectangle, visual_state)
                 end
 
                 Mupen_lua_ugui.renderer.pop_clip()

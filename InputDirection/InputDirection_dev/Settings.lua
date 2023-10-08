@@ -272,6 +272,72 @@ local function get_windows_10_nineslice_style()
                 }
             }
         },
+        listbox = {
+            text_colors = {
+                [1] = BreitbandGraphics.colors.black,
+                [2] = BreitbandGraphics.colors.black,
+                [3] = BreitbandGraphics.colors.white,
+                [0] = BreitbandGraphics.repeated_to_color(204),
+            },
+            states = {
+                [1] = {
+                    source = expand({ 80, 1, 3, 3 }),
+                    center = expand({ 81, 2, 1, 1 }),
+                },
+                [2] = {
+                    source = expand({ 80, 1, 3, 3 }),
+                    center = expand({ 81, 2, 1, 1 }),
+                },
+                [3] = {
+                    source = expand({ 80, 1, 3, 3 }),
+                    center = expand({ 81, 2, 1, 1 }),
+                },
+                [0] = {
+                    source = expand({ 80, 10, 3, 3 }),
+                    center = expand({ 81, 11, 1, 1 }),
+                }
+            }
+        },
+        listbox_item = {
+            states = {
+                [1] = {
+                    source = expand({ 83, 5, 3, 4 }),
+                    center = expand({ 84, 6, 1, 2 }),
+                },
+                [2] = {
+                    source = expand({ 83, 5, 3, 4 }),
+                    center = expand({ 84, 6, 1, 2 }),
+                },
+                [3] = {
+                    source = expand({ 83, 1, 3, 4 }),
+                    center = expand({ 84, 2, 1, 2 }),
+                },
+                [0] = {
+                    source = expand({ 83, 5, 3, 4 }),
+                    center = expand({ 84, 6, 1, 2 }),
+                }
+            }
+        },
+        scrollbar_thumb = {
+            states = {
+                [1] = {
+                    source = expand({ 74, 1, 5, 5 }),
+                    center = expand({ 76, 3, 1, 1 }),
+                },
+                [2] = {
+                    source = expand({ 74, 6, 5, 5 }),
+                    center = expand({ 76, 8, 1, 1 }),
+                },
+                [3] = {
+                    source = expand({ 74, 11, 5, 5 }),
+                    center = expand({ 76, 13, 1, 1 }),
+                },
+                [0] = {
+                    source = expand({ 74, 16, 5, 5 }),
+                    center = expand({ 76, 18, 1, 1 }),
+                }
+            }
+        }
     }
 end
 
@@ -349,6 +415,42 @@ Settings.create_styles = function()
         [0] = {
             source = expand({ 34, 16, 5, 5 }),
             center = expand({ 36, 18, 1, 1 }),
+        }
+    }
+    Settings.styles[4].listbox.states = {
+        [1] = {
+            source = expand({ 34, 22, 3, 3 }),
+            center = expand({ 35, 23, 1, 1 }),
+        },
+        [2] = {
+            source = expand({ 34, 25, 3, 3 }),
+            center = expand({ 35, 26, 1, 1 }),
+        },
+        [3] = {
+            source = expand({ 34, 28, 3, 3 }),
+            center = expand({ 35, 29, 1, 1 }),
+        },
+        [0] = {
+            source = expand({ 34, 31, 3, 3 }),
+            center = expand({ 35, 32, 1, 1 }),
+        }
+    }
+    Settings.styles[4].listbox_item.states = {
+        [1] = {
+            source = expand({ 34, 40, 3, 4 }),
+            center = expand({ 35, 41, 1, 2 }),
+        },
+        [2] = {
+            source = expand({ 34, 40, 3, 4 }),
+            center = expand({ 35, 41, 1, 2 }),
+        },
+        [3] = {
+            source = expand({ 34, 35, 3, 4}),
+            center = expand({ 35, 36, 1, 2}),
+        },
+        [0] = {
+            source = expand({ 34, 40, 3, 4 }),
+            center = expand({ 35, 41, 1, 2 }),
         }
     }
 end

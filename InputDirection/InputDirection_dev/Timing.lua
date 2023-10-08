@@ -59,7 +59,7 @@ Timing = {
     end,
     update = function()
         curVI = emu.framecount()
-        if (PredictedVIs % 2 ~= curVI % 2) then print(curVI) end
+        -- if (PredictedVIs % 2 ~= curVI % 2) then print(curVI) end
         if (State == 1) then
             if (curVI <= StartVI) then
                 VIs = 0

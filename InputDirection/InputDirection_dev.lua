@@ -52,6 +52,7 @@ local tabs = {
 local tab_index = 1
 
 Settings.create_styles()
+Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index])
 
 Program.initFrame()
 Memory.UpdatePrevPos()
@@ -135,12 +136,11 @@ function drawing()
             "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2),
         }
 
-
         Mupen_lua_ugui.listbox({
             uid = 13377331,
             is_enabled = true,
             rectangle = grid_rect(0, 8, 7, 6),
-            selected_index = nil,
+            selected_index = 2,
             items = items,
         })
 

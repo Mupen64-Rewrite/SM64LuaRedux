@@ -144,7 +144,6 @@ function Drawing.drawAnalogStick(raw_rect)
     })
     if Settings.goalMag and Settings.goalMag < 127 then
         local r = Settings.goalMag
-        print(raw_rect)
         BreitbandGraphics.draw_ellipse({
             x = raw_rect[1] + raw_rect[3] / 2 - r / 2,
             y = raw_rect[2] + raw_rect[4] / 2 - r / 2,

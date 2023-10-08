@@ -310,9 +310,32 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
             style.textbox.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
     end
+    Mupen_lua_ugui.stylers.windows_10.draw_list_frame = function(rectangle, visual_state)
+        BreitbandGraphics.draw_image_nineslice(rectangle,
+            style.listbox.states[visual_state].source,
+            style.listbox.states[visual_state].center,
+            style.path, BreitbandGraphics.colors.white, "nearest")
+    end
+    Mupen_lua_ugui.stylers.windows_10.draw_list_item = function(item, rectangle, visual_state)
+        BreitbandGraphics.draw_image_nineslice(rectangle,
+            style.listbox_item.states[visual_state].source,
+            style.listbox_item.states[visual_state].center,
+            style.path, BreitbandGraphics.colors.white, "nearest")
+        Mupen_lua_ugui.renderer.draw_text({
+                x = rectangle.x + 2,
+                y = rectangle.y,
+                width = rectangle.width,
+                height = rectangle.height,
+            }, 'start', 'center', { clip = true },
+            Mupen_lua_ugui.stylers.windows_10.list_text_colors[visual_state],
+            Mupen_lua_ugui.stylers.windows_10.font_size,
+            Mupen_lua_ugui.stylers.windows_10.font_name,
+            item)
+    end
 
     Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors = style.button.text_colors
     Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors = style.textbox.text_colors
     Mupen_lua_ugui.stylers.windows_10.font_name = style.font_name
     Mupen_lua_ugui.stylers.windows_10.font_size = style.font_size
+    Mupen_lua_ugui.stylers.windows_10.list_text_colors = style.listbox.text_colors
 end
