@@ -6,6 +6,8 @@
 -- Other contributors:
 --	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk
 
+
+
 function folder(thisFileName)
     local str = debug.getinfo(2, 'S').source:sub(2)
     return (str:match('^.*/(.*).lua$') or str):sub(1, -(thisFileName):len() - 1)

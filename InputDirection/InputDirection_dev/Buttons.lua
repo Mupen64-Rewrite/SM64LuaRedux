@@ -15,12 +15,24 @@ function grid(x, y, x_span, y_span)
     local base_x = Drawing.Screen.Width + (Settings.GridSize * x)
     local base_y = (Settings.GridSize * y)
 
-    return {
+    local rect = {
         base_x + Settings.GridGap,
         base_y + Settings.GridGap,
         (Settings.GridSize * x_span) - Settings.GridGap * 2,
         (Settings.GridSize * y_span) - Settings.GridGap * 2,
     }
+
+    if Drawing.Scale > 1 + Drawing.ScaleTolerance then
+        -- scaling up, we space everything out but keep dimensions
+        rect[2] = rect[2] * Drawing.Scale
+    end
+    if Drawing.Scale < 1 - Drawing.ScaleTolerance then
+        -- scaling down, we squish and compress everything
+        rect[2] = rect[2] * Drawing.Scale
+        rect[4] = rect[4] * Drawing.Scale
+    end
+
+    return rect
 end
 
 function grid_rect(x, y, x_span, y_span)
@@ -218,7 +230,7 @@ Buttons = {
         name = "increment arcotan ratio",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
-        box = function ()
+        box = function()
             return grid(7, 8, 0.5, 0.5)
         end,
         enabled = function()
@@ -236,7 +248,7 @@ Buttons = {
         name = "decrement arcotan ratio",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
-        box = function ()
+        box = function()
             return grid(7.5, 8, 0.5, 0.5)
         end,
         enabled = function()
@@ -254,7 +266,7 @@ Buttons = {
         name = "increment arcotan displacement",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
-        box = function ()
+        box = function()
             return grid(7, 8.5, 0.5, 0.5)
         end,
         enabled = function()
@@ -272,7 +284,7 @@ Buttons = {
         name = "decrement arcotan displacement",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
-        box = function ()
+        box = function()
             return grid(7.5, 8.5, 0.5, 0.5)
         end,
         enabled = function()
@@ -290,7 +302,7 @@ Buttons = {
         name = "increment arcotan length",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
-        box = function ()
+        box = function()
             return grid(7, 9, 0.5, 0.5)
         end,
         enabled = function()
@@ -310,7 +322,7 @@ Buttons = {
         name = "decrement arcotan length",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
-        box = function ()
+        box = function()
             return grid(7.5, 9, 0.5, 0.5)
         end,
         enabled = function()
@@ -330,7 +342,7 @@ Buttons = {
         name = "increment arcotan start frame",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
-        box = function ()
+        box = function()
             return grid(7, 9.5, 0.5, 0.5)
         end,
         enabled = function()
@@ -349,7 +361,7 @@ Buttons = {
         name = "decrement arcotan start frame",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
-        box = function ()
+        box = function()
             return grid(7.5, 9.5, 0.5, 0.5)
         end,
         enabled = function()
@@ -368,7 +380,7 @@ Buttons = {
         name = "increment arcotan step",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
-        box = function ()
+        box = function()
             return grid(7, 10, 0.5, 0.5)
         end,
         enabled = function()
@@ -386,7 +398,7 @@ Buttons = {
         name = "decrement arcotan step",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
-        box = function ()
+        box = function()
             return grid(7.5, 10, 0.5, 0.5)
         end,
         enabled = function()

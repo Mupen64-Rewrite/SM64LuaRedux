@@ -3,15 +3,22 @@ Drawing = {
     Screen = {
         Width = 0,
         Height = 0,
-    }
+    },
+    DesignSize = {
+        Width = 800,
+        Height = 600,
+    },
+    Scale = 1,
+    ScaleTolerance = 0.2
 }
 
-
-
-
 function Drawing.updateSize()
+    Drawing.Scale = Drawing.Screen.Height / Drawing.DesignSize.Height
     Drawing.WIDTH_OFFSET = (Settings.GridSize * 8) + (Settings.GridGap * 8)
     wgui.resize(Drawing.Screen.Width + Drawing.WIDTH_OFFSET, Drawing.Screen.Height)
+    if Drawing.Scale > 1 + Drawing.ScaleTolerance or Drawing.Scale < 1 - Drawing.ScaleTolerance then
+        warn("You are using a non-native resolution. The script will try to adapt and fit all elements on-screen, but it may lead to distortions")
+    end
 end
 
 function Drawing.resizeScreen()
