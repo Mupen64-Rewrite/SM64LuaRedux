@@ -9,15 +9,17 @@ Drawing = {
         Height = 600,
     },
     Scale = 1,
-    ScaleTolerance = 0.2
+    ScaleTolerance = 0.1
 }
 
 function Drawing.updateSize()
     Drawing.Scale = Drawing.Screen.Height / Drawing.DesignSize.Height
     Drawing.WIDTH_OFFSET = (Settings.GridSize * 8) + (Settings.GridGap * 8)
     wgui.resize(Drawing.Screen.Width + Drawing.WIDTH_OFFSET, Drawing.Screen.Height)
+    print(Drawing.Scale)
     if Drawing.Scale > 1 + Drawing.ScaleTolerance or Drawing.Scale < 1 - Drawing.ScaleTolerance then
-        warn("You are using a non-native resolution. The script will try to adapt and fit all elements on-screen, but it may lead to distortions")
+        print(
+            "You are using a non-native resolution. The script will try to adapt and fit all elements on-screen, but it may lead to distortions")
     end
 end
 
@@ -60,8 +62,6 @@ function Drawing.paint()
         elseif button.type == ButtonType.textArea then
             local value = button.value()
 
-
-
             local previous_active_control_id = Mupen_lua_ugui.active_control_uid
             if button.editing() and button.enabled() then
                 Mupen_lua_ugui.control_data[i] = {
@@ -99,9 +99,6 @@ function Drawing.paint()
     -- HACK: pick somewhat fitting foreground color
     wgui.setcolor(BreitbandGraphics.color_to_hex(Settings.styles[Settings.active_style_index].textbox.text_colors[0]))
     wgui.setfont(10, "Arial", "")
-
-    local rect = grid(0, 8, 4, 1)
-    rect = grid(0, 9, 4, 1)
 end
 
 function Drawing.drawTextArea(x, y, width, length, text, enabled, editing)

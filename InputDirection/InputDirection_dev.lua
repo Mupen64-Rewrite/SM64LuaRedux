@@ -44,12 +44,14 @@ dofile(PATH .. "RNGToIndex.lua")
 dofile(PATH .. "IndexToRNG.lua")
 dofile(PATH .. "recordghost.lua")
 dofile(PATH .. "Timing.lua")
+dofile(PATH .. "RngPage.lua")
 
 Settings.ShowEffectiveAngles = false -- show angles floored to the nearest multiple of 16
 local tabs = {
     "TAS",
     "Timing",
     "Settings",
+    "RNG",
 }
 local tab_index = 1
 
@@ -123,10 +125,15 @@ function drawing()
             (Settings.ShowEffectiveAngles and (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536 or (Memory.Mario.FacingYaw + 32768) % 65536),
             "Yaw (Intended) O: " ..
             (Settings.ShowEffectiveAngles and (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536 or (Memory.Mario.IntendedYaw + 32768) % 65536),
-            "H Spd: " .. MoreMaths.Round(h_speed, 5) .. " (Sliding: " .. MoreMaths.Round(Engine.GetHSlidingSpeed(), 6) .. ")",
+            "H Spd: " ..
+            MoreMaths.Round(h_speed, 5) .. " (Sliding: " .. MoreMaths.Round(Engine.GetHSlidingSpeed(), 6) .. ")",
             "Y Spd: " .. MoreMaths.Round(y_speed, 6),
             "Spd Efficiency: " .. Engine.GetSpeedEfficiency() .. "%",
-            "XYZ " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.X), 2) .. " | " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Y), 2) .. " | " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Z), 2),
+            "XYZ " ..
+            MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.X), 2) ..
+            " | " ..
+            MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Y), 2) ..
+            " | " .. MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Z), 2),
             "XZ Movement: " .. MoreMaths.Round(Engine.GetDistMoved(), 6),
             "Action: " .. Engine.GetCurrentAction(),
             "RNG: " .. Memory.RNGValue .. " (index: " .. get_index(Memory.RNGValue) .. ")",
@@ -141,7 +148,7 @@ function drawing()
         Mupen_lua_ugui.listbox({
             uid = 13377331,
             is_enabled = true,
-            rectangle = grid_rect(0, 8, 7, 6),
+            rectangle = grid_rect(0, 8, 8, 7),
             selected_index = 2,
             items = items,
         })
@@ -205,6 +212,8 @@ function drawing()
             -- not possible because everything's called from random threads lol
             -- :(
         end
+    elseif tab_index == 4 then
+        RngPage.draw()
     else
         print('what')
     end

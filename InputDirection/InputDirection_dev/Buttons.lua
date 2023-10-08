@@ -28,7 +28,9 @@ function grid(x, y, x_span, y_span)
     end
     if Drawing.Scale < 1 - Drawing.ScaleTolerance then
         -- scaling down, we squish and compress everything
+        rect[1] = (rect[1] * Drawing.Scale) + (Drawing.WIDTH_OFFSET * Drawing.Scale * 0.5)
         rect[2] = rect[2] * Drawing.Scale
+        rect[3] = rect[3] * Drawing.Scale
         rect[4] = rect[4] * Drawing.Scale
     end
 
@@ -66,7 +68,7 @@ Buttons = {
     {
         name = "ignore y",
         type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.IGNORE_Y],
+        text = "Ignore Y",
         box = function()
             return grid(4, 15, 4, 1)
         end,
@@ -87,7 +89,7 @@ Buttons = {
     {
         name = ".99",
         type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.POINT_99],
+        text = ".99",
         box = function()
             return grid(7, 0, 1, 1)
         end,
@@ -109,7 +111,7 @@ Buttons = {
     {
         name = "always .99",
         type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.ALWAYS_99],
+        text = "Always",
         box = function()
             return grid(4, 0, 3, 1)
         end,
@@ -130,9 +132,9 @@ Buttons = {
     {
         name = ".99 left",
         type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.LEFT_99],
+        text = "<",
         box = function()
-            return grid(4, 1, 2, 1)
+            return grid(4, 1, 1, 1)
         end,
         enabled = function()
             return true
@@ -147,9 +149,9 @@ Buttons = {
     {
         name = ".99 right",
         type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.RIGHT_99],
+        text = ">",
         box = function()
-            return grid(6, 1, 2, 1)
+            return grid(7, 1, 1, 1)
         end,
         enabled = function()
             return true
@@ -162,11 +164,53 @@ Buttons = {
         end
     },
     {
+        name = "swim",
+        type = ButtonType.button,
+        text = Settings.Layout.Button.items[Settings.Layout.Button.SWIM],
+        box = function()
+            return grid(4, 2, 2, 1)
+        end,
+        enabled = function()
+            return true
+        end,
+        pressed = function()
+            return Settings.Layout.Button.swimming == true
+        end,
+        onclick = function(self)
+            if (Settings.Layout.Button.swimming == true) then
+                Settings.Layout.Button.swimming = false
+            else
+                Settings.Layout.Button.swimming = true
+            end
+        end
+    },
+    {
+        name = "high magnitude",
+        type = ButtonType.button,
+        text = Settings.Layout.Button.items[Settings.Layout.Button.HIGH_MAG],
+        box = function()
+            return grid(6, 2, 2, 1)
+        end,
+        enabled = function()
+            return true
+        end,
+        pressed = function()
+            return Settings.Layout.Button.strain_button.highmag == true
+        end,
+        onclick = function(self)
+            if (Settings.Layout.Button.strain_button.highmag == true) then
+                Settings.Layout.Button.strain_button.highmag = false
+            else
+                Settings.Layout.Button.strain_button.highmag = true
+            end
+        end
+    },
+    {
         name = "dyaw",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DYAW],
         box = function()
-            return grid(4, 2, 2, 1)
+            return grid(5, 1, 2, 1)
         end,
         enabled = function()
             return true
@@ -231,7 +275,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
         box = function()
-            return grid(7, 8, 0.5, 0.5)
+            return grid(4, 7, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -249,7 +293,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
         box = function()
-            return grid(7.5, 8, 0.5, 0.5)
+            return grid(4, 7.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -267,7 +311,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
         box = function()
-            return grid(7, 8.5, 0.5, 0.5)
+            return grid(4.5, 7, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -285,7 +329,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
         box = function()
-            return grid(7.5, 8.5, 0.5, 0.5)
+            return grid(4.5, 7.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -303,7 +347,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
         box = function()
-            return grid(7, 9, 0.5, 0.5)
+            return grid(5, 7, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -323,7 +367,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
         box = function()
-            return grid(7.5, 9, 0.5, 0.5)
+            return grid(5, 7.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -343,7 +387,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
         box = function()
-            return grid(7, 9.5, 0.5, 0.5)
+            return grid(5.5, 7, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -362,7 +406,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
         box = function()
-            return grid(7.5, 9.5, 0.5, 0.5)
+            return grid(5.5, 7.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -381,7 +425,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
         box = function()
-            return grid(7, 10, 0.5, 0.5)
+            return grid(6, 7, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -399,7 +443,7 @@ Buttons = {
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
         box = function()
-            return grid(7.5, 10, 0.5, 0.5)
+            return grid(6, 7.5, 0.5, 0.5)
         end,
         enabled = function()
             return true
@@ -415,7 +459,7 @@ Buttons = {
     {
         name = "dist moved",
         type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DIST_MOVED],
+        text = "Get Moved Distance",
         box = function()
             return grid(0, 15, 4, 1)
         end,
@@ -632,45 +676,6 @@ Buttons = {
         end
     },
     {
-        name = "speedkick magnitude",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.MAG48],
-        box = function()
-            return grid(4, 6, 2, 1)
-        end,
-        enabled = function()
-            return true
-        end,
-        pressed = function()
-            return false
-        end,
-        onclick = function(self)
-            Settings.goalMag = 48
-            Settings.Layout.Button.strain_button.highmag = true
-        end
-    },
-    {
-        name = "high magnitude",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.HIGH_MAG],
-        box = function()
-            return grid(6, 6, 2, 1)
-        end,
-        enabled = function()
-            return true
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.highmag == true
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.strain_button.highmag == true) then
-                Settings.Layout.Button.strain_button.highmag = false
-            else
-                Settings.Layout.Button.strain_button.highmag = true
-            end
-        end
-    },
-    {
         name = "reset magnitude",
         type = ButtonType.button,
         text = Settings.Layout.Button.items[Settings.Layout.Button.RESET_MAG],
@@ -688,158 +693,11 @@ Buttons = {
         end
     },
     {
-        name = "swim",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.SWIM],
-        box = function()
-            return grid(6, 2, 2, 1)
-        end,
-        enabled = function()
-            return true
-        end,
-        pressed = function()
-            return Settings.Layout.Button.swimming == true
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.swimming == true) then
-                Settings.Layout.Button.swimming = false
-            else
-                Settings.Layout.Button.swimming = true
-            end
-        end
-    },
-    {
-        name = "set rng",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.SET_RNG],
-        box = function()
-            return grid(0, 14, 2, 1)
-        end,
-        enabled = function()
-            return true
-        end,
-        pressed = function()
-            return Settings.Layout.Button.SET_RNG == true
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.SET_RNG == true) then
-                Settings.Layout.Button.SET_RNG = false
-            else
-                Settings.Layout.Button.SET_RNG = true
-            end
-        end
-    },
-    {
-        name = "use value",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.USE_VALUE],
-        box = function()
-            return grid(2, 14, 1, 1)
-        end,
-        enabled = function()
-            return true
-        end,
-        pressed = function()
-            return Settings.Layout.Button.set_rng_mode.value == true
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.set_rng_mode.value == true) then
-                Settings.Layout.Button.set_rng_mode.value = false
-            else
-                Settings.Layout.Button.set_rng_mode.value = true
-                Settings.Layout.Button.set_rng_mode.index = false
-            end
-        end
-    },
-    {
-        name = "use index",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.USE_INDEX],
-        box = function()
-            return grid(3, 14, 1, 1)
-        end,
-        enabled = function()
-            return true
-        end,
-        pressed = function()
-            return Settings.Layout.Button.set_rng_mode.index == true
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.set_rng_mode.index == true) then
-                Settings.Layout.Button.set_rng_mode.index = false
-            else
-                Settings.Layout.Button.set_rng_mode.index = true
-                Settings.Layout.Button.set_rng_mode.value = false
-            end
-        end
-    },
-    {
-        name = "set rng input",
-        type = ButtonType.textArea,
-        inputSize = 5,
-        box = function()
-            return grid(4, 14, 4, 1)
-        end,
-        value = function()
-            return Settings.setRNG
-        end,
-        enabled = function()
-            return Settings.Layout.Button.SET_RNG == true
-        end,
-        editing = function()
-            return Settings.Layout.TextArea.selectedItem == Settings.Layout.TextArea.RNG
-        end,
-        onclick = function(self, char)
-            if (Settings.Layout.TextArea.selectedItem ~= Settings.Layout.TextArea.RNG) then
-                Settings.Layout.TextArea.selectedItem = Settings.Layout.TextArea.RNG
-                Settings.Layout.TextArea.selectedChar = 1 -- on first click set to leading digit
-            else
-                Settings.Layout.TextArea.selectedChar = char
-            end
-            Settings.Layout.TextArea.blinkTimer = 0
-            Settings.Layout.TextArea.showUnderscore = true
-        end,
-        onkeypress = function(self, key)
-            local rng = Settings.setRNG or 0
-            local oldkey = math.floor(rng / math.pow(10, self.inputSize - Settings.Layout.TextArea.selectedChar)) % 10
-            rng = rng + (key - oldkey) * math.pow(10, self.inputSize - Settings.Layout.TextArea.selectedChar)
-            Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar + 1
-            if Settings.Layout.TextArea.selectedChar > self.inputSize then
-                Settings.Layout.TextArea.selectedItem = 0
-            end
-            Settings.setRNG = rng
-        end,
-        onarrowpress = function(self, key)
-            if (key == "left") then
-                Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar - 1
-                if (Settings.Layout.TextArea.selectedChar == 0) then
-                    Settings.Layout.TextArea.selectedChar = self.inputSize
-                end
-                Settings.Layout.TextArea.showUnderscore = false
-            elseif (key == "right") then
-                Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar + 1
-                if (Settings.Layout.TextArea.selectedChar == self.inputSize + 1) then
-                    Settings.Layout.TextArea.selectedChar = 1
-                end
-                Settings.Layout.TextArea.showUnderscore = false
-            elseif (key == "up") then
-                local oldkey = getDigit(Settings.setRNG, self.inputSize)
-                Settings.setRNG = updateDigit(Settings.setRNG, self.inputSize, oldkey + 1)
-                Settings.Layout.TextArea.showUnderscore = true
-            elseif (key == "down") then
-                local oldkey = getDigit(Settings.setRNG, self.inputSize)
-                Settings.setRNG = updateDigit(Settings.setRNG, self.inputSize, oldkey - 1)
-                Settings.Layout.TextArea.showUnderscore = true
-            end
-            Settings.Layout.TextArea.blinkTimer = -1
-        end
-    },
-    {
         name = "record ghost",
         type = ButtonType.button,
         text = "Record Ghost",
         box = function()
-            return grid(4, 7, 4, 1)
+            return grid(4, 6, 4, 1)
         end,
         enabled = function()
             return true
