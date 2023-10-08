@@ -10,8 +10,9 @@ Settings = {
         {},
         {},
         {},
+        {},
     },
-    active_style_index = 1
+    active_style_index = 5
 }
 
 --[[
@@ -454,6 +455,14 @@ Settings.create_styles = function()
             center = expand({ 35, 41, 1, 2 }),
         }
     }
+    Settings.styles[5] = spread(get_windows_10_nineslice_style()) {
+        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-3-pink-atlas.png",
+        background_color = { r = 54, g = 30, b = 53 },
+        font_name = "Consolas"
+    }
+    Settings.styles[5].button.text_colors = Settings.styles[3].button.text_colors
+    Settings.styles[5].textbox.text_colors = Settings.styles[3].textbox.text_colors
+    Settings.styles[5].listbox.text_colors = Settings.styles[3].textbox.text_colors
 end
 
 local selected_var_index = 1
@@ -468,6 +477,7 @@ Settings.draw = function()
             "Windows 11",
             "Windows 10 Dark",
             "Windows 7",
+            "Windows 3 Pink",
         },
         selected_index = Settings.active_style_index,
     })
