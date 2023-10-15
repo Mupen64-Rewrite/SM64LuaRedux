@@ -10,4 +10,4 @@ SM64 Lua Redux is a fork of [SM64 Lua](https://github.com/mkdasher/SM64Lua) powe
 
 # Demo
 
-![grafik](https://github.com/Mupen64-Rewrite/SM64Lua/assets/48759429/f5c5df1c-5d95-482e-b964-697ff17d9cbd)
+![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/4f29f6f7-0f3e-40b8-94ab-47f08b6e6b47)
