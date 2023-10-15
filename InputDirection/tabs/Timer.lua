@@ -14,7 +14,7 @@ local curVI = 0
 local function reset()
     State = 0
     VIs = 0
-end 
+end
 local function start()
     State = 1
     VIs = 2
@@ -46,20 +46,20 @@ local function timerAutoDetect()
     end
 end
 
-Timing = {
-    get_frame_text = function()
-        local decimals = (VIs * 1000 // 60 + 5) // 10 % 100
-        if (VIs < 3600) then
-            return string.format("%02d.%02d", VIs // 60, decimals)
-        elseif (VIs < 360000) then
-            return string.format("%02d:%02d.%02d", VIs // 3600, (VIs % 3600) // 60, decimals)
-        else
-            return "99:59.99"
-        end
-    end,
+local function get_frame_text()
+    local decimals = (VIs * 1000 // 60 + 5) // 10 % 100
+    if (VIs < 3600) then
+        return string.format("%02d.%02d", VIs // 60, decimals)
+    elseif (VIs < 360000) then
+        return string.format("%02d:%02d.%02d", VIs // 3600, (VIs % 3600) // 60, decimals)
+    else
+        return "99:59.99"
+    end
+end
+
+return {
     update = function()
         curVI = emu.framecount()
-        -- if (PredictedVIs % 2 ~= curVI % 2) then print(curVI) end
         if (State == 1) then
             if (curVI <= StartVI) then
                 VIs = 0
@@ -97,12 +97,12 @@ Timing = {
             }) then
             reset()
         end
-        Timing.is_control_automatic = Mupen_lua_ugui.toggle_button({
+        is_control_automatic = Mupen_lua_ugui.toggle_button({
             uid = 5,
             is_enabled = true,
             rectangle = grid_rect(6, 0, 2, 1),
-            text = Timing.is_control_automatic and "Automatic" or "Manual",
-            is_checked = Timing.is_control_automatic
+            text = is_control_automatic and "Automatic" or "Manual",
+            is_checked = is_control_automatic
         })
         Mupen_lua_ugui.joystick({
             uid = 1,
@@ -116,6 +116,6 @@ Timing = {
 
         BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center", {},
             BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].background_color), 24, "Consolas",
-            Timing.get_frame_text())
+            get_frame_text())
     end
 }

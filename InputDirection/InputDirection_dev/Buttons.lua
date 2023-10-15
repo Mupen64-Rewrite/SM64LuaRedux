@@ -12,7 +12,7 @@ function grid(x, y, x_span, y_span)
         y_span = 1
     end
 
-    local base_x = Drawing.Screen.Width + (Settings.GridSize * x)
+    local base_x = Drawing.initial_size.width + (Settings.GridSize * x)
     local base_y = (Settings.GridSize * y)
 
     local rect = {
@@ -22,16 +22,16 @@ function grid(x, y, x_span, y_span)
         (Settings.GridSize * y_span) - Settings.GridGap * 2,
     }
 
-    if Drawing.Scale > 1 + Drawing.ScaleTolerance then
+    if Drawing.scale > 1 + Drawing.scale_tolerance then
         -- scaling up, we space everything out but keep dimensions
-        rect[2] = rect[2] * Drawing.Scale
+        rect[2] = rect[2] * Drawing.scale
     end
-    if Drawing.Scale < 1 - Drawing.ScaleTolerance then
+    if Drawing.scale < 1 - Drawing.scale_tolerance then
         -- scaling down, we squish and compress everything
-        rect[1] = (rect[1] * Drawing.Scale) + (Drawing.WIDTH_OFFSET * Drawing.Scale * 0.5)
-        rect[2] = rect[2] * Drawing.Scale
-        rect[3] = rect[3] * Drawing.Scale
-        rect[4] = rect[4] * Drawing.Scale
+        rect[1] = (rect[1] * Drawing.scale) + (Drawing.width_growth * Drawing.scale * 0.5)
+        rect[2] = rect[2] * Drawing.scale
+        rect[3] = rect[3] * Drawing.scale
+        rect[4] = rect[4] * Drawing.scale
     end
 
     return rect

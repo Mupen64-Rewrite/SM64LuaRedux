@@ -1,4 +1,3 @@
-dofile (PATH .. "Buttons.lua")
 Ghost = {}
 
 GLOBAL_TIMER_ADDRESS = 0x8032D5D4
