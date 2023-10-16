@@ -152,7 +152,7 @@ emu.atinput(main)
 emu.atupdatescreen(drawing)
 emu.atstop(close)
 if emu.atloadstate then
-    emu.atreset(Drawing.size_up, false)
+    emu.atreset(Drawing.size_up)
 else
     print("update ur mupen")
 end
