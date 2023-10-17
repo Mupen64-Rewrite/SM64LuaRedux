@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.0.5
+-- mupen-lua-ugui 1.1.0
 
 if not emu.set_renderer then
     print('BreitbandGraphics requires mupen64-rr-lua 1.1.4 or above\r\n')
@@ -91,6 +91,28 @@ BreitbandGraphics = {
             b = 255,
         },
     },
+
+    ---Whether a point is inside a rectangle
+    ---@param point table `{x, y}`
+    ---@param rectangle table `{x, y, width, height}`
+    is_point_inside_rectangle = function(point, rectangle)
+        return point.x > rectangle.x and
+            point.y > rectangle.y and
+            point.x < rectangle.x + rectangle.width and
+            point.y < rectangle.y + rectangle.height;
+    end,
+
+    ---Whether a point is inside any of the rectangles
+    ---@param point table `{x, y}`
+    ---@param rectangles table[] `{{x, y, width, height}}`
+    is_point_inside_any_rectangle = function(point, rectangles)
+        for i = 1, #rectangles, 1 do
+            if BreitbandGraphics.is_point_inside_rectangle(point, rectangles[i]) then
+                return true
+            end
+        end
+        return false
+    end,
 
     --- Creates a rectangle inflated around its center by the specified amount
     --- @param rectangle table The rectangle to be inflated
@@ -191,7 +213,7 @@ BreitbandGraphics = {
     ---@param font_name string The font name
     ---@param text string The text
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-                         text)
+        text)
         if text == nil then
             text = ''
         end
@@ -296,110 +318,81 @@ BreitbandGraphics = {
     end,
 }
 
--- https://stackoverflow.com/a/26367080/14472122
-local function deep_clone(obj, seen)
-    if type(obj) ~= 'table' then return obj end
-    if seen and seen[obj] then return seen[obj] end
-    local s = seen or {}
-    local res = setmetatable({}, getmetatable(obj))
-    s[obj] = res
-    for k, v in pairs(obj) do res[deep_clone(k, s)] = deep_clone(v, s) end
-    return res
-end
-
-local function clamp(value, min, max)
-    return math.max(math.min(value, max), min)
-end
-
-local function is_pointer_inside(rectangle)
-    return Mupen_lua_ugui.input_state.pointer.position.x > rectangle.x and
-        Mupen_lua_ugui.input_state.pointer.position.y > rectangle.y and
-        Mupen_lua_ugui.input_state.pointer.position.x < rectangle.x + rectangle.width and
-        Mupen_lua_ugui.input_state.pointer.position.y < rectangle.y + rectangle.height;
-end
-
-local function is_pointer_inside_ignored_rectangle()
-    for i = 1, #Mupen_lua_ugui.hittest_ignore_rectangles, 1 do
-        if (Mupen_lua_ugui.input_state.pointer.position.x > Mupen_lua_ugui.hittest_ignore_rectangles[i].x and
-                Mupen_lua_ugui.input_state.pointer.position.y > Mupen_lua_ugui.hittest_ignore_rectangles[i].y and
-                Mupen_lua_ugui.input_state.pointer.position.x < Mupen_lua_ugui.hittest_ignore_rectangles[i].x + Mupen_lua_ugui.hittest_ignore_rectangles[i].width and
-                Mupen_lua_ugui.input_state.pointer.position.y < Mupen_lua_ugui.hittest_ignore_rectangles[i].y + Mupen_lua_ugui.hittest_ignore_rectangles[i].height)
-        then
-            return true
-        end
-    end
-    return false
-end
-local function is_previous_primary_down_pointer_inside(rectangle)
-    return Mupen_lua_ugui.previous_pointer_primary_down_position.x > rectangle.x and
-        Mupen_lua_ugui.previous_pointer_primary_down_position.y > rectangle.y and
-        Mupen_lua_ugui.previous_pointer_primary_down_position.x < rectangle.x + rectangle.width and
-        Mupen_lua_ugui.previous_pointer_primary_down_position.y < rectangle.y + rectangle.height;
-end
-local function is_pointer_down()
-    return Mupen_lua_ugui.input_state.pointer.is_primary_down;
-end
-local function is_pointer_just_down()
-    return Mupen_lua_ugui.input_state.pointer.is_primary_down and
-        not Mupen_lua_ugui.previous_input_state.pointer.is_primary_down;
-end
-local function is_mouse_wheel_up()
-    return Mupen_lua_ugui.input_state.pointer.wheel == 1
-end
-local function is_mouse_wheel_down()
-    return Mupen_lua_ugui.input_state.pointer.wheel == -1
-end
-local function get_just_pressed_keys()
-    local keys = {}
-    for key, value in pairs(Mupen_lua_ugui.input_state.keyboard.held_keys) do
-        if not Mupen_lua_ugui.previous_input_state.keyboard.held_keys[key] then
-            keys[key] = 1
-        end
-    end
-    return keys
-end
-
-local function remove_range(string, start_index, end_index)
-    if start_index > end_index then
-        start_index, end_index = end_index, start_index
-    end
-    return string.sub(string, 1, start_index - 1) .. string.sub(string, end_index)
-end
-
-local function remove_at(string, index)
-    if index == 0 then
-        return string
-    end
-    return string:sub(1, index - 1) .. string:sub(index + 1, string:len())
-end
-local function insert_at(string, string2, index)
-    return string:sub(1, index) .. string2 .. string:sub(index + string2:len(), string:len())
-end
-
-local function remap(value, from1, to1, from2, to2)
-    return (value - from1) / (to1 - from1) * (to2 - from2) + from2
-end
-
 Mupen_lua_ugui = {
     control_data = {},
     input_state = nil,
     previous_input_state = nil,
+    mouse_down_position = {x = 0, y = 0},
     active_control_uid = nil,
-    previous_pointer_primary_down_position = { x = 0, y = 0 },
-    hittest_ignore_rectangles = {},
     has_primary_input_been_handled = false,
     end_frame_callbacks = {},
     renderer = nil,
     styler = nil,
+
+    internal = {
+        deep_clone = function(obj, seen)
+            if type(obj) ~= 'table' then return obj end
+            if seen and seen[obj] then return seen[obj] end
+            local s = seen or {}
+            local res = setmetatable({}, getmetatable(obj))
+            s[obj] = res
+            for k, v in pairs(obj) do res[Mupen_lua_ugui.internal.deep_clone(k, s)] = Mupen_lua_ugui.internal.deep_clone(v, s) end
+            return res
+        end,
+        remove_range = function(string, start_index, end_index)
+            if start_index > end_index then
+                start_index, end_index = end_index, start_index
+            end
+            return string.sub(string, 1, start_index - 1) .. string.sub(string, end_index)
+        end,
+        is_mouse_just_down = function()
+            return Mupen_lua_ugui.input_state.is_primary_down and
+                not Mupen_lua_ugui.previous_input_state.is_primary_down;
+        end,
+        is_mouse_wheel_up = function()
+            return Mupen_lua_ugui.input_state.wheel == 1
+        end,
+        is_mouse_wheel_down = function()
+            return Mupen_lua_ugui.input_state.wheel == -1
+        end,
+        remove_at = function(string, index)
+            if index == 0 then
+                return string
+            end
+            return string:sub(1, index - 1) .. string:sub(index + 1, string:len())
+        end,
+        insert_at = function(string, string2, index)
+            return string:sub(1, index) .. string2 .. string:sub(index + string2:len(), string:len())
+        end,
+        remap = function(value, from1, to1, from2, to2)
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2
+        end,
+        clamp = function(value, min, max)
+            return math.max(math.min(value, max), min)
+        end,
+        get_just_pressed_keys = function()
+            local keys = {}
+            for key, _ in pairs(Mupen_lua_ugui.input_state.held_keys) do
+                if not Mupen_lua_ugui.previous_input_state.held_keys[key] then
+                    keys[key] = 1
+                end
+            end
+            return keys
+        end,
+        is_pushed = function(control)
+            return Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) and control.is_enabled and
+                not Mupen_lua_ugui.has_primary_input_been_handled
+        end,
+    },
     -- The possible states of a control, which are used by the styler
     visual_states = {
         --- The control doesn't accept user interactions
         disabled = 0,
         --- The control isn't being interacted with
         normal = 1,
-        --- The pointer is over the control
+        --- The mouse is over the control
         hovered = 2,
-        --- The primary pointer button is pushed on the control
+        --- The primary mouse button is pushed on the control or the control is currently capturing inputs
         active = 3,
     },
     ---Gets the basic visual state of a control
@@ -410,8 +403,8 @@ Mupen_lua_ugui = {
             return Mupen_lua_ugui.visual_states.disabled
         end
 
-        if is_pointer_inside(control.rectangle) and not is_pointer_inside_ignored_rectangle() then
-            if is_previous_primary_down_pointer_inside(control.rectangle) and is_pointer_down() then
+        if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) then
+            if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.mouse_down_position, control.rectangle) and Mupen_lua_ugui.input_state.is_primary_down then
                 return Mupen_lua_ugui.visual_states.active
             end
 
@@ -542,7 +535,7 @@ Mupen_lua_ugui = {
                         y = rectangle.y,
                         width = rectangle.width,
                         height = rectangle.height,
-                    }, 'start', 'center', { clip = true },
+                    }, 'start', 'center', {clip = true},
                     Mupen_lua_ugui.stylers.windows_10.list_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name,
@@ -604,7 +597,7 @@ Mupen_lua_ugui = {
                     -- we center the scrollbar around the translation value
 
                     scrollbar_y = scrollbar_y - scrollbar_height / 2
-                    scrollbar_y = clamp(scrollbar_y, 0, rectangle.height - scrollbar_height)
+                    scrollbar_y = Mupen_lua_ugui.internal.clamp(scrollbar_y, 0, rectangle.height - scrollbar_height)
 
                     local container_rectangle = {
                         x = rectangle.x + rectangle.width - Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness,
@@ -634,7 +627,7 @@ Mupen_lua_ugui = {
                 Mupen_lua_ugui.stylers.windows_10.draw_raised_frame(control, visual_state)
 
                 Mupen_lua_ugui.renderer.draw_text(control.rectangle, 'center', 'center',
-                    { clip = true },
+                    {clip = true},
                     Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
@@ -644,7 +637,7 @@ Mupen_lua_ugui = {
             end,
             draw_carrousel_button = function(control)
                 -- add a "fake" text field
-                local copy = deep_clone(control)
+                local copy = Mupen_lua_ugui.internal.deep_clone(control)
                 copy.text = control.items[control.selected_index]
                 Mupen_lua_ugui.stylers.windows_10.draw_button(copy)
 
@@ -711,7 +704,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', { clip = true },
+                    }, 'start', 'start', {clip = true},
                     Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state],
                     Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name, control.text)
@@ -752,7 +745,7 @@ Mupen_lua_ugui = {
                             y = control.rectangle.y,
                             width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 2,
                             height = control.rectangle.height,
-                        }, 'start', 'start', { clip = true },
+                        }, 'start', 'start', {clip = true},
                         BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors
                             [visual_state]),
                         Mupen_lua_ugui.stylers.windows_10.font_size,
@@ -821,9 +814,9 @@ Mupen_lua_ugui = {
                 end
 
                 local stick_position = {
-                    x = remap(control.position.x, 0, 1, control.rectangle.x,
+                    x = Mupen_lua_ugui.internal.remap(control.position.x, 0, 1, control.rectangle.x,
                         control.rectangle.x + control.rectangle.width),
-                    y = remap(control.position.y, 0, 1, control.rectangle.y,
+                    y = Mupen_lua_ugui.internal.remap(control.position.y, 0, 1, control.rectangle.y,
                         control.rectangle.y + control.rectangle.height),
                 }
                 Mupen_lua_ugui.stylers.windows_10.draw_raised_frame(control, visual_state)
@@ -957,7 +950,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width,
                         height = control.rectangle.height,
-                    }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                    }, 'start', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                     Mupen_lua_ugui.stylers.windows_10.font_name,
                     control.items[control.selected_index])
 
@@ -966,16 +959,19 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.textbox_padding * 4,
                         height = control.rectangle.height,
-                    }, 'end', 'center', { clip = true }, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
+                    }, 'end', 'center', {clip = true}, text_color, Mupen_lua_ugui.stylers.windows_10.font_size,
                     'Segoe UI Mono', 'v')
 
                 if Mupen_lua_ugui.control_data[control.uid].is_open then
-                    Mupen_lua_ugui.stylers.windows_10.draw_list(control, BreitbandGraphics.inflate_rectangle({
-                        x = control.rectangle.x,
-                        y = control.rectangle.y + control.rectangle.height,
-                        width = control.rectangle.width,
-                        height = Mupen_lua_ugui.stylers.windows_10.item_height * #control.items + 2, -- TODO: investigate what the fuck is going on here
-                    }, -1), Mupen_lua_ugui.control_data[control.uid].hovered_index)
+                    -- we want the list to overpaint all other controls
+                    Mupen_lua_ugui.end_frame_callbacks[#Mupen_lua_ugui.end_frame_callbacks + 1] = function()
+                        Mupen_lua_ugui.stylers.windows_10.draw_list(control, BreitbandGraphics.inflate_rectangle({
+                            x = control.rectangle.x,
+                            y = control.rectangle.y + control.rectangle.height,
+                            width = control.rectangle.width,
+                            height = Mupen_lua_ugui.stylers.windows_10.item_height * #control.items + 2,
+                        }, -1), Mupen_lua_ugui.control_data[control.uid].hovered_index)
+                    end
                 end
             end,
 
@@ -988,19 +984,19 @@ Mupen_lua_ugui = {
     ---Begins a new frame
     ---@param renderer table A BreitbandGraphics rendering backend, which abides by the d2d renderer contract (recommended: `BreitbandGraphics`)
     ---@param styler table A styler, which abides by the mupen-lua-ugui styler contract (recommended: `Mupen_lua_ugui.stylers.windows_10`)
-    ---@param input_state table A table describing the state of the user's input devices as `{ pointer = { position = {x, y}, is_primary_down }, keyboard = { held_keys } }`
+    ---@param input_state table A table describing the state of the user's input devices as `{ mouse_position = {x, y}, wheel, is_primary_down, held_keys }`
     begin_frame = function(renderer, styler, input_state)
         if not Mupen_lua_ugui.input_state then
             Mupen_lua_ugui.input_state = input_state
         end
-        Mupen_lua_ugui.previous_input_state = deep_clone(Mupen_lua_ugui.input_state)
-        Mupen_lua_ugui.input_state = deep_clone(input_state)
+        Mupen_lua_ugui.previous_input_state = Mupen_lua_ugui.internal.deep_clone(Mupen_lua_ugui.input_state)
+        Mupen_lua_ugui.input_state = Mupen_lua_ugui.internal.deep_clone(input_state)
         Mupen_lua_ugui.renderer = renderer
         Mupen_lua_ugui.styler = styler
         Mupen_lua_ugui.has_primary_input_been_handled = false
 
-        if is_pointer_just_down() then
-            Mupen_lua_ugui.previous_pointer_primary_down_position = Mupen_lua_ugui.input_state.pointer.position
+        if Mupen_lua_ugui.internal.is_mouse_just_down() then
+            Mupen_lua_ugui.mouse_down_position = Mupen_lua_ugui.input_state.mouse_position
         end
     end,
 
@@ -1011,7 +1007,6 @@ Mupen_lua_ugui = {
         end
 
         Mupen_lua_ugui.end_frame_callbacks = {}
-        Mupen_lua_ugui.hittest_ignore_rectangles = {}
     end,
 
     ---Places a Button
@@ -1022,10 +1017,7 @@ Mupen_lua_ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button has been pressed this frame
     button = function(control)
-        local pushed = is_pointer_just_down() and is_pointer_inside(control.rectangle) and
-            not is_pointer_inside_ignored_rectangle() and control.is_enabled and
-            not Mupen_lua_ugui.has_primary_input_been_handled
-
+        local pushed = Mupen_lua_ugui.internal.is_pushed(control)
         if pushed then
             Mupen_lua_ugui.active_control_uid = control.uid
         end
@@ -1043,10 +1035,7 @@ Mupen_lua_ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button is checked
     toggle_button = function(control)
-        local pushed = is_pointer_just_down() and is_previous_primary_down_pointer_inside(control.rectangle) and
-            not is_pointer_inside_ignored_rectangle() and
-            not Mupen_lua_ugui.has_primary_input_been_handled
-
+        local pushed = Mupen_lua_ugui.internal.is_pushed(control)
         local is_checked = control.is_checked
 
         if pushed and control.is_enabled then
@@ -1067,16 +1056,13 @@ Mupen_lua_ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new selected index
     carrousel_button = function(control)
-        local pushed = is_pointer_just_down() and is_pointer_inside(control.rectangle) and
-            not is_pointer_inside_ignored_rectangle() and control.is_enabled and
-            not Mupen_lua_ugui.has_primary_input_been_handled
-
+        local pushed = Mupen_lua_ugui.internal.is_pushed(control)
         local selected_index = control.selected_index
 
         if pushed then
             Mupen_lua_ugui.active_control_uid = control.uid
 
-            local relative_x = Mupen_lua_ugui.input_state.pointer.position.x - control.rectangle.x
+            local relative_x = Mupen_lua_ugui.input_state.mouse_position.x - control.rectangle.x
             if relative_x > control.rectangle.width / 2 then
                 selected_index = selected_index + 1
             else
@@ -1086,7 +1072,7 @@ Mupen_lua_ugui = {
 
         Mupen_lua_ugui.styler.draw_carrousel_button(control)
 
-        return clamp(selected_index, 1, #control.items)
+        return Mupen_lua_ugui.internal.clamp(selected_index, 1, #control.items)
     end,
     ---Places a TextBox
     ---
@@ -1104,9 +1090,7 @@ Mupen_lua_ugui = {
             }
         end
 
-        local pushed = is_pointer_just_down() and is_previous_primary_down_pointer_inside(control.rectangle) and
-            not is_pointer_inside_ignored_rectangle() and
-            not Mupen_lua_ugui.has_primary_input_been_handled
+        local pushed = Mupen_lua_ugui.internal.is_pushed(control)
         local text = control.text
 
         if pushed and control.is_enabled then
@@ -1185,27 +1169,27 @@ Mupen_lua_ugui = {
             elseif keys.space then
                 if has_selection then
                     local lower_selection = get_lower_selection()
-                    text = remove_range(text, get_lower_selection(), get_higher_selection())
+                    text = Mupen_lua_ugui.internal.remove_range(text, get_lower_selection(), get_higher_selection())
                     Mupen_lua_ugui.control_data[control.uid].caret_index = lower_selection
                     Mupen_lua_ugui.control_data[control.uid].selection_start = lower_selection
                     Mupen_lua_ugui.control_data[control.uid].selection_end = lower_selection
-                    text = insert_at(text, ' ', Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
+                    text = Mupen_lua_ugui.internal.insert_at(text, ' ', Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
                     Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
                         .caret_index + 1
                 else
-                    text = insert_at(text, ' ', Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
+                    text = Mupen_lua_ugui.internal.insert_at(text, ' ', Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
                     Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
                         .caret_index + 1
                 end
             elseif keys.backspace then
                 if has_selection then
                     local lower_selection = get_lower_selection()
-                    text = remove_range(text, lower_selection, get_higher_selection())
+                    text = Mupen_lua_ugui.internal.remove_range(text, lower_selection, get_higher_selection())
                     Mupen_lua_ugui.control_data[control.uid].caret_index = lower_selection
                     Mupen_lua_ugui.control_data[control.uid].selection_start = lower_selection
                     Mupen_lua_ugui.control_data[control.uid].selection_end = lower_selection
                 else
-                    text = remove_at(text, Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
+                    text = Mupen_lua_ugui.internal.remove_at(text, Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
                     Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
                         .caret_index - 1
                 end
@@ -1218,19 +1202,19 @@ Mupen_lua_ugui = {
 
         if Mupen_lua_ugui.active_control_uid == control.uid and control.is_enabled then
             -- start the new selection
-            if is_pointer_just_down() and is_pointer_inside(control.rectangle) then
+            if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) then
                 Mupen_lua_ugui.control_data[control.uid].caret_index = get_caret_index_at_relative_position(
-                    Mupen_lua_ugui.input_state.pointer.position)
+                    Mupen_lua_ugui.input_state.mouse_position)
                 Mupen_lua_ugui.control_data[control.uid].selection_start = get_caret_index_at_relative_position(
-                    Mupen_lua_ugui.input_state.pointer.position)
+                    Mupen_lua_ugui.input_state.mouse_position)
             end
 
-            if is_pointer_down() and is_previous_primary_down_pointer_inside(control.rectangle) then
+            if Mupen_lua_ugui.input_state.is_primary_down and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.mouse_down_position, control.rectangle) then
                 Mupen_lua_ugui.control_data[control.uid].selection_end = get_caret_index_at_relative_position(
-                    Mupen_lua_ugui.input_state.pointer.position)
+                    Mupen_lua_ugui.input_state.mouse_position)
             end
 
-            local just_pressed_keys = get_just_pressed_keys();
+            local just_pressed_keys = Mupen_lua_ugui.internal.get_just_pressed_keys();
             local has_selection = not (Mupen_lua_ugui.control_data[control.uid].selection_start == Mupen_lua_ugui.control_data[control.uid].selection_end)
 
             if not handle_special_keys(just_pressed_keys) then
@@ -1241,15 +1225,15 @@ Mupen_lua_ugui = {
 
                     if has_selection then
                         local lower_selection = get_lower_selection()
-                        text = remove_range(text, get_lower_selection(), get_higher_selection())
+                        text = Mupen_lua_ugui.internal.remove_range(text, get_lower_selection(), get_higher_selection())
                         Mupen_lua_ugui.control_data[control.uid].caret_index = lower_selection
                         Mupen_lua_ugui.control_data[control.uid].selection_start = lower_selection
                         Mupen_lua_ugui.control_data[control.uid].selection_end = lower_selection
-                        text = insert_at(text, key, Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
+                        text = Mupen_lua_ugui.internal.insert_at(text, key, Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
                         Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
                             .caret_index + 1
                     else
-                        text = insert_at(text, key, Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
+                        text = Mupen_lua_ugui.internal.insert_at(text, key, Mupen_lua_ugui.control_data[control.uid].caret_index - 1)
                         Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
                             .caret_index + 1
                     end
@@ -1258,7 +1242,7 @@ Mupen_lua_ugui = {
                 end
             end
 
-            Mupen_lua_ugui.control_data[control.uid].caret_index = clamp(
+            Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.clamp(
                 Mupen_lua_ugui.control_data[control.uid].caret_index, 1, #text + 1)
         end
 
@@ -1290,27 +1274,25 @@ Mupen_lua_ugui = {
     trackbar = function(control)
         local value = control.value
 
-        local pushed = is_pointer_just_down() and is_previous_primary_down_pointer_inside(control.rectangle) and
-            not is_pointer_inside_ignored_rectangle() and
-            not Mupen_lua_ugui.has_primary_input_been_handled
+        local pushed = Mupen_lua_ugui.internal.is_pushed(control)
         if pushed and control.is_enabled then
             Mupen_lua_ugui.active_control_uid = control.uid
         end
 
         -- we instantly deactivate this control after releasing our mouse to emulate windows behaviour
-        if Mupen_lua_ugui.active_control_uid == control.uid and not is_pointer_down() and control.is_enabled then
+        if Mupen_lua_ugui.active_control_uid == control.uid and not Mupen_lua_ugui.internal.is_pointer_down() and control.is_enabled then
             Mupen_lua_ugui.active_control_uid = nil
         end
 
-        if Mupen_lua_ugui.active_control_uid == control.uid and is_previous_primary_down_pointer_inside(control.rectangle) and is_pointer_down() then
+        if Mupen_lua_ugui.active_control_uid == control.uid and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.mouse_down_position, control.rectangle) and Mupen_lua_ugui.input_state.is_primary_down then
             if control.rectangle.width > control.rectangle.height then
-                value = clamp(
-                    (Mupen_lua_ugui.input_state.pointer.position.x - control.rectangle.x) /
+                value = Mupen_lua_ugui.internal.clamp(
+                    (Mupen_lua_ugui.input_state.mouse_position.x - control.rectangle.x) /
                     control.rectangle.width,
                     0, 1)
             else
-                value = clamp(
-                    (Mupen_lua_ugui.input_state.pointer.position.y - control.rectangle.y) /
+                value = Mupen_lua_ugui.internal.clamp(
+                    (Mupen_lua_ugui.input_state.mouse_position.y - control.rectangle.y) /
                     control.rectangle.height,
                     0, 1)
             end
@@ -1341,11 +1323,11 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.control_data[control.uid].is_open = false
         end
 
-        if is_pointer_just_down() and control.is_enabled then
-            if is_pointer_inside(control.rectangle) and (not Mupen_lua_ugui.has_primary_input_been_handled) then
+        if Mupen_lua_ugui.internal.is_mouse_just_down() and control.is_enabled then
+            if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) and (not Mupen_lua_ugui.has_primary_input_been_handled) then
                 Mupen_lua_ugui.control_data[control.uid].is_open = not Mupen_lua_ugui.control_data[control.uid].is_open
             else
-                if not is_pointer_inside({
+                if not BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, {
                         x = control.rectangle.x,
                         y = control.rectangle.y + control.rectangle.height,
                         width = control.rectangle.width,
@@ -1360,14 +1342,14 @@ Mupen_lua_ugui = {
 
         if Mupen_lua_ugui.control_data[control.uid].is_open and control.is_enabled then
             for i = 1, #control.items, 1 do
-                if is_pointer_inside({
+                if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, {
                         x = control.rectangle.x,
                         y = control.rectangle.y + control.rectangle.height +
                             (Mupen_lua_ugui.styler.item_height * (i - 1)),
                         width = control.rectangle.width,
                         height = Mupen_lua_ugui.styler.item_height,
                     }) then
-                    if is_pointer_just_down() then
+                    if Mupen_lua_ugui.internal.is_mouse_just_down() then
                         selected_index = i
                         Mupen_lua_ugui.control_data[control.uid].is_open = false
                         Mupen_lua_ugui.has_primary_input_been_handled = true
@@ -1378,23 +1360,8 @@ Mupen_lua_ugui = {
             end
         end
 
-
-
-        if Mupen_lua_ugui.control_data[control.uid].is_open then
-            Mupen_lua_ugui.hittest_ignore_rectangles[#Mupen_lua_ugui.hittest_ignore_rectangles + 1] = {
-                x = control.rectangle.x,
-                y = control.rectangle.y + control.rectangle.height,
-                width = control.rectangle.width,
-                height = Mupen_lua_ugui.styler.item_height * #control.items,
-            }
-        end
-        selected_index = clamp(selected_index, 1, #control.items)
-
-        -- we draw the modal over all other controls
-        Mupen_lua_ugui.end_frame_callbacks[#Mupen_lua_ugui.end_frame_callbacks + 1] = function()
-            Mupen_lua_ugui.styler.draw_combobox(control)
-        end
-
+        selected_index = Mupen_lua_ugui.internal.clamp(selected_index, 1, #control.items)
+        Mupen_lua_ugui.styler.draw_combobox(control)
 
         return selected_index
     end,
@@ -1421,18 +1388,18 @@ Mupen_lua_ugui = {
         }
 
         -- we instantly deactivate this control after releasing our mouse to emulate windows behaviour
-        if Mupen_lua_ugui.active_control_uid == control.uid and not is_pointer_down() then
+        if Mupen_lua_ugui.active_control_uid == control.uid and not Mupen_lua_ugui.input_state.is_primary_down then
             Mupen_lua_ugui.active_control_uid = nil
         end
 
         local selected_index = control.selected_index
 
-        if control.is_enabled and is_pointer_inside(control.rectangle) and not is_pointer_inside_ignored_rectangle() then
-            if is_pointer_just_down() and is_pointer_inside(scrollbar_rect) then
+        if control.is_enabled and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) then
+            if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, scrollbar_rect) then
                 Mupen_lua_ugui.active_control_uid = control.uid
             end
-            if is_pointer_down() and not is_pointer_inside(scrollbar_rect) and not is_previous_primary_down_pointer_inside(scrollbar_rect) then
-                local relative_y = Mupen_lua_ugui.input_state.pointer.position.y - control.rectangle.y;
+            if Mupen_lua_ugui.input_state.is_primary_down and not BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, scrollbar_rect) and not BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.mouse_down_position, scrollbar_rect) then
+                local relative_y = Mupen_lua_ugui.input_state.mouse_position.y - control.rectangle.y;
                 local new_index = math.ceil((relative_y + (Mupen_lua_ugui.control_data[control.uid].y_translation *
                         ((Mupen_lua_ugui.styler.item_height * #control.items) - control.rectangle.height))) /
                     Mupen_lua_ugui.styler.item_height)
@@ -1444,10 +1411,10 @@ Mupen_lua_ugui = {
             end
 
             local inc = 0
-            if is_mouse_wheel_up() then
+            if Mupen_lua_ugui.internal.is_mouse_wheel_up() then
                 inc = -1 / #control.items
             end
-            if is_mouse_wheel_down() then
+            if Mupen_lua_ugui.internal.is_mouse_wheel_down() then
                 inc = 1 / #control.items
             end
             Mupen_lua_ugui.control_data[control.uid].y_translation = Mupen_lua_ugui.control_data[control.uid]
@@ -1459,13 +1426,13 @@ Mupen_lua_ugui = {
             -- only allow translation if content overflows
 
             if #control.items * Mupen_lua_ugui.styler.item_height > control.rectangle.height then
-                local v = (Mupen_lua_ugui.input_state.pointer.position.y - control.rectangle.y) /
+                local v = (Mupen_lua_ugui.input_state.mouse_position.y - control.rectangle.y) /
                     control.rectangle.height
                 Mupen_lua_ugui.control_data[control.uid].y_translation = v
             end
         end
 
-        Mupen_lua_ugui.control_data[control.uid].y_translation = clamp(
+        Mupen_lua_ugui.control_data[control.uid].y_translation = Mupen_lua_ugui.internal.clamp(
             Mupen_lua_ugui.control_data[control.uid].y_translation, 0, 1)
 
         Mupen_lua_ugui.styler.draw_listbox(control)

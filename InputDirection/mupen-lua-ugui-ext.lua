@@ -1,17 +1,18 @@
-Mupen_lua_ugui_ext = {}
-local function deep_clone(obj, seen)
-    if type(obj) ~= 'table' then return obj end
-    if seen and seen[obj] then return seen[obj] end
-    local s = seen or {}
-    local res = setmetatable({}, getmetatable(obj))
-    s[obj] = res
-    for k, v in pairs(obj) do res[deep_clone(k, s)] = deep_clone(v, s) end
-    return res
-end
+Mupen_lua_ugui_ext = {
+    internal = {
+        get_digit = function(value, length, index)
+            return math.floor(value / math.pow(10, length - index)) % 10
+        end,
+        set_digit = function(value, length, digit_value, index)
+            local old_digit_value = Mupen_lua_ugui_ext.internal.get_digit(value, length, index)
+            local new_value = value + (digit_value - old_digit_value) * math.pow(10, length - index)
+            local max = math.pow(10, length)
+            return (new_value + max) % max
+        end
+    }
+}
 
-local function clamp(value, min, max)
-    return math.max(math.min(value, max), min)
-end
+
 
 ---Places a Spinner, or NumericUpDown control
 ---
@@ -111,7 +112,7 @@ Mupen_lua_ugui.spinner = function(control)
         end
     end
 
-    value = clamp(value, control.minimum_value, control.maximum_value)
+    value = Mupen_lua_ugui.internal.clamp(value, control.minimum_value, control.maximum_value)
 
     return value
 end
@@ -132,7 +133,7 @@ Mupen_lua_ugui.tabcontrol = function(control)
         y_translation = 0
     }
 
-    local clone = deep_clone(control)
+    local clone = Mupen_lua_ugui.internal.deep_clone(control)
     clone.items = {}
     Mupen_lua_ugui.stylers.windows_10.draw_list(clone, clone.rectangle, nil)
 
@@ -184,6 +185,187 @@ Mupen_lua_ugui.tabcontrol = function(control)
     }
 end
 
+---Places a number editing box
+---
+---Additional fields in the `control` table:
+---
+--- `places` — `number` The amount of places the number is padded to
+--- `value` — `number` The current value
+---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
+---@return _ number The new value
+Mupen_lua_ugui.numberbox = function(control)
+    if not Mupen_lua_ugui.control_data[control.uid] then
+        Mupen_lua_ugui.control_data[control.uid] = {
+            caret_index = 1,
+        }
+    end
+
+    local font_size = Mupen_lua_ugui.stylers.windows_10.font_size * 1.5
+    local font_name = "Consolas"
+
+
+    local function get_caret_index_at_relative_x(text, x)
+        -- award for most painful basic geometry
+        local full_width = Mupen_lua_ugui.renderer.get_text_size(text,
+            font_size,
+            font_name).width
+
+        local positions = {}
+        for i = 1, #text, 1 do
+            local width = Mupen_lua_ugui.renderer.get_text_size(text:sub(1, i),
+                font_size,
+                font_name).width
+
+            local left = control.rectangle.width / 2 - full_width / 2
+            positions[#positions + 1] = width + left
+        end
+
+        for i = #positions, 1, -1 do
+            -- BreitbandGraphics.draw_line({
+            --     x = control.rectangle.x + positions[i],
+            --     y = control.rectangle.y
+            -- }, {
+            --     x = control.rectangle.x + positions[i],
+            --     y = control.rectangle.y + control.rectangle.height
+            -- }, BreitbandGraphics.colors.red, 1)
+            -- BreitbandGraphics.draw_line({
+            --     x = control.rectangle.x + x,
+            --     y = control.rectangle.y
+            -- }, {
+            --     x = control.rectangle.x + x,
+            --     y = control.rectangle.y + control.rectangle.height
+            -- }, BreitbandGraphics.colors.blue, 1)
+            if x > positions[i] then
+                return Mupen_lua_ugui.internal.clamp(i + 1, 1, #positions)
+            end
+        end
+        return 1
+    end
+
+    local function increment_digit(index, value)
+        control.value = Mupen_lua_ugui_ext.internal.set_digit(control.value, control.places,
+            Mupen_lua_ugui_ext.internal.get_digit(control.value, control.places,
+                index) + value,
+            index)
+    end
+
+    local pushed = Mupen_lua_ugui.internal.is_pushed(control)
+
+    if pushed and control.is_enabled then
+        Mupen_lua_ugui.active_control_uid = control.uid
+    end
+
+    local visual_state = Mupen_lua_ugui.get_visual_state(control)
+
+    if Mupen_lua_ugui.active_control_uid == control.uid and control.is_enabled then
+        visual_state = Mupen_lua_ugui.visual_states.active
+    end
+
+
+    Mupen_lua_ugui.stylers.windows_10.draw_edit_frame(control, control.rectangle, visual_state)
+
+    local text = string.format("%0" .. tostring(control.places) .. "d", control.value)
+
+    BreitbandGraphics.draw_text(control.rectangle, "center", "center", {},
+        Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state],
+        font_size,
+        font_name, text)
+
+
+    -- compute the selected char's rect
+    local width
+    if Mupen_lua_ugui.control_data[control.uid].caret_index == control.places then
+        width = Mupen_lua_ugui.renderer.get_text_size(
+                text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index),
+                font_size,
+                font_name).width -
+            Mupen_lua_ugui.renderer.get_text_size(
+                text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index - 1),
+                font_size,
+                font_name).width
+    else
+        width = Mupen_lua_ugui.renderer.get_text_size(
+                text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index + 1),
+                font_size,
+                font_name).width -
+            Mupen_lua_ugui.renderer.get_text_size(text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index),
+                font_size,
+                font_name).width
+    end
+
+    local full_width = Mupen_lua_ugui.renderer.get_text_size(text,
+        font_size,
+        font_name).width
+    local left = control.rectangle.width / 2 - full_width / 2
+    local selected_char_rect = {
+        x = (control.rectangle.x + left) + width * (Mupen_lua_ugui.control_data[control.uid].caret_index - 1),
+        y = control.rectangle.y,
+        width = width,
+        height = control.rectangle.height
+    }
+
+    if Mupen_lua_ugui.active_control_uid == control.uid and control.is_enabled then
+        -- find the clicked number, change caret index
+        if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) then
+            Mupen_lua_ugui.control_data[control.uid].caret_index = get_caret_index_at_relative_x(text,
+                Mupen_lua_ugui.input_state.mouse_position.x - control.rectangle.x)
+        end
+
+        -- handle number key press
+        for key, _ in pairs(Mupen_lua_ugui.internal.get_just_pressed_keys()) do
+            local num_1 = tonumber(key)
+            local num_2 = tonumber(key:sub(6))
+            if num_1 or num_2 then
+                local value = num_1 and num_1 or num_2
+                local oldkey = math.floor(control.value /
+                    math.pow(10, control.places - Mupen_lua_ugui.control_data[control.uid].caret_index)) % 10
+                control.value = control.value +
+                    (value - oldkey) *
+                    math.pow(10, control.places - Mupen_lua_ugui.control_data[control.uid].caret_index)
+                Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
+                    .caret_index + 1
+            end
+
+            if key == "left" then
+                Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
+                    .caret_index - 1
+            end
+            if key == "right" then
+                Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
+                    .caret_index + 1
+            end
+            if key == "up" then
+                increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, 1)
+            end
+            if key == "down" then
+                increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, -1)
+            end
+        end
+
+        if Mupen_lua_ugui.internal.is_mouse_wheel_up() then
+            increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, 1)
+        end
+        if Mupen_lua_ugui.internal.is_mouse_wheel_down() then
+            increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, -1)
+        end
+        -- draw the char at caret index in inverted color
+        BreitbandGraphics.fill_rectangle(selected_char_rect, BreitbandGraphics.hex_to_color('#0078D7'))
+        Mupen_lua_ugui.renderer.push_clip(selected_char_rect)
+        BreitbandGraphics.draw_text(control.rectangle, "center", "center", {},
+            BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state]),
+            font_size,
+            font_name, text)
+        Mupen_lua_ugui.renderer.pop_clip()
+    end
+
+
+
+    Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.clamp(
+        Mupen_lua_ugui.control_data[control.uid].caret_index, 1,
+        control.places)
+
+    return control.value
+end
 
 BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_rectangle, source_rectangle_center, path,
                                                   color, filter)
@@ -350,7 +532,7 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
         BreitbandGraphics.draw_image(container_rectangle,
             style.scrollbar_rail,
             style.path, BreitbandGraphics.colors.white, "nearest")
-            BreitbandGraphics.draw_image_nineslice(thumb_rectangle,
+        BreitbandGraphics.draw_image_nineslice(thumb_rectangle,
             style.scrollbar_thumb.states[visual_state].source,
             style.scrollbar_thumb.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")

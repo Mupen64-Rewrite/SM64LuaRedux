@@ -108,17 +108,13 @@ end
 function drawing()
     local keys = input.get()
     Mupen_lua_ugui.begin_frame(BreitbandGraphics, Mupen_lua_ugui.stylers.windows_10, {
-        pointer = {
-            position = {
-                x = keys.xmouse,
-                y = keys.ymouse,
-            },
-            is_primary_down = keys.leftclick,
-            wheel = mouse_wheel
+        mouse_position = {
+            x = keys.xmouse,
+            y = keys.ymouse,
         },
-        keyboard = {
-            held_keys = keys,
-        },
+        wheel = mouse_wheel,
+        is_primary_down = keys.leftclick,
+        held_keys = keys,
     })
     mouse_wheel = 0
 
