@@ -379,6 +379,12 @@ Settings.create_styles = function()
         [3] = BreitbandGraphics.colors.white,
         [0] = BreitbandGraphics.repeated_to_color(109),
     }
+    Settings.styles[3].listbox.text_colors = {
+        [1] = BreitbandGraphics.colors.white,
+        [2] = BreitbandGraphics.colors.white,
+        [3] = BreitbandGraphics.colors.white,
+        [0] = BreitbandGraphics.repeated_to_color(209),
+    }
 
     Settings.styles[4] = spread(get_windows_10_nineslice_style()) {
         path = folder("InputDirection_dev/Settings.lua") .. "res/windows-7-atlas.png",
