@@ -24,8 +24,8 @@ Mupen_lua_ugui_ext = {
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 Mupen_lua_ugui.spinner = function(control)
-    if not Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness then
-        Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness = 15
+    if not Mupen_lua_ugui.standard_styler.spinner_button_thickness then
+        Mupen_lua_ugui.standard_styler.spinner_button_thickness = 15
     end
 
     local value = control.value
@@ -36,7 +36,7 @@ Mupen_lua_ugui.spinner = function(control)
         rectangle = {
             x = control.rectangle.x,
             y = control.rectangle.y,
-            width = control.rectangle.width - Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness * 2,
+            width = control.rectangle.width - Mupen_lua_ugui.standard_styler.spinner_button_thickness * 2,
             height = control.rectangle.height,
         },
         text = tostring(value),
@@ -52,9 +52,9 @@ Mupen_lua_ugui.spinner = function(control)
                 is_enabled = not (value == control.minimum_value),
                 rectangle = {
                     x = control.rectangle.x + control.rectangle.width -
-                        Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness * 2,
+                        Mupen_lua_ugui.standard_styler.spinner_button_thickness * 2,
                     y = control.rectangle.y,
-                    width = Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness,
+                    width = Mupen_lua_ugui.standard_styler.spinner_button_thickness,
                     height = control.rectangle.height,
                 },
                 text = "-",
@@ -68,9 +68,9 @@ Mupen_lua_ugui.spinner = function(control)
                 is_enabled = not (value == control.maximum_value),
                 rectangle = {
                     x = control.rectangle.x + control.rectangle.width -
-                        Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness,
+                        Mupen_lua_ugui.standard_styler.spinner_button_thickness,
                     y = control.rectangle.y,
-                    width = Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness,
+                    width = Mupen_lua_ugui.standard_styler.spinner_button_thickness,
                     height = control.rectangle.height,
                 },
                 text = "+",
@@ -84,9 +84,9 @@ Mupen_lua_ugui.spinner = function(control)
                 is_enabled = not (value == control.maximum_value),
                 rectangle = {
                     x = control.rectangle.x + control.rectangle.width -
-                        Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness * 2,
+                        Mupen_lua_ugui.standard_styler.spinner_button_thickness * 2,
                     y = control.rectangle.y,
-                    width = Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness * 2,
+                    width = Mupen_lua_ugui.standard_styler.spinner_button_thickness * 2,
                     height = control.rectangle.height / 2,
                 },
                 text = "+",
@@ -100,9 +100,9 @@ Mupen_lua_ugui.spinner = function(control)
                 is_enabled = not (value == control.minimum_value),
                 rectangle = {
                     x = control.rectangle.x + control.rectangle.width -
-                        Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness * 2,
+                        Mupen_lua_ugui.standard_styler.spinner_button_thickness * 2,
                     y = control.rectangle.y + control.rectangle.height / 2,
-                    width = Mupen_lua_ugui.stylers.windows_10.spinner_button_thickness * 2,
+                    width = Mupen_lua_ugui.standard_styler.spinner_button_thickness * 2,
                     height = control.rectangle.height / 2,
                 },
                 text = "-",
@@ -126,16 +126,16 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ table A table structured as follows: { selected_index, rectangle }
 Mupen_lua_ugui.tabcontrol = function(control)
-    if not Mupen_lua_ugui.stylers.windows_10.tab_control_rail_thickness then
-        Mupen_lua_ugui.stylers.windows_10.tab_control_rail_thickness = 17
+    if not Mupen_lua_ugui.standard_styler.tab_control_rail_thickness then
+        Mupen_lua_ugui.standard_styler.tab_control_rail_thickness = 17
     end
-    Mupen_lua_ugui.control_data[control.uid] = {
+    Mupen_lua_ugui.internal.control_data[control.uid] = {
         y_translation = 0
     }
 
     local clone = Mupen_lua_ugui.internal.deep_clone(control)
     clone.items = {}
-    Mupen_lua_ugui.stylers.windows_10.draw_list(clone, clone.rectangle, nil)
+    Mupen_lua_ugui.standard_styler.draw_list(clone, clone.rectangle, nil)
 
     local x = 0
     local y = 0
@@ -144,13 +144,13 @@ Mupen_lua_ugui.tabcontrol = function(control)
     for i = 1, #control.items, 1 do
         local item = control.items[i]
 
-        local width = BreitbandGraphics.get_text_size(item, Mupen_lua_ugui.stylers.windows_10.font_size,
-            Mupen_lua_ugui.stylers.windows_10.font_name).width + 10
+        local width = BreitbandGraphics.get_text_size(item, Mupen_lua_ugui.standard_styler.font_size,
+            Mupen_lua_ugui.standard_styler.font_name).width + 10
 
         -- if it would overflow, we wrap onto a new line
         if x + width > control.rectangle.width then
             x = 0
-            y = y + Mupen_lua_ugui.stylers.windows_10.tab_control_rail_thickness
+            y = y + Mupen_lua_ugui.standard_styler.tab_control_rail_thickness
         end
 
         local previous = selected_index == i
@@ -161,7 +161,7 @@ Mupen_lua_ugui.tabcontrol = function(control)
                 x = control.rectangle.x + x,
                 y = control.rectangle.y + y,
                 width = width,
-                height = Mupen_lua_ugui.stylers.windows_10.tab_control_rail_thickness,
+                height = Mupen_lua_ugui.standard_styler.tab_control_rail_thickness,
             },
             text = control.items[i],
             is_checked = selected_index == i
@@ -178,9 +178,9 @@ Mupen_lua_ugui.tabcontrol = function(control)
         selected_index = selected_index,
         rectangle = {
             x = control.rectangle.x,
-            y = control.rectangle.y + Mupen_lua_ugui.stylers.windows_10.tab_control_rail_thickness + y,
+            y = control.rectangle.y + Mupen_lua_ugui.standard_styler.tab_control_rail_thickness + y,
             width = control.rectangle.width,
-            height = control.rectangle.height - y - Mupen_lua_ugui.stylers.windows_10.tab_control_rail_thickness
+            height = control.rectangle.height - y - Mupen_lua_ugui.standard_styler.tab_control_rail_thickness
         }
     }
 end
@@ -194,25 +194,25 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 Mupen_lua_ugui.numberbox = function(control)
-    if not Mupen_lua_ugui.control_data[control.uid] then
-        Mupen_lua_ugui.control_data[control.uid] = {
+    if not Mupen_lua_ugui.internal.control_data[control.uid] then
+        Mupen_lua_ugui.internal.control_data[control.uid] = {
             caret_index = 1,
         }
     end
 
-    local font_size = Mupen_lua_ugui.stylers.windows_10.font_size * 1.5
+    local font_size = Mupen_lua_ugui.standard_styler.font_size * 1.5
     local font_name = "Consolas"
 
 
     local function get_caret_index_at_relative_x(text, x)
         -- award for most painful basic geometry
-        local full_width = Mupen_lua_ugui.renderer.get_text_size(text,
+        local full_width = BreitbandGraphics.get_text_size(text,
             font_size,
             font_name).width
 
         local positions = {}
         for i = 1, #text, 1 do
-            local width = Mupen_lua_ugui.renderer.get_text_size(text:sub(1, i),
+            local width = BreitbandGraphics.get_text_size(text:sub(1, i),
                 font_size,
                 font_name).width
 
@@ -262,43 +262,43 @@ Mupen_lua_ugui.numberbox = function(control)
     end
 
 
-    Mupen_lua_ugui.stylers.windows_10.draw_edit_frame(control, control.rectangle, visual_state)
+    Mupen_lua_ugui.standard_styler.draw_edit_frame(control, control.rectangle, visual_state)
 
     local text = string.format("%0" .. tostring(control.places) .. "d", control.value)
 
     BreitbandGraphics.draw_text(control.rectangle, "center", "center", {},
-        Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state],
+        Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state],
         font_size,
         font_name, text)
 
 
     -- compute the selected char's rect
     local width
-    if Mupen_lua_ugui.control_data[control.uid].caret_index == control.places then
-        width = Mupen_lua_ugui.renderer.get_text_size(
-                text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index),
+    if Mupen_lua_ugui.internal.control_data[control.uid].caret_index == control.places then
+        width = BreitbandGraphics.get_text_size(
+                text:sub(1, Mupen_lua_ugui.internal.control_data[control.uid].caret_index),
                 font_size,
                 font_name).width -
-            Mupen_lua_ugui.renderer.get_text_size(
-                text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index - 1),
+            BreitbandGraphics.get_text_size(
+                text:sub(1, Mupen_lua_ugui.internal.control_data[control.uid].caret_index - 1),
                 font_size,
                 font_name).width
     else
-        width = Mupen_lua_ugui.renderer.get_text_size(
-                text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index + 1),
+        width = BreitbandGraphics.get_text_size(
+                text:sub(1, Mupen_lua_ugui.internal.control_data[control.uid].caret_index + 1),
                 font_size,
                 font_name).width -
-            Mupen_lua_ugui.renderer.get_text_size(text:sub(1, Mupen_lua_ugui.control_data[control.uid].caret_index),
+            BreitbandGraphics.get_text_size(text:sub(1, Mupen_lua_ugui.internal.control_data[control.uid].caret_index),
                 font_size,
                 font_name).width
     end
 
-    local full_width = Mupen_lua_ugui.renderer.get_text_size(text,
+    local full_width = BreitbandGraphics.get_text_size(text,
         font_size,
         font_name).width
     local left = control.rectangle.width / 2 - full_width / 2
     local selected_char_rect = {
-        x = (control.rectangle.x + left) + width * (Mupen_lua_ugui.control_data[control.uid].caret_index - 1),
+        x = (control.rectangle.x + left) + width * (Mupen_lua_ugui.internal.control_data[control.uid].caret_index - 1),
         y = control.rectangle.y,
         width = width,
         height = control.rectangle.height
@@ -306,9 +306,9 @@ Mupen_lua_ugui.numberbox = function(control)
 
     if Mupen_lua_ugui.active_control_uid == control.uid and control.is_enabled then
         -- find the clicked number, change caret index
-        if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.input_state.mouse_position, control.rectangle) then
-            Mupen_lua_ugui.control_data[control.uid].caret_index = get_caret_index_at_relative_x(text,
-                Mupen_lua_ugui.input_state.mouse_position.x - control.rectangle.x)
+        if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
+            Mupen_lua_ugui.internal.control_data[control.uid].caret_index = get_caret_index_at_relative_x(text,
+                Mupen_lua_ugui.internal.input_state.mouse_position.x - control.rectangle.x)
         end
 
         -- handle number key press
@@ -318,50 +318,50 @@ Mupen_lua_ugui.numberbox = function(control)
             if num_1 or num_2 then
                 local value = num_1 and num_1 or num_2
                 local oldkey = math.floor(control.value /
-                    math.pow(10, control.places - Mupen_lua_ugui.control_data[control.uid].caret_index)) % 10
+                    math.pow(10, control.places - Mupen_lua_ugui.internal.control_data[control.uid].caret_index)) % 10
                 control.value = control.value +
                     (value - oldkey) *
-                    math.pow(10, control.places - Mupen_lua_ugui.control_data[control.uid].caret_index)
-                Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
+                    math.pow(10, control.places - Mupen_lua_ugui.internal.control_data[control.uid].caret_index)
+                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data[control.uid]
                     .caret_index + 1
             end
 
             if key == "left" then
-                Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
+                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data[control.uid]
                     .caret_index - 1
             end
             if key == "right" then
-                Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.control_data[control.uid]
+                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data[control.uid]
                     .caret_index + 1
             end
             if key == "up" then
-                increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, 1)
+                increment_digit(Mupen_lua_ugui.internal.control_data[control.uid].caret_index, 1)
             end
             if key == "down" then
-                increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, -1)
+                increment_digit(Mupen_lua_ugui.internal.control_data[control.uid].caret_index, -1)
             end
         end
 
         if Mupen_lua_ugui.internal.is_mouse_wheel_up() then
-            increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, 1)
+            increment_digit(Mupen_lua_ugui.internal.control_data[control.uid].caret_index, 1)
         end
         if Mupen_lua_ugui.internal.is_mouse_wheel_down() then
-            increment_digit(Mupen_lua_ugui.control_data[control.uid].caret_index, -1)
+            increment_digit(Mupen_lua_ugui.internal.control_data[control.uid].caret_index, -1)
         end
         -- draw the char at caret index in inverted color
         BreitbandGraphics.fill_rectangle(selected_char_rect, BreitbandGraphics.hex_to_color('#0078D7'))
-        Mupen_lua_ugui.renderer.push_clip(selected_char_rect)
+        BreitbandGraphics.push_clip(selected_char_rect)
         BreitbandGraphics.draw_text(control.rectangle, "center", "center", {},
-            BreitbandGraphics.invert_color(Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors[visual_state]),
+            BreitbandGraphics.invert_color(Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state]),
             font_size,
             font_name, text)
-        Mupen_lua_ugui.renderer.pop_clip()
+        BreitbandGraphics.pop_clip()
     end
 
 
 
-    Mupen_lua_ugui.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.clamp(
-        Mupen_lua_ugui.control_data[control.uid].caret_index, 1,
+    Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.clamp(
+        Mupen_lua_ugui.internal.control_data[control.uid].caret_index, 1,
         control.places)
 
     return control.value
@@ -493,42 +493,42 @@ BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_
 end
 
 Mupen_lua_ugui_ext.apply_nineslice = function(style)
-    Mupen_lua_ugui.stylers.windows_10.draw_raised_frame = function(control, visual_state)
+    Mupen_lua_ugui.standard_styler.draw_raised_frame = function(control, visual_state)
         BreitbandGraphics.draw_image_nineslice(control.rectangle,
             style.button.states[visual_state].source,
             style.button.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
     end
-    Mupen_lua_ugui.stylers.windows_10.draw_edit_frame = function(control, rectangle,
+    Mupen_lua_ugui.standard_styler.draw_edit_frame = function(control, rectangle,
                                                                  visual_state)
         BreitbandGraphics.draw_image_nineslice(rectangle,
             style.textbox.states[visual_state].source,
             style.textbox.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
     end
-    Mupen_lua_ugui.stylers.windows_10.draw_list_frame = function(rectangle, visual_state)
+    Mupen_lua_ugui.standard_styler.draw_list_frame = function(rectangle, visual_state)
         BreitbandGraphics.draw_image_nineslice(rectangle,
             style.listbox.states[visual_state].source,
             style.listbox.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
     end
-    Mupen_lua_ugui.stylers.windows_10.draw_list_item = function(item, rectangle, visual_state)
+    Mupen_lua_ugui.standard_styler.draw_list_item = function(item, rectangle, visual_state)
         BreitbandGraphics.draw_image_nineslice(rectangle,
             style.listbox_item.states[visual_state].source,
             style.listbox_item.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
-        Mupen_lua_ugui.renderer.draw_text({
+        BreitbandGraphics.draw_text({
                 x = rectangle.x + 2,
                 y = rectangle.y,
                 width = rectangle.width,
                 height = rectangle.height,
             }, 'start', 'center', { clip = true },
-            Mupen_lua_ugui.stylers.windows_10.list_text_colors[visual_state],
-            Mupen_lua_ugui.stylers.windows_10.font_size,
-            Mupen_lua_ugui.stylers.windows_10.font_name,
+            Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
+            Mupen_lua_ugui.standard_styler.font_size,
+            Mupen_lua_ugui.standard_styler.font_name,
             item)
     end
-    Mupen_lua_ugui.stylers.windows_10.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
+    Mupen_lua_ugui.standard_styler.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
         BreitbandGraphics.draw_image(container_rectangle,
             style.scrollbar_rail,
             style.path, BreitbandGraphics.colors.white, "nearest")
@@ -537,10 +537,110 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
             style.scrollbar_thumb.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
     end
-    Mupen_lua_ugui.stylers.windows_10.raised_frame_text_colors = style.button.text_colors
-    Mupen_lua_ugui.stylers.windows_10.edit_frame_text_colors = style.textbox.text_colors
-    Mupen_lua_ugui.stylers.windows_10.font_name = style.font_name
-    Mupen_lua_ugui.stylers.windows_10.font_size = style.font_size
-    Mupen_lua_ugui.stylers.windows_10.list_text_colors = style.listbox.text_colors
-    Mupen_lua_ugui.stylers.windows_10.scrollbar_thickness = style.scrollbar_rail.width
+    Mupen_lua_ugui.standard_styler.raised_frame_text_colors = style.button.text_colors
+    Mupen_lua_ugui.standard_styler.edit_frame_text_colors = style.textbox.text_colors
+    Mupen_lua_ugui.standard_styler.font_name = style.font_name
+    Mupen_lua_ugui.standard_styler.font_size = style.font_size
+    Mupen_lua_ugui.standard_styler.list_text_colors = style.listbox.text_colors
+    Mupen_lua_ugui.standard_styler.scrollbar_thickness = style.scrollbar_rail.width
+end
+
+
+local function flatten(tree, depth, index, result)
+    for i = 1, #tree, 1 do
+        local item = tree[i]
+
+        result[#result + 1] = {
+            -- we need a reference!
+            item = item,
+            depth = depth,
+            index = index
+        }
+        index = index + 1
+
+        if item.open then
+            index = flatten(item.children, depth + 1, index, result)
+        end
+    end
+    return index
+end
+
+---Places a treeview
+---
+---Additional fields in the `control` table:
+---
+--- `items` — `table` A nested table of items
+---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
+---@return _ number The new value
+Mupen_lua_ugui.treeview = function(control)
+    -- TODO: scrolling
+    if not Mupen_lua_ugui.internal.control_data[control.uid] then
+        Mupen_lua_ugui.internal.control_data[control.uid] = {
+            selected_uid = nil,
+        }
+    end
+
+    local visual_state = Mupen_lua_ugui.get_visual_state(control)
+    Mupen_lua_ugui.standard_styler.draw_list_frame(control.rectangle, visual_state)
+
+    local flattened = {}
+    flatten(control.items, 0, 0, flattened)
+
+    local margin_left = 0
+    local per_depth_margin = Mupen_lua_ugui.standard_styler.item_height * 2
+
+    for i = 1, #flattened, 1 do
+        local item = flattened[i].item
+        local meta = flattened[i]
+
+        local item_rectangle = {
+            x = control.rectangle.x + (meta.depth * per_depth_margin) + margin_left,
+            y = control.rectangle.y + (meta.index * Mupen_lua_ugui.standard_styler.item_height),
+            width = control.rectangle.width - ((meta.depth * per_depth_margin) + margin_left),
+            height = Mupen_lua_ugui.standard_styler.item_height,
+        }
+        local button_rectangle = {
+            x = item_rectangle.x,
+            y = item_rectangle.y,
+            width = Mupen_lua_ugui.standard_styler.item_height,
+            height = Mupen_lua_ugui.standard_styler.item_height,
+        }
+        local text_rectangle = {
+            x = button_rectangle.x + button_rectangle.width + margin_left,
+            y = item_rectangle.y,
+            width = item_rectangle.width - button_rectangle.width,
+            height = Mupen_lua_ugui.standard_styler.item_height,
+        }
+
+        -- we dont need buttons for childless nodes
+        if #item.children > 0 then
+            item.open = Mupen_lua_ugui.toggle_button({
+                uid = control.uid + i,
+                is_enabled = true,
+                is_checked = item.open,
+                text = item.open and "-" or "+",
+                rectangle = button_rectangle
+            })
+        end
+
+        local effective_rectangle = #item.children > 0 and text_rectangle or item_rectangle
+
+        if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, effective_rectangle) and Mupen_lua_ugui.internal.is_mouse_just_down() then
+            Mupen_lua_ugui.internal.control_data[control.uid].selected_uid = item.uid
+        end
+
+
+        Mupen_lua_ugui.standard_styler.draw_list_item(item.content,
+            effective_rectangle,
+            Mupen_lua_ugui.internal.control_data[control.uid].selected_uid == item.uid and Mupen_lua_ugui.visual_states.active or
+            Mupen_lua_ugui.visual_states.normal)
+    end
+
+    -- return ref to selected item
+    for _, value in pairs(flattened) do
+        if value.item.uid == Mupen_lua_ugui.internal.control_data[control.uid].selected_uid then
+            return value.item
+        end 
+    end
+    return nil
 end
