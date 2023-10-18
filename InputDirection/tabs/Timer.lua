@@ -117,5 +117,117 @@ return {
         BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center", {},
             BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].background_color), 24, "Consolas",
             get_frame_text())
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 3,
+            is_enabled = true,
+            rectangle = grid_rect(4, 6, 2),
+            text = "A",
+            is_checked = Joypad.input.A
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 4,
+            is_enabled = true,
+            rectangle = grid_rect(2, 6, 2),
+            text = "B",
+            is_checked = Joypad.input.B
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 5,
+            is_enabled = true,
+            rectangle = grid_rect(3, 8, 1),
+            text = "Z",
+            is_checked = Joypad.input.Z
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 6,
+            is_enabled = true,
+            rectangle = grid_rect(4, 8, 1),
+            text = "S",
+            is_checked = Joypad.input.start
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 7,
+            is_enabled = true,
+            rectangle = grid_rect(1, 7),
+            text = "L",
+            is_checked = Joypad.input.L
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 8,
+            is_enabled = true,
+            rectangle = grid_rect(6, 7),
+            text = "R",
+            is_checked = Joypad.input.R
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 9,
+            is_enabled = true,
+            rectangle = grid_rect(0, 7),
+            text = "C<",
+            is_checked = Joypad.input.Cleft
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 10,
+            is_enabled = true,
+            rectangle = grid_rect(2, 7),
+            text = "C>",
+            is_checked = Joypad.input.Cright
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 11,
+            is_enabled = true,
+            rectangle = grid_rect(1, 6),
+            text = "C^",
+            is_checked = Joypad.input.Cup
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 12,
+            is_enabled = true,
+            rectangle = grid_rect(1, 8),
+            text = "Cv",
+            is_checked = Joypad.input.Cdown
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 13,
+            is_enabled = true,
+            rectangle = grid_rect(5, 7),
+            text = "D<",
+            is_checked = Joypad.input.left
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 14,
+            is_enabled = true,
+            rectangle = grid_rect(7, 7),
+            text = "D>",
+            is_checked = Joypad.input.right
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 15,
+            is_enabled = true,
+            rectangle = grid_rect(6, 6),
+            text = "D^",
+            is_checked = Joypad.input.up
+        })
+
+        Mupen_lua_ugui.toggle_button({
+            uid = 16,
+            is_enabled = true,
+            rectangle = grid_rect(6, 8),
+            text = "Dv",
+            is_checked = Joypad.input.down
+        })
     end
 }
