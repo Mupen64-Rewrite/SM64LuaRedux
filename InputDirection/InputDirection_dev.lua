@@ -9,8 +9,6 @@ local tabs_path = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\tabs\\"
 local scripts_path = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
 local current_path = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\"
 
-
-
 function folder(thisFileName)
     local str = debug.getinfo(2, 'S').source:sub(2)
     return (str:match('^.*/(.*).lua$') or str):sub(1, -(thisFileName):len() - 1)
@@ -75,7 +73,6 @@ dofile(scripts_path .. "Joypad.lua")
 dofile(scripts_path .. "Angles.lua")
 dofile(scripts_path .. "Engine.lua")
 dofile(scripts_path .. "Buttons.lua")
-dofile(scripts_path .. "Input.lua")
 dofile(scripts_path .. "Program.lua")
 dofile(scripts_path .. "MoreMaths.lua")
 dofile(scripts_path .. "Actions.lua")
@@ -100,7 +97,7 @@ function main()
     Joypad.send()
     Swimming.swim("A")
 
-    if recording_ghost then
+    if Settings.recording_ghost then
         Ghost.main()
     end
 end
@@ -158,10 +155,8 @@ emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
         -- high word (most significant 16 bits) is scroll rotation in multiples of WHEEL_DELTA (120)
         local scroll = math.floor(wparam / 65536) --(wparam & 0xFFFF0000) >> 16
         if scroll == 120 then
-            Input.arrowCheck("up")
             mouse_wheel = 1
         elseif scroll == 65416 then -- 65536 - 120
-            Input.arrowCheck("down")
             mouse_wheel = -1
         end
     end

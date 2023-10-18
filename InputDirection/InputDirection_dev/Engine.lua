@@ -6,9 +6,9 @@ function Engine.getEffectiveAngle(angle)
 	return angle - (angle % 16)
 end
 function Engine.getDyaw(angle)
-	if Settings.Layout.Button.strain_button.left == true and Settings.Layout.Button.strain_button.right == false then
+	if Settings.Layout.Button.strain_button.left and Settings.Layout.Button.strain_button.right == false then
 		return Memory.Mario.FacingYaw + angle
-	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right == true then
+	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right then
 		return Memory.Mario.FacingYaw - angle
 	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right == false then
 		return Memory.Mario.FacingYaw + angle*(math.pow(-1,Memory.Mario.GlobalTimer % 2))
@@ -17,9 +17,9 @@ function Engine.getDyaw(angle)
 	end
 end
 function Engine.getDyawsign()
-	if Settings.Layout.Button.strain_button.left == true and Settings.Layout.Button.strain_button.right == false then
+	if Settings.Layout.Button.strain_button.left and Settings.Layout.Button.strain_button.right == false then
 		return 1
-	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right == true then
+	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right then
 		return -1
 	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right == false then
 		return math.pow(-1,Memory.Mario.GlobalTimer % 2)
@@ -41,7 +41,7 @@ function Engine.getArctanAngle(r, d, n, s)
 	-- r is ratio, d is displacement (offset), n is number of frames and  s is starting frame
 	if emu.atloadstate then s = s - 1 end
 	if (s < Memory.Mario.GlobalTimer and s > Memory.Mario.GlobalTimer - n - 1) then
-		if Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE then
+		if Settings.movement_mode == Settings.movement_modes.match_angle then
 			if(math.abs(Memory.Mario.FacingYaw-goal) > 16384) then
 				r = -math.abs(math.tan(math.pi/2-(Memory.Mario.FacingYaw-goal)*math.pi/32768))
 			else
@@ -50,7 +50,7 @@ function Engine.getArctanAngle(r, d, n, s)
 		end
 		if (Settings.Layout.Button.strain_button.reverse_arc == false) then
 			dyaw = math.floor((math.pi/2-math.atan(0.15*(r*math.max(1,(n+1-Memory.Mario.GlobalTimer+s))+d/math.min(1,n+1-Memory.Mario.GlobalTimer+s))))*32768/math.pi)
-			if(Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE) then
+			if(Settings.movement_mode == Settings.movement_modes.match_angle) then
 				if(Memory.Mario.FacingYaw-goal > 0 and Memory.Mario.FacingYaw-goal < 32768) then
 					return Memory.Mario.FacingYaw - dyaw
 				end
@@ -59,7 +59,7 @@ function Engine.getArctanAngle(r, d, n, s)
 			return Engine.getDyaw(dyaw)
 		end
 		dyaw = math.floor((math.pi/2-math.atan(0.15*(r*math.max(1,(Memory.Mario.GlobalTimer-s))+d/math.min(1,Memory.Mario.GlobalTimer-s))))*32768/math.pi)
-		if(Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE) then
+		if(Settings.movement_mode == Settings.movement_modes.match_angle) then
 			if(Memory.Mario.FacingYaw-goal > 0 and Memory.Mario.FacingYaw-goal < 32768) then
 				return Memory.Mario.FacingYaw - dyaw
 			end
@@ -72,25 +72,25 @@ end
 
 function Engine.inputsForAngle()
 	goal = Settings.goalAngle
-	if (Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW) then
+	if (Settings.movement_mode == Settings.movement_modes.match_yaw) then
 		goal = Memory.Mario.FacingYaw
 		if ((Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 			goal = (goal + 32768) % 65536
 		end
 	end
-	if (Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE) then
+	if (Settings.movement_mode == Settings.movement_modes.reverse_angle) then
 		goal = (Memory.Mario.FacingYaw + 32768) % 65536
 		if ((Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 		goal = Memory.Mario.FacingYaw
 		end
 	end
 	    -- Set up target speed
-		if (Settings.Layout.Button.strain_button.target_strain == true) then
+		if (Settings.Layout.Button.strain_button.target_strain) then
 			ENABLE_TARGET_SPEED = 1
 		else
 			ENABLE_TARGET_SPEED = 0
 		end
-		if (Settings.Layout.Button.strain_button.always == true) then
+		if (Settings.Layout.Button.strain_button.always) then
 			offset = 3
 		else
 			offset = 0
@@ -101,7 +101,7 @@ function Engine.inputsForAngle()
 		else
 			actionflag=0
 		end
-		if ( Memory.Mario.FSpeed > 937/30 and Memory.Mario.FSpeed < 31.9 + offset*3000000 and (Memory.Mario.Action == 0x04808459 or Memory.Mario.Action == 0x00000479) and Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW)  then
+		if ( Memory.Mario.FSpeed > 937/30 and Memory.Mario.FSpeed < 31.9 + offset*3000000 and (Memory.Mario.Action == 0x04808459 or Memory.Mario.Action == 0x00000479) and Settings.movement_mode == Settings.movement_modes.match_yaw)  then
 			targetspeed = 48 - Memory.Mario.FSpeed/2
 			speedsign = 1
 			if ( Memory.Mario.FSpeed > 32 ) then
@@ -109,7 +109,7 @@ function Engine.inputsForAngle()
 			else
 				goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 			end
-		elseif ( Memory.Mario.FSpeed >= 10 and offset ~= 0 and Memory.Mario.FSpeed < 34.85 and Memory.Mario.Action == 0x04808459 and joypad.get(1).B == true and Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW)  then
+		elseif ( Memory.Mario.FSpeed >= 10 and offset ~= 0 and Memory.Mario.FSpeed < 34.85 and Memory.Mario.Action == 0x04808459 and joypad.get(1).B and Settings.movement_mode == Settings.movement_modes.match_yaw)  then
 			speedsign = 1
 			targetspeed = 32
 			if(Memory.Mario.FSpeed > 32) then
@@ -118,17 +118,17 @@ function Engine.inputsForAngle()
 			else
 				goal = Engine.getDyaw(13927)
 			end
-		elseif ( Memory.Mario.FSpeed > -337/30 - offset/1.5 and Memory.Mario.FSpeed < -9.9 and Memory.Mario.Action == 0x00000479 and Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE) then
+		elseif ( Memory.Mario.FSpeed > -337/30 - offset/1.5 and Memory.Mario.FSpeed < -9.9 and Memory.Mario.Action == 0x00000479 and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
 			targetspeed = -16 - Memory.Mario.FSpeed/2
 			if ( Memory.Mario.FSpeed < -11.9 ) then targetspeed = targetspeed - 2 end
 			speedsign = -1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif ( Memory.Mario.FSpeed > 46.85 and Memory.Mario.FSpeed < 47.85 + offset and  Memory.Mario.Action == 0x03000888 and Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW) then
+		elseif ( Memory.Mario.FSpeed > 46.85 and Memory.Mario.FSpeed < 47.85 + offset and  Memory.Mario.Action == 0x03000888 and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			targetspeed = 48
 			if ( Memory.Mario.FSpeed > 49.85 ) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif ( Memory.Mario.FSpeed > 30.85 and Memory.Mario.FSpeed < 31.85 + offset and actionflag == 0 and Memory.Mario.Action ~= 0x03000888 and Memory.Mario.Action ~= 0x00000479 and Memory.Mario.Action ~= 0x04808459 and Memory.Mario.Action ~= 0x00880456 and Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW ) then
+		elseif ( Memory.Mario.FSpeed > 30.85 and Memory.Mario.FSpeed < 31.85 + offset and actionflag == 0 and Memory.Mario.Action ~= 0x03000888 and Memory.Mario.Action ~= 0x00000479 and Memory.Mario.Action ~= 0x04808459 and Memory.Mario.Action ~= 0x00880456 and Settings.movement_mode == Settings.movement_modes.match_yaw ) then
 			targetspeed = 32
 			if ( Memory.Mario.FSpeed > 33.85 ) then targetspeed = targetspeed + 1 end
 			speedsign = 1
@@ -136,20 +136,20 @@ function Engine.inputsForAngle()
 			if (Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 				goal = (goal + 32768) % 65536
 			end
-		elseif ( Memory.Mario.FSpeed > -32 and Memory.Mario.FSpeed < 32 and ((Memory.Mario.Action >= 0x0C008220 and Memory.Mario.Action < 0x0C008224) or Memory.Mario.Action == 0x0400047A or Memory.Mario.Action == 0x0800022F)and Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE ) then
+		elseif ( Memory.Mario.FSpeed > -32 and Memory.Mario.FSpeed < 32 and ((Memory.Mario.Action >= 0x0C008220 and Memory.Mario.Action < 0x0C008224) or Memory.Mario.Action == 0x0400047A or Memory.Mario.Action == 0x0800022F)and Settings.movement_mode == Settings.movement_modes.reverse_angle ) then
 			speedsign = -1
 			goal = Engine.getDyaw(18840)
-		elseif ( Memory.Mario.FSpeed > -16.85 - offset and Memory.Mario.FSpeed < -14.85 and Memory.Mario.Action ~= 0x00000479 and actionflag == 0 and Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE ) then
+		elseif ( Memory.Mario.FSpeed > -16.85 - offset and Memory.Mario.FSpeed < -14.85 and Memory.Mario.Action ~= 0x00000479 and actionflag == 0 and Settings.movement_mode == Settings.movement_modes.reverse_angle ) then
 			targetspeed = -16
 			if ( Memory.Mario.FSpeed < -17.85 ) then targetspeed = targetspeed - 2 end
 			speedsign = -1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif ( Memory.Mario.FSpeed > -21.0625 - offset/0.8 and Memory.Mario.FSpeed < -18.5625 and Memory.Mario.Action ~= 0x00000479 and (actionflag == 1 or Memory.Mario.Action == 0x04808459) and Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE ) then
+		elseif ( Memory.Mario.FSpeed > -21.0625 - offset/0.8 and Memory.Mario.FSpeed < -18.5625 and Memory.Mario.Action ~= 0x00000479 and (actionflag == 1 or Memory.Mario.Action == 0x04808459) and Settings.movement_mode == Settings.movement_modes.reverse_angle ) then
 			targetspeed = -16 + Memory.Mario.FSpeed/5
 			if ( Memory.Mario.FSpeed < -22.3125 ) then targetspeed = targetspeed - 2 end
 			speedsign = -1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif ( Memory.Mario.FSpeed > 38.5625 and Memory.Mario.FSpeed < 39.8125 + offset/0.8 and Memory.Mario.Action ~= 0x00000479 and Memory.Mario.Action ~= 0x03000888 and actionflag == 1 and Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW) then
+		elseif ( Memory.Mario.FSpeed > 38.5625 and Memory.Mario.FSpeed < 39.8125 + offset/0.8 and Memory.Mario.Action ~= 0x00000479 and Memory.Mario.Action ~= 0x03000888 and actionflag == 1 and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			targetspeed = 32 + Memory.Mario.FSpeed/5
 			if ( Memory.Mario.FSpeed > 42.3125 ) then targetspeed = targetspeed + 1 end
 			speedsign = 1
@@ -159,22 +159,22 @@ function Engine.inputsForAngle()
 		end
 		goal = goal + 32 * speedsign * Engine.getDyawsign()
 	end
-	if (Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE and Settings.Layout.Button.strain_button.dyaw == true) then
+	if (Settings.movement_mode == Settings.movement_modes.match_angle and Settings.Layout.Button.strain_button.dyaw) then
 		goal = Engine.getDyaw(goal)
 		if (Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 			goal = (goal + 32768) % 65536
 		end
 	end
-	--if (Settings.Layout.Button.strain_button.arctan == true and Settings.Layout.Button.strain_button.arctanstart < Memory.Mario.GlobalTimer and Settings.Layout.Button.strain_button.arctanstart > Memory.Mario.GlobalTimer - Settings.Layout.Button.strain_button.arctann - 1) then
-	if (Settings.Layout.Button.strain_button.arctan == true) then
+	--if (Settings.Layout.Button.strain_button.arctan and Settings.Layout.Button.strain_button.arctanstart < Memory.Mario.GlobalTimer and Settings.Layout.Button.strain_button.arctanstart > Memory.Mario.GlobalTimer - Settings.Layout.Button.strain_button.arctann - 1) then
+	if (Settings.Layout.Button.strain_button.arctan) then
 		goal = Engine.getArctanAngle(Settings.Layout.Button.strain_button.arctanr, Settings.Layout.Button.strain_button.arctand, Settings.Layout.Button.strain_button.arctann, Settings.Layout.Button.strain_button.arctanstart)
-		if (Settings.Layout.Button.selectedItem ~= Settings.Layout.Button.MATCH_ANGLE) then
+		if (Settings.movement_mode ~= Settings.movement_modes.match_angle) then
 			if (Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 				goal = (goal + 32768) % 65536
 			end
 		end
 	end
-	-- if(Settings.Layout.Button.selectedItem ~= Settings.Layout.Button.MATCH_ANGLE or Settings.Layout.Button.strain_button.dyaw == true or Settings.Layout.Button.strain_button.arctan == true) then
+	-- if(Settings.movement_mode ~= Settings.movement_modes.match_angle or Settings.Layout.Button.strain_button.dyaw or Settings.Layout.Button.strain_button.arctan) then
 		-- goal = goal + Memory.Mario.FacingYaw % 16
 	-- end
 	goal = goal - 65536
@@ -382,7 +382,7 @@ function Engine.scaleInputsForMagnitude(result, goal_mag, use_high_mag)
 				--print(string.format("%d:%d: %f (%f)", x,y,angle,goal_angle))
 				--local this_err = math.cos(angle - goal_angle)*mag
 				local this_err = math.cos(angle - goal_angle)
-				if(use_high_mag == true) then this_err = this_err*mag*mag end
+				if(use_high_mag) then this_err = this_err*mag*mag end
 				--print(string.format("%d,%d: %f, %d; %f, %f; %f, %s", x, y, mag, goal_mag, angle, goal_angle, this_err, tostring(err)))
 				if this_err > err then
 					err = this_err

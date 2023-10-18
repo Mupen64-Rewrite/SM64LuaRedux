@@ -9,7 +9,7 @@ function Program.initFrame()
 end
 
 function Program.rngSetter()
-	if Settings.Layout.Button.SET_RNG == true then
+	if Settings.Layout.Button.SET_RNG then
 		if Settings.setRNG then
 			-- Write to the RNG value address
 			if RngPage.use_value then
@@ -24,7 +24,7 @@ function Program.rngSetter()
 end
 
 function Program.main()
-	if Settings.Layout.Button.selectedItem ~= Settings.Layout.Button.DISABLED then
+	if Settings.movement_mode ~= Settings.movement_modes.disabled then
 		result = Engine.inputsForAngle()
 		if Settings.goalMag then
 			Engine.scaleInputsForMagnitude(result, Settings.goalMag, Settings.Layout.Button.strain_button.highmag)

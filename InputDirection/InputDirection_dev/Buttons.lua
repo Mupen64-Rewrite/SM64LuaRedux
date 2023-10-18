@@ -1,9 +1,3 @@
-ButtonType = {
-    button = 0,
-    -- text : button text
-    -- box : total size of the button
-    textArea = 1
-}
 function grid(x, y, x_span, y_span)
     if not x_span then
         x_span = 1
@@ -47,60 +41,33 @@ function grid_rect(x, y, x_span, y_span)
     }
 end
 
-recording_ghost = false
-
 local pow = math.pow
-
-local function getDigit(value, length, digit)
-    if digit == nil then digit = Settings.Layout.TextArea.selectedChar end
-    return math.floor(value / pow(10, length - digit)) % 10
-end
-
-local function updateDigit(value, length, digit_value, digit)
-    if digit == nil then digit = Settings.Layout.TextArea.selectedChar end
-    local old_digit_value = getDigit(value, length, digit)
-    local new_value = value + (digit_value - old_digit_value) * pow(10, length - digit)
-    local max = pow(10, length)
-    return (new_value + max) % max
-end
 
 Buttons = {
     {
         name = "ignore y",
-        type = ButtonType.button,
         text = "Ignore Y",
         box = function()
             return grid(4, 15, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.dist_button.ignore_y == true
+            return Settings.Layout.Button.dist_button.ignore_y
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.dist_button.ignore_y == true) then
-                Settings.Layout.Button.dist_button.ignore_y = false
-            else
-                Settings.Layout.Button.dist_button.ignore_y = true
-            end
+            Settings.Layout.Button.dist_button.ignore_y = not Settings.Layout.Button.dist_button.ignore_y
         end
     },
     {
         name = ".99",
-        type = ButtonType.button,
         text = ".99",
         box = function()
             return grid(7, 0, 1, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.target_strain == true
+            return Settings.Layout.Button.strain_button.target_strain
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.strain_button.target_strain == true) then
+            if (Settings.Layout.Button.strain_button.target_strain) then
                 Settings.Layout.Button.strain_button.target_strain = false
                 Settings.Layout.Button.strain_button.always = false
             else
@@ -110,37 +77,29 @@ Buttons = {
     },
     {
         name = "always .99",
-        type = ButtonType.button,
         text = "Always",
         box = function()
             return grid(4, 0, 3, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.always == true
+            return Settings.Layout.Button.strain_button.always
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.strain_button.always == true) then
+            if (Settings.Layout.Button.strain_button.always) then
                 Settings.Layout.Button.strain_button.always = false
-            elseif (Settings.Layout.Button.strain_button.target_strain == true) then
+            elseif (Settings.Layout.Button.strain_button.target_strain) then
                 Settings.Layout.Button.strain_button.always = true
             end
         end
     },
     {
         name = ".99 left",
-        type = ButtonType.button,
         text = "<",
         box = function()
             return grid(4, 1, 1, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.left == true
+            return Settings.Layout.Button.strain_button.left
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.left = not Settings.Layout.Button.strain_button.left
@@ -148,16 +107,12 @@ Buttons = {
     },
     {
         name = ".99 right",
-        type = ButtonType.button,
         text = ">",
         box = function()
             return grid(7, 1, 1, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.right == true
+            return Settings.Layout.Button.strain_button.right
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.right = not Settings.Layout.Button.strain_button.right
@@ -165,85 +120,56 @@ Buttons = {
     },
     {
         name = "swim",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.SWIM],
+        text = "Swim",
         box = function()
             return grid(4, 2, 2, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.swimming == true
+            return Settings.Layout.Button.swimming
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.swimming == true) then
-                Settings.Layout.Button.swimming = false
-            else
-                Settings.Layout.Button.swimming = true
-            end
+            Settings.Layout.Button.swimming = not Settings.Layout.Button.swimming
         end
     },
     {
         name = "high magnitude",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.HIGH_MAG],
+        text = "High Mag",
         box = function()
             return grid(6, 2, 2, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.highmag == true
+            return Settings.Layout.Button.strain_button.highmag
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.strain_button.highmag == true) then
-                Settings.Layout.Button.strain_button.highmag = false
-            else
-                Settings.Layout.Button.strain_button.highmag = true
-            end
+            Settings.Layout.Button.strain_button.highmag = not Settings.Layout.Button.strain_button.highmag
         end
     },
     {
         name = "dyaw",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DYAW],
+        text = "D-Yaw",
         box = function()
             return grid(5, 1, 2, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.dyaw == true
+            return Settings.Layout.Button.strain_button.dyaw
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.strain_button.dyaw == true) then
-                Settings.Layout.Button.strain_button.dyaw = false
-            else
-                Settings.Layout.Button.strain_button.dyaw = true
-            end
+            Settings.Layout.Button.strain_button.dyaw = not Settings.Layout.Button.strain_button.dyaw
         end
     },
     {
         name = "arcotan strain",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.ARCTANSTRAIN],
+        text = "Atan Strain",
         box = function()
             return grid(4, 4, 3, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.arctan == true
+            return Settings.Layout.Button.strain_button.arctan
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.strain_button.arctan == true) then
-                Settings.Layout.Button.strain_button.arctan = false
-            else
-                Settings.Layout.Button.strain_button.arctan = true
+            Settings.Layout.Button.strain_button.arctan = not Settings.Layout.Button.strain_button.arctan
+
+            if Settings.Layout.Button.strain_button.arctan then
                 Memory.Refresh()
                 Settings.Layout.Button.strain_button.arctanstart = Memory.Mario.GlobalTimer
             end
@@ -251,37 +177,25 @@ Buttons = {
     },
     {
         name = "reverse arcotan strain",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ARCTAN],
+        text = "R",
         box = function()
             return grid(7, 4, 1, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.reverse_arc == true
+            return Settings.Layout.Button.strain_button.reverse_arc
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.strain_button.reverse_arc == true) then
-                Settings.Layout.Button.strain_button.reverse_arc = false
-            else
-                Settings.Layout.Button.strain_button.reverse_arc = true
-            end
+            Settings.Layout.Button.strain_button.reverse_arc = not Settings.Layout.Button.strain_button.reverse_arc
         end
     },
     {
         name = "increment arcotan ratio",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCR],
+        text = "+",
         box = function()
             return grid(4, 7, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctanr = Settings.Layout.Button.strain_button.arctanr +
@@ -290,16 +204,12 @@ Buttons = {
     },
     {
         name = "decrement arcotan ratio",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCR],
+        text = "-",
         box = function()
             return grid(4, 7.5, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctanr = Settings.Layout.Button.strain_button.arctanr -
@@ -308,16 +218,12 @@ Buttons = {
     },
     {
         name = "increment arcotan displacement",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCD],
+        text = "+",
         box = function()
             return grid(4.5, 7, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctand = Settings.Layout.Button.strain_button.arctand +
@@ -326,16 +232,12 @@ Buttons = {
     },
     {
         name = "decrement arcotan displacement",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCD],
+        text = "-",
         box = function()
             return grid(4.5, 7.5, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctand = Settings.Layout.Button.strain_button.arctand -
@@ -344,16 +246,13 @@ Buttons = {
     },
     {
         name = "increment arcotan length",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCN],
+        text = "+",
         box = function()
             return grid(5, 7, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctann = MoreMaths.Round(
@@ -364,16 +263,12 @@ Buttons = {
     },
     {
         name = "decrement arcotan length",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCN],
+        text = "-",
         box = function()
             return grid(5, 7.5, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctann = MoreMaths.Round(
@@ -384,16 +279,12 @@ Buttons = {
     },
     {
         name = "increment arcotan start frame",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCS],
+        text = "+",
         box = function()
             return grid(5.5, 7, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctanstart = math.max(0,
@@ -403,16 +294,13 @@ Buttons = {
     },
     {
         name = "decrement arcotan start frame",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCS],
+        text = "-",
         box = function()
             return grid(5.5, 7.5, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctanstart = math.max(0,
@@ -422,16 +310,13 @@ Buttons = {
     },
     {
         name = "increment arcotan step",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.INCARCE],
+        text = "+",
         box = function()
             return grid(6, 7, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctanexp = math.max(-4,
@@ -440,16 +325,13 @@ Buttons = {
     },
     {
         name = "decrement arcotan step",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DECARCE],
+        text = "-",
         box = function()
             return grid(6, 7.5, 0.5, 0.5)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.strain_button.controls == true
+            return Settings.Layout.Button.strain_button.controls
         end,
         onclick = function(self)
             Settings.Layout.Button.strain_button.arctanexp = math.max(-4,
@@ -458,106 +340,86 @@ Buttons = {
     },
     {
         name = "dist moved",
-        type = ButtonType.button,
         text = "Get Moved Distance",
         box = function()
             return grid(0, 15, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.dist_button.enabled == true
+            return Settings.Layout.Button.dist_button.enabled
         end,
         onclick = function(self)
-            if (Settings.Layout.Button.dist_button.enabled == false) then
-                Settings.Layout.Button.dist_button.enabled = true
+            Settings.Layout.Button.dist_button.enabled = not Settings.Layout.Button.dist_button.enabled
+
+            if Settings.Layout.Button.dist_button.enabled then
                 Settings.Layout.Button.dist_button.axis.x = MoreMaths.DecodeDecToFloat(Memory.Mario.X)
                 Settings.Layout.Button.dist_button.axis.y = MoreMaths.DecodeDecToFloat(Memory.Mario.Y)
                 Settings.Layout.Button.dist_button.axis.z = MoreMaths.DecodeDecToFloat(Memory.Mario.Z)
             else
-                Settings.Layout.Button.dist_button.enabled = false
                 Settings.Layout.Button.dist_button.dist_moved_save = Engine.GetTotalDistMoved()
             end
         end
     },
     {
         name = "disabled",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.DISABLED],
+        text = "Disabled",
         box = function()
             return grid(0, 0, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.selectedItem == Settings.Layout.Button.DISABLED
+            return Settings.movement_mode == Settings.movement_modes.disabled
         end,
         onclick = function(self)
-            Settings.Layout.Button.selectedItem = Settings.Layout.Button.DISABLED
+            Settings.movement_mode = Settings.movement_modes.disabled
         end
     },
     {
         name = "match yaw",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.MATCH_YAW],
+        text = "Match Yaw",
         box = function()
             return grid(0, 1, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW
+            return Settings.movement_mode == Settings.movement_modes.match_yaw
         end,
         onclick = function(self)
-            Settings.Layout.Button.selectedItem = Settings.Layout.Button.MATCH_YAW
+            Settings.movement_mode = Settings.movement_modes.match_yaw
         end
     },
     {
         name = "reverse angle",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.REVERSE_ANGLE],
+        text = "Reverse Angle",
         box = function()
             return grid(0, 2, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE
+            return Settings.movement_mode == Settings.movement_modes.reverse_angle
         end,
         onclick = function(self)
-            Settings.Layout.Button.selectedItem = Settings.Layout.Button.REVERSE_ANGLE
+            Settings.movement_mode = Settings.movement_modes.reverse_angle
         end
     },
     {
         name = "match angle",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.MATCH_ANGLE],
+        text = "Match Angle",
         box = function()
             return grid(0, 3, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
+
         pressed = function()
-            return Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE
+            return Settings.movement_mode == Settings.movement_modes.match_angle
         end,
         onclick = function(self)
-            Settings.Layout.Button.selectedItem = Settings.Layout.Button.MATCH_ANGLE
+            Settings.movement_mode = Settings.movement_modes.match_angle
         end
     },
     {
         name = "reset magnitude",
-        type = ButtonType.button,
-        text = Settings.Layout.Button.items[Settings.Layout.Button.RESET_MAG],
+        text = "Reset",
         box = function()
             return grid(6, 5, 2, 1)
-        end,
-        enabled = function()
-            return true
         end,
         pressed = function()
             return false
@@ -568,41 +430,21 @@ Buttons = {
     },
     {
         name = "record ghost",
-        type = ButtonType.button,
         text = "Record Ghost",
         box = function()
             return grid(4, 6, 4, 1)
         end,
-        enabled = function()
-            return true
-        end,
         pressed = function()
-            return Settings.Layout.Button.RECORD_GHOST == true
+            return Settings.recording_ghost
         end,
         onclick = function(self)
-            i = 0
-            if (Settings.Layout.Button.RECORD_GHOST == true) then
-                self.text = "Record ghost"
-                Settings.Layout.Button.RECORD_GHOST = false
-                recording_ghost = false
-                if (i == 0) then
-                    Ghost.write_file()
-                    i = i + 1
-                end
+            Settings.recording_ghost = not Settings.recording_ghost
+            if (not Settings.recording_ghost) then
+                self.text = "Record Ghost"
+                Ghost.write_file()
             else
                 self.text = "Stop recording"
-                Settings.Layout.Button.RECORD_GHOST = true
-                recording_ghost = true
-                i = 0
             end
         end
     },
 }
-
-function Buttons.getGhostButtonText()
-    if recording_ghost then
-        return "End Recording"
-    else
-        return Settings.Layout.Button.items[31]
-    end
-end

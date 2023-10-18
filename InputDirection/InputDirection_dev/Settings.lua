@@ -1,10 +1,18 @@
 Settings = {
+    movement_modes = {
+        disabled = 1,
+        match_yaw = 2,
+        reverse_angle = 3,
+        match_angle = 4,
+    },
     goalAngle = 0,
     goalMag = 127,
     setRNG = false,
     ShowEffectiveAngles = false,
+    recording_ghost = false,
     GridSize = 33,
     GridGap = 1,
+    movement_mode = 1,
     styles = {
         {},
         {},
@@ -12,7 +20,7 @@ Settings = {
         {},
         {},
     },
-    active_style_index = 4
+    active_style_index = 2
 }
 
 --[[
@@ -92,72 +100,7 @@ Settings.Colors = {
 
 Settings.Layout = {
     Button = {
-        items = { -- spaces are used to adjust text placement
-            'Disabled',
-            'Match Yaw',
-            'Match Angle',
-            'Reverse Angle',
-            'Speedkick',
-            'Reset',
-            'Swim',
-            'Ignore Y',
-            '.99',
-            'Always',
-            'Left',
-            'Right',
-            'DYaw',
-            'Get moved distance',
-            'Arctan Strain',
-            '+',
-            '-',
-            '+',
-            '-',
-            '+',
-            '-',
-            '+',
-            '-',
-            '+',
-            '-',
-            'I',
-            'High Mag',
-            'Set RNG',
-            'V',
-            'I',
-            'Record Ghost'
-        },
         selectedItem = 1,
-
-        DISABLED = 1,
-        MATCH_YAW = 2,
-        MATCH_ANGLE = 3,
-        REVERSE_ANGLE = 4,
-        MAG48 = 5,
-        RESET_MAG = 6,
-        SWIM = 7,
-        IGNORE_Y = 8,
-        POINT_99 = 9,
-        ALWAYS_99 = 10,
-        LEFT_99 = 11,
-        RIGHT_99 = 12,
-        DYAW = 13,
-        DIST_MOVED = 14,
-        ARCTANSTRAIN = 15,
-        INCARCR = 16,
-        DECARCR = 17,
-        INCARCD = 18,
-        DECARCD = 19,
-        INCARCN = 20,
-        DECARCN = 21,
-        INCARCS = 22,
-        DECARCS = 23,
-        INCARCE = 24,
-        DECARCE = 25,
-        REVERSE_ARCTAN = 26,
-        HIGH_MAG = 27,
-        SET_RNG = 28,
-        USE_VALUE = 29,
-        USE_INDEX = 30,
-        RECORD_GHOST = 31,
 
         dist_button = {
             enabled = false,
@@ -191,18 +134,6 @@ Settings.Layout = {
         },
         swimming = false
     },
-    TextArea = {
-        items = { 'Match Angle', 'Magnitude', 'RNG' },
-        selectedItem = 0,
-        selectedChar = 1,
-        blinkTimer = 0,
-        blinkRate = 25, -- lower number = blink faster
-        showUnderscore = true,
-
-        MATCH_ANGLE = 1,
-        MAGNITUDE = 2,
-        RNG = 3
-    }
 }
 
 
