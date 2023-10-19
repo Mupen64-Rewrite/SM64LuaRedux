@@ -3,18 +3,18 @@ VarWatch = {
         {
             identifier = "yaw_facing",
             value = function()
-                local o = (Settings.ShowEffectiveAngles and (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536 or (Memory.Mario.FacingYaw + 32768) % 65536)
+                local o = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536 or (Memory.Mario.FacingYaw + 32768) % 65536)
                 return "Yaw (Facing): " ..
-                    (Settings.ShowEffectiveAngles and Engine.getEffectiveAngle(Memory.Mario.FacingYaw) or Memory.Mario.FacingYaw) ..
+                    (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.Mario.FacingYaw) or Memory.Mario.FacingYaw) ..
                     " (O: " .. o .. ")"
             end
         },
         {
             identifier = "yaw_intended",
             value = function()
-                local o = (Settings.ShowEffectiveAngles and (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536 or (Memory.Mario.IntendedYaw + 32768) % 65536)
+                local o = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536 or (Memory.Mario.IntendedYaw + 32768) % 65536)
                 return "Yaw (Intended): " ..
-                    (Settings.ShowEffectiveAngles and Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) or Memory.Mario.IntendedYaw) ..
+                    (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) or Memory.Mario.IntendedYaw) ..
                     " (O: " .. o .. ")"
             end
         },

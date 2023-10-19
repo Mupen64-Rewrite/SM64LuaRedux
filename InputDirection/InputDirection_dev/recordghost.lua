@@ -12,7 +12,7 @@ OBJ_YAW_OFFSET = 0x1C
 OBJ_ROLL_OFFSET = 0x1E
 
 PATH_ROOT = debug.getinfo(1).source:sub(2):match("(.*\\)")
-targetFileName = PATH_ROOT.."tmp.ghost"
+targetFileName = PATH_ROOT .. "tmp.ghost"
 recordedFrames = {}
 recordingBaseFrame = nil
 lastGlobalTimer = nil
@@ -20,8 +20,12 @@ lastGlobalTimer = nil
 
 i = 0
 function Ghost.main()
+	if not Settings.recording_ghost then
+		return
+	end
+
 	if (i == 0) then
-		print("Recording ghost to: "..targetFileName)
+		print("Recording ghost to: " .. targetFileName)
 		i = i + 1
 	end
 
@@ -33,35 +37,41 @@ function Ghost.main()
 	if lastGlobalTimer == nil or lastGlobalTimer < _globalTimer then
 		lastGlobalTimer = _globalTimer
 		table.insert(recordedFrames,
-		{
-			globalTimer = (_globalTimer - 1),
-			
-			pitch = memory.readword(marioObjRef + OBJ_PITCH_OFFSET),
-			yaw = memory.readword(marioObjRef + OBJ_YAW_OFFSET),
-			roll = memory.readword(marioObjRef + OBJ_ROLL_OFFSET),
-			
-			positionX = memory.readdword(marioObjRef + OBJ_POSITION_OFFSET),
-			positionY = memory.readdword(marioObjRef + OBJ_POSITION_OFFSET + 4),
-			positionZ = memory.readdword(marioObjRef + OBJ_POSITION_OFFSET + 8),
-			
-			animationIndex = memory.readword(marioObjRef + OBJ_ANIMATION_OFFSET),
-			animationTimer = memory.readword(marioObjRef + OBJ_ANIMATION_TIMER_OFFSET) - 1
-		})
+			{
+				globalTimer = (_globalTimer - 1),
+
+				pitch = memory.readword(marioObjRef + OBJ_PITCH_OFFSET),
+				yaw = memory.readword(marioObjRef + OBJ_YAW_OFFSET),
+				roll = memory.readword(marioObjRef + OBJ_ROLL_OFFSET),
+
+				positionX = memory.readdword(marioObjRef + OBJ_POSITION_OFFSET),
+				positionY = memory.readdword(marioObjRef + OBJ_POSITION_OFFSET + 4),
+				positionZ = memory.readdword(marioObjRef + OBJ_POSITION_OFFSET + 8),
+
+				animationIndex = memory.readword(marioObjRef + OBJ_ANIMATION_OFFSET),
+				animationTimer = memory.readword(marioObjRef + OBJ_ANIMATION_TIMER_OFFSET) - 1
+			})
 	end
 end
 
-function writebytes32(f,x)
-    local b4=string.char(x%256) x=(x-x%256)/256
-    local b3=string.char(x%256) x=(x-x%256)/256
-    local b2=string.char(x%256) x=(x-x%256)/256
-    local b1=string.char(x%256) x=(x-x%256)/256
-    f:write(b4,b3,b2,b1)
+local function writebytes32(f, x)
+	local b4 = string.char(x % 256)
+	x = (x - x % 256) / 256
+	local b3 = string.char(x % 256)
+	x = (x - x % 256) / 256
+	local b2 = string.char(x % 256)
+	x = (x - x % 256) / 256
+	local b1 = string.char(x % 256)
+	x = (x - x % 256) / 256
+	f:write(b4, b3, b2, b1)
 end
 
-function writebytes16(f,x)
-    local b2=string.char(x%256) x=(x-x%256)/256
-    local b1=string.char(x%256) x=(x-x%256)/256
-    f:write(b2,b1)
+local function writebytes16(f, x)
+	local b2 = string.char(x % 256)
+	x = (x - x % 256) / 256
+	local b1 = string.char(x % 256)
+	x = (x - x % 256) / 256
+	f:write(b2, b1)
 end
 
 function Ghost.write_file()
@@ -73,7 +83,7 @@ function Ghost.write_file()
 	writebytes32(file, #recordedFrames)
 	for key, value in pairs(recordedFrames) do
 		writebytes32(file, (value.globalTimer - recordingBaseFrame));
-		
+
 		writebytes32(file, value.positionX);
 		writebytes32(file, value.positionY);
 		writebytes32(file, value.positionZ);

@@ -1,37 +1,32 @@
--- Input Direction Lua Script v3.5
+-- Input Direction lua:
 -- Author: MKDasher
 -- Hacker: Eddio0141
 -- Special thanks to Pannenkoek2012 and Peter Fedak for angle calculation support.
 -- Also thanks to MKDasher to making the code very clean
 -- Other contributors:
---	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk
-local tabs_path = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\tabs\\"
-local scripts_path = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\InputDirection_dev\\"
-local current_path = debug.getinfo(1).source:sub(2):match("(.*\\)") .. "\\"
+--	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk, Aurumaker72
 
-function folder(thisFileName)
-    local str = debug.getinfo(2, 'S').source:sub(2)
-    return (str:match('^.*/(.*).lua$') or str):sub(1, -(thisFileName):len() - 1)
-end
+folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
+local tabs_path = folder .. "tabs\\"
+local scripts_path = folder .. "InputDirection_dev\\"
 
-function get_keys(t)
-    local keys = {}
-    for key, _ in pairs(t) do
-        table.insert(keys, key)
-    end
-    return keys
-end
-
-function get_key_index(key, t)
-    local i = 1
-    for k, _ in pairs(t) do
-        if k == key then
-            return i
-        end
-        i = i + 1
-    end
-    return nil
-end
+dofile(folder .. "mupen-lua-ugui.lua")
+dofile(folder .. "mupen-lua-ugui-ext.lua")
+dofile(scripts_path .. "Settings.lua")
+dofile(scripts_path .. "Drawing.lua")
+dofile(scripts_path .. "Memory.lua")
+dofile(scripts_path .. "Joypad.lua")
+dofile(scripts_path .. "Angles.lua")
+dofile(scripts_path .. "Engine.lua")
+dofile(scripts_path .. "Buttons.lua")
+dofile(scripts_path .. "Program.lua")
+dofile(scripts_path .. "MoreMaths.lua")
+dofile(scripts_path .. "Actions.lua")
+dofile(scripts_path .. "Swimming.lua")
+dofile(scripts_path .. "RNGToIndex.lua")
+dofile(scripts_path .. "IndexToRNG.lua")
+dofile(scripts_path .. "recordghost.lua")
+dofile(scripts_path .. "VarWatch.lua")
 
 local i_tabs = {
     {
@@ -60,49 +55,23 @@ local function get_flat_tabs()
 end
 
 local current_tab_index = 1
-local flat_tabs = get_flat_tabs()
-
 local mouse_wheel = 0
 
-dofile(current_path .. "mupen-lua-ugui.lua")
-dofile(current_path .. "mupen-lua-ugui-ext.lua")
-dofile(scripts_path .. "Settings.lua")
-dofile(scripts_path .. "Drawing.lua")
-dofile(scripts_path .. "Memory.lua")
-dofile(scripts_path .. "Joypad.lua")
-dofile(scripts_path .. "Angles.lua")
-dofile(scripts_path .. "Engine.lua")
-dofile(scripts_path .. "Buttons.lua")
-dofile(scripts_path .. "Program.lua")
-dofile(scripts_path .. "MoreMaths.lua")
-dofile(scripts_path .. "Actions.lua")
-dofile(scripts_path .. "Swimming.lua")
-dofile(scripts_path .. "RNGToIndex.lua")
-dofile(scripts_path .. "IndexToRNG.lua")
-dofile(scripts_path .. "recordghost.lua")
-dofile(scripts_path .. "VarWatch.lua")
-
-Settings.ShowEffectiveAngles = false -- show angles floored to the nearest multiple of 16
 Settings.create_styles()
 Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index])
-Program.initFrame()
-Memory.UpdatePrevPos()
 Drawing.size_up()
 
-function main()
-    Program.initFrame()
+function at_input()
+    Program.new_frame()
     Program.main()
     i_tabs[current_tab_index].code.update()
     Program.rngSetter()
     Joypad.send()
-    Swimming.swim("A")
-
-    if Settings.recording_ghost then
-        Ghost.main()
-    end
+    Swimming.swim()
+    Ghost.main()
 end
 
-function drawing()
+function at_update_screen()
     local keys = input.get()
     Mupen_lua_ugui.begin_frame({
         mouse_position = {
@@ -114,8 +83,6 @@ function drawing()
         held_keys = keys,
     })
     mouse_wheel = 0
-
-    Memory.Refresh()
 
     BreitbandGraphics.fill_rectangle({
         x = Drawing.initial_size.width,
@@ -137,18 +104,18 @@ function drawing()
     Mupen_lua_ugui.end_frame()
 end
 
-function close()
-    Drawing.size_down()
-end
+-- run 2 fake updates pass to get everything to pull itself together (UpdatePrevPos)
+at_input()
+at_input()
 
-emu.atinput(main)
-emu.atupdatescreen(drawing)
-emu.atstop(close)
-if emu.atloadstate then
-    emu.atreset(Drawing.size_up)
-else
-    print("update ur mupen")
-end
+emu.atinput(at_input)
+emu.atupdatescreen(at_update_screen)
+
+emu.atstop(function()
+    Drawing.size_down()
+end)
+
+emu.atreset(Drawing.size_up)
 
 emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
     if msg_id == 522 then                         -- WM_MOUSEWHEEL

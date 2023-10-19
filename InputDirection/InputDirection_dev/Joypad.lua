@@ -5,11 +5,11 @@ Joypad = {
 }
 
 function Joypad.init()
-	Joypad.input = joypad.get(1)
+	Joypad.input = joypad.get(Settings.controller_index)
 end
 
 function Joypad.send()
-	joypad.set(1, Joypad.input)
+	joypad.set(Settings.controller_index, Joypad.input)
 end
 
 function Joypad.set(key, value)

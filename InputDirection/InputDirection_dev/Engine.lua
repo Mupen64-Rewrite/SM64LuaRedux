@@ -71,7 +71,7 @@ function Engine.getArctanAngle(r, d, n, s)
 end
 
 function Engine.inputsForAngle()
-	goal = Settings.goalAngle
+	goal = Settings.goal_angle
 	if (Settings.movement_mode == Settings.movement_modes.match_yaw) then
 		goal = Memory.Mario.FacingYaw
 		if ((Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
@@ -109,7 +109,7 @@ function Engine.inputsForAngle()
 			else
 				goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 			end
-		elseif ( Memory.Mario.FSpeed >= 10 and offset ~= 0 and Memory.Mario.FSpeed < 34.85 and Memory.Mario.Action == 0x04808459 and joypad.get(1).B and Settings.movement_mode == Settings.movement_modes.match_yaw)  then
+		elseif ( Memory.Mario.FSpeed >= 10 and offset ~= 0 and Memory.Mario.FSpeed < 34.85 and Memory.Mario.Action == 0x04808459 and joypad.get(Settings.controller_index).B and Settings.movement_mode == Settings.movement_modes.match_yaw)  then
 			speedsign = 1
 			targetspeed = 32
 			if(Memory.Mario.FSpeed > 32) then

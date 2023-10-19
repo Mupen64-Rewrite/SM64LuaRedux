@@ -5,10 +5,14 @@ Settings = {
         reverse_angle = 3,
         match_angle = 4,
     },
-    goalAngle = 0,
-    goalMag = 127,
-    setRNG = false,
-    ShowEffectiveAngles = false,
+    swimming_button = "A",
+    controller_index = 1,
+    goal_angle = 0,
+    goal_mag = 127,
+    override_rng = false,
+    override_rng_use_index = false,
+    override_rng_value = 0,
+    show_effective_angles = true,
     recording_ghost = false,
     strain_left = true,
     strain_right = false,
@@ -149,7 +153,7 @@ local function expand(t)
 end
 local function get_windows_10_nineslice_style()
     return {
-        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-10-atlas.png",
+        path = folder .. "res\\windows-10-atlas.png",
         background_color = BreitbandGraphics.repeated_to_color(240),
         item_height = 15,
         font_size = 12,
@@ -294,10 +298,10 @@ end
 Settings.create_styles = function()
     Settings.styles[1] = get_windows_10_nineslice_style()
     Settings.styles[2] = spread(get_windows_10_nineslice_style()) {
-        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-11-atlas.png",
+        path = folder .. "res\\windows-11-atlas.png",
     }
     Settings.styles[3] = spread(get_windows_10_nineslice_style()) {
-        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-10-dark-atlas.png",
+        path = folder .. "res\\windows-10-dark-atlas.png",
         background_color = BreitbandGraphics.repeated_to_color(57),
     }
     Settings.styles[3].button.text_colors = {
@@ -320,7 +324,7 @@ Settings.create_styles = function()
     }
 
     Settings.styles[4] = spread(get_windows_10_nineslice_style()) {
-        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-7-atlas.png",
+        path = folder .. "res\\windows-7-atlas.png",
         background_color = { r = 234, g = 235, b = 236 },
     }
     Settings.styles[4].button.states = {
@@ -417,7 +421,7 @@ Settings.create_styles = function()
     }
     Settings.styles[4].scrollbar_rail = expand({ 55, 123, 17, 22 })
     Settings.styles[5] = spread(get_windows_10_nineslice_style()) {
-        path = folder("InputDirection_dev/Settings.lua") .. "res/windows-3-pink-atlas.png",
+        path = folder .. "res\\windows-3-pink-atlas.png",
         background_color = { r = 54, g = 30, b = 53 },
         font_name = "Consolas"
     }
