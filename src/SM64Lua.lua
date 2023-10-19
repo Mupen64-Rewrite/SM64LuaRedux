@@ -14,25 +14,25 @@ end
 
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 local tabs_path = folder .. "tabs\\"
-local scripts_path = folder .. "InputDirection_dev\\"
+local core_path = folder .. "core\\"
 
 dofile(folder .. "mupen-lua-ugui.lua")
 dofile(folder .. "mupen-lua-ugui-ext.lua")
-dofile(scripts_path .. "Settings.lua")
-dofile(scripts_path .. "Drawing.lua")
-dofile(scripts_path .. "Memory.lua")
-dofile(scripts_path .. "Joypad.lua")
-dofile(scripts_path .. "Angles.lua")
-dofile(scripts_path .. "Engine.lua")
-dofile(scripts_path .. "Buttons.lua")
-dofile(scripts_path .. "Program.lua")
-dofile(scripts_path .. "MoreMaths.lua")
-dofile(scripts_path .. "Actions.lua")
-dofile(scripts_path .. "Swimming.lua")
-dofile(scripts_path .. "RNGToIndex.lua")
-dofile(scripts_path .. "IndexToRNG.lua")
-dofile(scripts_path .. "recordghost.lua")
-dofile(scripts_path .. "VarWatch.lua")
+dofile(core_path .. "Settings.lua")
+dofile(core_path .. "Drawing.lua")
+dofile(core_path .. "Memory.lua")
+dofile(core_path .. "Joypad.lua")
+dofile(core_path .. "Angles.lua")
+dofile(core_path .. "Engine.lua")
+dofile(core_path .. "Buttons.lua")
+dofile(core_path .. "Program.lua")
+dofile(core_path .. "MoreMaths.lua")
+dofile(core_path .. "Actions.lua")
+dofile(core_path .. "Swimming.lua")
+dofile(core_path .. "RNGToIndex.lua")
+dofile(core_path .. "IndexToRNG.lua")
+dofile(core_path .. "recordghost.lua")
+dofile(core_path .. "VarWatch.lua")
 
 local i_tabs = {
     {
