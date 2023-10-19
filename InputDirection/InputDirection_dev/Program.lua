@@ -27,7 +27,7 @@ function Program.main()
 	if Settings.movement_mode ~= Settings.movement_modes.disabled then
 		result = Engine.inputsForAngle()
 		if Settings.goalMag then
-			Engine.scaleInputsForMagnitude(result, Settings.goalMag, Settings.Layout.Button.strain_button.highmag)
+			Engine.scaleInputsForMagnitude(result, Settings.goalMag, Settings.high_magnitude)
 		end
 		Joypad.set('X', result.X)
 		Joypad.set('Y', result.Y)

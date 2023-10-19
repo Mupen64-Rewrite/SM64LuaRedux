@@ -58,118 +58,18 @@ Buttons = {
         end
     },
     {
-        name = ".99",
-        text = ".99",
-        box = function()
-            return grid(7, 0, 1, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.target_strain
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.strain_button.target_strain) then
-                Settings.Layout.Button.strain_button.target_strain = false
-                Settings.Layout.Button.strain_button.always = false
-            else
-                Settings.Layout.Button.strain_button.target_strain = true
-            end
-        end
-    },
-    {
-        name = "always .99",
-        text = "Always",
-        box = function()
-            return grid(4, 0, 3, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.always
-        end,
-        onclick = function(self)
-            if (Settings.Layout.Button.strain_button.always) then
-                Settings.Layout.Button.strain_button.always = false
-            elseif (Settings.Layout.Button.strain_button.target_strain) then
-                Settings.Layout.Button.strain_button.always = true
-            end
-        end
-    },
-    {
-        name = ".99 left",
-        text = "<",
-        box = function()
-            return grid(4, 1, 1, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.left
-        end,
-        onclick = function(self)
-            Settings.Layout.Button.strain_button.left = not Settings.Layout.Button.strain_button.left
-        end
-    },
-    {
-        name = ".99 right",
-        text = ">",
-        box = function()
-            return grid(7, 1, 1, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.right
-        end,
-        onclick = function(self)
-            Settings.Layout.Button.strain_button.right = not Settings.Layout.Button.strain_button.right
-        end
-    },
-    {
-        name = "swim",
-        text = "Swim",
-        box = function()
-            return grid(4, 2, 2, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.swimming
-        end,
-        onclick = function(self)
-            Settings.Layout.Button.swimming = not Settings.Layout.Button.swimming
-        end
-    },
-    {
-        name = "high magnitude",
-        text = "High Mag",
-        box = function()
-            return grid(6, 2, 2, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.highmag
-        end,
-        onclick = function(self)
-            Settings.Layout.Button.strain_button.highmag = not Settings.Layout.Button.strain_button.highmag
-        end
-    },
-    {
-        name = "dyaw",
-        text = "D-Yaw",
-        box = function()
-            return grid(5, 1, 2, 1)
-        end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.dyaw
-        end,
-        onclick = function(self)
-            Settings.Layout.Button.strain_button.dyaw = not Settings.Layout.Button.strain_button.dyaw
-        end
-    },
-    {
         name = "arcotan strain",
         text = "Atan Strain",
         box = function()
-            return grid(4, 4, 3, 1)
+            return grid(4, 2, 3, 1)
         end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.arctan
+            return Settings.arctan_strain
         end,
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctan = not Settings.Layout.Button.strain_button.arctan
+            Settings.arctan_strain = not Settings.arctan_strain
 
-            if Settings.Layout.Button.strain_button.arctan then
+            if Settings.arctan_strain then
                 Memory.Refresh()
                 Settings.Layout.Button.strain_button.arctanstart = Memory.Mario.GlobalTimer
             end
@@ -177,9 +77,9 @@ Buttons = {
     },
     {
         name = "reverse arcotan strain",
-        text = "R",
+        text = "I",
         box = function()
-            return grid(7, 4, 1, 1)
+            return grid(7, 2, 1, 1)
         end,
         pressed = function()
             return Settings.Layout.Button.strain_button.reverse_arc
@@ -413,19 +313,6 @@ Buttons = {
         end,
         onclick = function(self)
             Settings.movement_mode = Settings.movement_modes.match_angle
-        end
-    },
-    {
-        name = "reset magnitude",
-        text = "Reset",
-        box = function()
-            return grid(6, 5, 2, 1)
-        end,
-        pressed = function()
-            return false
-        end,
-        onclick = function(self)
-            Settings.goalMag = 127
         end
     },
     {

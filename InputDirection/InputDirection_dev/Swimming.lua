@@ -6,7 +6,7 @@ local WATER_ACTION_END = 0x300022C2
 local WATER_IDLE = 0x380022C0
 
 function Swimming.swim(button)
-	if not Settings.Layout.Button.swimming then return end
+	if not Settings.swim then return end
 
 	if Memory.Mario.Action == SWIMMING_ANIMATION_2
 		or Memory.Mario.Action == WATER_ACTION_END

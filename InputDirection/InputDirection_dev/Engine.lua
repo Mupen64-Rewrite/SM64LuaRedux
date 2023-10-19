@@ -6,22 +6,22 @@ function Engine.getEffectiveAngle(angle)
 	return angle - (angle % 16)
 end
 function Engine.getDyaw(angle)
-	if Settings.Layout.Button.strain_button.left and Settings.Layout.Button.strain_button.right == false then
+	if Settings.strain_left and Settings.strain_right == false then
 		return Memory.Mario.FacingYaw + angle
-	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right then
+	elseif Settings.strain_left == false and Settings.strain_right then
 		return Memory.Mario.FacingYaw - angle
-	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right == false then
+	elseif Settings.strain_left == false and Settings.strain_right == false then
 		return Memory.Mario.FacingYaw + angle*(math.pow(-1,Memory.Mario.GlobalTimer % 2))
 	else
 		return angle
 	end
 end
 function Engine.getDyawsign()
-	if Settings.Layout.Button.strain_button.left and Settings.Layout.Button.strain_button.right == false then
+	if Settings.strain_left and Settings.strain_right == false then
 		return 1
-	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right then
+	elseif Settings.strain_left == false and Settings.strain_right then
 		return -1
-	elseif Settings.Layout.Button.strain_button.left == false and Settings.Layout.Button.strain_button.right == false then
+	elseif Settings.strain_left == false and Settings.strain_right == false then
 		return math.pow(-1,Memory.Mario.GlobalTimer % 2)
 	else
 		return 0
@@ -85,12 +85,12 @@ function Engine.inputsForAngle()
 		end
 	end
 	    -- Set up target speed
-		if (Settings.Layout.Button.strain_button.target_strain) then
+		if (Settings.strain_speed_target) then
 			ENABLE_TARGET_SPEED = 1
 		else
 			ENABLE_TARGET_SPEED = 0
 		end
-		if (Settings.Layout.Button.strain_button.always) then
+		if (Settings.strain_always) then
 			offset = 3
 		else
 			offset = 0
@@ -159,14 +159,14 @@ function Engine.inputsForAngle()
 		end
 		goal = goal + 32 * speedsign * Engine.getDyawsign()
 	end
-	if (Settings.movement_mode == Settings.movement_modes.match_angle and Settings.Layout.Button.strain_button.dyaw) then
+	if (Settings.movement_mode == Settings.movement_modes.match_angle and Settings.dyaw) then
 		goal = Engine.getDyaw(goal)
 		if (Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 			goal = (goal + 32768) % 65536
 		end
 	end
-	--if (Settings.Layout.Button.strain_button.arctan and Settings.Layout.Button.strain_button.arctanstart < Memory.Mario.GlobalTimer and Settings.Layout.Button.strain_button.arctanstart > Memory.Mario.GlobalTimer - Settings.Layout.Button.strain_button.arctann - 1) then
-	if (Settings.Layout.Button.strain_button.arctan) then
+	--if (Settings.arctan_strain and Settings.Layout.Button.strain_button.arctanstart < Memory.Mario.GlobalTimer and Settings.Layout.Button.strain_button.arctanstart > Memory.Mario.GlobalTimer - Settings.Layout.Button.strain_button.arctann - 1) then
+	if (Settings.arctan_strain) then
 		goal = Engine.getArctanAngle(Settings.Layout.Button.strain_button.arctanr, Settings.Layout.Button.strain_button.arctand, Settings.Layout.Button.strain_button.arctann, Settings.Layout.Button.strain_button.arctanstart)
 		if (Settings.movement_mode ~= Settings.movement_modes.match_angle) then
 			if (Memory.Mario.Action == 0x000008A7 or Memory.Mario.Action == 0x010208B6 or Memory.Mario.Action == 0x010208B0 or Memory.Mario.Action == 0x08100340 or Memory.Mario.Action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
@@ -174,7 +174,7 @@ function Engine.inputsForAngle()
 			end
 		end
 	end
-	-- if(Settings.movement_mode ~= Settings.movement_modes.match_angle or Settings.Layout.Button.strain_button.dyaw or Settings.Layout.Button.strain_button.arctan) then
+	-- if(Settings.movement_mode ~= Settings.movement_modes.match_angle or Settings.dyaw or Settings.arctan_strain) then
 		-- goal = goal + Memory.Mario.FacingYaw % 16
 	-- end
 	goal = goal - 65536
