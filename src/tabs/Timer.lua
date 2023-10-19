@@ -58,6 +58,7 @@ local function get_frame_text()
 end
 
 return {
+    name = "Timer",
     update = function()
         curVI = emu.framecount()
         if (State == 1) then
@@ -115,7 +116,8 @@ return {
         })
 
         BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center", {},
-            BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].background_color), 24, "Consolas",
+            BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].theme.background_color), 24,
+            "Consolas",
             get_frame_text())
 
         Mupen_lua_ugui.toggle_button({

@@ -1,6 +1,7 @@
 local selected_var_index = 1
 
 return {
+    name = "Settings",
     update = function()
 
     end,
@@ -10,16 +11,10 @@ return {
             uid = 1,
             is_enabled = true,
             rectangle = grid_rect(0, 0, 4, 1),
-            items = {
-                "Windows 10",
-                "Windows 11",
-                "Windows 10 Dark",
-                "Windows 7",
-                "Windows 3 Pink",
-            },
+            items = select(Settings.styles, "name"),
             selected_index = Settings.active_style_index,
         })
-        Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index])
+        Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
 
         if Mupen_lua_ugui.button({
                 uid = 20,

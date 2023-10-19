@@ -12,12 +12,46 @@ function swap(arr, index_1, index_2)
     VarWatch.active_variables[index_1] = tmp
 end
 
+function expand_rect(t)
+    return {
+        x = t[1],
+        y = t[2],
+        width = t[3],
+        height = t[4],
+    }
+end
+
+function spread(template)
+    local result = {}
+    for key, value in pairs(template) do
+        result[key] = value
+    end
+
+    return function(table)
+        for key, value in pairs(table) do
+            result[key] = value
+        end
+        return result
+    end
+end
+
+function select(arr, prop)
+    local t = {}
+    for i = 1, #arr, 1 do
+        t[i] = arr[i][prop]
+    end
+    return t
+end
+
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
+res_path = folder .. "res\\"
 local tabs_path = folder .. "tabs\\"
 local core_path = folder .. "core\\"
 
+
 dofile(folder .. "mupen-lua-ugui.lua")
 dofile(folder .. "mupen-lua-ugui-ext.lua")
+dofile(res_path .. "base.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Drawing.lua")
 dofile(core_path .. "Memory.lua")
@@ -34,43 +68,23 @@ dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "recordghost.lua")
 dofile(core_path .. "VarWatch.lua")
 
-local i_tabs = {
-    {
-        text = "TAS",
-        code = dofile(tabs_path .. "TAS.lua")
-    },
-    {
-        text = "Timer",
-        code = dofile(tabs_path .. "Timer.lua")
-    },
-    {
-        text = "RNG",
-        code = dofile(tabs_path .. "RNG.lua")
-    },
-    {
-        text = "Settings",
-        code = dofile(tabs_path .. "Settings.lua")
-    }
+local tabs = {
+    dofile(tabs_path .. "TAS.lua"),
+    dofile(tabs_path .. "Timer.lua"),
+    dofile(tabs_path .. "RNG.lua"),
+    dofile(tabs_path .. "Settings.lua"),
 }
-local function get_flat_tabs()
-    local t = {}
-    for i = 1, #i_tabs, 1 do
-        t[i] = i_tabs[i].text
-    end
-    return t
-end
 
 local current_tab_index = 1
 local mouse_wheel = 0
 
-Settings.create_styles()
-Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index])
+Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
 Drawing.size_up()
 
 function at_input()
     Program.new_frame()
     Program.main()
-    i_tabs[current_tab_index].code.update()
+    tabs[current_tab_index].update()
     Program.rngSetter()
     Joypad.send()
     Swimming.swim()
@@ -95,15 +109,15 @@ function at_update_screen()
         y = 0,
         width = Drawing.size.width - Drawing.initial_size.width,
         height = Drawing.size.height
-    }, Settings.styles[Settings.active_style_index].background_color)
+    }, Settings.styles[Settings.active_style_index].theme.background_color)
 
-    i_tabs[current_tab_index].code.draw()
+    tabs[current_tab_index].draw()
 
     current_tab_index = Mupen_lua_ugui.carrousel_button({
         uid = 420,
         is_enabled = true,
         rectangle = grid_rect(0, 16, 8, 1),
-        items = get_flat_tabs(),
+        items = select(tabs, "name"),
         selected_index = current_tab_index,
     })
 

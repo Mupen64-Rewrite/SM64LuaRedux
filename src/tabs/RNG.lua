@@ -1,4 +1,5 @@
 return {
+    name = "RNG",
     update = function()
     end,
     draw = function()
