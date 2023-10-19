@@ -6,6 +6,12 @@
 -- Other contributors:
 --	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk, Aurumaker72
 
+function swap(arr, index_1, index_2)
+    local tmp = VarWatch.active_variables[index_2]
+    VarWatch.active_variables[index_2] = VarWatch.active_variables[index_1]
+    VarWatch.active_variables[index_1] = tmp
+end
+
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 local tabs_path = folder .. "tabs\\"
 local scripts_path = folder .. "InputDirection_dev\\"

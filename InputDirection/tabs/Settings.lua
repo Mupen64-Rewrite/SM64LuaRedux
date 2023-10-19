@@ -27,9 +27,7 @@ return {
                 rectangle = grid_rect(0, 9, 1, 1),
                 text = "^"
             }) then
-            local tmp = VarWatch.active_variables[selected_var_index - 1]
-            VarWatch.active_variables[selected_var_index - 1] = VarWatch.active_variables[selected_var_index]
-            VarWatch.active_variables[selected_var_index] = tmp
+            swap(VarWatch.active_variables, selected_var_index, selected_var_index - 1)
             selected_var_index = selected_var_index - 1
         end
 
@@ -39,9 +37,7 @@ return {
                 rectangle = grid_rect(1, 9, 1, 1),
                 text = "v"
             }) then
-            local tmp = VarWatch.active_variables[selected_var_index + 1]
-            VarWatch.active_variables[selected_var_index + 1] = VarWatch.active_variables[selected_var_index]
-            VarWatch.active_variables[selected_var_index] = tmp
+            swap(VarWatch.active_variables, selected_var_index, selected_var_index + 1)
             selected_var_index = selected_var_index + 1
         end
 

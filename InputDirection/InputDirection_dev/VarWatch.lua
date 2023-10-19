@@ -127,6 +127,8 @@ VarWatch = {
     },
     active_variables = {}
 }
+
+
 local function where(table, cb)
     for key, value in pairs(table) do
         if cb(value) then
