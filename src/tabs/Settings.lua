@@ -7,14 +7,18 @@ return {
     end,
 
     draw = function()
-        Settings.active_style_index = Mupen_lua_ugui.combobox({
+        local new_active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,
             is_enabled = true,
             rectangle = grid_rect(0, 0, 4, 1),
             items = select(Settings.styles, "name"),
             selected_index = Settings.active_style_index,
         })
-        Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
+
+        if new_active_style_index ~= Settings.active_style_index then
+            Settings.active_style_index = new_active_style_index
+            Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
+        end
 
         if Mupen_lua_ugui.button({
                 uid = 20,

@@ -1,5 +1,6 @@
 Mupen_lua_ugui_ext = {
     internal = {
+        rt_lut = {},
         get_digit = function(value, length, index)
             return math.floor(value / math.pow(10, length - index)) % 10
         end,
@@ -8,11 +9,93 @@ Mupen_lua_ugui_ext = {
             local new_value = value + (digit_value - old_digit_value) * math.pow(10, length - index)
             local max = math.pow(10, length)
             return (new_value + max) % max
-        end
+        end,
+        rectangle_to_key = function(rectangle)
+            return rectangle.x .. rectangle.y .. rectangle.width .. rectangle.height
+        end,
+        cached_draw = function(type, rectangle, visual_state, draw)
+            local key = type .. visual_state .. Mupen_lua_ugui_ext.internal.rectangle_to_key(rectangle)
+            if not Mupen_lua_ugui_ext.internal.rt_lut[key] then
+                local render_target = d2d.create_render_target(rectangle.width, rectangle.height)
+                d2d.begin_render_target(render_target)
+                draw({
+                    x = 0,
+                    y = 0,
+                    width = rectangle.width,
+                    height = rectangle.height,
+                })
+                d2d.end_render_target(render_target)
+
+                Mupen_lua_ugui_ext.internal.rt_lut[key] = render_target
+            end
+            -- bitmap has same key as render_target
+            d2d.draw_image(rectangle.x, rectangle.y,
+                rectangle.x + rectangle.width,
+                rectangle.y + rectangle.height,
+                0, 0, rectangle.width,
+                rectangle.height, Mupen_lua_ugui_ext.internal.rt_lut[key], 1, 0)
+        end,
+
+        -- applies a text drawing hook to breitbandgraphics which speeds up text drawing
+        -- TODO: fix this, as it currently doesnt work lol
+        apply_text_hook = function()
+            BreitbandGraphics.uncached_draw_text = BreitbandGraphics.draw_text
+            BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color,
+                                                   font_size, font_name,
+                                                   text)
+                local key = Mupen_lua_ugui_ext.internal.rectangle_to_key(rectangle)
+                key = key .. horizontal_alignment
+                key = key .. vertical_alignment
+                key = key .. (style.clip and tostring(style.clip) or "")
+                key = key .. color.r
+                key = key .. color.g
+                key = key .. color.b
+                key = key .. (color.a and color.a or "")
+                key = key .. font_size
+                key = key .. font_name
+                key = key .. (text and text or "")
+
+                if not Mupen_lua_ugui_ext.internal.rt_lut[key] then
+                    local render_target = d2d.create_render_target(rectangle.width, rectangle.height)
+                    d2d.begin_render_target(render_target)
+                    BreitbandGraphics.uncached_draw_text({
+                        x = 0,
+                        y = 0,
+                        width = rectangle.width,
+                        height = rectangle.height,
+                    }, "center", "center", style, color, font_size, font_name, text)
+                    d2d.end_render_target(render_target)
+
+                    Mupen_lua_ugui_ext.internal.rt_lut[key] = render_target
+                end
+                -- bitmap has same key as render_target
+                d2d.draw_image(rectangle.x, rectangle.y,
+                    rectangle.x + rectangle.width,
+                    rectangle.y + rectangle.height,
+                    0, 0, rectangle.width,
+                    rectangle.height, Mupen_lua_ugui_ext.internal.rt_lut[key], 1, 0)
+            end
+        end,
+
+        purge_lut = function()
+            -- invalidate LUT and destroy contents
+            if d2d.destroy_render_target then
+                for i = 1, #Mupen_lua_ugui_ext.internal.rt_lut, 1 do
+                    d2d.destroy_render_target(Mupen_lua_ugui_ext.internal.rt_lut[i])
+                end
+            end
+            Mupen_lua_ugui_ext.internal.rt_lut = {}
+            print("Purged render target cache")
+        end,
     }
 }
 
-
+if not d2d.create_render_target then
+    print("Falling back to uncached nineslice rendering. Please update to 1.1.5") 
+    Mupen_lua_ugui_ext.internal.cached_draw = function (type, rectangle, visual_state, draw)
+        draw(rectangle)
+    end
+end
 
 ---Places a Spinner, or NumericUpDown control
 ---
@@ -322,16 +405,19 @@ Mupen_lua_ugui.numberbox = function(control)
                 control.value = control.value +
                     (value - oldkey) *
                     math.pow(10, control.places - Mupen_lua_ugui.internal.control_data[control.uid].caret_index)
-                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data[control.uid]
+                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data
+                    [control.uid]
                     .caret_index + 1
             end
 
             if key == "left" then
-                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data[control.uid]
+                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data
+                    [control.uid]
                     .caret_index - 1
             end
             if key == "right" then
-                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data[control.uid]
+                Mupen_lua_ugui.internal.control_data[control.uid].caret_index = Mupen_lua_ugui.internal.control_data
+                    [control.uid]
                     .caret_index + 1
             end
             if key == "up" then
@@ -492,50 +578,65 @@ BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_
     }, bottom, path, color, filter)
 end
 
+
 Mupen_lua_ugui_ext.apply_nineslice = function(style)
+    Mupen_lua_ugui_ext.internal.purge_lut()
     Mupen_lua_ugui.standard_styler.draw_raised_frame = function(control, visual_state)
-        BreitbandGraphics.draw_image_nineslice(control.rectangle,
-            style.button.states[visual_state].source,
-            style.button.states[visual_state].center,
-            style.path, BreitbandGraphics.colors.white, "nearest")
+        Mupen_lua_ugui_ext.internal.cached_draw("raised_frame", control.rectangle, visual_state, function(eff_rectangle)
+            BreitbandGraphics.draw_image_nineslice(eff_rectangle,
+                style.button.states[visual_state].source,
+                style.button.states[visual_state].center,
+                style.path, BreitbandGraphics.colors.white, "nearest")
+        end)
     end
     Mupen_lua_ugui.standard_styler.draw_edit_frame = function(control, rectangle,
-                                                                 visual_state)
-        BreitbandGraphics.draw_image_nineslice(rectangle,
-            style.textbox.states[visual_state].source,
-            style.textbox.states[visual_state].center,
-            style.path, BreitbandGraphics.colors.white, "nearest")
+                                                              visual_state)
+        Mupen_lua_ugui_ext.internal.cached_draw("edit_frame", rectangle, visual_state, function(eff_rectangle)
+            BreitbandGraphics.draw_image_nineslice(eff_rectangle,
+                style.textbox.states[visual_state].source,
+                style.textbox.states[visual_state].center,
+                style.path, BreitbandGraphics.colors.white, "nearest")
+        end)
     end
     Mupen_lua_ugui.standard_styler.draw_list_frame = function(rectangle, visual_state)
-        BreitbandGraphics.draw_image_nineslice(rectangle,
-            style.listbox.states[visual_state].source,
-            style.listbox.states[visual_state].center,
-            style.path, BreitbandGraphics.colors.white, "nearest")
+        Mupen_lua_ugui_ext.internal.cached_draw("list_frame", rectangle, visual_state, function(eff_rectangle)
+            BreitbandGraphics.draw_image_nineslice(eff_rectangle,
+                style.listbox.states[visual_state].source,
+                style.listbox.states[visual_state].center,
+                style.path, BreitbandGraphics.colors.white, "nearest")
+        end)
     end
     Mupen_lua_ugui.standard_styler.draw_list_item = function(item, rectangle, visual_state)
-        BreitbandGraphics.draw_image_nineslice(rectangle,
-            style.listbox_item.states[visual_state].source,
-            style.listbox_item.states[visual_state].center,
-            style.path, BreitbandGraphics.colors.white, "nearest")
-        BreitbandGraphics.draw_text({
-                x = rectangle.x + 2,
-                y = rectangle.y,
-                width = rectangle.width,
-                height = rectangle.height,
-            }, 'start', 'center', { clip = true },
-            Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
-            Mupen_lua_ugui.standard_styler.font_size,
-            Mupen_lua_ugui.standard_styler.font_name,
-            item)
+        Mupen_lua_ugui_ext.internal.cached_draw("list_item", rectangle, visual_state, function(eff_rectangle)
+            BreitbandGraphics.draw_image_nineslice(eff_rectangle,
+                style.listbox_item.states[visual_state].source,
+                style.listbox_item.states[visual_state].center,
+                style.path, BreitbandGraphics.colors.white, "nearest")
+            BreitbandGraphics.draw_text({
+                    x = eff_rectangle.x + 2,
+                    y = eff_rectangle.y,
+                    width = eff_rectangle.width,
+                    height = eff_rectangle.height,
+                }, 'start', 'center', { clip = true },
+                Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
+                Mupen_lua_ugui.standard_styler.font_size,
+                Mupen_lua_ugui.standard_styler.font_name,
+                item)
+        end)
     end
     Mupen_lua_ugui.standard_styler.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
         BreitbandGraphics.draw_image(container_rectangle,
             style.scrollbar_rail,
             style.path, BreitbandGraphics.colors.white, "nearest")
-        BreitbandGraphics.draw_image_nineslice(thumb_rectangle,
-            style.scrollbar_thumb.states[visual_state].source,
-            style.scrollbar_thumb.states[visual_state].center,
-            style.path, BreitbandGraphics.colors.white, "nearest")
+        Mupen_lua_ugui_ext.internal.cached_draw(
+            "scrollbar_thumb", thumb_rectangle,
+            visual_state,
+            function(eff_rectangle)
+                BreitbandGraphics.draw_image_nineslice(eff_rectangle,
+                    style.scrollbar_thumb.states[visual_state].source,
+                    style.scrollbar_thumb.states[visual_state].center,
+                    style.path, BreitbandGraphics.colors.white, "nearest")
+            end)
     end
     Mupen_lua_ugui.standard_styler.raised_frame_text_colors = style.button.text_colors
     Mupen_lua_ugui.standard_styler.edit_frame_text_colors = style.textbox.text_colors
@@ -632,7 +733,8 @@ Mupen_lua_ugui.treeview = function(control)
 
         Mupen_lua_ugui.standard_styler.draw_list_item(item.content,
             effective_rectangle,
-            Mupen_lua_ugui.internal.control_data[control.uid].selected_uid == item.uid and Mupen_lua_ugui.visual_states.active or
+            Mupen_lua_ugui.internal.control_data[control.uid].selected_uid == item.uid and
+            Mupen_lua_ugui.visual_states.active or
             Mupen_lua_ugui.visual_states.normal)
     end
 
@@ -640,7 +742,7 @@ Mupen_lua_ugui.treeview = function(control)
     for _, value in pairs(flattened) do
         if value.item.uid == Mupen_lua_ugui.internal.control_data[control.uid].selected_uid then
             return value.item
-        end 
+        end
     end
     return nil
 end
