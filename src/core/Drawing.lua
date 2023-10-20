@@ -8,7 +8,8 @@ Drawing = {
 function Drawing.size_up()
     Drawing.initial_size = wgui.info()
     Drawing.scale = Drawing.initial_size.height / 600
-    wgui.resize(Drawing.initial_size.width + (Settings.GridSize * 8) + (Settings.GridGap * 8),
+    local extra_space = ((Settings.GridSize * 8) + (Settings.GridGap * 8)) * Drawing.scale
+    wgui.resize(math.floor(Drawing.initial_size.width + extra_space),
         Drawing.initial_size.height)
     Drawing.size = wgui.info()
     if Drawing.scale > 1 + Drawing.scale_tolerance or Drawing.scale < 1 - Drawing.scale_tolerance then

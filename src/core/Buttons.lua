@@ -22,7 +22,7 @@ function grid(x, y, x_span, y_span)
     end
     if Drawing.scale < 1 - Drawing.scale_tolerance then
         -- scaling down, we squish and compress everything
-        rect[1] = ((rect[1] * Drawing.scale) + ((Settings.GridSize * 8) + (Settings.GridGap * 8)) / 2)
+         rect[1] = ((rect[1] * Drawing.scale) + (((Settings.GridSize * 8) + (Settings.GridGap * 8)) * Drawing.scale) / 2) - Settings.GridGap * 8
         rect[2] = rect[2] * Drawing.scale
         rect[3] = rect[3] * Drawing.scale
         rect[4] = rect[4] * Drawing.scale
