@@ -91,8 +91,8 @@ Mupen_lua_ugui_ext = {
 }
 
 if not d2d.create_render_target then
-    print("Falling back to uncached nineslice rendering. Please update to 1.1.5") 
-    Mupen_lua_ugui_ext.internal.cached_draw = function (type, rectangle, visual_state, draw)
+    print("Falling back to uncached nineslice rendering. Please update to 1.1.5")
+    Mupen_lua_ugui_ext.internal.cached_draw = function(type, rectangle, visual_state, draw)
         draw(rectangle)
     end
 end
@@ -607,22 +607,25 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
         end)
     end
     Mupen_lua_ugui.standard_styler.draw_list_item = function(item, rectangle, visual_state)
-        Mupen_lua_ugui_ext.internal.cached_draw("list_item", rectangle, visual_state, function(eff_rectangle)
-            BreitbandGraphics.draw_image_nineslice(eff_rectangle,
-                style.listbox_item.states[visual_state].source,
-                style.listbox_item.states[visual_state].center,
-                style.path, BreitbandGraphics.colors.white, "nearest")
-            BreitbandGraphics.draw_text({
-                    x = eff_rectangle.x + 2,
-                    y = eff_rectangle.y,
-                    width = eff_rectangle.width,
-                    height = eff_rectangle.height,
-                }, 'start', 'center', { clip = true },
-                Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
-                Mupen_lua_ugui.standard_styler.font_size,
-                Mupen_lua_ugui.standard_styler.font_name,
-                item)
-        end)
+        if not item then
+            return
+        end
+
+        -- bad idea to cache these
+        BreitbandGraphics.draw_image_nineslice(rectangle,
+            style.listbox_item.states[visual_state].source,
+            style.listbox_item.states[visual_state].center,
+            style.path, BreitbandGraphics.colors.white, "nearest")
+        BreitbandGraphics.draw_text({
+                x = rectangle.x + 2,
+                y = rectangle.y,
+                width = rectangle.width,
+                height = rectangle.height,
+            }, 'start', 'center', { clip = true },
+            Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
+            Mupen_lua_ugui.standard_styler.font_size,
+            Mupen_lua_ugui.standard_styler.font_name,
+            item)
     end
     Mupen_lua_ugui.standard_styler.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
         BreitbandGraphics.draw_image(container_rectangle,
