@@ -8,13 +8,12 @@ Drawing = {
 function Drawing.size_up()
     Drawing.initial_size = wgui.info()
     Drawing.scale = Drawing.initial_size.height / 600
-    local extra_space = ((Settings.GridSize * 8) + (Settings.GridGap * 8)) * Drawing.scale
+    local extra_space = (((Settings.GridSize * 8) + (Settings.GridGap * 8))) * Drawing.scale
     wgui.resize(math.floor(Drawing.initial_size.width + extra_space),
         Drawing.initial_size.height)
     Drawing.size = wgui.info()
     if Drawing.scale > 1 + Drawing.scale_tolerance or Drawing.scale < 1 - Drawing.scale_tolerance then
-        print(
-            "You are using a non-native resolution. The script will try to adapt and fit all elements on-screen, but it may lead to distortions")
+        print("Scale factor " .. Drawing.scale)
     end
 end
 

@@ -22,7 +22,13 @@ function grid(x, y, x_span, y_span)
     end
     if Drawing.scale < 1 - Drawing.scale_tolerance then
         -- scaling down, we squish and compress everything
-         rect[1] = ((rect[1] * Drawing.scale) + (((Settings.GridSize * 8) + (Settings.GridGap * 8)) * Drawing.scale) / 2) - Settings.GridGap * 8
+        -- TODO: fix this random crap
+        -- local expanded = Drawing.size.width - Drawing.initial_size.width
+        -- local scaled = expanded / Drawing.scale
+        -- local halved = scaled / 2
+        -- rect[1] = (rect[1] * Drawing.scale) + halved
+        -- rect[1] = Drawing.initial_size.width + (Settings.GridSize * x)
+        rect[1] = (Drawing.initial_size.width + (Settings.GridSize * x * Drawing.scale)) + Settings.GridGap
         rect[2] = rect[2] * Drawing.scale
         rect[3] = rect[3] * Drawing.scale
         rect[4] = rect[4] * Drawing.scale
@@ -46,9 +52,9 @@ local pow = math.pow
 Buttons = {
     {
         name = "ignore y",
-        text = "Ignore Y",
+        text = "No Y",
         box = function()
-            return grid(4, 15, 4, 1)
+            return grid(4, 15, 2, 1)
         end,
         pressed = function()
             return Settings.Layout.Button.dist_button.ignore_y
@@ -240,7 +246,7 @@ Buttons = {
     },
     {
         name = "dist moved",
-        text = "Get Moved Distance",
+        text = "Moved Distance",
         box = function()
             return grid(0, 15, 4, 1)
         end,
@@ -317,9 +323,9 @@ Buttons = {
     },
     {
         name = "record ghost",
-        text = "Record Ghost",
+        text = "Ghost",
         box = function()
-            return grid(4, 6, 4, 1)
+            return grid(6, 15, 2, 1)
         end,
         pressed = function()
             return Settings.recording_ghost
@@ -327,10 +333,10 @@ Buttons = {
         onclick = function(self)
             Settings.recording_ghost = not Settings.recording_ghost
             if (not Settings.recording_ghost) then
-                self.text = "Record Ghost"
+                self.text = "Ghost"
                 Ghost.write_file()
             else
-                self.text = "Stop recording"
+                self.text = "Stop"
             end
         end
     },

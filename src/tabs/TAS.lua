@@ -22,7 +22,7 @@ return {
         Settings.goal_mag = Mupen_lua_ugui.numberbox({
             uid = 5066,
             is_enabled = true,
-            rectangle = grid_rect(4, 5, 2, 1),
+            rectangle = grid_rect(4, 4, 4, 1),
             places = 3,
             value = Settings.goal_mag
         })
@@ -30,24 +30,42 @@ return {
         Settings.high_magnitude = Mupen_lua_ugui.toggle_button({
             uid = 5050,
             is_enabled = true,
-            rectangle = grid_rect(6, 5, 1, 1),
-            text = 'H',
+            rectangle = grid_rect(4, 6, 2, 1),
+            text = 'Hi-Mag',
             is_checked = Settings.high_magnitude
         })
 
         if Mupen_lua_ugui.button({
                 uid = 5067,
                 is_enabled = true,
-                rectangle = grid_rect(7, 5, 1, 1),
-                text = 'R',
+                rectangle = grid_rect(6, 6, 2, 1),
+                text = 'Reset',
             }) then
             Settings.goal_mag = 127
+            Settings.high_magnitude = false
         end
 
+        if Mupen_lua_ugui.button({
+                uid = 51000,
+                is_enabled = true,
+                rectangle = grid_rect(4, 5, 4, 1),
+                text = 'Spdkick',
+            }) then
+            Settings.goal_mag = 48
+            Settings.high_magnitude = true
+        end
+
+        Settings.strain_always = Mupen_lua_ugui.toggle_button({
+            uid = 1002,
+            is_enabled = Settings.strain_speed_target,
+            rectangle = grid_rect(4, 0, 3, 1),
+            text = 'Always',
+            is_checked = Settings.strain_always
+        })
         Settings.strain_speed_target = Mupen_lua_ugui.toggle_button({
             uid = 5068,
             is_enabled = true,
-            rectangle = grid_rect(6, 1, 2, 1),
+            rectangle = grid_rect(7, 0, 1, 1),
             text = '.99',
             is_checked = Settings.strain_speed_target
         })
@@ -55,7 +73,7 @@ return {
         Settings.swim = Mupen_lua_ugui.toggle_button({
             uid = 999,
             is_enabled = true,
-            rectangle = grid_rect(4, 4, 4, 1),
+            rectangle = grid_rect(6, 7, 2, 1),
             text = 'Swim',
             is_checked = Settings.swim
         })
@@ -69,21 +87,15 @@ return {
         Settings.strain_left = Mupen_lua_ugui.toggle_button({
             uid = 1001,
             is_enabled = true,
-            rectangle = grid_rect(4, 0, 1, 1),
+            rectangle = grid_rect(6, 1, 1, 1),
             text = '<',
             is_checked = Settings.strain_left
         })
-        Settings.strain_always = Mupen_lua_ugui.toggle_button({
-            uid = 1002,
-            is_enabled = Settings.strain_speed_target,
-            rectangle = grid_rect(5, 0, 2, 1),
-            text = 'Always',
-            is_checked = Settings.strain_always
-        })
+
         Settings.strain_right = Mupen_lua_ugui.toggle_button({
             uid = 1003,
             is_enabled = true,
-            rectangle = grid_rect(7, 0, 1, 1),
+            rectangle = grid_rect(7, 1, 1, 1),
             text = '>',
             is_checked = Settings.strain_right
         })
