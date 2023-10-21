@@ -22,6 +22,6 @@ theme.listbox.text_colors = {
 }
 
 return {
-    name = 'Windows 3 Pink',
+    name = 'Windows 10 Dark',
     theme = theme
 }
