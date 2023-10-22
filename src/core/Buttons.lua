@@ -57,10 +57,10 @@ Buttons = {
             return grid(4, 15, 2, 1)
         end,
         pressed = function()
-            return Settings.Layout.Button.dist_button.ignore_y
+            return Settings.moved_distance_ignore_y
         end,
         onclick = function(self)
-            Settings.Layout.Button.dist_button.ignore_y = not Settings.Layout.Button.dist_button.ignore_y
+            Settings.moved_distance_ignore_y = not Settings.moved_distance_ignore_y
         end
     },
     {
@@ -70,14 +70,14 @@ Buttons = {
             return grid(4, 2, 3, 1)
         end,
         pressed = function()
-            return Settings.arctan_strain
+            return Settings.atan_strain
         end,
         onclick = function(self)
-            Settings.arctan_strain = not Settings.arctan_strain
+            Settings.atan_strain = not Settings.atan_strain
 
-            if Settings.arctan_strain then
+            if Settings.atan_strain then
                 Memory.update()
-                Settings.Layout.Button.strain_button.arctanstart = Memory.current.mario_global_timer
+                Settings.atan_start = Memory.current.mario_global_timer
             end
         end
     },
@@ -88,10 +88,10 @@ Buttons = {
             return grid(7, 2, 1, 1)
         end,
         pressed = function()
-            return Settings.Layout.Button.strain_button.reverse_arc
+            return Settings.reverse_arc
         end,
         onclick = function(self)
-            Settings.Layout.Button.strain_button.reverse_arc = not Settings.Layout.Button.strain_button.reverse_arc
+            Settings.reverse_arc = not Settings.reverse_arc
         end
     },
     {
@@ -100,12 +100,10 @@ Buttons = {
         box = function()
             return grid(4, 7, 0.5, 0.5)
         end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctanr = Settings.Layout.Button.strain_button.arctanr +
-                10 ^ Settings.Layout.Button.strain_button.arctanexp
+            Settings.atan_r = Settings.atan_r +
+                10 ^ Settings.atan_exp
         end
     },
     {
@@ -114,12 +112,10 @@ Buttons = {
         box = function()
             return grid(4, 7.5, 0.5, 0.5)
         end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctanr = Settings.Layout.Button.strain_button.arctanr -
-                10 ^ Settings.Layout.Button.strain_button.arctanexp
+            Settings.atan_r = Settings.atan_r -
+                10 ^ Settings.atan_exp
         end
     },
     {
@@ -128,12 +124,10 @@ Buttons = {
         box = function()
             return grid(4.5, 7, 0.5, 0.5)
         end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctand = Settings.Layout.Button.strain_button.arctand +
-                10 ^ Settings.Layout.Button.strain_button.arctanexp
+            Settings.atan_d = Settings.atan_d +
+                10 ^ Settings.atan_exp
         end
     },
     {
@@ -142,12 +136,10 @@ Buttons = {
         box = function()
             return grid(4.5, 7.5, 0.5, 0.5)
         end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctand = Settings.Layout.Button.strain_button.arctand -
-                10 ^ Settings.Layout.Button.strain_button.arctanexp
+            Settings.atan_d = Settings.atan_d -
+                10 ^ Settings.atan_exp
         end
     },
     {
@@ -157,14 +149,12 @@ Buttons = {
             return grid(5, 7, 0.5, 0.5)
         end,
 
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctann = MoreMaths.Round(
+            Settings.atan_n = MoreMaths.Round(
                 math.max(0,
-                    Settings.Layout.Button.strain_button.arctann +
-                    10 ^ math.max(-0.6020599913279624, Settings.Layout.Button.strain_button.arctanexp)), 2)
+                    Settings.atan_n +
+                    10 ^ math.max(-0.6020599913279624, Settings.atan_exp)), 2)
         end
     },
     {
@@ -173,14 +163,12 @@ Buttons = {
         box = function()
             return grid(5, 7.5, 0.5, 0.5)
         end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctann = MoreMaths.Round(
+            Settings.atan_n = MoreMaths.Round(
                 math.max(0,
-                    Settings.Layout.Button.strain_button.arctann -
-                    10 ^ math.max(-0.6020599913279624, Settings.Layout.Button.strain_button.arctanexp)), 2)
+                    Settings.atan_n -
+                    10 ^ math.max(-0.6020599913279624, Settings.atan_exp)), 2)
         end
     },
     {
@@ -189,13 +177,11 @@ Buttons = {
         box = function()
             return grid(5.5, 7, 0.5, 0.5)
         end,
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctanstart = math.max(0,
-                Settings.Layout.Button.strain_button.arctanstart +
-                10 ^ math.max(0, Settings.Layout.Button.strain_button.arctanexp))
+            Settings.atan_start = math.max(0,
+                Settings.atan_start +
+                10 ^ math.max(0, Settings.atan_exp))
         end
     },
     {
@@ -205,13 +191,11 @@ Buttons = {
             return grid(5.5, 7.5, 0.5, 0.5)
         end,
 
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctanstart = math.max(0,
-                Settings.Layout.Button.strain_button.arctanstart -
-                10 ^ math.max(0, Settings.Layout.Button.strain_button.arctanexp))
+            Settings.atan_start = math.max(0,
+                Settings.atan_start -
+                10 ^ math.max(0, Settings.atan_exp))
         end
     },
     {
@@ -221,12 +205,10 @@ Buttons = {
             return grid(6, 7, 0.5, 0.5)
         end,
 
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctanexp = math.max(-4,
-                math.min(Settings.Layout.Button.strain_button.arctanexp + 1, 4))
+            Settings.atan_exp = math.max(-4,
+                math.min(Settings.atan_exp + 1, 4))
         end
     },
     {
@@ -236,12 +218,10 @@ Buttons = {
             return grid(6, 7.5, 0.5, 0.5)
         end,
 
-        pressed = function()
-            return Settings.Layout.Button.strain_button.controls
-        end,
+
         onclick = function(self)
-            Settings.Layout.Button.strain_button.arctanexp = math.max(-4,
-                math.min(Settings.Layout.Button.strain_button.arctanexp - 1, 4))
+            Settings.atan_exp = math.max(-4,
+                math.min(Settings.atan_exp - 1, 4))
         end
     },
     {
@@ -251,17 +231,17 @@ Buttons = {
             return grid(0, 15, 4, 1)
         end,
         pressed = function()
-            return Settings.Layout.Button.dist_button.enabled
+            return Settings.track_moved_distance
         end,
         onclick = function(self)
-            Settings.Layout.Button.dist_button.enabled = not Settings.Layout.Button.dist_button.enabled
+            Settings.track_moved_distance = not Settings.track_moved_distance
 
-            if Settings.Layout.Button.dist_button.enabled then
-                Settings.Layout.Button.dist_button.axis.x = MoreMaths.DecodeDecToFloat(Memory.current.mario_x)
-                Settings.Layout.Button.dist_button.axis.y = MoreMaths.DecodeDecToFloat(Memory.current.mario_y)
-                Settings.Layout.Button.dist_button.axis.z = MoreMaths.DecodeDecToFloat(Memory.current.mario_z)
+            if Settings.track_moved_distance then
+                Settings.moved_distance_axis.x = MoreMaths.DecodeDecToFloat(Memory.current.mario_x)
+                Settings.moved_distance_axis.y = MoreMaths.DecodeDecToFloat(Memory.current.mario_y)
+                Settings.moved_distance_axis.z = MoreMaths.DecodeDecToFloat(Memory.current.mario_z)
             else
-                Settings.Layout.Button.dist_button.dist_moved_save = Engine.GetTotalDistMoved()
+                Settings.moved_distance = Engine.GetTotalDistMoved()
             end
         end
     },

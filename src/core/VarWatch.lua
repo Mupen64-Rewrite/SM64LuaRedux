@@ -88,8 +88,8 @@ VarWatch = {
             identifier = "moved_dist",
             value = function()
                 local distmoved = Engine.GetTotalDistMoved()
-                if (Settings.Layout.Button.dist_button.enabled == false) then
-                    distmoved = Settings.Layout.Button.dist_button.dist_moved_save
+                if (Settings.track_moved_distance == false) then
+                    distmoved = Settings.moved_distance
                 end
                 return "Moved Dist: " .. distmoved
             end
@@ -97,31 +97,31 @@ VarWatch = {
         {
             identifier = "atan_exp",
             value = function()
-                return "E: " .. Settings.Layout.Button.strain_button.arctanexp
+                return "E: " .. Settings.atan_exp
             end
         },
         {
             identifier = "atan_r",
             value = function()
-                return "R: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanr, 5)
+                return "R: " .. MoreMaths.Round(Settings.atan_r, 5)
             end
         },
         {
             identifier = "atan_d",
             value = function()
-                return "D: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctand, 5)
+                return "D: " .. MoreMaths.Round(Settings.atan_d, 5)
             end
         },
         {
             identifier = "atan_n",
             value = function()
-                return "N: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctann, 2)
+                return "N: " .. MoreMaths.Round(Settings.atan_n, 2)
             end
         },
         {
             identifier = "atan_s",
             value = function()
-                return "S: " .. MoreMaths.Round(Settings.Layout.Button.strain_button.arctanstart + 1, 2)
+                return "S: " .. MoreMaths.Round(Settings.atan_start + 1, 2)
             end
         },
     },

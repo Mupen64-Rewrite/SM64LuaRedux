@@ -59,7 +59,6 @@ dofile(core_path .. "Joypad.lua")
 dofile(core_path .. "Angles.lua")
 dofile(core_path .. "Engine.lua")
 dofile(core_path .. "Buttons.lua")
-dofile(core_path .. "Program.lua")
 dofile(core_path .. "MoreMaths.lua")
 dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
@@ -83,10 +82,28 @@ local mouse_wheel = 0
 
 
 function at_input()
-    Program.new_frame()
-    Program.main()
+    -- frame stage 1: set everything up
+    Memory.update()
+    Joypad.init()
+    if Settings.movement_mode ~= Settings.movement_modes.disabled then
+        result = Engine.inputsForAngle()
+        if Settings.goal_mag then
+            Engine.scaleInputsForMagnitude(result, Settings.goal_mag, Settings.high_magnitude)
+        end
+        Joypad.set('X', result.X)
+        Joypad.set('Y', result.Y)
+    end
+
+    -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
     tabs[current_tab_index].update()
-    Program.rngSetter()
+    if Settings.override_rng then
+        -- Write to the RNG value address
+        if Settings.override_rng_use_index then
+            memory.writeword(0x00B8EEE0, get_value(math.floor(Settings.override_rng_value)))
+        else
+            memory.writeword(0x00B8EEE0, math.floor(Settings.override_rng_value))
+        end
+    end
     Joypad.send()
     Swimming.swim()
     Ghost.main()

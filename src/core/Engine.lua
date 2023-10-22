@@ -48,7 +48,7 @@ function Engine.getArctanAngle(r, d, n, s)
 				r = math.abs(math.tan(math.pi/2-(Memory.current.mario_facing_yaw-goal)*math.pi/32768))
 			end
 		end
-		if (Settings.Layout.Button.strain_button.reverse_arc == false) then
+		if (Settings.reverse_arc == false) then
 			dyaw = math.floor((math.pi/2-math.atan(0.15*(r*math.max(1,(n+1-Memory.current.mario_global_timer+s))+d/math.min(1,n+1-Memory.current.mario_global_timer+s))))*32768/math.pi)
 			if(Settings.movement_mode == Settings.movement_modes.match_angle) then
 				if(Memory.current.mario_facing_yaw-goal > 0 and Memory.current.mario_facing_yaw-goal < 32768) then
@@ -165,16 +165,16 @@ function Engine.inputsForAngle()
 			goal = (goal + 32768) % 65536
 		end
 	end
-	--if (Settings.arctan_strain and Settings.Layout.Button.strain_button.arctanstart < Memory.current.mario_global_timer and Settings.Layout.Button.strain_button.arctanstart > Memory.current.mario_global_timer - Settings.Layout.Button.strain_button.arctann - 1) then
-	if (Settings.arctan_strain) then
-		goal = Engine.getArctanAngle(Settings.Layout.Button.strain_button.arctanr, Settings.Layout.Button.strain_button.arctand, Settings.Layout.Button.strain_button.arctann, Settings.Layout.Button.strain_button.arctanstart)
+	--if (Settings.atan_strain and Settings.atan_start < Memory.current.mario_global_timer and Settings.atan_start > Memory.current.mario_global_timer - Settings.atan_n - 1) then
+	if (Settings.atan_strain) then
+		goal = Engine.getArctanAngle(Settings.atan_r, Settings.atan_d, Settings.atan_n, Settings.atan_start)
 		if (Settings.movement_mode ~= Settings.movement_modes.match_angle) then
 			if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
 				goal = (goal + 32768) % 65536
 			end
 		end
 	end
-	-- if(Settings.movement_mode ~= Settings.movement_modes.match_angle or Settings.dyaw or Settings.arctan_strain) then
+	-- if(Settings.movement_mode ~= Settings.movement_modes.match_angle or Settings.dyaw or Settings.atan_strain) then
 		-- goal = goal + Memory.current.mario_facing_yaw % 16
 	-- end
 	goal = goal - 65536
@@ -295,9 +295,9 @@ function Engine.GetCurrentAction()
 end
 
 function Engine.GetTotalDistMoved()
-	eckswhy = (Settings.Layout.Button.dist_button.axis.x - MoreMaths.DecodeDecToFloat(Memory.current.mario_x)) ^ 2 + (Settings.Layout.Button.dist_button.axis.z - MoreMaths.DecodeDecToFloat(Memory.current.mario_z)) ^ 2
-	if (Settings.Layout.Button.dist_button.ignore_y == false) then
-		eckswhy = eckswhy + (Settings.Layout.Button.dist_button.axis.y - MoreMaths.DecodeDecToFloat(Memory.current.mario_y)) ^ 2
+	eckswhy = (Settings.moved_distance_axis.x - MoreMaths.DecodeDecToFloat(Memory.current.mario_x)) ^ 2 + (Settings.moved_distance_axis.z - MoreMaths.DecodeDecToFloat(Memory.current.mario_z)) ^ 2
+	if (Settings.moved_distance_ignore_y == false) then
+		eckswhy = eckswhy + (Settings.moved_distance_axis.y - MoreMaths.DecodeDecToFloat(Memory.current.mario_y)) ^ 2
 	end
 	return math.sqrt(eckswhy)
 end

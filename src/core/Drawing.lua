@@ -26,21 +26,39 @@ function Drawing.paint()
         local button = Buttons[i]
         local box = button.box()
 
-        local previous = button.pressed()
-        local pressed = Mupen_lua_ugui.toggle_button({
-            uid = i,
-            is_enabled = button.enabled and button.enabled() or true,
-            rectangle = {
-                x = box[1],
-                y = box[2],
-                width = box[3],
-                height = box[4]
-            },
-            text = button.text,
-            is_checked = previous
-        })
-        if not (pressed == previous) then
-            button:onclick()
+        if button.pressed then
+            -- togglebutton
+            local previous = button.pressed()
+            local pressed = Mupen_lua_ugui.toggle_button({
+                uid = i,
+                is_enabled = button.enabled and button.enabled() or true,
+                rectangle = {
+                    x = box[1],
+                    y = box[2],
+                    width = box[3],
+                    height = box[4]
+                },
+                text = button.text,
+                is_checked = previous
+            })
+            if not (pressed == previous) then
+                button:onclick()
+            end
+        else
+            -- pushbutton
+            if Mupen_lua_ugui.button({
+                uid = i,
+                is_enabled = button.enabled and button.enabled() or true,
+                rectangle = {
+                    x = box[1],
+                    y = box[2],
+                    width = box[3],
+                    height = box[4]
+                },
+                text = button.text,
+            }) then
+                button:onclick()
+            end
         end
     end
 end
