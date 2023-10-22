@@ -611,16 +611,18 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
             return
         end
 
+        local rect = BreitbandGraphics.inflate_rectangle(rectangle, -1)
+
         -- bad idea to cache these
-        BreitbandGraphics.draw_image_nineslice(rectangle,
+        BreitbandGraphics.draw_image_nineslice(rect,
             style.listbox_item.states[visual_state].source,
             style.listbox_item.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
         BreitbandGraphics.draw_text({
-                x = rectangle.x + 2,
-                y = rectangle.y,
-                width = rectangle.width,
-                height = rectangle.height,
+                x = rect.x + 2,
+                y = rect.y,
+                width = rect.width,
+                height = rect.height,
             }, 'start', 'center', { clip = true },
             Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
             Mupen_lua_ugui.standard_styler.font_size,

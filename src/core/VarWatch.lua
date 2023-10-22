@@ -95,31 +95,17 @@ VarWatch = {
             end
         },
         {
-            identifier = "atan_exp",
-            value = function()
-                return "E: " .. Settings.atan_exp
+            identifier = "atan_basic",
+            value = function ()
+                return 
+                   "E: " .. Settings.atan_exp 
+                .. " R: " .. MoreMaths.Round(Settings.atan_r, 5)
+                .. " D: " .. MoreMaths.Round(Settings.atan_d, 5)
+                .. " N: " .. MoreMaths.Round(Settings.atan_n, 2)
             end
         },
         {
-            identifier = "atan_r",
-            value = function()
-                return "R: " .. MoreMaths.Round(Settings.atan_r, 5)
-            end
-        },
-        {
-            identifier = "atan_d",
-            value = function()
-                return "D: " .. MoreMaths.Round(Settings.atan_d, 5)
-            end
-        },
-        {
-            identifier = "atan_n",
-            value = function()
-                return "N: " .. MoreMaths.Round(Settings.atan_n, 2)
-            end
-        },
-        {
-            identifier = "atan_s",
+            identifier = "atan_start_frame",
             value = function()
                 return "S: " .. MoreMaths.Round(Settings.atan_start + 1, 2)
             end
