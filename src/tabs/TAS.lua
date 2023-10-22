@@ -42,7 +42,6 @@ return {
                 text = 'Reset',
             }) then
             Settings.goal_mag = 127
-            Settings.high_magnitude = false
         end
 
         if Mupen_lua_ugui.button({
