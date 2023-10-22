@@ -24,18 +24,18 @@ local function stop()
     State = 2
 end
 local function timerAutoDetect()
-    if ((State == 1) and ((Memory.Mario.EffectiveMarioObject == 0) or (curVI < StartVI))) then -- Reset timer on star select, or if state before start time is loaded
+    if ((State == 1) and ((Memory.current.mario_object_effective == 0) or (curVI < StartVI))) then -- Reset timer on star select, or if state before start time is loaded
         reset()
     end
-    if ((State ~= 1) and (Memory.Camera.Transition.Progress ~= nil) and (Memory.Mario.EffectiveMarioObject ~= 0) and (transitionTimes[Memory.Camera.Transition.Type] == Memory.Camera.Transition.Progress) and (Memory.Mario.Action ~= 0x1300)) then -- Start timer on fade in
+    if ((State ~= 1) and (Memory.current.camera_transition_progress ~= nil) and (Memory.current.mario_object_effective ~= 0) and (transitionTimes[Memory.current.camera_transition_type] == Memory.current.camera_transition_progress) and (Memory.current.mario_action ~= 0x1300)) then -- Start timer on fade in
         start()
     end
-    if ((Memory.Mario.Animation == 179) or (Memory.Mario.Animation == 205)) then -- Stop timer on star dance
+    if ((Memory.current.mario_animation == 179) or (Memory.current.mario_animation == 205)) then -- Stop timer on star dance
         if (State == 1) then                                                     -- Stop timer on star dance
             if (PredictedVIs ~= curVI) then                                      -- fix mismatched time if there was lag as the time stops
                 VIs = curVI - StartVI
             end
-            if ((Memory.Mario.ActionArg & 1) == 1) then -- Special state if a non-exit star is collected
+            if ((Memory.current.mario_action_arg & 1) == 1) then -- Special state if a non-exit star is collected
                 State = 3
             else
                 stop()

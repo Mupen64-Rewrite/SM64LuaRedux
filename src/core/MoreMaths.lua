@@ -26,6 +26,10 @@ MoreMaths = {
 }
 
 function MoreMaths.DecodeDecToFloat(input)
+    if input == nil then
+        print(debug.traceback())
+        return
+    end
     local str = string.format("%x", input)
     local str1 = ""
     local a, z

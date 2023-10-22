@@ -3,18 +3,18 @@ VarWatch = {
         {
             identifier = "yaw_facing",
             value = function()
-                local o = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768) % 65536 or (Memory.Mario.FacingYaw + 32768) % 65536)
+                local o = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.current.mario_facing_yaw) + 32768) % 65536 or (Memory.current.mario_facing_yaw + 32768) % 65536)
                 return "Yaw (Facing): " ..
-                    (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.Mario.FacingYaw) or Memory.Mario.FacingYaw) ..
+                    (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.current.mario_facing_yaw) or Memory.current.mario_facing_yaw) ..
                     " (O: " .. o .. ")"
             end
         },
         {
             identifier = "yaw_intended",
             value = function()
-                local o = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) + 32768) % 65536 or (Memory.Mario.IntendedYaw + 32768) % 65536)
+                local o = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.current.mario_intended_yaw) + 32768) % 65536 or (Memory.current.mario_intended_yaw + 32768) % 65536)
                 return "Yaw (Intended): " ..
-                    (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.Mario.IntendedYaw) or Memory.Mario.IntendedYaw) ..
+                    (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.current.mario_intended_yaw) or Memory.current.mario_intended_yaw) ..
                     " (O: " .. o .. ")"
             end
         },
@@ -22,8 +22,8 @@ VarWatch = {
             identifier = "h_spd",
             value = function()
                 local h_speed = 0
-                if Memory.Mario.HSpeed ~= 0 then
-                    h_speed = MoreMaths.DecodeDecToFloat(Memory.Mario.HSpeed)
+                if Memory.current.mario_h_speed ~= 0 then
+                    h_speed = MoreMaths.DecodeDecToFloat(Memory.current.mario_h_speed)
                 end
                 return "H Spd: " ..
                     MoreMaths.Round(h_speed, 5) .. " (Sliding: " .. MoreMaths.Round(Engine.GetHSlidingSpeed(), 6) .. ")"
@@ -33,8 +33,8 @@ VarWatch = {
             identifier = "v_spd",
             value = function()
                 local y_speed = 0
-                if Memory.Mario.VSpeed > 0 then
-                    y_speed = MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.VSpeed), 6)
+                if Memory.current.mario_v_speed > 0 then
+                    y_speed = MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_v_speed), 6)
                 end
                 return "Y Spd: " .. MoreMaths.Round(y_speed, 6)
             end
@@ -49,21 +49,21 @@ VarWatch = {
             identifier = "position_x",
             value = function()
                 return "X: " ..
-                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.X), 2)
+                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_x), 2)
             end
         },
         {
             identifier = "position_y",
             value = function()
                 return "Y: " ..
-                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Y), 2)
+                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_y), 2)
             end
         },
         {
             identifier = "position_z",
             value = function()
                 return "Z: " ..
-                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.Mario.Z), 2)
+                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_z), 2)
             end
         },
         {
@@ -81,7 +81,7 @@ VarWatch = {
         {
             identifier = "rng",
             value = function()
-                return "RNG: " .. Memory.RNGValue .. " (index: " .. get_index(Memory.RNGValue) .. ")"
+                return "RNG: " .. Memory.current.rng_value .. " (index: " .. get_index(Memory.current.rng_value) .. ")"
             end
         },
         {

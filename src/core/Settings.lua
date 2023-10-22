@@ -36,6 +36,10 @@ Settings = {
     active_style_index = 1
 }
 
+
+Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
+
+
 --[[
 {} means the hotkey is disabled.
 To bind to key combinations list them. Ex: {"control", "M"}

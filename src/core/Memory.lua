@@ -1,91 +1,60 @@
 Memory = {
-	Mario = {
-
+	current = {
+		mario = {},
+		camera = {},
+		rng_value = 0,
 	},
-	Camera = {
-		Transition = {
 
-		},
-	},
-	Version = 1,
-
-	PreviousPos = {
-		X = 0,
-		Z = 0
-	}
+	previous = {}
 }
 
-GameVersion = {
-	U = 1,
-	J = 2,
-	S = 3
+local sources = {
+	dofile(res_path .. "addresses_usa.lua"),
+	dofile(res_path .. "addresses_japan.lua"),
 }
+local source = nil
 
-function Memory.Refresh()
-	Memory.CheckVersion()
-	if Memory.Version == GameVersion.U then
-		Memory.Camera.Angle = memory.readword(0x00B3C714)
-		Memory.Camera.Transition.Type = memory.readbyte(0x00B3BAB1)
-		Memory.Camera.Transition.Progress = memory.readbyte(0x00B30EC0)
-		Memory.Mario.FacingYaw = memory.readword(0x00B3B19E)
-		Memory.Mario.IntendedYaw = memory.readword(0x00B3B194)
-		Memory.Mario.HSpeed = memory.readdword(0x00B3B1C4)
-		Memory.Mario.VSpeed = memory.readdword(0x00B3B1BC)
-		Memory.Mario.XSlidingSpeed = memory.readdword(0x00B3B1C8)
-		Memory.Mario.ZSlidingSpeed = memory.readdword(0x00B3B1CC)
-		Memory.Mario.XSlideSpeed = memory.readdword(0x00B3B1C8)
-		Memory.Mario.ZSlideSpeed = memory.readdword(0x00B3B1CC)
-		Memory.Mario.X = memory.readdword(0x00B3B1AC)
-		Memory.Mario.Y = memory.readdword(0x00B3B1B0)
-		Memory.Mario.Z = memory.readdword(0x00B3B1B4)
-		Memory.Mario.MarioObjectPointer = memory.readdword(0x00B3B1F8)
-		Memory.Mario.EffectiveMarioObject = memory.readdword(0x00B61158)
-		Memory.Mario.Action = memory.readdword(0x00B3B17C)
-		Memory.Mario.ActionArg = memory.readdword(0x00B3B18C)
-		Memory.Mario.FSpeed = memory.readfloat(0x00B3B1C4)
-		Memory.Mario.Buffered = memory.readbyte(0x00B67054)
-		Memory.Mario.GlobalTimer = memory.readdword(0x00B2D5D4)
-		Memory.RNGValue = memory.readword(0x00B8EEE0)
-	else
-		Memory.Camera.Angle = memory.readword(0x00B3B3A4)
-		Memory.Camera.Transition.Type = memory.readbyte(0x00B3A741)
-		Memory.Camera.Transition.Progress = memory.readbyte(0x00B2FF60)
-		Memory.Mario.FacingYaw = memory.readword(0x00B39E2E)
-		Memory.Mario.IntendedYaw = memory.readword(0x00B39E24)
-		Memory.Mario.HSpeed = memory.readdword(0x00B39E54)
-		Memory.Mario.VSpeed = memory.readdword(0x00B39E4C)
-		Memory.Mario.XSlideSpeed = memory.readdword(0x00B39E58)
-		Memory.Mario.ZSlideSpeed = memory.readdword(0x00B39E5C)
-		Memory.Mario.X = memory.readdword(0x00B39E3C)
-		Memory.Mario.Y = memory.readdword(0x00B39E40)
-		Memory.Mario.Z = memory.readdword(0x00B39E44)
-		Memory.Mario.MarioObjectPointer = memory.readdword(0x00B39E88)
-		Memory.Mario.EffectiveMarioObject = memory.readdword(0x00B5FDE8)
-		Memory.Mario.Action = memory.readdword(0x00B39E0C)
-		Memory.Mario.ActionArg = memory.readdword(0x00B39E1C)
-		Memory.Mario.FSpeed = memory.readfloat(0x00B39E54)
-		Memory.Mario.Buffered = memory.readbyte(0x00B65CE4)
-		Memory.Mario.GlobalTimer = memory.readdword(0x00B2C264)
-		Memory.RNGValue = memory.readword(0x00B8EEE0)
-	end
-	Memory.Mario.Animation = memory.readword(Memory.Mario.MarioObjectPointer + 0x38)
+function Memory.update()
+
+	-- update previous values
+	local current = Mupen_lua_ugui.internal.deep_clone(Memory.current)
+	Memory.previous = current
+
+	Memory.current.camera_angle = memory.readword(source.camera_angle)
+	Memory.current.camera_transition_type = memory.readbyte(source.camera_transition_type)
+	Memory.current.camera_transition_progress = memory.readbyte(source.camera_transition_progress)
+	Memory.current.mario_facing_yaw = memory.readword(source.mario_facing_yaw)
+	Memory.current.mario_intended_yaw = memory.readword(source.mario_intended_yaw)
+	Memory.current.mario_h_speed = memory.readdword(source.mario_h_speed)
+	Memory.current.mario_v_speed = memory.readdword(source.mario_v_speed)
+	Memory.current.mario_x_sliding_speed = memory.readdword(source.mario_x_sliding_speed)
+	Memory.current.mario_z_sliding_sped = memory.readdword(source.mario_z_sliding_speed)
+	Memory.current.mario_x = memory.readdword(source.mario_x)
+	Memory.current.mario_y = memory.readdword(source.mario_y)
+	Memory.current.mario_z = memory.readdword(source.mario_z)
+	Memory.current.mario_object_pointer = memory.readdword(source.mario_object_pointer)
+	Memory.current.mario_object_effective = memory.readdword(source.mario_object_effective)
+	Memory.current.mario_action = memory.readdword(source.mario_action)
+	Memory.current.mario_action_arg = memory.readdword(source.mario_action_arg)
+	Memory.current.mario_f_speed = memory.readfloat(source.mario_f_speed)
+	Memory.current.mario_buffered = memory.readbyte(source.mario_buffered)
+	Memory.current.mario_global_timer = memory.readdword(source.global_timer)
+	Memory.current.rng_value = memory.readword(source.rng_value)
+	Memory.current.mario_animation = memory.readword(source.mario_animation)
 end
 
-function Memory.CheckVersion()
-	-- Checks Addr 0x80322B24:
-	-- If U: 8F A6 00 1C 	LW a2 <- [sp+0x001C]		(OS func)
-	-- If J: 46 00 60 04	SQRT.s f00.s = sqrt(f12.s) 	(sqrtf func)
-
-	if memory.readdword(0x00B22B24) == 1174429700 then  -- J version
-		Memory.Version = GameVersion.J
-	elseif memory.readdword(0x00B22B24) == 2410020892 then -- U version
-		Memory.Version = GameVersion.U
-	else
-		Memory.Version = GameVersion.S
+function Memory.initialize()
+	-- do the pattern checks and find best candidate
+	for i = 1, #sources, 1 do
+		local element = sources[i]
+		if memory.readdword(element.match_sequence.address) == element.match_sequence.value then
+			print("Memory source " .. element.name)
+			source = element
+			break
+		end
 	end
-end
 
-function Memory.UpdatePrevPos()
-	Memory.PreviousPos.X = Memory.Mario.X
-	Memory.PreviousPos.Z = Memory.Mario.Z
+	if source == nil then
+		error("No memory source found for rom")
+	end
 end

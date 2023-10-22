@@ -68,6 +68,9 @@ dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "recordghost.lua")
 dofile(core_path .. "VarWatch.lua")
 
+Memory.initialize()
+Drawing.size_up()
+
 local tabs = {
     dofile(tabs_path .. "TAS.lua"),
     dofile(tabs_path .. "Timer.lua"),
@@ -78,8 +81,6 @@ local tabs = {
 local current_tab_index = 1
 local mouse_wheel = 0
 
-Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
-Drawing.size_up()
 
 function at_input()
     Program.new_frame()
@@ -127,6 +128,7 @@ end
 -- run 2 fake updates pass to get everything to pull itself together (UpdatePrevPos)
 at_input()
 at_input()
+
 
 emu.atinput(at_input)
 emu.atupdatescreen(at_update_screen)

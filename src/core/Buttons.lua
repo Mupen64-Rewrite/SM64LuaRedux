@@ -76,8 +76,8 @@ Buttons = {
             Settings.arctan_strain = not Settings.arctan_strain
 
             if Settings.arctan_strain then
-                Memory.Refresh()
-                Settings.Layout.Button.strain_button.arctanstart = Memory.Mario.GlobalTimer
+                Memory.update()
+                Settings.Layout.Button.strain_button.arctanstart = Memory.current.mario_global_timer
             end
         end
     },
@@ -257,9 +257,9 @@ Buttons = {
             Settings.Layout.Button.dist_button.enabled = not Settings.Layout.Button.dist_button.enabled
 
             if Settings.Layout.Button.dist_button.enabled then
-                Settings.Layout.Button.dist_button.axis.x = MoreMaths.DecodeDecToFloat(Memory.Mario.X)
-                Settings.Layout.Button.dist_button.axis.y = MoreMaths.DecodeDecToFloat(Memory.Mario.Y)
-                Settings.Layout.Button.dist_button.axis.z = MoreMaths.DecodeDecToFloat(Memory.Mario.Z)
+                Settings.Layout.Button.dist_button.axis.x = MoreMaths.DecodeDecToFloat(Memory.current.mario_x)
+                Settings.Layout.Button.dist_button.axis.y = MoreMaths.DecodeDecToFloat(Memory.current.mario_y)
+                Settings.Layout.Button.dist_button.axis.z = MoreMaths.DecodeDecToFloat(Memory.current.mario_z)
             else
                 Settings.Layout.Button.dist_button.dist_moved_save = Engine.GetTotalDistMoved()
             end
