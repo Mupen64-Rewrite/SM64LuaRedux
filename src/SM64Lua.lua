@@ -7,9 +7,9 @@
 --	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk, Aurumaker72
 
 function swap(arr, index_1, index_2)
-    local tmp = VarWatch.active_variables[index_2]
-    VarWatch.active_variables[index_2] = VarWatch.active_variables[index_1]
-    VarWatch.active_variables[index_1] = tmp
+    local tmp = arr[index_2]
+    arr[index_2] = arr[index_1]
+    arr[index_1] = tmp
 end
 
 function expand_rect(t)
