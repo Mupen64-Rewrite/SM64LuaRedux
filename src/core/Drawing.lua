@@ -30,7 +30,7 @@ function Drawing.paint()
             -- togglebutton
             local previous = button.pressed()
             local pressed = Mupen_lua_ugui.toggle_button({
-                uid = i,
+                uid = i * 5000,
                 is_enabled = button.enabled and button.enabled() or true,
                 rectangle = {
                     x = box[1],
@@ -47,7 +47,7 @@ function Drawing.paint()
         else
             -- pushbutton
             if Mupen_lua_ugui.button({
-                uid = i,
+                uid = i * 5000,
                 is_enabled = button.enabled and button.enabled() or true,
                 rectangle = {
                     x = box[1],

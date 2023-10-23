@@ -6,21 +6,21 @@ return {
     draw = function()
         Drawing.paint()
         Mupen_lua_ugui.listbox({
-            uid = 13377331,
+            uid = 0,
             is_enabled = true,
             rectangle = grid_rect(0, 8, 8, 7),
-            selected_index = nil,
+            selected_index = 1,
             items = VarWatch.get_values(),
         })
         Settings.goal_angle = Mupen_lua_ugui.numberbox({
-            uid = 5065,
+            uid = 5,
             is_enabled = Settings.movement_mode == Settings.movement_modes.match_angle,
             rectangle = grid_rect(4, 3, 4, 1),
             places = 5,
             value = Settings.goal_angle
         })
         Settings.goal_mag = Mupen_lua_ugui.numberbox({
-            uid = 5066,
+            uid = 10,
             is_enabled = true,
             rectangle = grid_rect(4, 4, 4, 1),
             places = 3,
@@ -28,7 +28,7 @@ return {
         })
 
         Settings.high_magnitude = Mupen_lua_ugui.toggle_button({
-            uid = 5050,
+            uid = 15,
             is_enabled = true,
             rectangle = grid_rect(4, 6, 2, 1),
             text = 'Hi-Mag',
@@ -36,7 +36,7 @@ return {
         })
 
         if Mupen_lua_ugui.button({
-                uid = 5067,
+                uid = 20,
                 is_enabled = true,
                 rectangle = grid_rect(6, 6, 2, 1),
                 text = 'Reset',
@@ -45,7 +45,7 @@ return {
         end
 
         if Mupen_lua_ugui.button({
-                uid = 51000,
+                uid = 25,
                 is_enabled = true,
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
@@ -55,7 +55,7 @@ return {
         end
 
         Settings.framewalk = Mupen_lua_ugui.toggle_button({
-            uid = 510500,
+            uid = 30,
             is_enabled = true,
             rectangle = grid_rect(6, 5, 2, 1),
             text = 'Framewalk',
@@ -63,14 +63,14 @@ return {
         })
 
         Settings.strain_always = Mupen_lua_ugui.toggle_button({
-            uid = 1002,
+            uid = 35,
             is_enabled = Settings.strain_speed_target,
             rectangle = grid_rect(4, 0, 3, 1),
             text = 'Always',
             is_checked = Settings.strain_always
         })
         Settings.strain_speed_target = Mupen_lua_ugui.toggle_button({
-            uid = 5068,
+            uid = 40,
             is_enabled = true,
             rectangle = grid_rect(7, 0, 1, 1),
             text = '.99',
@@ -78,21 +78,21 @@ return {
         })
 
         Settings.swim = Mupen_lua_ugui.toggle_button({
-            uid = 999,
+            uid = 45,
             is_enabled = true,
             rectangle = grid_rect(6, 7, 2, 1),
             text = 'Swim',
             is_checked = Settings.swim
         })
         Settings.dyaw = Mupen_lua_ugui.toggle_button({
-            uid = 1000,
+            uid = 50,
             is_enabled = Settings.movement_mode == Settings.movement_modes.match_angle,
             rectangle = grid_rect(4, 1, 2, 1),
             text = 'D-Yaw',
             is_checked = Settings.dyaw
         })
         Settings.strain_left = Mupen_lua_ugui.toggle_button({
-            uid = 1001,
+            uid = 55,
             is_enabled = true,
             rectangle = grid_rect(6, 1, 1, 1),
             text = '<',
@@ -100,7 +100,7 @@ return {
         })
 
         Settings.strain_right = Mupen_lua_ugui.toggle_button({
-            uid = 1003,
+            uid = 60,
             is_enabled = true,
             rectangle = grid_rect(7, 1, 1, 1),
             text = '>',
@@ -109,7 +109,7 @@ return {
 
         local joystick_rect = grid(0, 4, 4, 4)
         Mupen_lua_ugui.joystick({
-            uid = 10000,
+            uid = 65,
             is_enabled = true,
             rectangle = {
                 x = joystick_rect[1],

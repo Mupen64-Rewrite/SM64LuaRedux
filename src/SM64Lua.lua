@@ -73,9 +73,9 @@ Drawing.size_up()
 
 local tabs = {
     dofile(tabs_path .. "TAS.lua"),
+    dofile(tabs_path .. "Settings.lua"),
     dofile(tabs_path .. "Timer.lua"),
     dofile(tabs_path .. "RNG.lua"),
-    dofile(tabs_path .. "Settings.lua"),
 }
 
 local current_tab_index = 1
@@ -134,7 +134,7 @@ function at_update_screen()
     tabs[current_tab_index].draw()
 
     current_tab_index = Mupen_lua_ugui.carrousel_button({
-        uid = 420,
+        uid = 5000,
         is_enabled = true,
         rectangle = grid_rect(0, 16, 8, 1),
         items = select(tabs, "name"),

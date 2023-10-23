@@ -1,3 +1,6 @@
+-- mupen-lua-ugui-ext 1.0.0 
+-- https://github.com/Aurumaker72/mupen-lua-ugui-ext
+
 Mupen_lua_ugui_ext = {
     internal = {
         rt_lut = {},
@@ -147,7 +150,7 @@ Mupen_lua_ugui.spinner = function(control)
         end
 
         if (Mupen_lua_ugui.button({
-                uid = control.uid + 1,
+                uid = control.uid + 2,
                 is_enabled = not (value == control.maximum_value),
                 rectangle = {
                     x = control.rectangle.x + control.rectangle.width -
@@ -179,7 +182,7 @@ Mupen_lua_ugui.spinner = function(control)
         end
 
         if (Mupen_lua_ugui.button({
-                uid = control.uid + 1,
+                uid = control.uid + 2,
                 is_enabled = not (value == control.minimum_value),
                 rectangle = {
                     x = control.rectangle.x + control.rectangle.width -
@@ -279,13 +282,32 @@ end
 Mupen_lua_ugui.numberbox = function(control)
     if not Mupen_lua_ugui.internal.control_data[control.uid] then
         Mupen_lua_ugui.internal.control_data[control.uid] = {
+            active = false,
             caret_index = 1,
         }
     end
 
-    local font_size = Mupen_lua_ugui.standard_styler.font_size * 1.5
-    local font_name = "Consolas"
+    local pushed = Mupen_lua_ugui.internal.is_pushed(control)
 
+    -- if active and user clicks elsewhere, deactivate
+    if Mupen_lua_ugui.internal.control_data[control.uid].active then
+        if not BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
+            if Mupen_lua_ugui.internal.is_mouse_just_down() then
+                -- deactivate, then clear selection
+                Mupen_lua_ugui.internal.control_data[control.uid].active = false
+                Mupen_lua_ugui.internal.control_data[control.uid].selection_start = nil
+                Mupen_lua_ugui.internal.control_data[control.uid].selection_end = nil
+            end
+        end
+    end
+
+    -- new activation via direct click
+    if pushed then
+        Mupen_lua_ugui.internal.control_data[control.uid].active = true
+    end
+
+    local font_size = control.font_size and control.font_size or Mupen_lua_ugui.standard_styler.font_size * 1.5
+    local font_name = control.font_name and control.font_name or "Consolas"
 
     local function get_caret_index_at_relative_x(text, x)
         -- award for most painful basic geometry
@@ -332,19 +354,10 @@ Mupen_lua_ugui.numberbox = function(control)
             index)
     end
 
-    local pushed = Mupen_lua_ugui.internal.is_pushed(control)
-
-    if pushed and control.is_enabled then
-        Mupen_lua_ugui.active_control_uid = control.uid
-    end
-
     local visual_state = Mupen_lua_ugui.get_visual_state(control)
-
-    if Mupen_lua_ugui.active_control_uid == control.uid and control.is_enabled then
+    if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled then
         visual_state = Mupen_lua_ugui.visual_states.active
     end
-
-
     Mupen_lua_ugui.standard_styler.draw_edit_frame(control, control.rectangle, visual_state)
 
     local text = string.format("%0" .. tostring(control.places) .. "d", control.value)
@@ -387,7 +400,7 @@ Mupen_lua_ugui.numberbox = function(control)
         height = control.rectangle.height
     }
 
-    if Mupen_lua_ugui.active_control_uid == control.uid and control.is_enabled then
+    if Mupen_lua_ugui.internal.control_data[control.uid].active then
         -- find the clicked number, change caret index
         if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
             Mupen_lua_ugui.internal.control_data[control.uid].caret_index = get_caret_index_at_relative_x(text,
@@ -398,8 +411,9 @@ Mupen_lua_ugui.numberbox = function(control)
         for key, _ in pairs(Mupen_lua_ugui.internal.get_just_pressed_keys()) do
             local num_1 = tonumber(key)
             local num_2 = tonumber(key:sub(6))
-            if num_1 or num_2 then
-                local value = num_1 and num_1 or num_2
+            local value = num_1 and num_1 or num_2
+            
+            if value then
                 local oldkey = math.floor(control.value /
                     math.pow(10, control.places - Mupen_lua_ugui.internal.control_data[control.uid].caret_index)) % 10
                 control.value = control.value +
@@ -450,7 +464,7 @@ Mupen_lua_ugui.numberbox = function(control)
         Mupen_lua_ugui.internal.control_data[control.uid].caret_index, 1,
         control.places)
 
-    return control.value
+    return math.floor(control.value)
 end
 
 BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_rectangle, source_rectangle_center, path,
@@ -719,7 +733,7 @@ Mupen_lua_ugui.treeview = function(control)
         }
 
         -- we dont need buttons for childless nodes
-        if #item.children > 0 then
+        if #item.children ~= 0 then
             item.open = Mupen_lua_ugui.toggle_button({
                 uid = control.uid + i,
                 is_enabled = true,
@@ -729,7 +743,7 @@ Mupen_lua_ugui.treeview = function(control)
             })
         end
 
-        local effective_rectangle = #item.children > 0 and text_rectangle or item_rectangle
+        local effective_rectangle = #item.children ~= 0 and text_rectangle or item_rectangle
 
         if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, effective_rectangle) and Mupen_lua_ugui.internal.is_mouse_just_down() then
             Mupen_lua_ugui.internal.control_data[control.uid].selected_uid = item.uid
