@@ -790,14 +790,16 @@ Mupen_lua_ugui = {
 
 
             if #control.items * Mupen_lua_ugui.standard_styler.item_height > rectangle.height then
-                local scrollbar_y = y_translation * rectangle
-                    .height
-                local scrollbar_height = 2 * Mupen_lua_ugui.standard_styler.item_height *
-                    (rectangle.height / (Mupen_lua_ugui.standard_styler.item_height * #control.items))
-                -- we center the scrollbar around the translation value
 
-                scrollbar_y = scrollbar_y - scrollbar_height / 2
-                scrollbar_y = Mupen_lua_ugui.internal.clamp(scrollbar_y, 0, rectangle.height - scrollbar_height)
+                -- figure out height of scrollbar
+                local scrollbar_base_height = rectangle.height
+                local content_overflow_ratio = (Mupen_lua_ugui.standard_styler.item_height * #control.items) /
+                    rectangle.height
+                local inverse_content_overflow_ratio = 1 / content_overflow_ratio
+                local scrollbar_height = scrollbar_base_height * inverse_content_overflow_ratio
+
+                -- we center the scrollbar around the translation value, and shrink it accordingly
+                local scrollbar_y = Mupen_lua_ugui.internal.remap(y_translation, 0, 1, 0, rectangle.height - scrollbar_height)
 
                 local container_rectangle = {
                     x = rectangle.x + rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
