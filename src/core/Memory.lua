@@ -1,6 +1,9 @@
+local use_memory_autodetect = false
+local default_memory_source = "addresses_usa.lua"
+
 Memory = {
 	current = {},
-	previous = {}
+	previous = {},
 }
 
 local sources = {
@@ -42,7 +45,7 @@ function Memory.initialize()
 		return
 	end
 
-	if Settings.use_memory_autodetect then
+	if use_memory_autodetect then
 		-- do the pattern checks and find best candidate
 		-- BUG: if we restart the rom, we get bogus data on first frame here
 		for i = 1, #sources, 1 do
@@ -54,11 +57,11 @@ function Memory.initialize()
 		end
 
 		if source == nil then
-			print("Rom pattern match failed, falling back to " .. Settings.default_memory_source)
+			print("Rom pattern match failed, falling back to " .. default_memory_source)
 			source = sources[1]
 		end
 	else
-		source = dofile(res_path .. Settings.default_memory_source)
+		source = dofile(res_path .. default_memory_source)
 	end
 
 	print("Memory source: " .. source.name)

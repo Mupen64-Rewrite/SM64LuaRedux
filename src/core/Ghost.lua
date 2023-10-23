@@ -1,5 +1,6 @@
 Ghost = {
-	frames = {}
+	frames = {},
+	is_recording = false
 }
 
 local frame = 0
@@ -19,7 +20,7 @@ recordingBaseFrame = nil
 lastGlobalTimer = nil
 
 function Ghost.update()
-	if not Settings.recording_ghost then
+	if not Ghost.is_recording then
 		return
 	end
 
@@ -97,11 +98,11 @@ function Ghost.write_file()
 end
 
 function Ghost.toggle_recording()
-	Settings.recording_ghost = not Settings.recording_ghost
+	Ghost.is_recording = not Ghost.is_recording
 
-	if Settings.recording_ghost then
+	if Ghost.is_recording then
 		frame = 0
-		Settings.recording_ghost = true
+		Ghost.is_recording = true
 		return
 	end
 

@@ -13,7 +13,6 @@ Settings = {
     override_rng_use_index = false,
     override_rng_value = 0,
     show_effective_angles = true,
-    recording_ghost = false,
     ghost_path = folder .. "recording.ghost",
     strain_left = true,
     strain_right = false,
@@ -41,8 +40,6 @@ Settings = {
     atan_n = 10,
     atan_exp = 0,
     framewalk = false,
-    use_memory_autodetect = false,
-    default_memory_source = "addresses_usa.lua",
     styles = {
         dofile(res_path .. "windows-11.lua"),
         dofile(res_path .. "windows-10.lua"),
