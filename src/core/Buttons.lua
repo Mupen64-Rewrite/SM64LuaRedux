@@ -51,19 +51,6 @@ local pow = math.pow
 
 Buttons = {
     {
-        name = "ignore y",
-        text = "No Y",
-        box = function()
-            return grid(4, 15, 2, 1)
-        end,
-        pressed = function()
-            return Settings.moved_distance_ignore_y
-        end,
-        onclick = function(self)
-            Settings.moved_distance_ignore_y = not Settings.moved_distance_ignore_y
-        end
-    },
-    {
         name = "arcotan strain",
         text = "Atan Strain",
         box = function()
@@ -222,27 +209,6 @@ Buttons = {
         onclick = function(self)
             Settings.atan_exp = math.max(-4,
                 math.min(Settings.atan_exp - 1, 4))
-        end
-    },
-    {
-        name = "dist moved",
-        text = "Moved Distance",
-        box = function()
-            return grid(0, 15, 4, 1)
-        end,
-        pressed = function()
-            return Settings.track_moved_distance
-        end,
-        onclick = function(self)
-            Settings.track_moved_distance = not Settings.track_moved_distance
-
-            if Settings.track_moved_distance then
-                Settings.moved_distance_axis.x = MoreMaths.dec_to_float(Memory.current.mario_x)
-                Settings.moved_distance_axis.y = MoreMaths.dec_to_float(Memory.current.mario_y)
-                Settings.moved_distance_axis.z = MoreMaths.dec_to_float(Memory.current.mario_z)
-            else
-                Settings.moved_distance = Engine.GetTotalDistMoved()
-            end
         end
     },
     {

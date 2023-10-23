@@ -53,6 +53,8 @@ dofile(folder .. "mupen-lua-ugui.lua")
 dofile(folder .. "mupen-lua-ugui-ext.lua")
 dofile(res_path .. "base.lua")
 dofile(core_path .. "Settings.lua")
+dofile(core_path .. "VarWatch.lua")
+dofile(core_path .. "Presets.lua")
 dofile(core_path .. "Drawing.lua")
 dofile(core_path .. "Memory.lua")
 dofile(core_path .. "Joypad.lua")
@@ -66,7 +68,6 @@ dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
-dofile(core_path .. "VarWatch.lua")
 
 Memory.initialize()
 Joypad.update()
@@ -136,13 +137,41 @@ function at_update_screen()
 
     tabs[current_tab_index].draw()
 
+    -- navigation and presets
+
     current_tab_index = Mupen_lua_ugui.carrousel_button({
-        uid = 5000,
+        uid = -5000,
         is_enabled = true,
-        rectangle = grid_rect(0, 16, 8, 1),
+        rectangle = grid_rect(0, 15, 8, 1),
         items = select(tabs, "name"),
         selected_index = current_tab_index,
     })
+
+    for i = 1, #Presets.presets, 1 do
+        local prev = Presets.current_index == i
+        local now = Mupen_lua_ugui.toggle_button({
+            uid = -5000 - 5 * i,
+            is_enabled = true,
+            rectangle = grid_rect(i - 1, 16, 1, 1),
+            text = i,
+            is_checked = Presets.current_index == i
+        })
+
+        if now and not prev then
+            Presets.apply(i)
+        end
+    end
+
+    if Mupen_lua_ugui.button({
+        uid = -6000,
+        is_enabled = true,
+        rectangle = grid_rect(6, 16, 2, 1),
+        text = "Reset"
+    }) then
+        Presets.reset(Presets.current_index)
+        Presets.apply(Presets.current_index)
+    end
+
 
     Mupen_lua_ugui.end_frame()
 end

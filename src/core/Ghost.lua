@@ -81,15 +81,15 @@ function Ghost.write_file()
 	writebytes32(file, recordingBaseFrame)
 	writebytes32(file, #Ghost.frames)
 	for _, value in pairs(Ghost.frames) do
-		writebytes32(file, (value.globalTimer - recordingBaseFrame));
-		writebytes32(file, value.positionX);
-		writebytes32(file, value.positionY);
-		writebytes32(file, value.positionZ);
-		writebytes16(file, value.animationIndex);
-		writebytes16(file, value.animationTimer);
-		writebytes32(file, value.pitch);
-		writebytes32(file, value.yaw);
-		writebytes32(file, value.roll);
+		writebytes32(file, (value.globalTimer - recordingBaseFrame))
+		writebytes32(file, value.positionX)
+		writebytes32(file, value.positionY)
+		writebytes32(file, value.positionZ)
+		writebytes16(file, value.animationIndex)
+		writebytes16(file, value.animationTimer)
+		writebytes32(file, value.pitch)
+		writebytes32(file, value.yaw)
+		writebytes32(file, value.roll)
 	end
 	file:close()
 	print("Ghost written to: " .. Settings.ghost_path)

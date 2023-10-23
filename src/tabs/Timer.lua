@@ -4,12 +4,11 @@ transitionTimes[8] = 2
 transitionTimes[10] = 2
 transitionTimes[16] = 2
 transitionTimes[18] = 2
-local VIs = 0;
-local PredictedVIs = 0;
-local State = 0;
-local StartVI = 0;
-local is_control_automatic = true;
-local is_started = false;
+local VIs = 0
+local PredictedVIs = 0
+local State = 0
+local StartVI = 0
+local is_control_automatic = true
 local curVI = 0
 local function reset()
     State = 0
