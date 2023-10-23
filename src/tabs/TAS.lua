@@ -118,8 +118,8 @@ return {
                 height = joystick_rect[4]
             },
             position = {
-                x = MoreMaths.Remap(Joypad.input.X, -128, 128, 0, 1),
-                y = MoreMaths.Remap(-Joypad.input.Y, -128, 128, 0, 1),
+                x = Mupen_lua_ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
+                y = Mupen_lua_ugui.internal.remap(-Joypad.input.Y, -128, 128, 0, 1),
             }
         })
         if Settings.goal_mag and Settings.goal_mag < 127 then
