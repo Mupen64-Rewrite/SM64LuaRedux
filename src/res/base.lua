@@ -4,7 +4,7 @@ function get_base_style()
         background_color = BreitbandGraphics.repeated_to_color(240),
         item_height = 15,
         font_size = 12,
-        font_name = 'MS Shell Dlg 2',
+        font_name = 'MS Sans Serif',
         button = {
             text_colors = {
                 [1] = BreitbandGraphics.colors.black,

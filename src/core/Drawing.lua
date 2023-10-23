@@ -8,13 +8,14 @@ Drawing = {
 function Drawing.size_up()
     Drawing.initial_size = wgui.info()
     Drawing.scale = Drawing.initial_size.height / 600
-    local extra_space = (((Settings.GridSize * 8) + (Settings.GridGap * 8))) * Drawing.scale
+    local extra_space = (Settings.grid_size * 8)
+    if Drawing.scale > 1 + Drawing.scale_tolerance or Drawing.scale < 1 - Drawing.scale_tolerance then
+        extra_space = extra_space * Drawing.scale
+    end
     wgui.resize(math.floor(Drawing.initial_size.width + extra_space),
         Drawing.initial_size.height)
     Drawing.size = wgui.info()
-    if Drawing.scale > 1 + Drawing.scale_tolerance or Drawing.scale < 1 - Drawing.scale_tolerance then
-        print("Scale factor " .. Drawing.scale)
-    end
+    print("Scale factor " .. Drawing.scale)
 end
 
 function Drawing.size_down()
@@ -47,16 +48,16 @@ function Drawing.paint()
         else
             -- pushbutton
             if Mupen_lua_ugui.button({
-                uid = i * 5000,
-                is_enabled = button.enabled and button.enabled() or true,
-                rectangle = {
-                    x = box[1],
-                    y = box[2],
-                    width = box[3],
-                    height = box[4]
-                },
-                text = button.text,
-            }) then
+                    uid = i * 5000,
+                    is_enabled = button.enabled and button.enabled() or true,
+                    rectangle = {
+                        x = box[1],
+                        y = box[2],
+                        width = box[3],
+                        height = box[4]
+                    },
+                    text = button.text,
+                }) then
                 button:onclick()
             end
         end

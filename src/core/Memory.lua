@@ -1,10 +1,5 @@
 Memory = {
-	current = {
-		mario = {},
-		camera = {},
-		rng_value = 0,
-	},
-
+	current = {},
 	previous = {}
 }
 
@@ -15,7 +10,6 @@ local sources = {
 local source = nil
 
 function Memory.update()
-
 	-- update previous values
 	local current = Mupen_lua_ugui.internal.deep_clone(Memory.current)
 	Memory.previous = current
@@ -44,17 +38,31 @@ function Memory.update()
 end
 
 function Memory.initialize()
-	-- do the pattern checks and find best candidate
-	for i = 1, #sources, 1 do
-		local element = sources[i]
-		if memory.readdword(element.match_sequence.address) == element.match_sequence.value then
-			print("Memory source " .. element.name)
-			source = element
-			break
-		end
+	if source then
+		return
 	end
 
-	if source == nil then
-		error("No memory source found for rom")
+	if Settings.use_memory_autodetect then
+		-- do the pattern checks and find best candidate
+		-- BUG: if we restart the rom, we get bogus data on first frame here
+		for i = 1, #sources, 1 do
+			local element = sources[i]
+			if memory.readdword(element.match_sequence.address) == element.match_sequence.value then
+				source = element
+				break
+			end
+		end
+
+		if source == nil then
+			print("Rom pattern match failed, falling back to " .. Settings.default_memory_source)
+			source = sources[1]
+		end
+	else
+		source = dofile(res_path .. Settings.default_memory_source)
 	end
+
+	print("Memory source: " .. source.name)
+	-- do 2 update passes to fill out previous state table too
+	Memory.update()
+	Memory.update()
 end

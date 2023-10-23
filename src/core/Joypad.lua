@@ -1,10 +1,10 @@
 Joypad = {
 	input = {
-	
+		
 	}
 }
 
-function Joypad.init()
+function Joypad.update()
 	Joypad.input = joypad.get(Settings.controller_index)
 end
 

@@ -6,14 +6,14 @@ function grid(x, y, x_span, y_span)
         y_span = 1
     end
 
-    local base_x = Drawing.initial_size.width + (Settings.GridSize * x)
-    local base_y = (Settings.GridSize * y)
+    local base_x = Drawing.initial_size.width + (Settings.grid_size * x)
+    local base_y = (Settings.grid_size * y)
 
     local rect = {
-        base_x + Settings.GridGap,
-        base_y + Settings.GridGap,
-        (Settings.GridSize * x_span) - Settings.GridGap * 2,
-        (Settings.GridSize * y_span) - Settings.GridGap * 2,
+        base_x + Settings.grid_gap,
+        base_y + Settings.grid_gap,
+        (Settings.grid_size * x_span) - Settings.grid_gap * 2,
+        (Settings.grid_size * y_span) - Settings.grid_gap * 2,
     }
 
     if Drawing.scale > 1 + Drawing.scale_tolerance then
@@ -27,8 +27,8 @@ function grid(x, y, x_span, y_span)
         -- local scaled = expanded / Drawing.scale
         -- local halved = scaled / 2
         -- rect[1] = (rect[1] * Drawing.scale) + halved
-        -- rect[1] = Drawing.initial_size.width + (Settings.GridSize * x)
-        rect[1] = (Drawing.initial_size.width + (Settings.GridSize * x * Drawing.scale)) + Settings.GridGap
+        -- rect[1] = Drawing.initial_size.width + (Settings.grid_size * x)
+        rect[1] = (Drawing.initial_size.width + (Settings.grid_size * x * Drawing.scale)) + Settings.grid_gap
         rect[2] = rect[2] * Drawing.scale
         rect[3] = rect[3] * Drawing.scale
         rect[4] = rect[4] * Drawing.scale
@@ -299,25 +299,6 @@ Buttons = {
         end,
         onclick = function(self)
             Settings.movement_mode = Settings.movement_modes.match_angle
-        end
-    },
-    {
-        name = "record ghost",
-        text = "Ghost",
-        box = function()
-            return grid(6, 15, 2, 1)
-        end,
-        pressed = function()
-            return Settings.recording_ghost
-        end,
-        onclick = function(self)
-            Settings.recording_ghost = not Settings.recording_ghost
-            if (not Settings.recording_ghost) then
-                self.text = "Ghost"
-                Ghost.write_file()
-            else
-                self.text = "Stop"
-            end
         end
     },
 }

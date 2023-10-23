@@ -65,10 +65,11 @@ dofile(core_path .. "Swimming.lua")
 dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
-dofile(core_path .. "recordghost.lua")
+dofile(core_path .. "Ghost.lua")
 dofile(core_path .. "VarWatch.lua")
 
 Memory.initialize()
+Joypad.update()
 Drawing.size_up()
 
 local tabs = {
@@ -76,6 +77,7 @@ local tabs = {
     dofile(tabs_path .. "Settings.lua"),
     dofile(tabs_path .. "Timer.lua"),
     dofile(tabs_path .. "RNG.lua"),
+    dofile(tabs_path .. "Ghost.lua"),
 }
 
 local current_tab_index = 1
@@ -84,7 +86,7 @@ local mouse_wheel = 0
 function at_input()
     -- frame stage 1: set everything up
     Memory.update()
-    Joypad.init()
+    Joypad.update()
     if Settings.movement_mode ~= Settings.movement_modes.disabled then
         result = Engine.inputsForAngle()
         if Settings.goal_mag then
@@ -108,7 +110,7 @@ function at_input()
     Joypad.send()
     Swimming.swim()
     Framewalk.update()
-    Ghost.main()
+    Ghost.update()
 end
 
 function at_update_screen()
@@ -144,20 +146,9 @@ function at_update_screen()
     Mupen_lua_ugui.end_frame()
 end
 
--- run 2 fake updates pass to get everything to pull itself together (UpdatePrevPos)
-at_input()
-at_input()
-
-
 emu.atinput(at_input)
 emu.atupdatescreen(at_update_screen)
-
-emu.atstop(function()
-    Drawing.size_down()
-end)
-
-emu.atreset(Drawing.size_up)
-
+emu.atstop(Drawing.size_down)
 emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
     if msg_id == 522 then                         -- WM_MOUSEWHEEL
         -- high word (most significant 16 bits) is scroll rotation in multiples of WHEEL_DELTA (120)

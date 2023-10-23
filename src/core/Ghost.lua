@@ -1,4 +1,8 @@
-Ghost = {}
+Ghost = {
+	frames = {}
+}
+
+local frame = 0
 
 GLOBAL_TIMER_ADDRESS = 0x8032D5D4
 MARIO_OBJ_ADDRESS = 0x80361158
@@ -11,22 +15,17 @@ OBJ_PITCH_OFFSET = 0x1A
 OBJ_YAW_OFFSET = 0x1C
 OBJ_ROLL_OFFSET = 0x1E
 
-PATH_ROOT = debug.getinfo(1).source:sub(2):match("(.*\\)")
-targetFileName = PATH_ROOT .. "tmp.ghost"
-recordedFrames = {}
 recordingBaseFrame = nil
 lastGlobalTimer = nil
 
-
-i = 0
-function Ghost.main()
+function Ghost.update()
 	if not Settings.recording_ghost then
 		return
 	end
 
-	if (i == 0) then
-		print("Recording ghost to: " .. targetFileName)
-		i = i + 1
+	if frame == 0 then
+		print("Recording ghost...")
+		frame = frame + 1
 	end
 
 	local marioObjRef = memory.readdword(MARIO_OBJ_ADDRESS)
@@ -36,7 +35,7 @@ function Ghost.main()
 	end
 	if lastGlobalTimer == nil or lastGlobalTimer < _globalTimer then
 		lastGlobalTimer = _globalTimer
-		table.insert(recordedFrames,
+		table.insert(Ghost.frames,
 			{
 				globalTimer = (_globalTimer - 1),
 
@@ -78,12 +77,11 @@ function Ghost.write_file()
 	if recordingBaseFrame == nil then
 		return
 	end
-	local file = io.open(targetFileName, "wb")
+	local file = io.open(Settings.ghost_path, "wb")
 	writebytes32(file, recordingBaseFrame)
-	writebytes32(file, #recordedFrames)
-	for key, value in pairs(recordedFrames) do
+	writebytes32(file, #Ghost.frames)
+	for _, value in pairs(Ghost.frames) do
 		writebytes32(file, (value.globalTimer - recordingBaseFrame));
-
 		writebytes32(file, value.positionX);
 		writebytes32(file, value.positionY);
 		writebytes32(file, value.positionZ);
@@ -94,6 +92,18 @@ function Ghost.write_file()
 		writebytes32(file, value.roll);
 	end
 	file:close()
-	print("Ghost written to: " .. targetFileName)
-	i = 0
+	print("Ghost written to: " .. Settings.ghost_path)
+	frame = 0
+end
+
+function Ghost.toggle_recording()
+	Settings.recording_ghost = not Settings.recording_ghost
+
+	if Settings.recording_ghost then
+		frame = 0
+		Settings.recording_ghost = true
+		return
+	end
+
+	Ghost.write_file()
 end

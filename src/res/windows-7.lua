@@ -2,6 +2,7 @@ local theme = get_base_style()
 
 theme.path = res_path .. "windows-7-atlas.png"
 theme.background_color = { r = 234, g = 235, b = 236 }
+theme.font_name = "MS Sans Serif"
 theme.button.states = {
     [1] = {
         source = expand_rect({ 1, 1, 11, 21 }),

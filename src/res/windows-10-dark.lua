@@ -2,6 +2,7 @@ local theme = get_base_style()
 
 theme.path = res_path .. "windows-10-dark-atlas.png"
 theme.background_color = BreitbandGraphics.repeated_to_color(57)
+theme.font_name = "MS Sans Serif"
 theme.button.text_colors = {
     [1] = BreitbandGraphics.colors.white,
     [2] = BreitbandGraphics.colors.white,
