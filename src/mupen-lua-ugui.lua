@@ -1487,22 +1487,22 @@ Mupen_lua_ugui = {
                     selected_index = new_index
                 end
             end
-
-            if overflows then
-                local inc = 0
-                if Mupen_lua_ugui.internal.is_mouse_wheel_up() then
-                    inc = -1 / #control.items
-                end
-                if Mupen_lua_ugui.internal.is_mouse_wheel_down() then
-                    inc = 1 / #control.items
-                end
-                Mupen_lua_ugui.internal.control_data[control.uid].y_translation = Mupen_lua_ugui.internal.control_data
-                    [control.uid]
-                    .y_translation + inc
-            end
         end
 
-        if Mupen_lua_ugui.internal.control_data[control.uid].active and overflows then
+        if not ignored and overflows and (BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) or Mupen_lua_ugui.internal.control_data[control.uid].active) then
+            local inc = 0
+            if Mupen_lua_ugui.internal.is_mouse_wheel_up() then
+                inc = -1 / #control.items
+            end
+            if Mupen_lua_ugui.internal.is_mouse_wheel_down() then
+                inc = 1 / #control.items
+            end
+            Mupen_lua_ugui.internal.control_data[control.uid].y_translation = Mupen_lua_ugui.internal.control_data
+                [control.uid]
+                .y_translation + inc
+        end
+
+        if Mupen_lua_ugui.internal.control_data[control.uid].active and overflows and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.mouse_down_position, scrollbar_rect) then
             local v = (Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y) /
                 control.rectangle.height
             Mupen_lua_ugui.internal.control_data[control.uid].y_translation = v
