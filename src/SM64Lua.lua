@@ -111,6 +111,7 @@ function at_input()
     Swimming.swim()
     Framewalk.update()
     Ghost.update()
+    Engine.input()
 end
 
 function at_update_screen()
@@ -146,8 +147,13 @@ function at_update_screen()
     Mupen_lua_ugui.end_frame()
 end
 
+function at_vi()
+    Engine.vi()
+end
+
 emu.atinput(at_input)
 emu.atupdatescreen(at_update_screen)
+emu.atvi(at_vi)
 emu.atstop(Drawing.size_down)
 emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
     if msg_id == 522 then                         -- WM_MOUSEWHEEL
