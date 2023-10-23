@@ -23,10 +23,10 @@ VarWatch = {
             value = function()
                 local h_speed = 0
                 if Memory.current.mario_h_speed ~= 0 then
-                    h_speed = MoreMaths.DecodeDecToFloat(Memory.current.mario_h_speed)
+                    h_speed = MoreMaths.dec_to_float(Memory.current.mario_h_speed)
                 end
                 return "H Spd: " ..
-                    MoreMaths.Round(h_speed, 5) .. " (Sliding: " .. MoreMaths.Round(Engine.GetHSlidingSpeed(), 6) .. ")"
+                    MoreMaths.round(h_speed, 5) .. " (Sliding: " .. MoreMaths.round(Engine.GetHSlidingSpeed(), 6) .. ")"
             end
         },
         {
@@ -34,9 +34,9 @@ VarWatch = {
             value = function()
                 local y_speed = 0
                 if Memory.current.mario_v_speed > 0 then
-                    y_speed = MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_v_speed), 6)
+                    y_speed = MoreMaths.round(MoreMaths.dec_to_float(Memory.current.mario_v_speed), 6)
                 end
-                return "Y Spd: " .. MoreMaths.Round(y_speed, 6)
+                return "Y Spd: " .. MoreMaths.round(y_speed, 6)
             end
         },
         {
@@ -49,27 +49,27 @@ VarWatch = {
             identifier = "position_x",
             value = function()
                 return "X: " ..
-                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_x), 2)
+                    MoreMaths.round(MoreMaths.dec_to_float(Memory.current.mario_x), 2)
             end
         },
         {
             identifier = "position_y",
             value = function()
                 return "Y: " ..
-                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_y), 2)
+                    MoreMaths.round(MoreMaths.dec_to_float(Memory.current.mario_y), 2)
             end
         },
         {
             identifier = "position_z",
             value = function()
                 return "Z: " ..
-                    MoreMaths.Round(MoreMaths.DecodeDecToFloat(Memory.current.mario_z), 2)
+                    MoreMaths.round(MoreMaths.dec_to_float(Memory.current.mario_z), 2)
             end
         },
         {
             identifier = "xz_movement",
             value = function()
-                return "XZ Movement: " .. MoreMaths.Round(Engine.GetDistMoved(), 6)
+                return "XZ Movement: " .. MoreMaths.round(Engine.GetDistMoved(), 6)
             end
         },
         {
@@ -99,15 +99,15 @@ VarWatch = {
             value = function ()
                 return 
                    "E: " .. Settings.atan_exp 
-                .. " R: " .. MoreMaths.Round(Settings.atan_r, 5)
-                .. " D: " .. MoreMaths.Round(Settings.atan_d, 5)
-                .. " N: " .. MoreMaths.Round(Settings.atan_n, 2)
+                .. " R: " .. MoreMaths.round(Settings.atan_r, 5)
+                .. " D: " .. MoreMaths.round(Settings.atan_d, 5)
+                .. " N: " .. MoreMaths.round(Settings.atan_n, 2)
             end
         },
         {
             identifier = "atan_start_frame",
             value = function()
-                return "S: " .. MoreMaths.Round(Settings.atan_start + 1, 2)
+                return "S: " .. MoreMaths.round(Settings.atan_start + 1, 2)
             end
         },
     },

@@ -110,8 +110,8 @@ return {
             is_enabled = true,
             rectangle = grid_rect(2, 1, 4, 4),
             position = {
-                x = MoreMaths.Remap(Joypad.input.X, -128, 128, 0, 1),
-                y = MoreMaths.Remap(-Joypad.input.Y, -128, 128, 0, 1),
+                x = Mupen_lua_ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
+                y = Mupen_lua_ugui.internal.remap(-Joypad.input.Y, -128, 128, 0, 1),
             }
         })
 

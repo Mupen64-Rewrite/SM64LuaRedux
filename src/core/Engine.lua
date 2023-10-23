@@ -274,14 +274,14 @@ end
 
 function Engine.GetSpeedEfficiency()
 	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_sped > 0 then
-		return MoreMaths.Round(Engine.GetDistMoved() / math.abs(math.sqrt(MoreMaths.DecodeDecToFloat(Memory.current.mario_x_sliding_speed) ^ 2 + MoreMaths.DecodeDecToFloat(Memory.current.mario_z_sliding_sped) ^ 2)) * 100, 5)
+		return MoreMaths.round(Engine.GetDistMoved() / math.abs(math.sqrt(MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 + MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)) * 100, 5)
 	else
 		return 0
 	end
 end
 
 function Engine.GetDistMoved()
-	return math.sqrt((MoreMaths.DecodeDecToFloat(Memory.previous.mario_x) - MoreMaths.DecodeDecToFloat(Memory.current.mario_x)) ^ 2 + (MoreMaths.DecodeDecToFloat(Memory.previous.mario_z) - MoreMaths.DecodeDecToFloat(Memory.current.mario_z)) ^ 2)
+	return math.sqrt((MoreMaths.dec_to_float(Memory.previous.mario_x) - MoreMaths.dec_to_float(Memory.current.mario_x)) ^ 2 + (MoreMaths.dec_to_float(Memory.previous.mario_z) - MoreMaths.dec_to_float(Memory.current.mario_z)) ^ 2)
 end
 
 function Engine.GetCurrentAction()
@@ -295,15 +295,15 @@ function Engine.GetCurrentAction()
 end
 
 function Engine.GetTotalDistMoved()
-	eckswhy = (Settings.moved_distance_axis.x - MoreMaths.DecodeDecToFloat(Memory.current.mario_x)) ^ 2 + (Settings.moved_distance_axis.z - MoreMaths.DecodeDecToFloat(Memory.current.mario_z)) ^ 2
+	eckswhy = (Settings.moved_distance_axis.x - MoreMaths.dec_to_float(Memory.current.mario_x)) ^ 2 + (Settings.moved_distance_axis.z - MoreMaths.dec_to_float(Memory.current.mario_z)) ^ 2
 	if (Settings.moved_distance_ignore_y == false) then
-		eckswhy = eckswhy + (Settings.moved_distance_axis.y - MoreMaths.DecodeDecToFloat(Memory.current.mario_y)) ^ 2
+		eckswhy = eckswhy + (Settings.moved_distance_axis.y - MoreMaths.dec_to_float(Memory.current.mario_y)) ^ 2
 	end
 	return math.sqrt(eckswhy)
 end
 
 function Engine.GetHSlidingSpeed()
-	return math.sqrt(MoreMaths.DecodeDecToFloat(Memory.current.mario_x_sliding_speed) ^ 2 + MoreMaths.DecodeDecToFloat(Memory.current.mario_z_sliding_sped) ^ 2)
+	return math.sqrt(MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 + MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)
 end
 
 local function magnitude(x, y)

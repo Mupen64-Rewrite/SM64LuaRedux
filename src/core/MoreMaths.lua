@@ -25,7 +25,7 @@ MoreMaths = {
     }
 }
 
-function MoreMaths.DecodeDecToFloat(input)
+function MoreMaths.dec_to_float(input)
     if input == nil then
         print(debug.traceback())
         return
@@ -55,7 +55,7 @@ function MoreMaths.DecodeDecToFloat(input)
     return (x)
 end
 
-function MoreMaths.Round(num, numDecimalPlaces)
+function MoreMaths.round(num, numDecimalPlaces)
     local mult = 10 ^ (numDecimalPlaces or 0)
     return math.floor(num * mult + 0.5) / mult
 end

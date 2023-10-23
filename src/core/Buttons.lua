@@ -151,7 +151,7 @@ Buttons = {
 
 
         onclick = function(self)
-            Settings.atan_n = MoreMaths.Round(
+            Settings.atan_n = MoreMaths.round(
                 math.max(0,
                     Settings.atan_n +
                     10 ^ math.max(-0.6020599913279624, Settings.atan_exp)), 2)
@@ -165,7 +165,7 @@ Buttons = {
         end,
 
         onclick = function(self)
-            Settings.atan_n = MoreMaths.Round(
+            Settings.atan_n = MoreMaths.round(
                 math.max(0,
                     Settings.atan_n -
                     10 ^ math.max(-0.6020599913279624, Settings.atan_exp)), 2)
@@ -237,9 +237,9 @@ Buttons = {
             Settings.track_moved_distance = not Settings.track_moved_distance
 
             if Settings.track_moved_distance then
-                Settings.moved_distance_axis.x = MoreMaths.DecodeDecToFloat(Memory.current.mario_x)
-                Settings.moved_distance_axis.y = MoreMaths.DecodeDecToFloat(Memory.current.mario_y)
-                Settings.moved_distance_axis.z = MoreMaths.DecodeDecToFloat(Memory.current.mario_z)
+                Settings.moved_distance_axis.x = MoreMaths.dec_to_float(Memory.current.mario_x)
+                Settings.moved_distance_axis.y = MoreMaths.dec_to_float(Memory.current.mario_y)
+                Settings.moved_distance_axis.z = MoreMaths.dec_to_float(Memory.current.mario_z)
             else
                 Settings.moved_distance = Engine.GetTotalDistMoved()
             end
