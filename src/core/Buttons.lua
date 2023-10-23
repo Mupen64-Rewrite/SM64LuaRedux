@@ -16,18 +16,7 @@ function grid(x, y, x_span, y_span)
         (Settings.grid_size * y_span) - Settings.grid_gap * 2,
     }
 
-    if Drawing.scale > 1 + Drawing.scale_tolerance then
-        -- scaling up, we space everything out but keep dimensions
-        rect[2] = rect[2] * Drawing.scale
-    end
-    if Drawing.scale < 1 - Drawing.scale_tolerance then
-        -- scaling down, we squish and compress everything
-        -- TODO: fix this random crap
-        -- local expanded = Drawing.size.width - Drawing.initial_size.width
-        -- local scaled = expanded / Drawing.scale
-        -- local halved = scaled / 2
-        -- rect[1] = (rect[1] * Drawing.scale) + halved
-        -- rect[1] = Drawing.initial_size.width + (Settings.grid_size * x)
+    if Drawing.scale > 1 + Drawing.scale_tolerance or Drawing.scale < 1 - Drawing.scale_tolerance then
         rect[1] = (Drawing.initial_size.width + (Settings.grid_size * x * Drawing.scale)) + Settings.grid_gap
         rect[2] = rect[2] * Drawing.scale
         rect[3] = rect[3] * Drawing.scale
