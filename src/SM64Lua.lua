@@ -62,6 +62,7 @@ dofile(core_path .. "Buttons.lua")
 dofile(core_path .. "MoreMaths.lua")
 dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
+dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "recordghost.lua")
@@ -79,7 +80,6 @@ local tabs = {
 
 local current_tab_index = 1
 local mouse_wheel = 0
-
 
 function at_input()
     -- frame stage 1: set everything up
@@ -104,8 +104,10 @@ function at_input()
             memory.writeword(0x00B8EEE0, math.floor(Settings.override_rng_value))
         end
     end
+
     Joypad.send()
     Swimming.swim()
+    Framewalk.update()
     Ghost.main()
 end
 

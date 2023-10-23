@@ -39,6 +39,7 @@ Settings = {
     atan_d = 0.0,
     atan_n = 10,
     atan_exp = 0,
+    framewalk = false,
     styles = {
         dofile(res_path .. "windows-11.lua"),
         dofile(res_path .. "windows-10.lua"),

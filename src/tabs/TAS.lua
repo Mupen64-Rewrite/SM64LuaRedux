@@ -47,12 +47,20 @@ return {
         if Mupen_lua_ugui.button({
                 uid = 51000,
                 is_enabled = true,
-                rectangle = grid_rect(4, 5, 4, 1),
+                rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
             Settings.goal_mag = 48
             Settings.high_magnitude = true
         end
+
+        Settings.framewalk = Mupen_lua_ugui.toggle_button({
+            uid = 510500,
+            is_enabled = true,
+            rectangle = grid_rect(6, 5, 2, 1),
+            text = 'Framewalk',
+            is_checked = Settings.framewalk
+        })
 
         Settings.strain_always = Mupen_lua_ugui.toggle_button({
             uid = 1002,
