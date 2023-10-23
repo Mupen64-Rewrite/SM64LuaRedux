@@ -9,7 +9,7 @@ return {
             uid = 0,
             is_enabled = true,
             rectangle = grid_rect(0, 8, 8, 7),
-            selected_index = 1,
+            selected_index = nil,
             items = VarWatch.get_values(),
         })
         Settings.goal_angle = Mupen_lua_ugui.numberbox({

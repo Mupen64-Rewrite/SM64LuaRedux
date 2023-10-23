@@ -213,7 +213,7 @@ BreitbandGraphics = {
     ---@param font_name string The font name
     ---@param text string The text
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-        text)
+                         text)
         if text == nil then
             text = ''
         end
@@ -331,7 +331,7 @@ Mupen_lua_ugui = {
         previous_input_state = nil,
 
         -- the position of the mouse at the last click
-        mouse_down_position = {x = 0, y = 0},
+        mouse_down_position = { x = 0, y = 0 },
 
         -- uid of the currently pushed control (last mouse down is on it and mouse has not been released)
         pushed_control = nil,
@@ -383,6 +383,9 @@ Mupen_lua_ugui = {
             return (value - from1) / (to1 - from1) * (to2 - from2) + from2
         end,
         clamp = function(value, min, max)
+            if value == nil then
+                return value
+            end
             return math.max(math.min(value, max), min)
         end,
         get_just_pressed_keys = function()
@@ -732,7 +735,7 @@ Mupen_lua_ugui = {
                     y = rectangle.y,
                     width = rectangle.width,
                     height = rectangle.height,
-                }, 'start', 'center', {clip = true},
+                }, 'start', 'center', { clip = true },
                 Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
@@ -824,7 +827,7 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.standard_styler.draw_raised_frame(control, visual_state)
 
             BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-                {clip = true},
+                { clip = true },
                 Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -902,7 +905,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'start', 'start', {clip = true},
+                }, 'start', 'start', { clip = true },
                 Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -943,7 +946,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', {clip = true},
+                    }, 'start', 'start', { clip = true },
                     BreitbandGraphics.invert_color(Mupen_lua_ugui.standard_styler.edit_frame_text_colors
                         [visual_state]),
                     Mupen_lua_ugui.standard_styler.font_size,
@@ -1088,7 +1091,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width,
                     height = control.rectangle.height,
-                }, 'start', 'center', {clip = true}, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 control.items[control.selected_index])
 
@@ -1097,7 +1100,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 4,
                     height = control.rectangle.height,
-                }, 'end', 'center', {clip = true}, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'end', 'center', { clip = true }, text_color, Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', 'v')
         end,
 
@@ -1226,11 +1229,13 @@ Mupen_lua_ugui = {
 
 
         local function sel_hi()
-            return math.max(Mupen_lua_ugui.internal.control_data[control.uid].selection_start, Mupen_lua_ugui.internal.control_data[control.uid].selection_end)
+            return math.max(Mupen_lua_ugui.internal.control_data[control.uid].selection_start,
+                Mupen_lua_ugui.internal.control_data[control.uid].selection_end)
         end
 
         local function sel_lo()
-            return math.min(Mupen_lua_ugui.internal.control_data[control.uid].selection_start, Mupen_lua_ugui.internal.control_data[control.uid].selection_end)
+            return math.min(Mupen_lua_ugui.internal.control_data[control.uid].selection_start,
+                Mupen_lua_ugui.internal.control_data[control.uid].selection_end)
         end
 
 
@@ -1250,10 +1255,14 @@ Mupen_lua_ugui = {
             end
 
             local just_pressed_keys = Mupen_lua_ugui.internal.get_just_pressed_keys()
-            local has_selection = Mupen_lua_ugui.internal.control_data[control.uid].selection_start ~= Mupen_lua_ugui.internal.control_data[control.uid].selection_end
+            local has_selection = Mupen_lua_ugui.internal.control_data[control.uid].selection_start ~=
+                Mupen_lua_ugui.internal.control_data[control.uid].selection_end
 
             for key, _ in pairs(just_pressed_keys) do
-                local result = Mupen_lua_ugui.internal.handle_special_key(key, has_selection, control.text, Mupen_lua_ugui.internal.control_data[control.uid].selection_start, Mupen_lua_ugui.internal.control_data[control.uid].selection_end, Mupen_lua_ugui.internal.control_data[control.uid].caret_index)
+                local result = Mupen_lua_ugui.internal.handle_special_key(key, has_selection, control.text,
+                    Mupen_lua_ugui.internal.control_data[control.uid].selection_start,
+                    Mupen_lua_ugui.internal.control_data[control.uid].selection_end,
+                    Mupen_lua_ugui.internal.control_data[control.uid].caret_index)
 
 
                 -- special key press wasn't handled, we proceed to just insert the pressed character (or replace the selection)
