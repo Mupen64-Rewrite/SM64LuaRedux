@@ -6,6 +6,13 @@
 -- Other contributors:
 --	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk, Aurumaker72
 
+-- forward-compat shim
+if not math.pow then
+    math.pow = function (x, y)
+        return x ^ y
+    end
+end
+
 function swap(arr, index_1, index_2)
     local tmp = arr[index_2]
     arr[index_2] = arr[index_1]

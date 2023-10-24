@@ -301,6 +301,7 @@ function Engine.GetCurrentAction()
 			return action.name
 		end
 	end
+	return "?"
 end
 
 function Engine.GetTotalDistMoved()
