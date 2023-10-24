@@ -1,3 +1,13 @@
 {
-  "Lua.diagnostics.disable": ["lowercase-global"]
+  "Lua.diagnostics.disable": [
+    "lowercase-global"
+  ],
+  "Lua.diagnostics.globals": [
+    "joypad",
+    "emu",
+    "input",
+    "memory",
+    "d2d",
+    "wgui"
+  ],
 }

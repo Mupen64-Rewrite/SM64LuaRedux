@@ -43,7 +43,7 @@ end
 
 function Engine.getArctanAngle(r, d, n, s)
 	-- r is ratio, d is displacement (offset), n is number of frames and  s is starting frame
-	if emu.atloadstate then s = s - 1 end
+	s = s - 1
 	if (s < Memory.current.mario_global_timer and s > Memory.current.mario_global_timer - n - 1) then
 		if Settings.movement_mode == Settings.movement_modes.match_angle then
 			if (math.abs(Memory.current.mario_facing_yaw - goal) > 16384) then

@@ -6,11 +6,17 @@
 -- Other contributors:
 --	Madghostek, Xander, galoomba, ShadoXFM, Lemon, Manama, tjk, Aurumaker72
 
--- forward-compat shim
+assert(emu.atloadstate, "emu.atloadstate missing")
+
+
+-- forward-compat lua 5.4 shims
 if not math.pow then
-    math.pow = function (x, y)
+    math.pow = function(x, y)
         return x ^ y
     end
+end
+if not math.atan2 then
+    math.atan2 = math.atan
 end
 
 function swap(arr, index_1, index_2)
@@ -106,12 +112,12 @@ function at_input()
 
     -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
     tabs[current_tab_index].update()
+    
     if Settings.override_rng then
-        -- Write to the RNG value address
         if Settings.override_rng_use_index then
-            memory.writeword(0x00B8EEE0, get_value(math.floor(Settings.override_rng_value)))
+            memory.writeword(0x00B8EEE0, get_value(Settings.override_rng_value))
         else
-            memory.writeword(0x00B8EEE0, math.floor(Settings.override_rng_value))
+            memory.writeword(0x00B8EEE0, Settings.override_rng_value)
         end
     end
 
@@ -170,11 +176,11 @@ function at_update_screen()
     end
 
     if Mupen_lua_ugui.button({
-        uid = -6000,
-        is_enabled = true,
-        rectangle = grid_rect(6, 16, 2, 1),
-        text = "Reset"
-    }) then
+            uid = -6000,
+            is_enabled = true,
+            rectangle = grid_rect(6, 16, 2, 1),
+            text = "Reset"
+        }) then
         Presets.reset(Presets.current_index)
         Presets.apply(Presets.current_index)
     end

@@ -17,13 +17,13 @@ return {
             text = "Use Index",
             is_checked = Settings.override_rng_use_index,
         })
-        Settings.override_rng_value = Mupen_lua_ugui.spinner({
+        Settings.override_rng_value = math.floor(Mupen_lua_ugui.spinner({
             uid = 300,
             is_enabled = Settings.override_rng,
             rectangle = grid_rect(2, 0, 4, 1),
             value = Settings.override_rng_value,
             minimum_value = math.mininteger,
             maximum_value = math.maxinteger
-        })
+        }))
     end
 }

@@ -258,6 +258,9 @@ BreitbandGraphics = {
         if style.aliased then
             d_text_antialias_mode = 3
         end
+        if type(text) ~= "string" then
+            text = tostring(text)
+        end
         local float_color = BreitbandGraphics.color_to_float(color)
         d2d.set_text_antialias_mode(d_text_antialias_mode)
         d2d.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
