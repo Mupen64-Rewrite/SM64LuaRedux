@@ -84,9 +84,11 @@ dofile(core_path .. "Ghost.lua")
 
 Memory.initialize()
 Joypad.update()
+VarWatch.update()
 Drawing.size_up()
 
 local tabs = {
+    dofile(tabs_path .. "Grind.lua"),
     dofile(tabs_path .. "TAS.lua"),
     dofile(tabs_path .. "Settings.lua"),
     dofile(tabs_path .. "Timer.lua"),
@@ -99,8 +101,12 @@ local mouse_wheel = 0
 
 function at_input()
     -- frame stage 1: set everything up
+    Memory.update_previous()
     Memory.update()
+    VarWatch.update()
+
     Joypad.update()
+    Engine.input()
     if Settings.movement_mode ~= Settings.movement_modes.disabled then
         result = Engine.inputsForAngle()
         if Settings.goal_mag then
@@ -109,10 +115,9 @@ function at_input()
         Joypad.set('X', result.X)
         Joypad.set('Y', result.Y)
     end
-
     -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
     tabs[current_tab_index].update()
-    
+
     if Settings.override_rng then
         if Settings.override_rng_use_index then
             memory.writeword(0x00B8EEE0, get_value(Settings.override_rng_value))
@@ -125,7 +130,6 @@ function at_input()
     Swimming.swim()
     Framewalk.update()
     Ghost.update()
-    Engine.input()
 end
 
 function at_update_screen()
@@ -190,6 +194,10 @@ function at_update_screen()
 end
 
 function at_vi()
+    -- reading memory in at_input returns stale data(!) from previous frame...
+    Memory.update()
+    VarWatch.update()
+
     Engine.vi()
 end
 

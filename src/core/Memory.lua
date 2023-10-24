@@ -13,10 +13,6 @@ local sources = {
 local source = nil
 
 function Memory.update()
-	-- update previous values
-	local current = Mupen_lua_ugui.internal.deep_clone(Memory.current)
-	Memory.previous = current
-
 	Memory.current.camera_angle = memory.readword(source.camera_angle)
 	Memory.current.camera_transition_type = memory.readbyte(source.camera_transition_type)
 	Memory.current.camera_transition_progress = memory.readbyte(source.camera_transition_progress)
@@ -38,6 +34,11 @@ function Memory.update()
 	Memory.current.mario_global_timer = memory.readdword(source.global_timer)
 	Memory.current.rng_value = memory.readword(source.rng_value)
 	Memory.current.mario_animation = memory.readword(source.mario_animation)
+end
+
+function Memory.update_previous()
+	-- update previous values
+	Memory.previous = Mupen_lua_ugui.internal.deep_clone(Memory.current)
 end
 
 function Memory.initialize()
@@ -65,7 +66,7 @@ function Memory.initialize()
 	end
 
 	print("Memory source: " .. source.name)
-	-- do 2 update passes to fill out previous state table too
+
 	Memory.update()
-	Memory.update()
+	Memory.update_previous()
 end

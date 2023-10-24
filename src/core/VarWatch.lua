@@ -111,22 +111,24 @@ VarWatch = {
             end
         },
     },
-    active_variables = {}
+    active_variables = {},
+    current_values = {}
 }
 
 
 local function where(table, cb)
-    for key, value in pairs(table) do
+    for _, value in pairs(table) do
         if cb(value) then
             return value
         end
     end
 end
-for key, value in pairs(VarWatch.variables) do
+
+for _, value in pairs(VarWatch.variables) do
     VarWatch.active_variables[#VarWatch.active_variables + 1] = value.identifier
 end
 
-VarWatch.get_values = function()
+VarWatch.update = function()
     local items = {}
 
     for _, value in pairs(VarWatch.active_variables) do
@@ -135,5 +137,5 @@ VarWatch.get_values = function()
         end).value()
     end
 
-    return items
+    VarWatch.current_values = items
 end
