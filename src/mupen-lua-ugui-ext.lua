@@ -99,6 +99,9 @@ if not d2d.create_render_target then
         draw(rectangle)
     end
 end
+if not d2d.purge_text_layout_cache then
+    print("Using uncached text rendering. Please update to 1.1.6")
+end
 
 ---Places a Spinner, or NumericUpDown control
 ---
@@ -594,6 +597,9 @@ end
 
 
 Mupen_lua_ugui_ext.apply_nineslice = function(style)
+    if d2d.purge_text_layout_cache then
+        d2d.purge_text_layout_cache()
+    end
     Mupen_lua_ugui_ext.internal.purge_lut()
     Mupen_lua_ugui.standard_styler.draw_raised_frame = function(control, visual_state)
         Mupen_lua_ugui_ext.internal.cached_draw("raised_frame", control.rectangle, visual_state, function(eff_rectangle)

@@ -31,7 +31,7 @@ return {
         end
 
         if Mupen_lua_ugui.button({
-                uid = 20,
+                uid = 25,
                 is_enabled = selected_var_index < #VarWatch.active_variables,
                 rectangle = grid_rect(1, 9, 1, 1),
                 text = "v"

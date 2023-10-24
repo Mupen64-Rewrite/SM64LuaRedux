@@ -47,6 +47,7 @@ Settings = {
         dofile(res_path .. "windows-7.lua"),
         dofile(res_path .. "windows-3-pink.lua"),
         dofile(res_path .. "crackhex.lua"),
+        dofile(res_path .. "fl-studio.lua"),
     },
     active_style_index = 1
 }
