@@ -88,6 +88,7 @@ dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
 dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "Grind.lua")
+dofile(core_path .. "OneFramePreview.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
@@ -104,6 +105,7 @@ local tabs = {
     dofile(tabs_path .. "Grind.lua"),
     dofile(tabs_path .. "RNG.lua"),
     dofile(tabs_path .. "Ghost.lua"),
+    dofile(tabs_path .. "Experiments.lua"),
 }
 
 local current_tab_index = 1
@@ -146,6 +148,7 @@ function at_input()
     end
 
     Grind.update()
+    OneFramePreview.update()
 
     Joypad.send()
     Swimming.swim()
