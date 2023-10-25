@@ -41,6 +41,8 @@ Settings = {
     atan_exp = 0,
     framewalk = false,
     grind = false,
+    grind_divisor = 8,
+    grind_left = true,
     styles = {
         dofile(res_path .. "windows-11.lua"),
         dofile(res_path .. "windows-10.lua"),

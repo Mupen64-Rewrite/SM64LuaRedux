@@ -56,6 +56,15 @@ function select(arr, prop)
     return t
 end
 
+local queued_pause = false
+local post_frame_advance_callback = nil
+
+function frame_advance(func)
+    emu.pause(true)
+    queued_pause = true
+    post_frame_advance_callback = func
+end
+
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 res_path = folder .. "res\\"
 local tabs_path = folder .. "tabs\\"
@@ -78,6 +87,7 @@ dofile(core_path .. "MoreMaths.lua")
 dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
 dofile(core_path .. "Framewalk.lua")
+dofile(core_path .. "Grind.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
@@ -88,10 +98,10 @@ VarWatch.update()
 Drawing.size_up()
 
 local tabs = {
-    dofile(tabs_path .. "Grind.lua"),
     dofile(tabs_path .. "TAS.lua"),
     dofile(tabs_path .. "Settings.lua"),
     dofile(tabs_path .. "Timer.lua"),
+    dofile(tabs_path .. "Grind.lua"),
     dofile(tabs_path .. "RNG.lua"),
     dofile(tabs_path .. "Ghost.lua"),
 }
@@ -100,21 +110,30 @@ local current_tab_index = 1
 local mouse_wheel = 0
 
 function at_input()
+    if queued_pause then
+        emu.pause(false)
+        queued_pause = false
+        if post_frame_advance_callback then
+            post_frame_advance_callback()
+        end
+    end
+
     -- frame stage 1: set everything up
     Memory.update_previous()
-    Memory.update()
+    Memory.update(true)
     VarWatch.update()
 
     Joypad.update()
     Engine.input()
     if Settings.movement_mode ~= Settings.movement_modes.disabled then
-        result = Engine.inputsForAngle()
+        result = Engine.inputsForAngle(Settings.goal_angle)
         if Settings.goal_mag then
             Engine.scaleInputsForMagnitude(result, Settings.goal_mag, Settings.high_magnitude)
         end
         Joypad.set('X', result.X)
         Joypad.set('Y', result.Y)
     end
+
     -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
     tabs[current_tab_index].update()
 
@@ -125,6 +144,8 @@ function at_input()
             memory.writeword(0x00B8EEE0, Settings.override_rng_value)
         end
     end
+
+    Grind.update()
 
     Joypad.send()
     Swimming.swim()

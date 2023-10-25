@@ -76,8 +76,7 @@ function Engine.getArctanAngle(r, d, n, s)
 	return goal
 end
 
-function Engine.inputsForAngle()
-	goal = Settings.goal_angle
+function Engine.inputsForAngle(goal)
 	if (Settings.movement_mode == Settings.movement_modes.match_yaw) then
 		goal = Memory.current.mario_facing_yaw
 		if ((Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
@@ -210,62 +209,6 @@ function Engine.inputsForAngle()
 			minang = Angles.COUNT
 		end
 	end
-	--[[local errt = -1
-	local maxspeed = 32
-	local mspeed = Memory.current.mario_f_speed
-	local speeds = 1
-	local angleindex = minang
-	if(Memory.current.mario_f_speed <= 0) then
-		speeds = -1
-	end
-	if(Memory.current.mario_action == 0x03000888) then
-		maxspeed = maxspeed + 16
-	end
-	if(TARGET_STATE == 1) then
-		mspeed = 48
-		maxspeed = 48
-	elseif(TARGET_STATE == 2) then
-		mspeed = mspeed * 1.5
-		maxspeed = 48
-	elseif(TARGET_STATE == 3) then
-		mspeed = -16
-		maxspeed = 48
-	elseif(TARGET_STATE == 4) then
-		mspeed = mspeed * 0.8
-	end
-	if(ENABLE_TARGET_SPEED == 1 and speedsign ~= 0) then
-		for i = -16,16 do
-			local this_errt = math.cos(Engine.getEffectiveAngle(Angles.ANGLE[(minang+i)%Angles.COUNT].angle - Memory.current.mario_facing_yaw + Memory.current.camera_angle)*math.pi/32768)*1.5+mspeed-0.35*speeds
-			if(this_errt > maxspeed - 0.0001) then
-				this_errt = this_errt - 1
-			elseif(this_errt < -16) then
-				this_errt = this_errt + 2
-			end
-			this_errt = this_errt * speedsign
-			if(this_errt > errt) then
-				errt = this_errt
-				angleindex = (minang+i)%Angles.COUNT
-			end
-		end
-		print(errt)
-		minang = angleindex
-	end--]]
-	--[[if ((math.cos((Engine.getEffectiveAngle(Angles.ANGLE[minang].angle - Memory.current.mario_facing_yaw))*math.pi/32768)*1.5 + Memory.current.mario_f_speed - 0.35) > targetspeed and speedsign == 1) then
-		minang = minang + 1
-	elseif ((math.cos((Engine.getEffectiveAngle(Angles.ANGLE[minang].angle - Memory.current.mario_facing_yaw))*math.pi/32768)*1.5 + Memory.current.mario_f_speed + 0.35) < -16 and speedsign == -1 ) then
-			minang = minang - 1
-	end--]]
-	--[[if (Angles.ANGLE[minang].angle + Memory.current.camera_angle) % 65536 < goal and speedsign == 1 then
-		minang = minang + 1
-		if minang > Angles.COUNT then
-			minang = 1
-		end
-	elseif (Angles.ANGLE[minang].angle + Memory.current.camera_angle) % 65536 > goal and  speedsign == -1 then
-		minang = minang - 1
-		if minang < 1 then
-			minang = Angles.COUNT
-		end
-	end--]]
 	return {
 		angle = (Angles.ANGLE[minang].angle + Memory.current.camera_angle) % 65536,
 		X = Angles.ANGLE[minang].X,
