@@ -31,7 +31,7 @@ Grind.update = function()
         if falling then
             falling = false
             tries = 0
-            savestate.savefile("grind.st")
+            -- savestate.savefile("grind.st")
             print("one cycle, now sliding")
         end
         tries = tries + 1
@@ -45,7 +45,7 @@ Grind.update = function()
         if not falling then
             falling = true
             tries = 0
-            savestate.savefile("grind.st")
+            -- savestate.savefile("grind.st")
             print("one cycle, now falling")
         end
         tries = tries + 1
@@ -59,6 +59,6 @@ end
 Grind.start = function()
     tries = 0
     falling = Memory.current.mario_action == 0x0100088C
-    savestate.savefile("grind.st")
+    -- savestate.savefile("grind.st")
     print("starting grind")
 end
