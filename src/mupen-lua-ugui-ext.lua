@@ -1,7 +1,20 @@
--- mupen-lua-ugui-ext 1.0.0 
+-- mupen-lua-ugui-ext 1.1.0
 -- https://github.com/Aurumaker72/mupen-lua-ugui-ext
 
 Mupen_lua_ugui_ext = {
+    spread = function(template)
+        local result = {}
+        for key, value in pairs(template) do
+            result[key] = value
+        end
+
+        return function(table)
+            for key, value in pairs(table) do
+                result[key] = value
+            end
+            return result
+        end
+    end,
     internal = {
         rt_lut = {},
         get_digit = function(value, length, index)
@@ -290,6 +303,39 @@ Mupen_lua_ugui.numberbox = function(control)
         }
     end
 
+
+    local is_positive = control.value > 0
+
+    -- conditionally visible negative sign button
+    if control.show_negative then
+        local negative_button_size = control.rectangle.width / 8
+
+        -- NOTE: we clobber the rect ref!!
+        control.rectangle = {
+            x = control.rectangle.x + negative_button_size,
+            y = control.rectangle.y,
+            width = control.rectangle.width - negative_button_size,
+            height = control.rectangle.height
+        }
+        if Mupen_lua_ugui.button({
+                uid = control.uid + 1,
+                is_enabled = true,
+                rectangle = {
+                    x = control.rectangle.x - negative_button_size,
+                    y = control.rectangle.y,
+                    width = negative_button_size,
+                    height = control.rectangle.height,
+                },
+                text = is_positive and "+" or "-"
+            }) then
+            control.value = -control.value
+            is_positive = not is_positive
+        end
+    end
+
+    -- we dont want sign in display
+    control.value = math.abs(control.value)
+
     local pushed = Mupen_lua_ugui.internal.is_pushed(control)
 
     -- if active and user clicks elsewhere, deactivate
@@ -329,20 +375,6 @@ Mupen_lua_ugui.numberbox = function(control)
         end
 
         for i = #positions, 1, -1 do
-            -- BreitbandGraphics.draw_line({
-            --     x = control.rectangle.x + positions[i],
-            --     y = control.rectangle.y
-            -- }, {
-            --     x = control.rectangle.x + positions[i],
-            --     y = control.rectangle.y + control.rectangle.height
-            -- }, BreitbandGraphics.colors.red, 1)
-            -- BreitbandGraphics.draw_line({
-            --     x = control.rectangle.x + x,
-            --     y = control.rectangle.y
-            -- }, {
-            --     x = control.rectangle.x + x,
-            --     y = control.rectangle.y + control.rectangle.height
-            -- }, BreitbandGraphics.colors.blue, 1)
             if x > positions[i] then
                 return Mupen_lua_ugui.internal.clamp(i + 1, 1, #positions)
             end
@@ -415,7 +447,7 @@ Mupen_lua_ugui.numberbox = function(control)
             local num_1 = tonumber(key)
             local num_2 = tonumber(key:sub(6))
             local value = num_1 and num_1 or num_2
-            
+
             if value then
                 local oldkey = math.floor(control.value /
                     math.pow(10, control.places - Mupen_lua_ugui.internal.control_data[control.uid].caret_index)) % 10
@@ -467,7 +499,7 @@ Mupen_lua_ugui.numberbox = function(control)
         Mupen_lua_ugui.internal.control_data[control.uid].caret_index, 1,
         control.places)
 
-    return math.floor(control.value)
+    return math.floor(control.value) * (is_positive and 1 or -1)
 end
 
 BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_rectangle, source_rectangle_center, path,

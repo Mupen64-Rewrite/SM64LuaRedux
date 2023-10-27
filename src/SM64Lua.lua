@@ -34,20 +34,6 @@ function expand_rect(t)
     }
 end
 
-function spread(template)
-    local result = {}
-    for key, value in pairs(template) do
-        result[key] = value
-    end
-
-    return function(table)
-        for key, value in pairs(table) do
-            result[key] = value
-        end
-        return result
-    end
-end
-
 function select(arr, prop)
     local t = {}
     for i = 1, #arr, 1 do
@@ -88,7 +74,7 @@ dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
 dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "Grind.lua")
-dofile(core_path .. "OneFramePreview.lua")
+dofile(core_path .. "Lookahead.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
@@ -102,10 +88,9 @@ local tabs = {
     dofile(tabs_path .. "TAS.lua"),
     dofile(tabs_path .. "Settings.lua"),
     dofile(tabs_path .. "Timer.lua"),
-    dofile(tabs_path .. "Grind.lua"),
+    dofile(tabs_path .. "Experiments.lua"),
     dofile(tabs_path .. "RNG.lua"),
     dofile(tabs_path .. "Ghost.lua"),
-    dofile(tabs_path .. "Experiments.lua"),
 }
 
 local current_tab_index = 1
@@ -148,7 +133,7 @@ function at_input()
     end
 
     Grind.update()
-    OneFramePreview.update()
+    Lookahead.update()
 
     Joypad.send()
     Swimming.swim()
