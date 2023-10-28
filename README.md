@@ -4,7 +4,7 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 
 # What's new
 
-- Compatible with Mupen64 1.1.4 and up
+- Compatible with Mupen64 1.1.3 and up
 - Nineslice themes
 - Arctan straining
 - RNG
@@ -14,12 +14,8 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 - Framewalk
 - Multicontroller support
 - Presets
-- Up to 800% better performance on Mupen64 1.1.6
+- Up to 400% better performance on Mupen64 1.1.5
 
 # Showcase
 
 ![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/802aef1e-5dae-4d02-b3b6-b377f5f3fac8)
-
-# Benchmark
-
-![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/04b7cec5-04bb-496f-b78c-aacbe560ea4b)
