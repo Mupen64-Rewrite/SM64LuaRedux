@@ -95,7 +95,7 @@ Mupen_lua_ugui_ext = {
 
         purge_lut = function()
             -- invalidate LUT and destroy contents
-            if d2d.destroy_render_target then
+            if d2d and d2d.destroy_render_target then
                 for i = 1, #Mupen_lua_ugui_ext.internal.rt_lut, 1 do
                     d2d.destroy_render_target(Mupen_lua_ugui_ext.internal.rt_lut[i])
                 end
@@ -106,13 +106,13 @@ Mupen_lua_ugui_ext = {
     }
 }
 
-if not d2d.create_render_target then
+if not d2d or not d2d.create_render_target then
     print("Falling back to uncached nineslice rendering. Please update to 1.1.5")
     Mupen_lua_ugui_ext.internal.cached_draw = function(type, rectangle, visual_state, draw)
         draw(rectangle)
     end
 end
-if not d2d.purge_text_layout_cache then
+if not d2d or not d2d.purge_text_layout_cache then
     print("Using uncached text rendering. Please update to 1.1.6")
 end
 
@@ -629,6 +629,10 @@ end
 
 
 Mupen_lua_ugui_ext.apply_nineslice = function(style)
+    if not d2d then
+        print("No D2D available, falling back to unchanged standard styler to avoid performance issues")
+        return
+    end
     if d2d.purge_text_layout_cache then
         d2d.purge_text_layout_cache()
     end

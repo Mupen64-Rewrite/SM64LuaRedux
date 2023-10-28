@@ -1,11 +1,9 @@
--- mupen-lua-ugui 1.3.0
+-- mupen-lua-ugui 1.3.1
 
-if not emu.set_renderer then
-    print('BreitbandGraphics requires mupen64-rr-lua 1.1.4 or above\r\n')
+if emu.set_renderer then
+    -- Specify D2D renderer
+    emu.set_renderer(2)
 end
-
--- Specify D2D renderer
-emu.set_renderer(2)
 
 BreitbandGraphics = {
     --- Converts a color value to its corresponding hexadecimal representation
@@ -320,6 +318,86 @@ BreitbandGraphics = {
         return d2d.get_image_info(path)
     end,
 }
+
+if not d2d then
+    print("BreitbandGraphics: Applying GDI shim. This will degrade visual fidelity and performance.")
+    BreitbandGraphics.get_text_size = function(text, font_size, font_name)
+        wgui.setfont(font_size - 2, font_name, "")
+        return wgui.gettextextent(text)
+    end
+    BreitbandGraphics.draw_rectangle = function(rectangle, color, thickness)
+        wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
+        wgui.setbrush("null")
+        wgui.rect(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
+    end
+    BreitbandGraphics.fill_rectangle = function(rectangle, color)
+        wgui.setpen("null")
+        wgui.setbrush(BreitbandGraphics.color_to_hex(color))
+        wgui.rect(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
+    end
+    BreitbandGraphics.draw_rounded_rectangle = function(rectangle, color, radii, thickness)
+
+    end
+    BreitbandGraphics.fill_rounded_rectangle = function(rectangle, color, radii)
+
+    end
+    BreitbandGraphics.draw_ellipse = function(rectangle, color, thickness)
+        wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
+        wgui.setbrush("null")
+        wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
+    end
+    BreitbandGraphics.fill_ellipse = function(rectangle, color)
+        wgui.setpen("null")
+        wgui.setbrush(BreitbandGraphics.color_to_hex(color))
+        wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
+    end
+    BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size,
+                                           font_name,
+                                           text)
+        wgui.setcolor(BreitbandGraphics.color_to_hex(color))
+        wgui.setfont(font_size - 2, font_name, "")
+        local flags = ""
+        if horizontal_alignment == "center" then
+            flags = flags .. "c"
+        end
+        if vertical_alignment == "center" then
+            flags = flags .. "v"
+        end
+        wgui.drawtext(text, {
+            l = rectangle.x,
+            t = rectangle.y,
+            w = rectangle.width,
+            h = rectangle.height,
+        }, flags)
+    end
+    BreitbandGraphics.draw_line = function(from, to, color, thickness)
+        wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
+        wgui.setbrush("null")
+        wgui.line(from.x, from.y, to.x, to.y)
+    end
+    BreitbandGraphics.push_clip = function(rectangle)
+        -- one-depth clip
+        wgui.setclip(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
+    end
+    BreitbandGraphics.pop_clip = function()
+        wgui.resetclip()
+    end
+    BreitbandGraphics.draw_image = function(destination_rectangle, source_rectangle, path, color, filter)
+        if not BreitbandGraphics.bitmap_cache[path] then
+            BreitbandGraphics.bitmap_cache[path] = wgui.loadimage(path)
+        end
+        wgui.drawimage(BreitbandGraphics.bitmap_cache[path], destination_rectangle.x, destination_rectangle.y,
+            destination_rectangle.width, destination_rectangle.height,
+            source_rectangle.x, source_rectangle.y, source_rectangle.width, source_rectangle.height, 0)
+    end
+    BreitbandGraphics.get_image_info = function(path)
+        if not BreitbandGraphics.bitmap_cache[path] then
+            BreitbandGraphics.bitmap_cache[path] = wgui.loadimage(path)
+        end
+
+        return wgui.getimageinfo(BreitbandGraphics.bitmap_cache[path])
+    end
+end
 
 Mupen_lua_ugui = {
 
@@ -793,7 +871,6 @@ Mupen_lua_ugui = {
 
 
             if #control.items * Mupen_lua_ugui.standard_styler.item_height > rectangle.height then
-
                 -- figure out height of scrollbar
                 local scrollbar_base_height = rectangle.height
                 local content_overflow_ratio = (Mupen_lua_ugui.standard_styler.item_height * #control.items) /
@@ -802,7 +879,8 @@ Mupen_lua_ugui = {
                 local scrollbar_height = scrollbar_base_height * inverse_content_overflow_ratio
 
                 -- we center the scrollbar around the translation value, and shrink it accordingly
-                local scrollbar_y = Mupen_lua_ugui.internal.remap(y_translation, 0, 1, 0, rectangle.height - scrollbar_height)
+                local scrollbar_y = Mupen_lua_ugui.internal.remap(y_translation, 0, 1, 0,
+                    rectangle.height - scrollbar_height)
 
                 local container_rectangle = {
                     x = rectangle.x + rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
