@@ -356,12 +356,24 @@ if not d2d then
                                            text)
         wgui.setcolor(BreitbandGraphics.color_to_hex(color))
         wgui.setfont(font_size - 2, font_name, "")
-        local flags = ""
+        local flags = "s"
+        if horizontal_alignment == "start" then
+            flags = flags .. "l"
+        end
         if horizontal_alignment == "center" then
             flags = flags .. "c"
         end
+        if horizontal_alignment == "end" then
+            flags = flags .. "r"
+        end
+        if vertical_alignment == "start" then
+            flags = flags .. "t"
+        end
         if vertical_alignment == "center" then
             flags = flags .. "v"
+        end
+        if vertical_alignment == "end" then
+            flags = flags .. "b"
         end
         wgui.drawtext(text, {
             l = rectangle.x,
@@ -377,6 +389,7 @@ if not d2d then
     end
     BreitbandGraphics.push_clip = function(rectangle)
         -- one-depth clip
+        -- TODO: we can emulate stacked clips but for now this is good
         wgui.setclip(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
     end
     BreitbandGraphics.pop_clip = function()
