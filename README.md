@@ -10,19 +10,33 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 
 # What's new
 
-- Compatible with Mupen64 1.1.3 and up
+- Compatible with any mupen version[^1]
 - Themes
 - Arctan straining
 - RNG
 - Timer
 - Customizable ramwatch
-- Dynamic resizing
+- Dynamic resizing[^2]
 - Framewalk
 - Multicontroller support
-- Presets
-- Divegrind Automation
-- n-Frame Lookahead
+- Presets[^3]
+- Divegrind Automation[^4]
+- n-Frame Lookahead[^5]
 - Up to 400% better performance on Mupen64 1.1.5
+
+[^1]: Only versions newer than 1.1.3 will support themes
+[^2]: The script will resize its elements intelligently to fit, and will thus work on small and huge resolutions
+[^3]: A preset saves your current choices (e.g.: Match Yaw with DYaw = 11111), and allow you to change between saved presets for spontaneously testing new strats or reusing older known configurations
+[^4]: (WIP) Allows you to automate divegrinds by specifying a yaw divisor and direction, then letting it operate on the current emu state
+[^5]: Preview input changes in real-time, with no need for frame advancing manually. Useful for finding angles, testing BLJs and more. The lookahead timeout is, by default, 0 (1 frame lookahead), but can be increased
+
+# Quickstart
+
+1. [Download](https://github.com/Mupen64-Rewrite/SM64LuaRedux/archive/refs/heads/master.zip) the latest version
+2. Unzip the archive
+3. Open a lua console in Mupen64
+4. Browse to the `src/SM64Lua.lua` file and select it
+5. Run the script
 
 # Showcase
 
