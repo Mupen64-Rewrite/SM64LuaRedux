@@ -167,7 +167,7 @@ function at_update_screen()
 
     current_tab_index = Mupen_lua_ugui.carrousel_button({
         uid = -5000,
-        is_enabled = true,
+        
         rectangle = grid_rect(0, 15, 8, 1),
         items = select(tabs, "name"),
         selected_index = current_tab_index,
@@ -177,7 +177,7 @@ function at_update_screen()
         local prev = Presets.current_index == i
         local now = Mupen_lua_ugui.toggle_button({
             uid = -5000 - 5 * i,
-            is_enabled = true,
+            
             rectangle = grid_rect(i - 1, 16, 1, 1),
             text = i,
             is_checked = Presets.current_index == i
@@ -190,7 +190,7 @@ function at_update_screen()
 
     if Mupen_lua_ugui.button({
             uid = -6000,
-            is_enabled = true,
+            
             rectangle = grid_rect(6, 16, 2, 1),
             text = "Reset"
         }) then

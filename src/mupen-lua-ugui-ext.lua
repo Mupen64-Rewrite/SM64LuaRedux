@@ -134,7 +134,6 @@ Mupen_lua_ugui.spinner = function(control)
 
     local new_text = Mupen_lua_ugui.textbox({
         uid = control.uid,
-        is_enabled = true,
         rectangle = {
             x = control.rectangle.x,
             y = control.rectangle.y,
@@ -319,7 +318,7 @@ Mupen_lua_ugui.numberbox = function(control)
         }
         if Mupen_lua_ugui.button({
                 uid = control.uid + 1,
-                is_enabled = true,
+                
                 rectangle = {
                     x = control.rectangle.x - negative_button_size,
                     y = control.rectangle.y,
@@ -778,7 +777,7 @@ Mupen_lua_ugui.treeview = function(control)
         if #item.children ~= 0 then
             item.open = Mupen_lua_ugui.toggle_button({
                 uid = control.uid + i,
-                is_enabled = true,
+                
                 is_checked = item.open,
                 text = item.open and "-" or "+",
                 rectangle = button_rectangle

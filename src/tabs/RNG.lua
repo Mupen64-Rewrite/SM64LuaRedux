@@ -5,7 +5,7 @@ return {
     draw = function()
         Settings.override_rng = Mupen_lua_ugui.toggle_button({
             uid = 1,
-            is_enabled = true,
+            
             rectangle = grid_rect(0, 0, 2, 1),
             text = "Lock to",
             is_checked = Settings.override_rng,

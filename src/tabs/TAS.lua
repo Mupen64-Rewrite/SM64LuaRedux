@@ -7,7 +7,7 @@ return {
         Drawing.paint()
         Mupen_lua_ugui.listbox({
             uid = 0,
-            is_enabled = true,
+            
             rectangle = grid_rect(0, 8, 8, 6),
             selected_index = nil,
             items = VarWatch.current_values,
@@ -21,7 +21,7 @@ return {
         })
         Settings.goal_mag = Mupen_lua_ugui.numberbox({
             uid = 10,
-            is_enabled = true,
+            
             rectangle = grid_rect(4, 4, 4, 1),
             places = 3,
             value = Settings.goal_mag
@@ -29,7 +29,7 @@ return {
 
         Settings.high_magnitude = Mupen_lua_ugui.toggle_button({
             uid = 15,
-            is_enabled = true,
+            
             rectangle = grid_rect(4, 6, 2, 1),
             text = 'Hi-Mag',
             is_checked = Settings.high_magnitude
@@ -37,7 +37,7 @@ return {
 
         if Mupen_lua_ugui.button({
                 uid = 20,
-                is_enabled = true,
+                
                 rectangle = grid_rect(6, 6, 2, 1),
                 text = 'Reset',
             }) then
@@ -46,7 +46,7 @@ return {
 
         if Mupen_lua_ugui.button({
                 uid = 25,
-                is_enabled = true,
+                
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
@@ -56,7 +56,7 @@ return {
 
         Settings.framewalk = Mupen_lua_ugui.toggle_button({
             uid = 30,
-            is_enabled = true,
+            
             rectangle = grid_rect(6, 5, 2, 1),
             text = 'Framewalk',
             is_checked = Settings.framewalk
@@ -71,7 +71,7 @@ return {
         })
         Settings.strain_speed_target = Mupen_lua_ugui.toggle_button({
             uid = 40,
-            is_enabled = true,
+            
             rectangle = grid_rect(7, 0, 1, 1),
             text = '.99',
             is_checked = Settings.strain_speed_target
@@ -79,7 +79,7 @@ return {
 
         Settings.swim = Mupen_lua_ugui.toggle_button({
             uid = 45,
-            is_enabled = true,
+            
             rectangle = grid_rect(6, 7, 2, 1),
             text = 'Swim',
             is_checked = Settings.swim
@@ -93,7 +93,7 @@ return {
         })
         Settings.strain_left = Mupen_lua_ugui.toggle_button({
             uid = 55,
-            is_enabled = true,
+            
             rectangle = grid_rect(6, 1, 1, 1),
             text = '<',
             is_checked = Settings.strain_left
@@ -101,7 +101,7 @@ return {
 
         Settings.strain_right = Mupen_lua_ugui.toggle_button({
             uid = 60,
-            is_enabled = true,
+            
             rectangle = grid_rect(7, 1, 1, 1),
             text = '>',
             is_checked = Settings.strain_right
@@ -110,7 +110,7 @@ return {
         local previous_track_moved_distance = Settings.track_moved_distance
         Settings.track_moved_distance = Mupen_lua_ugui.toggle_button({
             uid = 65,
-            is_enabled = true,
+            
             rectangle = grid_rect(0, 14, 4, 1),
             text = 'Moved Distance',
             is_checked = Settings.track_moved_distance
@@ -127,7 +127,7 @@ return {
 
         Settings.moved_distance_ignore_y = Mupen_lua_ugui.toggle_button({
             uid = 70,
-            is_enabled = true,
+            
             rectangle = grid_rect(4, 14, 2, 1),
             text = 'Ignore Y',
             is_checked = Settings.moved_distance_ignore_y
@@ -136,7 +136,7 @@ return {
         local joystick_rect = grid(0, 4, 4, 4)
         Mupen_lua_ugui.joystick({
             uid = 70,
-            is_enabled = true,
+            
             rectangle = {
                 x = joystick_rect[1],
                 y = joystick_rect[2],

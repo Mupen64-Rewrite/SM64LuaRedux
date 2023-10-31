@@ -9,7 +9,7 @@ return {
     draw = function()
         local new_active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,
-            is_enabled = true,
+            
             rectangle = grid_rect(0, 0, 4, 1),
             items = select(Settings.styles, "name"),
             selected_index = Settings.active_style_index,
@@ -42,7 +42,7 @@ return {
 
         selected_var_index = Mupen_lua_ugui.listbox({
             uid = 13377331,
-            is_enabled = true,
+            
             rectangle = grid_rect(0, 2, 8, 7),
             selected_index = selected_var_index,
             items = VarWatch.active_variables,

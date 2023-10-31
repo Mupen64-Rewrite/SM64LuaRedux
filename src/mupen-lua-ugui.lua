@@ -492,7 +492,7 @@ Mupen_lua_ugui = {
             return keys
         end,
         is_pushed = function(control)
-            if not control.is_enabled then
+            if control.is_enabled == false then
                 return false
             end
 
@@ -612,7 +612,7 @@ Mupen_lua_ugui = {
     ---@param control table The control
     ---@return _ integer The visual state
     get_visual_state = function(control)
-        if not control.is_enabled then
+        if control.is_enabled == false then
             return Mupen_lua_ugui.visual_states.disabled
         end
 
@@ -866,7 +866,7 @@ Mupen_lua_ugui = {
                     (y_translation * ((Mupen_lua_ugui.standard_styler.item_height * #control.items) - rectangle.height))
 
                 local item_visual_state = Mupen_lua_ugui.visual_states.normal
-                if not control.is_enabled then
+                if control.is_enabled == false then
                     item_visual_state = Mupen_lua_ugui.visual_states.disabled
                 end
 
@@ -916,7 +916,7 @@ Mupen_lua_ugui = {
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
 
             -- override for toggle_button
-            if control.is_checked and control.is_enabled then
+            if control.is_checked and control.is_enabled ~= false then
                 visual_state = Mupen_lua_ugui.visual_states.active
             end
 
@@ -960,14 +960,14 @@ Mupen_lua_ugui = {
         draw_textbox = function(control)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
 
-            if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled then
+            if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled ~= false then
                 visual_state = Mupen_lua_ugui.visual_states.active
             end
 
             Mupen_lua_ugui.standard_styler.draw_edit_frame(control, control.rectangle, visual_state)
 
             local should_visualize_selection = not (Mupen_lua_ugui.internal.control_data[control.uid].selection_start == nil) and
-                not (Mupen_lua_ugui.internal.control_data[control.uid].selection_end == nil) and control.is_enabled and
+                not (Mupen_lua_ugui.internal.control_data[control.uid].selection_end == nil) and control.is_enabled ~= false and
                 not (Mupen_lua_ugui.internal.control_data[control.uid].selection_start == Mupen_lua_ugui.internal.control_data[control.uid].selection_end)
 
             if should_visualize_selection then
@@ -1161,7 +1161,7 @@ Mupen_lua_ugui = {
         draw_trackbar = function(control)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
 
-            if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled then
+            if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled ~= false then
                 visual_state = Mupen_lua_ugui.visual_states.active
             end
 
@@ -1174,7 +1174,7 @@ Mupen_lua_ugui = {
         draw_combobox = function(control)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
 
-            if Mupen_lua_ugui.internal.control_data[control.uid].is_open and control.is_enabled then
+            if Mupen_lua_ugui.internal.control_data[control.uid].is_open and control.is_enabled ~= false then
                 visual_state = Mupen_lua_ugui.visual_states.active
             end
 
@@ -1335,7 +1335,7 @@ Mupen_lua_ugui = {
         end
 
 
-        if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled then
+        if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled ~= false then
             local theoretical_caret_index = Mupen_lua_ugui.internal.get_caret_index(text,
                 Mupen_lua_ugui.internal.input_state.mouse_position.x - control.rectangle.x)
 
@@ -1482,11 +1482,11 @@ Mupen_lua_ugui = {
             }
         end
 
-        if not control.is_enabled then
+        if control.is_enabled == false then
             Mupen_lua_ugui.internal.control_data[control.uid].is_open = false
         end
 
-        if Mupen_lua_ugui.internal.is_mouse_just_down() and control.is_enabled then
+        if Mupen_lua_ugui.internal.is_mouse_just_down() and control.is_enabled ~= false then
             if BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
                 Mupen_lua_ugui.internal.control_data[control.uid].is_open = not Mupen_lua_ugui.internal.control_data
                     [control.uid].is_open
@@ -1504,7 +1504,7 @@ Mupen_lua_ugui = {
 
         local selected_index = control.selected_index
 
-        if Mupen_lua_ugui.internal.control_data[control.uid].is_open and control.is_enabled then
+        if Mupen_lua_ugui.internal.control_data[control.uid].is_open and control.is_enabled ~= false then
             local list_rect = {
                 x = control.rectangle.x,
                 y = control.rectangle.y + control.rectangle.height,
@@ -1515,7 +1515,6 @@ Mupen_lua_ugui = {
 
             selected_index = Mupen_lua_ugui.listbox({
                 uid = control.uid + 1,
-                is_enabled = true,
                 -- we tell the listbox to paint itself at the end of the frame, because we need it on top of all other controls
                 topmost = true,
                 rectangle = list_rect,
