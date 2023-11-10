@@ -99,9 +99,8 @@ return {
         end
         is_control_automatic = Mupen_lua_ugui.toggle_button({
             uid = 5,
-            
             rectangle = grid_rect(6, 0, 2, 1),
-            text = is_control_automatic and "Automatic" or "Manual",
+            text = is_control_automatic and "Auto" or "Manual",
             is_checked = is_control_automatic
         })
         Mupen_lua_ugui.joystick({
