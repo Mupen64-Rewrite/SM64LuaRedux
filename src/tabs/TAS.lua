@@ -79,8 +79,7 @@ return {
 
         Settings.swim = Mupen_lua_ugui.toggle_button({
             uid = 45,
-            
-            rectangle = grid_rect(6, 7, 2, 1),
+            rectangle = grid_rect(6.5, 7, 1.5, 1),
             text = 'Swim',
             is_checked = Settings.swim
         })
