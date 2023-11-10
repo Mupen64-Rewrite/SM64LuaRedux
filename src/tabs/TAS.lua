@@ -4,10 +4,9 @@ return {
 
     end,
     draw = function()
-        Drawing.paint()
         Mupen_lua_ugui.listbox({
             uid = 0,
-            
+
             rectangle = grid_rect(0, 8, 8, 6),
             selected_index = nil,
             items = VarWatch.current_values,
@@ -21,7 +20,7 @@ return {
         })
         Settings.goal_mag = Mupen_lua_ugui.numberbox({
             uid = 10,
-            
+
             rectangle = grid_rect(4, 4, 4, 1),
             places = 3,
             value = Settings.goal_mag
@@ -29,7 +28,7 @@ return {
 
         Settings.high_magnitude = Mupen_lua_ugui.toggle_button({
             uid = 15,
-            
+
             rectangle = grid_rect(4, 6, 2, 1),
             text = 'Hi-Mag',
             is_checked = Settings.high_magnitude
@@ -37,7 +36,7 @@ return {
 
         if Mupen_lua_ugui.button({
                 uid = 20,
-                
+
                 rectangle = grid_rect(6, 6, 2, 1),
                 text = 'Reset',
             }) then
@@ -46,7 +45,7 @@ return {
 
         if Mupen_lua_ugui.button({
                 uid = 25,
-                
+
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
@@ -56,7 +55,7 @@ return {
 
         Settings.framewalk = Mupen_lua_ugui.toggle_button({
             uid = 30,
-            
+
             rectangle = grid_rect(6, 5, 2, 1),
             text = 'Framewalk',
             is_checked = Settings.framewalk
@@ -71,7 +70,7 @@ return {
         })
         Settings.strain_speed_target = Mupen_lua_ugui.toggle_button({
             uid = 40,
-            
+
             rectangle = grid_rect(7, 0, 1, 1),
             text = '.99',
             is_checked = Settings.strain_speed_target
@@ -92,7 +91,7 @@ return {
         })
         Settings.strain_left = Mupen_lua_ugui.toggle_button({
             uid = 55,
-            
+
             rectangle = grid_rect(6, 1, 1, 1),
             text = '<',
             is_checked = Settings.strain_left
@@ -100,7 +99,7 @@ return {
 
         Settings.strain_right = Mupen_lua_ugui.toggle_button({
             uid = 60,
-            
+
             rectangle = grid_rect(7, 1, 1, 1),
             text = '>',
             is_checked = Settings.strain_right
@@ -109,7 +108,7 @@ return {
         local previous_track_moved_distance = Settings.track_moved_distance
         Settings.track_moved_distance = Mupen_lua_ugui.toggle_button({
             uid = 65,
-            
+
             rectangle = grid_rect(0, 14, 4, 1),
             text = 'Moved Distance',
             is_checked = Settings.track_moved_distance
@@ -126,7 +125,6 @@ return {
 
         Settings.moved_distance_ignore_y = Mupen_lua_ugui.toggle_button({
             uid = 70,
-            
             rectangle = grid_rect(4, 14, 2, 1),
             text = 'Ignore Y',
             is_checked = Settings.moved_distance_ignore_y
@@ -135,7 +133,6 @@ return {
         local joystick_rect = grid(0, 4, 4, 4)
         Mupen_lua_ugui.joystick({
             uid = 70,
-            
             rectangle = {
                 x = joystick_rect[1],
                 y = joystick_rect[2],
@@ -155,6 +152,153 @@ return {
                 width = r,
                 height = r
             }, BreitbandGraphics.colors.red, 1)
+        end
+
+        local atan_strain = Mupen_lua_ugui.toggle_button({
+            uid = 75,
+            rectangle = grid_rect(4, 2, 3, 1),
+            text = 'Atan Strain',
+            is_checked = Settings.atan_strain
+        })
+
+        if atan_strain and not Settings.atan_strain then
+            -- FIXME: do we really need to update memory
+            Memory.update()
+            Settings.atan_start = Memory.current.mario_global_timer
+        end
+        Settings.atan_strain = atan_strain
+
+        Settings.reverse_arc = Mupen_lua_ugui.toggle_button({
+            uid = 80,
+            rectangle = grid_rect(7, 2, 1, 1),
+            text = 'I',
+            is_checked = Settings.reverse_arc
+        })
+
+        if Mupen_lua_ugui.button({
+                uid = 85,
+                rectangle = grid_rect(4, 7, 0.5, 0.5),
+                text = '+',
+            }) then
+            Settings.atan_r = Settings.atan_r + math.pow(10, Settings.atan_exp)
+        end
+        if Mupen_lua_ugui.button({
+                uid = 90,
+                rectangle = grid_rect(4, 7.5, 0.5, 0.5),
+                text = '-',
+            }) then
+            Settings.atan_r = Settings.atan_r - math.pow(10, Settings.atan_exp)
+        end
+
+
+        if Mupen_lua_ugui.button({
+                uid = 95,
+                rectangle = grid_rect(4.5, 7, 0.5, 0.5),
+                text = '+',
+            }) then
+            Settings.atan_d = Settings.atan_d + math.pow(10, Settings.atan_exp)
+        end
+        if Mupen_lua_ugui.button({
+                uid = 100,
+                rectangle = grid_rect(4.5, 7.5, 0.5, 0.5),
+                text = '-',
+            }) then
+            Settings.atan_d = Settings.atan_d - math.pow(10, Settings.atan_exp)
+        end
+
+        if Mupen_lua_ugui.button({
+                uid = 105,
+                rectangle = grid_rect(5, 7, 0.5, 0.5),
+                text = '+',
+            }) then
+            Settings.atan_n = math.max(0,
+                Settings.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+        end
+        if Mupen_lua_ugui.button({
+                uid = 110,
+                rectangle = grid_rect(5, 7.5, 0.5, 0.5),
+                text = '-',
+            }) then
+            Settings.atan_n = math.max(0,
+                Settings.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+        end
+
+        if Mupen_lua_ugui.button({
+                uid = 115,
+                rectangle = grid_rect(5.5, 7, 0.5, 0.5),
+                text = '+',
+            }) then
+            Settings.atan_start = math.max(0, Settings.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
+        end
+        if Mupen_lua_ugui.button({
+                uid = 120,
+                rectangle = grid_rect(5.5, 7.5, 0.5, 0.5),
+                text = '-',
+            }) then
+            Settings.atan_start = math.max(0, Settings.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
+        end
+
+        if Mupen_lua_ugui.button({
+                uid = 125,
+                rectangle = grid_rect(5.5, 7, 0.5, 0.5),
+                text = '+',
+            }) then
+            Settings.atan_start = math.max(0, Settings.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
+        end
+        if Mupen_lua_ugui.button({
+                uid = 130,
+                rectangle = grid_rect(5.5, 7.5, 0.5, 0.5),
+                text = '-',
+            }) then
+            Settings.atan_start = math.max(0, Settings.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
+        end
+
+        if Mupen_lua_ugui.button({
+                uid = 135,
+                rectangle = grid_rect(6, 7, 0.5, 0.5),
+                text = '+',
+            }) then
+            Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp + 1, 4))
+        end
+        if Mupen_lua_ugui.button({
+                uid = 140,
+                rectangle = grid_rect(6, 7.5, 0.5, 0.5),
+                text = '-',
+            }) then
+            Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp - 1, 4))
+        end
+
+        if Mupen_lua_ugui.toggle_button({
+                uid = 145,
+                rectangle = grid_rect(0, 0, 4, 1),
+                text = 'Disabled',
+                is_checked = Settings.movement_mode == Settings.movement_modes.disabled
+            }) ~= (Settings.movement_mode == Settings.movement_modes.disabled) then
+            Settings.movement_mode = Settings.movement_modes.disabled
+        end
+        if Mupen_lua_ugui.toggle_button({
+                uid = 150,
+                rectangle = grid_rect(0, 1, 4, 1),
+                text = 'Match Yaw',
+                is_checked = Settings.movement_mode == Settings.movement_modes.match_yaw
+            }) ~= (Settings.movement_mode == Settings.movement_modes.match_yaw) then
+            Settings.movement_mode = Settings.movement_modes.match_yaw
+        end
+        if Mupen_lua_ugui.toggle_button({
+                uid = 155,
+                rectangle = grid_rect(0, 2, 4, 1),
+                text = 'Reverse Angle',
+                is_checked = Settings.movement_mode == Settings.movement_modes.reverse_angle
+            }) ~= (Settings.movement_mode == Settings.movement_modes.reverse_angle) then
+            Settings.movement_mode = Settings.movement_modes.reverse_angle
+        end
+        if Mupen_lua_ugui.toggle_button({
+                uid = 160,
+                rectangle = grid_rect(0, 3, 4, 1),
+                text = 'Match Angle',
+                is_checked = Settings.movement_mode == Settings.movement_modes.match_angle
+            }) ~= (Settings.movement_mode == Settings.movement_modes.match_angle) then
+            Settings.movement_mode = Settings.movement_modes.match_angle
         end
     end
 }

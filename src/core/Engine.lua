@@ -46,17 +46,17 @@ function Engine.getArctanAngle(r, d, n, s)
 	s = s - 1
 	if (s < Memory.current.mario_global_timer and s > Memory.current.mario_global_timer - n - 1) then
 		if Settings.movement_mode == Settings.movement_modes.match_angle then
-			if (math.abs(Memory.current.mario_facing_yaw - goal) > 16384) then
-				r = -math.abs(math.tan(math.pi / 2 - (Memory.current.mario_facing_yaw - goal) * math.pi / 32768))
+			if (math.abs(Memory.current.mario_facing_yaw - Settings.goal_angle) > 16384) then
+				r = -math.abs(math.tan(math.pi / 2 - (Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
 			else
-				r = math.abs(math.tan(math.pi / 2 - (Memory.current.mario_facing_yaw - goal) * math.pi / 32768))
+				r = math.abs(math.tan(math.pi / 2 - (Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
 			end
 		end
 		if (Settings.reverse_arc == false) then
 			dyaw = math.floor((math.pi / 2 - math.atan(0.15 * (r * math.max(1, (n + 1 - Memory.current.mario_global_timer + s)) + d / math.min(1, n + 1 - Memory.current.mario_global_timer + s)))) *
 				32768 / math.pi)
 			if (Settings.movement_mode == Settings.movement_modes.match_angle) then
-				if (Memory.current.mario_facing_yaw - goal > 0 and Memory.current.mario_facing_yaw - goal < 32768) then
+				if (Memory.current.mario_facing_yaw - Settings.goal_angle > 0 and Memory.current.mario_facing_yaw - Settings.goal_angle < 32768) then
 					return Memory.current.mario_facing_yaw - dyaw
 				end
 				return Memory.current.mario_facing_yaw + dyaw
@@ -66,14 +66,14 @@ function Engine.getArctanAngle(r, d, n, s)
 		dyaw = math.floor((math.pi / 2 - math.atan(0.15 * (r * math.max(1, (Memory.current.mario_global_timer - s)) + d / math.min(1, Memory.current.mario_global_timer - s)))) *
 			32768 / math.pi)
 		if (Settings.movement_mode == Settings.movement_modes.match_angle) then
-			if (Memory.current.mario_facing_yaw - goal > 0 and Memory.current.mario_facing_yaw - goal < 32768) then
+			if (Memory.current.mario_facing_yaw - goal > 0 and Memory.current.mario_facing_yaw - Settings.goal_angle < 32768) then
 				return Memory.current.mario_facing_yaw - dyaw
 			end
 			return Memory.current.mario_facing_yaw + dyaw
 		end
 		return Engine.getDyaw(dyaw)
 	end
-	return goal
+	return Settings.goal_angle
 end
 
 function Engine.inputsForAngle(goal)
