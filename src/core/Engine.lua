@@ -223,10 +223,10 @@ end
 
 function Engine.GetSpeedEfficiency()
 	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_sped > 0 then
-		return MoreMaths.round(
-			Engine.GetDistMoved() /
-			math.abs(math.sqrt(MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
-				MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)) * 100, 5)
+		return Engine.GetDistMoved() / math.abs(math.sqrt(
+			MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
+			MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)
+		)
 	else
 		return 0
 	end

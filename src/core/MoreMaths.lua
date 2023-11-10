@@ -28,7 +28,7 @@ MoreMaths = {
 function MoreMaths.dec_to_float(input)
     if input == nil then
         print(debug.traceback())
-        return
+        return 0
     end
     local str = string.format("%x", input)
     local str1 = ""
@@ -56,6 +56,9 @@ function MoreMaths.dec_to_float(input)
 end
 
 function MoreMaths.round(num, numDecimalPlaces)
+    if num == math.floor(num) or numDecimalPlaces == 0 then
+        return math.floor(num)
+    end
     local mult = 10 ^ (numDecimalPlaces or 0)
     return math.floor(num * mult + 0.5) / mult
 end
