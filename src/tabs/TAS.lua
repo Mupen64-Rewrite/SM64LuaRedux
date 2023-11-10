@@ -148,7 +148,7 @@ return {
             }
         })
         if Settings.goal_mag and Settings.goal_mag < 127 then
-            local r = Settings.goal_mag
+            local r = Settings.goal_mag * Drawing.scale
             BreitbandGraphics.draw_ellipse({
                 x = joystick_rect[1] + joystick_rect[3] / 2 - r / 2,
                 y = joystick_rect[2] + joystick_rect[4] / 2 - r / 2,
