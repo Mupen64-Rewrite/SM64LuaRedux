@@ -42,6 +42,5 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 
 # Showcase
 
-
-![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/802aef1e-5dae-4d02-b3b6-b377f5f3fac8)
+![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/dc16eb87-6431-4fb1-87e2-8b01158153c4)
 
