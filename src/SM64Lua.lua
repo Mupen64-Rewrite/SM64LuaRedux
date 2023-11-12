@@ -55,10 +55,11 @@ folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 res_path = folder .. "res\\"
 local tabs_path = folder .. "tabs\\"
 local core_path = folder .. "core\\"
+local lib_path = folder .. "lib\\"
 
 
-dofile(folder .. "mupen-lua-ugui.lua")
-dofile(folder .. "mupen-lua-ugui-ext.lua")
+dofile(lib_path .. "mupen-lua-ugui.lua")
+dofile(lib_path .. "mupen-lua-ugui-ext.lua")
 dofile(res_path .. "base.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
