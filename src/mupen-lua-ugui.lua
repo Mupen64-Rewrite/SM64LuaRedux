@@ -211,7 +211,7 @@ BreitbandGraphics = {
     ---@param font_name string The font name
     ---@param text string The text
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-                         text)
+        text)
         if text == nil then
             text = ''
         end
@@ -256,7 +256,7 @@ BreitbandGraphics = {
         if style.aliased then
             d_text_antialias_mode = 3
         end
-        if type(text) ~= "string" then
+        if type(text) ~= 'string' then
             text = tostring(text)
         end
         local float_color = BreitbandGraphics.color_to_float(color)
@@ -320,18 +320,18 @@ BreitbandGraphics = {
 }
 
 if not d2d then
-    print("BreitbandGraphics: Applying GDI shim. This will degrade visual fidelity and performance.")
+    print('BreitbandGraphics: Applying GDI shim. This will degrade visual fidelity and performance.')
     BreitbandGraphics.get_text_size = function(text, font_size, font_name)
-        wgui.setfont(font_size - 2, font_name, "")
+        wgui.setfont(font_size - 2, font_name, '')
         return wgui.gettextextent(text)
     end
     BreitbandGraphics.draw_rectangle = function(rectangle, color, thickness)
         wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
-        wgui.setbrush("null")
+        wgui.setbrush('null')
         wgui.rect(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
     end
     BreitbandGraphics.fill_rectangle = function(rectangle, color)
-        wgui.setpen("null")
+        wgui.setpen('null')
         wgui.setbrush(BreitbandGraphics.color_to_hex(color))
         wgui.rect(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
     end
@@ -343,37 +343,37 @@ if not d2d then
     end
     BreitbandGraphics.draw_ellipse = function(rectangle, color, thickness)
         wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
-        wgui.setbrush("null")
+        wgui.setbrush('null')
         wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
     end
     BreitbandGraphics.fill_ellipse = function(rectangle, color)
-        wgui.setpen("null")
+        wgui.setpen('null')
         wgui.setbrush(BreitbandGraphics.color_to_hex(color))
         wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
     end
     BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size,
-                                           font_name,
-                                           text)
+        font_name,
+        text)
         wgui.setcolor(BreitbandGraphics.color_to_hex(color))
-        wgui.setfont(font_size - 2, font_name, "")
-        local flags = "s"
-        if horizontal_alignment == "start" then
-            flags = flags .. "l"
+        wgui.setfont(font_size - 2, font_name, '')
+        local flags = 's'
+        if horizontal_alignment == 'start' then
+            flags = flags .. 'l'
         end
-        if horizontal_alignment == "center" then
-            flags = flags .. "c"
+        if horizontal_alignment == 'center' then
+            flags = flags .. 'c'
         end
-        if horizontal_alignment == "end" then
-            flags = flags .. "r"
+        if horizontal_alignment == 'end' then
+            flags = flags .. 'r'
         end
-        if vertical_alignment == "start" then
-            flags = flags .. "t"
+        if vertical_alignment == 'start' then
+            flags = flags .. 't'
         end
-        if vertical_alignment == "center" then
-            flags = flags .. "v"
+        if vertical_alignment == 'center' then
+            flags = flags .. 'v'
         end
-        if vertical_alignment == "end" then
-            flags = flags .. "b"
+        if vertical_alignment == 'end' then
+            flags = flags .. 'b'
         end
         wgui.drawtext(text, {
             l = rectangle.x,
@@ -384,7 +384,7 @@ if not d2d then
     end
     BreitbandGraphics.draw_line = function(from, to, color, thickness)
         wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
-        wgui.setbrush("null")
+        wgui.setbrush('null')
         wgui.line(from.x, from.y, to.x, to.y)
     end
     BreitbandGraphics.push_clip = function(rectangle)
@@ -425,7 +425,7 @@ Mupen_lua_ugui = {
         previous_input_state = nil,
 
         -- the position of the mouse at the last click
-        mouse_down_position = { x = 0, y = 0 },
+        mouse_down_position = {x = 0, y = 0},
 
         -- uid of the currently pushed control (last mouse down is on it and mouse has not been released)
         pushed_control = nil,
@@ -640,7 +640,8 @@ Mupen_lua_ugui = {
             return Mupen_lua_ugui.visual_states.hovered
         end
 
-        if is_inside and Mupen_lua_ugui.internal.input_state.is_primary_down then
+        if is_inside and Mupen_lua_ugui.internal.input_state.is_primary_down and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.mouse_down_position,
+                control.rectangle) then
             return Mupen_lua_ugui.visual_states.active
         end
 
@@ -829,15 +830,23 @@ Mupen_lua_ugui = {
                     y = rectangle.y,
                     width = rectangle.width,
                     height = rectangle.height,
-                }, 'start', 'center', { clip = true },
+                }, 'start', 'center', {clip = true},
                 Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 item)
         end,
         draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
+            local thumb_color = BreitbandGraphics.repeated_to_color(205)
+            if visual_state == Mupen_lua_ugui.visual_states.hovered then
+                thumb_color = BreitbandGraphics.repeated_to_color(166)
+            elseif visual_state == Mupen_lua_ugui.visual_states.active then
+                thumb_color = BreitbandGraphics.repeated_to_color(96)
+            elseif visual_state == Mupen_lua_ugui.visual_states.disabled then
+                thumb_color = BreitbandGraphics.repeated_to_color(192)
+            end
             BreitbandGraphics.fill_rectangle(container_rectangle, BreitbandGraphics.repeated_to_color(240))
-            BreitbandGraphics.fill_rectangle(thumb_rectangle, BreitbandGraphics.repeated_to_color(204))
+            BreitbandGraphics.fill_rectangle(thumb_rectangle, thumb_color)
         end,
         draw_list = function(control, rectangle, selected_index)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -882,34 +891,6 @@ Mupen_lua_ugui = {
                 }, item_visual_state)
             end
 
-
-            if #control.items * Mupen_lua_ugui.standard_styler.item_height > rectangle.height then
-                -- figure out height of scrollbar
-                local scrollbar_base_height = rectangle.height
-                local content_overflow_ratio = (Mupen_lua_ugui.standard_styler.item_height * #control.items) /
-                    rectangle.height
-                local inverse_content_overflow_ratio = 1 / content_overflow_ratio
-                local scrollbar_height = scrollbar_base_height * inverse_content_overflow_ratio
-
-                -- we center the scrollbar around the translation value, and shrink it accordingly
-                local scrollbar_y = Mupen_lua_ugui.internal.remap(y_translation, 0, 1, 0,
-                    rectangle.height - scrollbar_height)
-
-                local container_rectangle = {
-                    x = rectangle.x + rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-                    y = rectangle.y,
-                    width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-                    height = rectangle.height,
-                }
-                local thumb_rectangle = {
-                    x = rectangle.x + rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-                    y = rectangle.y + scrollbar_y,
-                    width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-                    height = scrollbar_height,
-                }
-                Mupen_lua_ugui.standard_styler.draw_scrollbar(container_rectangle, thumb_rectangle, visual_state)
-            end
-
             BreitbandGraphics.pop_clip()
         end,
         draw_button = function(control)
@@ -923,7 +904,7 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.standard_styler.draw_raised_frame(control, visual_state)
 
             BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-                { clip = true },
+                {clip = true},
                 Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -1001,7 +982,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'start', 'start', { clip = true },
+                }, 'start', 'start', {clip = true},
                 Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -1042,7 +1023,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', { clip = true },
+                    }, 'start', 'start', {clip = true},
                     BreitbandGraphics.invert_color(Mupen_lua_ugui.standard_styler.edit_frame_text_colors
                         [visual_state]),
                     Mupen_lua_ugui.standard_styler.font_size,
@@ -1187,7 +1168,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width,
                     height = control.rectangle.height,
-                }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'start', 'center', {clip = true}, text_color, Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 control.items[control.selected_index])
 
@@ -1196,7 +1177,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 4,
                     height = control.rectangle.height,
-                }, 'end', 'center', { clip = true }, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'end', 'center', {clip = true}, text_color, Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', 'v')
         end,
 
@@ -1597,15 +1578,6 @@ Mupen_lua_ugui = {
                 .y_translation + inc
         end
 
-        if Mupen_lua_ugui.internal.control_data[control.uid].active and overflows and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.mouse_down_position, scrollbar_rect) then
-            local v = (Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y) /
-                control.rectangle.height
-            Mupen_lua_ugui.internal.control_data[control.uid].y_translation = v
-        end
-
-        Mupen_lua_ugui.internal.control_data[control.uid].y_translation = Mupen_lua_ugui.internal.clamp(
-            Mupen_lua_ugui.internal.control_data[control.uid].y_translation, 0, 1)
-
         if control.topmost then
             Mupen_lua_ugui.internal.late_callbacks[#Mupen_lua_ugui.internal.late_callbacks + 1] = function()
                 Mupen_lua_ugui.standard_styler.draw_listbox(control)
@@ -1614,6 +1586,86 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.standard_styler.draw_listbox(control)
         end
 
+        local content_height = #control.items * Mupen_lua_ugui.standard_styler.item_height
+        if content_height > control.rectangle.height then
+            Mupen_lua_ugui.internal.control_data[control.uid].y_translation = Mupen_lua_ugui.scrollbar({
+                uid = control.uid + 1,
+                is_enabled = control.is_enabled,
+                rectangle = {
+                    x = control.rectangle.x + control.rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
+                    y = control.rectangle.y,
+                    width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
+                    height = control.rectangle.height,
+                },
+                value = Mupen_lua_ugui.internal.control_data[control.uid].y_translation,
+                content_height = content_height,
+            })
+        end
+
         return Mupen_lua_ugui.internal.clamp(selected_index, 1, #control.items)
+    end,
+    ---Places a ScrollBar
+    ---
+    ---Additional fields in the `control` table:
+    ---
+    --- `value` — `number` The items contained in the dropdown
+    --- `content_height` — `number` The relevant content's height
+    ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
+    ---@return _ number The new value
+    scrollbar = function(control)
+        if not Mupen_lua_ugui.internal.control_data[control.uid] then
+            Mupen_lua_ugui.internal.control_data[control.uid] = {
+                active = false,
+                start_value = 0,
+            }
+        end
+
+        local pushed = Mupen_lua_ugui.internal.is_pushed(control)
+
+        -- if active and user clicks elsewhere, deactivate
+        if Mupen_lua_ugui.internal.control_data[control.uid].active then
+            if not BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
+                if Mupen_lua_ugui.internal.is_mouse_just_down() then
+                    -- deactivate, then clear selection
+                    Mupen_lua_ugui.internal.control_data[control.uid].active = false
+                end
+            end
+        end
+
+        -- new activation via direct click
+        if pushed then
+            Mupen_lua_ugui.internal.control_data[control.uid].active = true
+            Mupen_lua_ugui.internal.control_data[control.uid].start_value = control.value
+        end
+
+        -- figure out height of scrollbar
+        local scrollbar_base_height = control.rectangle.height
+        local content_overflow_ratio = control.content_height / control.rectangle.height
+        local inverse_content_overflow_ratio = 1 / content_overflow_ratio
+        local scrollbar_height = scrollbar_base_height * inverse_content_overflow_ratio
+
+        -- we center the scrollbar around the translation value, and shrink it accordingly
+        local scrollbar_y = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0,
+            control.rectangle.height - scrollbar_height)
+
+        local thumb_rectangle = {
+            x = control.rectangle.x + control.rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
+            y = control.rectangle.y + scrollbar_y,
+            width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
+            height = scrollbar_height,
+        }
+
+        if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
+            local v_current = (Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y) / control.rectangle.height
+            control.value = Mupen_lua_ugui.internal.control_data[control.uid].start_value + (v_current - Mupen_lua_ugui.internal.control_data[control.uid].start_value)
+        end
+
+        local visual_state = Mupen_lua_ugui.get_visual_state(control)
+        if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
+            visual_state = Mupen_lua_ugui.visual_states.active
+        end
+        Mupen_lua_ugui.standard_styler.draw_scrollbar(control.rectangle, thumb_rectangle, visual_state)
+
+        return Mupen_lua_ugui.internal.clamp(control.value, 0, 1)
     end,
 }
