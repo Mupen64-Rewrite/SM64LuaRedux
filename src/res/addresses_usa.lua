@@ -4,11 +4,7 @@ return {
         address = 0x00B22B24,
         value = 2410020892
     },
-    current_area_ptr = 0x0032DDCC,
-    graph_node_root = 0x0032DDCC + 0x04,
-    camera_node = 0x0032DDCC + 0x04 + 0x20,
-    frustum_node = 0x0032DDCC + 0x04 + 0x20 + 0x0C,
-    camera_fov = 0x0032DDCC + 0x04 + 0x20 + 0x0C + 0x1C,
+    camera_fov = 0x001961B8,
     camera_angle = 0x00B3C714,
     camera_transition_type = 0x00B3BAB1,
     camera_transition_progress = 0x00B30EC0,

@@ -4,6 +4,7 @@ return {
         address = 0x00B22B24,
         value = 1174429700
     },
+    -- FIXME: add new camera addresses
     camera_angle = 0x00B3B3A4,
     camera_transition_type = 0x00B3A741,
     camera_transition_progress = 0x00B2FF60,

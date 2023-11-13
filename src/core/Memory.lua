@@ -13,10 +13,6 @@ local sources = {
 local source = nil
 
 function Memory.update()
-	Memory.current.current_area_ptr = memory.readdword(source.current_area_ptr)
-	Memory.current.graph_node_root = memory.readdword(source.graph_node_root)
-	Memory.current.camera_node = memory.readdword(source.camera_node)
-	Memory.current.frustum_node = memory.readdword(source.frustum_node)
 	Memory.current.camera_fov = memory.readfloat(source.camera_fov)
 	Memory.current.camera_angle = memory.readword(source.camera_angle)
 	Memory.current.camera_transition_type = memory.readbyte(source.camera_transition_type)

@@ -76,6 +76,7 @@ dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
 dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "Grind.lua")
+dofile(core_path .. "WorldVisualizer.lua")
 dofile(core_path .. "Lookahead.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
@@ -156,6 +157,8 @@ function at_update_screen()
     })
     mouse_wheel = 0
 
+    WorldVisualizer.draw()
+    
     BreitbandGraphics.fill_rectangle({
         x = Drawing.initial_size.width,
         y = 0,
@@ -169,7 +172,7 @@ function at_update_screen()
 
     current_tab_index = Mupen_lua_ugui.carrousel_button({
         uid = -5000,
-        
+
         rectangle = grid_rect(0, 15, 8, 1),
         items = select(tabs, "name"),
         selected_index = current_tab_index,
@@ -179,7 +182,7 @@ function at_update_screen()
         local prev = Presets.current_index == i
         local now = Mupen_lua_ugui.toggle_button({
             uid = -5000 - 5 * i,
-            
+
             rectangle = grid_rect(i - 1, 16, 1, 1),
             text = i,
             is_checked = Presets.current_index == i
@@ -192,7 +195,7 @@ function at_update_screen()
 
     if Mupen_lua_ugui.button({
             uid = -6000,
-            
+
             rectangle = grid_rect(6, 16, 2, 1),
             text = "Reset"
         }) then
@@ -201,6 +204,7 @@ function at_update_screen()
     end
 
 
+   
     Mupen_lua_ugui.end_frame()
 end
 
