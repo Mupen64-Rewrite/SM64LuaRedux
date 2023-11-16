@@ -225,7 +225,7 @@ end
 
 function Engine.GetSpeedEfficiency()
 	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_sped > 0 then
-		return Engine.GetDistMoved() / math.abs(math.sqrt(
+		return Engine.get_distance_moved() / math.abs(math.sqrt(
 			MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
 			MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)
 		)
@@ -234,19 +234,9 @@ function Engine.GetSpeedEfficiency()
 	end
 end
 
-function Engine.GetDistMoved()
+function Engine.get_distance_moved()
 	return math.sqrt((MoreMaths.dec_to_float(Memory.previous.mario_x) - MoreMaths.dec_to_float(Memory.current.mario_x)) ^
 		2 + (MoreMaths.dec_to_float(Memory.previous.mario_z) - MoreMaths.dec_to_float(Memory.current.mario_z)) ^ 2)
-end
-
-function Engine.GetCurrentAction()
-	for i = 1, #Actions, 1 do
-		local action = Actions[i]
-		if action.value == Memory.current.mario_action then
-			return action.name
-		end
-	end
-	return "?"
 end
 
 function Engine.GetTotalDistMoved()

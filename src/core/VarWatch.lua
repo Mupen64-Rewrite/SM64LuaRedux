@@ -1,3 +1,13 @@
+local function get_current_action()
+    for i = 1, #Actions, 1 do
+        local action = Actions[i]
+        if action.value == Memory.current.mario_action then
+            return action.name
+        end
+    end
+    return "Unknown action " .. Memory.current.mario_action
+end
+
 VarWatch = {
     variables = {
         {
@@ -58,13 +68,13 @@ VarWatch = {
         {
             identifier = "xz_movement",
             value = function()
-                return string.format("XZ Movement: %s", Formatter.u(Engine.GetDistMoved()))
+                return string.format("XZ Movement: %s", Formatter.u(Engine.get_distance_moved()))
             end
         },
         {
             identifier = "action",
             value = function()
-                return "Action: " .. Engine.GetCurrentAction()
+                return "Action: " .. get_current_action()
             end
         },
         {
