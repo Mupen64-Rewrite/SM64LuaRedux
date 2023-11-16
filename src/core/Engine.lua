@@ -5,7 +5,7 @@ Engine = {
 function Engine.get_effective_angle(angle)
 	-- NOTE: previous input lua snaps angle to multiple 16 by default, incurring a precision loss
 	if Settings.truncate_effective_angle then
-		return angle - (angle % 16) 
+		return angle - (angle % 16)
 	end
 	return angle
 end
@@ -52,10 +52,10 @@ function Engine.getArctanAngle(r, d, n, s)
 		if Settings.movement_mode == Settings.movement_modes.match_angle then
 			if (math.abs(Memory.current.mario_facing_yaw - Settings.goal_angle) > 16384) then
 				r = -math.abs(math.tan(math.pi / 2 -
-				(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
+					(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
 			else
 				r = math.abs(math.tan(math.pi / 2 -
-				(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
+					(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
 			end
 		end
 		if (Settings.reverse_arc == false) then
@@ -95,18 +95,14 @@ function Engine.inputsForAngle(goal)
 			goal = Memory.current.mario_facing_yaw
 		end
 	end
-	-- Set up target speed
-	if (Settings.strain_speed_target) then
-		ENABLE_TARGET_SPEED = 1
-	else
-		ENABLE_TARGET_SPEED = 0
-	end
+
 	if (Settings.strain_always) then
 		offset = 3
 	else
 		offset = 0
 	end
-	if (ENABLE_TARGET_SPEED == 1) then
+	
+	if Settings.strain_speed_target then
 		if Memory.current.mario_action == 0x04000440 or Memory.current.mario_action == 0x0400044A or Memory.current.mario_action == 0x08000239 or Memory.current.mario_action == 0x0C000232 or Memory.current.mario_action == 0x04000442 or Memory.current.mario_action == 0x04000443 or Memory.current.mario_action == 0x010208B7 or Memory.current.mario_action == 0x04000445 or Memory.current.mario_action == 0x00840454 or Memory.current.mario_action == 0x00840452 or (Memory.current.mario_action > 0x0400046F and Memory.current.mario_action < 0x04000474) or (Memory.current.mario_action > 0x00000473 and Memory.current.mario_action < 0x00000478) then
 			actionflag = 1
 		else
