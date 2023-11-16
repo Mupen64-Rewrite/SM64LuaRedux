@@ -2,8 +2,12 @@ Engine = {
 
 }
 
-function Engine.getEffectiveAngle(angle)
-	return angle - (angle % 16)
+function Engine.get_effective_angle(angle)
+	-- NOTE: previous input lua snaps angle to multiple 16 by default, incurring a precision loss
+	if Settings.truncate_effective_angle then
+		return angle - (angle % 16) 
+	end
+	return angle
 end
 
 function Engine.getDyaw(angle)
@@ -47,9 +51,11 @@ function Engine.getArctanAngle(r, d, n, s)
 	if (s < Memory.current.mario_global_timer and s > Memory.current.mario_global_timer - n - 1) then
 		if Settings.movement_mode == Settings.movement_modes.match_angle then
 			if (math.abs(Memory.current.mario_facing_yaw - Settings.goal_angle) > 16384) then
-				r = -math.abs(math.tan(math.pi / 2 - (Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
+				r = -math.abs(math.tan(math.pi / 2 -
+				(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
 			else
-				r = math.abs(math.tan(math.pi / 2 - (Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
+				r = math.abs(math.tan(math.pi / 2 -
+				(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
 			end
 		end
 		if (Settings.reverse_arc == false) then
@@ -192,9 +198,9 @@ function Engine.inputsForAngle(goal)
 	midang = math.floor((minang + maxang) / 2)
 	-- Binary search
 	while (minang <= maxang) do
-		if (Engine.getEffectiveAngle(Angles.ANGLE[midang].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw < goal) then
+		if (Engine.get_effective_angle(Angles.ANGLE[midang].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw < goal) then
 			minang = midang + 1
-		elseif (Engine.getEffectiveAngle(Angles.ANGLE[midang].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw == goal) then
+		elseif (Engine.get_effective_angle(Angles.ANGLE[midang].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw == goal) then
 			minang = midang
 			maxang = midang - 1
 		else
@@ -205,7 +211,7 @@ function Engine.inputsForAngle(goal)
 	-- If binary search fails, optimal angle is between Angles.Count and 1. Checks which one is closer.
 	if minang > Angles.COUNT then
 		minang = 1
-		if math.abs(Engine.getEffectiveAngle(Angles.ANGLE[1].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw - (goal - 65536)) > math.abs(Engine.getEffectiveAngle(Angles.ANGLE[Angles.COUNT].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw - goal) then
+		if math.abs(Engine.get_effective_angle(Angles.ANGLE[1].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw - (goal - 65536)) > math.abs(Engine.get_effective_angle(Angles.ANGLE[Angles.COUNT].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw - goal) then
 			minang = Angles.COUNT
 		end
 	end

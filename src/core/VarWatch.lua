@@ -3,16 +3,16 @@ VarWatch = {
         {
             identifier = "yaw_facing",
             value = function()
-                local angle = (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.current.mario_facing_yaw) or Memory.current.mario_facing_yaw)
-                local opposite = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.current.mario_facing_yaw) + 32768) % 65536 or (Memory.current.mario_facing_yaw + 32768) % 65536)
+                local angle = (Settings.show_effective_angles and Engine.get_effective_angle(Memory.current.mario_facing_yaw) or Memory.current.mario_facing_yaw)
+                local opposite = (Settings.show_effective_angles and (Engine.get_effective_angle(Memory.current.mario_facing_yaw) + 32768) % 65536 or (Memory.current.mario_facing_yaw + 32768) % 65536)
                 return string.format("Facing Yaw: %s (O: %s)", Formatter.angle(angle), Formatter.angle(opposite))
             end
         },
         {
             identifier = "yaw_intended",
             value = function()
-                local angle = (Settings.show_effective_angles and Engine.getEffectiveAngle(Memory.current.mario_intended_yaw) or Memory.current.mario_intended_yaw)
-                local opposite = (Settings.show_effective_angles and (Engine.getEffectiveAngle(Memory.current.mario_intended_yaw) + 32768) % 65536 or (Memory.current.mario_intended_yaw + 32768) % 65536)
+                local angle = (Settings.show_effective_angles and Engine.get_effective_angle(Memory.current.mario_intended_yaw) or Memory.current.mario_intended_yaw)
+                local opposite = (Settings.show_effective_angles and (Engine.get_effective_angle(Memory.current.mario_intended_yaw) + 32768) % 65536 or (Memory.current.mario_intended_yaw + 32768) % 65536)
                 return string.format("Intended Yaw: %s (O: %s)", Formatter.angle(angle), Formatter.angle(opposite))
             end
         },

@@ -48,6 +48,7 @@ Settings = {
     format_decimal_points = 4,
     format_angles_degrees = false,
     visualize_objects = false,
+    truncate_effective_angle = false,
     styles = {
         dofile(res_path .. "windows-11.lua"),
         dofile(res_path .. "windows-10.lua"),
