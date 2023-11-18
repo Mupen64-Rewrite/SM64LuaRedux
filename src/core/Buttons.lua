@@ -16,12 +16,10 @@ function grid(x, y, x_span, y_span)
         (Settings.grid_size * y_span) - Settings.grid_gap * 2,
     }
 
-    if Drawing.scale > 1 + Drawing.scale_tolerance or Drawing.scale < 1 - Drawing.scale_tolerance then
-        rect[1] = (Drawing.initial_size.width + (Settings.grid_size * x * Drawing.scale)) + Settings.grid_gap
-        rect[2] = rect[2] * Drawing.scale
-        rect[3] = rect[3] * Drawing.scale
-        rect[4] = rect[4] * Drawing.scale
-    end
+    rect[1] = (Drawing.initial_size.width + (Settings.grid_size * x * Drawing.scale)) + Settings.grid_gap
+    rect[2] = rect[2] * Drawing.scale
+    rect[3] = rect[3] * Drawing.scale
+    rect[4] = rect[4] * Drawing.scale
 
     return { math.floor(rect[1]), math.floor(rect[2]), math.floor(rect[3]), math.floor(rect[4]) }
 end
