@@ -10,7 +10,7 @@ return {
         local new_active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,
             rectangle = grid_rect(0, 0, 4, 1),
-            items = select(Settings.styles, "name"),
+            items = lualinq.select_key(Settings.styles, "name"),
             selected_index = Settings.active_style_index,
         })
 

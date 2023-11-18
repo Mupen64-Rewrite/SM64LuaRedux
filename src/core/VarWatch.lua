@@ -111,27 +111,12 @@ VarWatch = {
     current_values = {}
 }
 
-
-local function where(table, cb)
-    for _, value in pairs(table) do
-        if cb(value) then
-            return value
-        end
-    end
-end
-
 for _, value in pairs(VarWatch.variables) do
     VarWatch.active_variables[#VarWatch.active_variables + 1] = value.identifier
 end
 
 VarWatch.update = function()
-    local items = {}
-
-    for _, value in pairs(VarWatch.active_variables) do
-        items[#items + 1] = where(VarWatch.variables, function(a)
-            return a.identifier == value
-        end).value()
-    end
-
-    VarWatch.current_values = items
+    VarWatch.current_values = lualinq.select(VarWatch.variables, function(element)
+        return element.value()
+    end)
 end

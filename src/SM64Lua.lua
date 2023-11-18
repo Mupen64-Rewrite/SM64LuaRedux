@@ -34,14 +34,6 @@ function expand_rect(t)
     }
 end
 
-function select(arr, prop)
-    local t = {}
-    for i = 1, #arr, 1 do
-        t[i] = arr[i][prop]
-    end
-    return t
-end
-
 local queued_pause = false
 local post_frame_advance_callback = nil
 
@@ -60,6 +52,7 @@ local lib_path = folder .. "lib\\"
 
 dofile(lib_path .. "mupen-lua-ugui.lua")
 dofile(lib_path .. "mupen-lua-ugui-ext.lua")
+dofile(lib_path .. "linq.lua")
 dofile(res_path .. "base.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
@@ -158,7 +151,7 @@ function at_update_screen()
     mouse_wheel = 0
 
     WorldVisualizer.draw()
-    
+
     BreitbandGraphics.fill_rectangle({
         x = Drawing.initial_size.width,
         y = 0,
@@ -174,7 +167,7 @@ function at_update_screen()
         uid = -5000,
 
         rectangle = grid_rect(0, 15, 8, 1),
-        items = select(tabs, "name"),
+        items = lualinq.select_key(tabs, "name"),
         selected_index = current_tab_index,
     })
 
@@ -204,7 +197,7 @@ function at_update_screen()
     end
 
 
-   
+
     Mupen_lua_ugui.end_frame()
 end
 
