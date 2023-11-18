@@ -11,13 +11,13 @@ return {
             selected_index = nil,
             items = VarWatch.current_values,
         })
-        Settings.goal_angle = Mupen_lua_ugui.numberbox({
+        Settings.goal_angle = math.abs(Mupen_lua_ugui.numberbox({
             uid = 5,
             is_enabled = Settings.movement_mode == Settings.movement_modes.match_angle,
             rectangle = grid_rect(4, 3, 4, 1),
             places = 5,
             value = Settings.goal_angle
-        })
+        }))
         Settings.goal_mag = Mupen_lua_ugui.numberbox({
             uid = 10,
 
