@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.3.2
+-- mupen-lua-ugui 1.4.0
 
 if emu.set_renderer then
     -- Specify D2D renderer
@@ -845,26 +845,30 @@ Mupen_lua_ugui = {
 
             local content_bounds = Mupen_lua_ugui.standard_styler.get_listbox_content_bounds(control)
             -- item y position:
-            -- y = (20 * (i - 1)) - (y_translation * ((20 * #control.items) - control.rectangle.height))
-            local y_translation = Mupen_lua_ugui.internal.control_data[control.uid].y_translation and
-                Mupen_lua_ugui.internal.control_data[control.uid].y_translation or 0
+            -- y = (20 * (i - 1)) - (scroll_y * ((20 * #control.items) - control.rectangle.height))
+            local scroll_x = Mupen_lua_ugui.internal.control_data[control.uid].scroll_x and
+                Mupen_lua_ugui.internal.control_data[control.uid].scroll_x or 0
+            local scroll_y = Mupen_lua_ugui.internal.control_data[control.uid].scroll_y and
+                Mupen_lua_ugui.internal.control_data[control.uid].scroll_y or 0
 
-            local index_begin = (y_translation *
+            local index_begin = (scroll_y *
                     (content_bounds.height - rectangle.height)) /
                 Mupen_lua_ugui.standard_styler.item_height
 
-            local index_end = (rectangle.height + (y_translation *
+            local index_end = (rectangle.height + (scroll_y *
                     (content_bounds.height - rectangle.height))) /
                 Mupen_lua_ugui.standard_styler.item_height
 
             index_begin = Mupen_lua_ugui.internal.clamp(math.floor(index_begin), 1, #control.items)
             index_end = Mupen_lua_ugui.internal.clamp(math.ceil(index_end), 1, #control.items)
 
+            local x_offset = math.max((content_bounds.width - control.rectangle.width) * scroll_x, 0)
+
             BreitbandGraphics.push_clip(BreitbandGraphics.inflate_rectangle(rectangle, -1))
 
             for i = index_begin, index_end, 1 do
                 local y_offset = (Mupen_lua_ugui.standard_styler.item_height * (i - 1)) -
-                    (y_translation * (content_bounds.height - rectangle.height))
+                    (scroll_y * (content_bounds.height - rectangle.height))
 
                 local item_visual_state = Mupen_lua_ugui.visual_states.normal
                 if control.is_enabled == false then
@@ -876,9 +880,9 @@ Mupen_lua_ugui = {
                 end
 
                 Mupen_lua_ugui.standard_styler.draw_list_item(control.items[i], {
-                    x = rectangle.x,
+                    x = rectangle.x - x_offset,
                     y = rectangle.y + y_offset,
-                    width = rectangle.width,
+                    width = math.max(content_bounds.width, control.rectangle.width),
                     height = Mupen_lua_ugui.standard_styler.item_height,
                 }, item_visual_state)
             end
@@ -1162,10 +1166,19 @@ Mupen_lua_ugui = {
         end,
 
         get_listbox_content_bounds = function(control)
+            local max_width = 0
+            for _, value in pairs(control.items) do
+                local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size, Mupen_lua_ugui.standard_styler.font_name).width
+
+                if width > max_width then
+                    max_width = width
+                end
+            end
+
             return {
                 x = 0,
                 y = 0,
-                width = 0,
+                width = max_width,
                 height = Mupen_lua_ugui.standard_styler.item_height * #control.items,
             }
         end,
@@ -1492,24 +1505,44 @@ Mupen_lua_ugui = {
     --- `selected_index` — `number` The selected index in the `items` array
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
-    listbox = function(control)
-        if not Mupen_lua_ugui.internal.control_data[control.uid] then
-            Mupen_lua_ugui.internal.control_data[control.uid] = {
-                y_translation = 0,
+    listbox = function(_control)
+        if not Mupen_lua_ugui.internal.control_data[_control.uid] then
+            Mupen_lua_ugui.internal.control_data[_control.uid] = {
+                scroll_x = 0,
+                scroll_y = 0,
             }
         end
+        if not Mupen_lua_ugui.internal.control_data[_control.uid].scroll_x then
+            Mupen_lua_ugui.internal.control_data[_control.uid].scroll_x = 0
+        end
+        if not Mupen_lua_ugui.internal.control_data[_control.uid].scroll_y then
+            Mupen_lua_ugui.internal.control_data[_control.uid].scroll_y = 0
+        end
+        
+        local content_bounds = Mupen_lua_ugui.standard_styler.get_listbox_content_bounds(_control)
+        local x_overflow = content_bounds.width > _control.rectangle.width
+        local y_overflow = content_bounds.height > _control.rectangle.height
+
+        local new_rectangle = Mupen_lua_ugui.internal.deep_clone(_control.rectangle)
+        if x_overflow then
+            new_rectangle.height = new_rectangle.height - Mupen_lua_ugui.standard_styler.scrollbar_thickness
+        end
+        if y_overflow then
+            new_rectangle.width = new_rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness
+        end
+
+        -- we need to adjust rectangle to fit scrollbars
+        local control = Mupen_lua_ugui.internal.deep_clone(_control)
+        control.rectangle = new_rectangle
 
         local pushed = Mupen_lua_ugui.internal.process_push(control)
-        local content_bounds = Mupen_lua_ugui.standard_styler.get_listbox_content_bounds(control)
-        local y_overflow = content_bounds.height > control.rectangle.height
-
         local ignored = BreitbandGraphics.is_point_inside_any_rectangle(
                 Mupen_lua_ugui.internal.input_state.mouse_position, Mupen_lua_ugui.internal.hittest_free_rects) and
             not control.topmost
 
         if Mupen_lua_ugui.internal.active_control == control.uid and not ignored then
             local relative_y = Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y
-            local new_index = math.ceil((relative_y + (Mupen_lua_ugui.internal.control_data[control.uid].y_translation *
+            local new_index = math.ceil((relative_y + (Mupen_lua_ugui.internal.control_data[control.uid].scroll_y *
                     ((Mupen_lua_ugui.standard_styler.item_height * #control.items) - control.rectangle.height))) /
                 Mupen_lua_ugui.standard_styler.item_height)
             -- we only assign the new index if it's within bounds, as
@@ -1530,9 +1563,40 @@ Mupen_lua_ugui = {
             if Mupen_lua_ugui.internal.is_mouse_wheel_down() then
                 inc = 1 / #control.items
             end
-            Mupen_lua_ugui.internal.control_data[control.uid].y_translation = Mupen_lua_ugui.internal.control_data
+            Mupen_lua_ugui.internal.control_data[control.uid].scroll_y = Mupen_lua_ugui.internal.control_data
                 [control.uid]
-                .y_translation + inc
+                .scroll_y + inc
+        end
+
+
+        if x_overflow then
+            Mupen_lua_ugui.internal.control_data[control.uid].scroll_x = Mupen_lua_ugui.scrollbar({
+                uid = control.uid + 1,
+                is_enabled = control.is_enabled,
+                rectangle = {
+                    x = control.rectangle.x,
+                    y = control.rectangle.y + control.rectangle.height,
+                    width = control.rectangle.width,
+                    height = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
+                },
+                value = Mupen_lua_ugui.internal.control_data[control.uid].scroll_x,
+                ratio = 1 / (content_bounds.width / control.rectangle.width),
+            })
+        end
+
+        if y_overflow then
+            Mupen_lua_ugui.internal.control_data[control.uid].scroll_y = Mupen_lua_ugui.scrollbar({
+                uid = control.uid + 2,
+                is_enabled = control.is_enabled,
+                rectangle = {
+                    x = control.rectangle.x + control.rectangle.width,
+                    y = control.rectangle.y,
+                    width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
+                    height = control.rectangle.height,
+                },
+                value = Mupen_lua_ugui.internal.control_data[control.uid].scroll_y,
+                ratio = 1 / (content_bounds.height / control.rectangle.height),
+            })
         end
 
         if control.topmost then
@@ -1543,21 +1607,6 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.standard_styler.draw_listbox(control)
         end
 
-        if content_bounds.height > control.rectangle.height then
-            Mupen_lua_ugui.internal.control_data[control.uid].y_translation = Mupen_lua_ugui.scrollbar({
-                uid = control.uid + 1,
-                is_enabled = control.is_enabled,
-                rectangle = {
-                    x = control.rectangle.x + control.rectangle.width -
-                        Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-                    y = control.rectangle.y,
-                    width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-                    height = control.rectangle.height,
-                },
-                value = Mupen_lua_ugui.internal.control_data[control.uid].y_translation,
-                content_height = content_bounds.height,
-            })
-        end
 
         return control.selected_index
     end,
@@ -1566,7 +1615,7 @@ Mupen_lua_ugui = {
     ---Additional fields in the `control` table:
     ---
     --- `value` — `number` The items contained in the dropdown
-    --- `content_height` — `number` The relevant content's height
+    --- `ratio` — `number` The overscroll ratio
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new value
     scrollbar = function(control)
@@ -1577,6 +1626,7 @@ Mupen_lua_ugui = {
         end
 
         local pushed = Mupen_lua_ugui.internal.process_push(control)
+        local is_horizontal = control.rectangle.width > control.rectangle.height
 
         -- if active and user clicks elsewhere, deactivate
         if Mupen_lua_ugui.internal.active_control == control.uid then
@@ -1593,28 +1643,47 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.internal.control_data[control.uid].start_value = control.value
         end
 
-        -- figure out height of scrollbar
-        local scrollbar_base_height = control.rectangle.height
-        local content_overflow_ratio = control.content_height / control.rectangle.height
-        local inverse_content_overflow_ratio = 1 / content_overflow_ratio
-        local scrollbar_height = scrollbar_base_height * inverse_content_overflow_ratio
-
-        -- we center the scrollbar around the translation value, and shrink it accordingly
-        local scrollbar_y = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0,
-            control.rectangle.height - scrollbar_height)
-
-        local thumb_rectangle = {
-            x = control.rectangle.x + control.rectangle.width - Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-            y = control.rectangle.y + scrollbar_y,
-            width = Mupen_lua_ugui.standard_styler.scrollbar_thickness,
-            height = scrollbar_height,
+        -- figure out basic bounds of thumb
+        local thumb_bounds = {
+            width = control.rectangle.width * control.ratio,
+            height = control.rectangle.height * control.ratio,
         }
 
-        if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
-            local v_current = (Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y) /
-                control.rectangle.height
-            control.value = Mupen_lua_ugui.internal.control_data[control.uid].start_value +
-                (v_current - Mupen_lua_ugui.internal.control_data[control.uid].start_value)
+        local thumb_rectangle
+
+        -- we center the scrollbar around the translation value, and shrink it accordingly
+        if is_horizontal then
+            local scrollbar_x = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0,
+                control.rectangle.width - thumb_bounds.width)
+
+            thumb_rectangle = {
+                x = control.rectangle.x + scrollbar_x,
+                y = control.rectangle.y,
+                width = thumb_bounds.width,
+                height = control.rectangle.height,
+            }
+            if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
+                local v_current = (Mupen_lua_ugui.internal.input_state.mouse_position.x - control.rectangle.x) /
+                    control.rectangle.width
+                control.value = Mupen_lua_ugui.internal.control_data[control.uid].start_value +
+                    (v_current - Mupen_lua_ugui.internal.control_data[control.uid].start_value)
+            end
+        else
+            local scrollbar_y = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0,
+                control.rectangle.height - thumb_bounds.height)
+
+            thumb_rectangle = {
+                x = control.rectangle.x,
+                y = control.rectangle.y + scrollbar_y,
+                width = control.rectangle.width,
+                height = thumb_bounds.height,
+            }
+            if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
+                local v_current = (Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y) /
+                    control.rectangle.height
+                control.value = Mupen_lua_ugui.internal.control_data[control.uid].start_value +
+                    (v_current - Mupen_lua_ugui.internal.control_data[control.uid].start_value)
+            end
         end
 
         local visual_state = Mupen_lua_ugui.get_visual_state(control)
