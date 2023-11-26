@@ -74,7 +74,7 @@ return {
     end,
     draw = function()
         if Mupen_lua_ugui.button({
-                uid = 2,
+                uid = 10,
                 
                 rectangle = grid_rect(0, 0, 2, 1),
                 text = "Start"
@@ -82,7 +82,7 @@ return {
             start()
         end
         if Mupen_lua_ugui.button({
-                uid = 3,
+                uid = 15,
                 
                 rectangle = grid_rect(2, 0, 2, 1),
                 text = "Stop"
@@ -90,7 +90,7 @@ return {
             stop()
         end
         if Mupen_lua_ugui.button({
-                uid = 4,
+                uid = 20,
                 
                 rectangle = grid_rect(4, 0, 2, 1),
                 text = "Reset"
@@ -98,13 +98,13 @@ return {
             reset()
         end
         is_control_automatic = Mupen_lua_ugui.toggle_button({
-            uid = 5,
+            uid = 25,
             rectangle = grid_rect(6, 0, 2, 1),
             text = is_control_automatic and "Auto" or "Manual",
             is_checked = is_control_automatic
         })
         Mupen_lua_ugui.joystick({
-            uid = 1,
+            uid = 30,
             
             rectangle = grid_rect(2, 1, 4, 4),
             position = {
@@ -119,7 +119,7 @@ return {
             get_frame_text())
 
         Mupen_lua_ugui.toggle_button({
-            uid = 3,
+            uid = 35,
             
             rectangle = grid_rect(4, 6, 2),
             text = "A",
@@ -127,7 +127,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 4,
+            uid = 40,
             
             rectangle = grid_rect(2, 6, 2),
             text = "B",
@@ -135,7 +135,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 5,
+            uid = 45,
             
             rectangle = grid_rect(3, 8, 1),
             text = "Z",
@@ -143,7 +143,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 6,
+            uid = 50,
             
             rectangle = grid_rect(4, 8, 1),
             text = "S",
@@ -151,7 +151,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 7,
+            uid = 55,
             
             rectangle = grid_rect(1, 7),
             text = "L",
@@ -159,7 +159,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 8,
+            uid = 60,
             
             rectangle = grid_rect(6, 7),
             text = "R",
@@ -167,7 +167,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 9,
+            uid = 65,
             
             rectangle = grid_rect(0, 7),
             text = "C<",
@@ -175,7 +175,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 10,
+            uid = 70,
             
             rectangle = grid_rect(2, 7),
             text = "C>",
@@ -183,7 +183,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 11,
+            uid = 75,
             
             rectangle = grid_rect(1, 6),
             text = "C^",
@@ -191,7 +191,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 12,
+            uid = 80,
             
             rectangle = grid_rect(1, 8),
             text = "Cv",
@@ -199,7 +199,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 13,
+            uid = 85,
             
             rectangle = grid_rect(5, 7),
             text = "D<",
@@ -207,7 +207,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 14,
+            uid = 90,
             
             rectangle = grid_rect(7, 7),
             text = "D>",
@@ -215,7 +215,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 15,
+            uid = 95,
             
             rectangle = grid_rect(6, 6),
             text = "D^",
@@ -223,7 +223,7 @@ return {
         })
 
         Mupen_lua_ugui.toggle_button({
-            uid = 16,
+            uid = 100,
             
             rectangle = grid_rect(6, 8),
             text = "Dv",

@@ -236,7 +236,7 @@ Mupen_lua_ugui.tabcontrol = function(control)
 
     local clone = Mupen_lua_ugui.internal.deep_clone(control)
     clone.items = {}
-    Mupen_lua_ugui.standard_styler.draw_list(clone, clone.rectangle, nil)
+    Mupen_lua_ugui.standard_styler.draw_list(clone, clone.rectangle)
 
     local x = 0
     local y = 0
@@ -297,7 +297,6 @@ end
 Mupen_lua_ugui.numberbox = function(control)
     if not Mupen_lua_ugui.internal.control_data[control.uid] then
         Mupen_lua_ugui.internal.control_data[control.uid] = {
-            active = false,
             caret_index = 1,
         }
     end
@@ -318,7 +317,7 @@ Mupen_lua_ugui.numberbox = function(control)
         }
         if Mupen_lua_ugui.button({
                 uid = control.uid + 1,
-                
+                is_enabled = true,
                 rectangle = {
                     x = control.rectangle.x - negative_button_size,
                     y = control.rectangle.y,
@@ -335,23 +334,22 @@ Mupen_lua_ugui.numberbox = function(control)
     -- we dont want sign in display
     control.value = math.abs(control.value)
 
-    local pushed = Mupen_lua_ugui.internal.is_pushed(control)
+    local pushed = Mupen_lua_ugui.internal.process_push(control)
+
+    if pushed then
+        Mupen_lua_ugui.internal.clear_active_control_after_mouse_up = false
+    end
 
     -- if active and user clicks elsewhere, deactivate
-    if Mupen_lua_ugui.internal.control_data[control.uid].active then
+    if Mupen_lua_ugui.internal.active_control == control.uid then
         if not BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
             if Mupen_lua_ugui.internal.is_mouse_just_down() then
                 -- deactivate, then clear selection
-                Mupen_lua_ugui.internal.control_data[control.uid].active = false
+                Mupen_lua_ugui.internal.active_control = nil
                 Mupen_lua_ugui.internal.control_data[control.uid].selection_start = nil
                 Mupen_lua_ugui.internal.control_data[control.uid].selection_end = nil
             end
         end
-    end
-
-    -- new activation via direct click
-    if pushed then
-        Mupen_lua_ugui.internal.control_data[control.uid].active = true
     end
 
     local font_size = control.font_size and control.font_size or Mupen_lua_ugui.standard_styler.font_size * 1.5
@@ -389,7 +387,7 @@ Mupen_lua_ugui.numberbox = function(control)
     end
 
     local visual_state = Mupen_lua_ugui.get_visual_state(control)
-    if Mupen_lua_ugui.internal.control_data[control.uid].active and control.is_enabled then
+    if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled then
         visual_state = Mupen_lua_ugui.visual_states.active
     end
     Mupen_lua_ugui.standard_styler.draw_edit_frame(control, control.rectangle, visual_state)
@@ -434,7 +432,7 @@ Mupen_lua_ugui.numberbox = function(control)
         height = control.rectangle.height
     }
 
-    if Mupen_lua_ugui.internal.control_data[control.uid].active then
+    if Mupen_lua_ugui.internal.active_control == control.uid then
         -- find the clicked number, change caret index
         if Mupen_lua_ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(Mupen_lua_ugui.internal.input_state.mouse_position, control.rectangle) then
             Mupen_lua_ugui.internal.control_data[control.uid].caret_index = get_caret_index_at_relative_x(text,
@@ -777,7 +775,7 @@ Mupen_lua_ugui.treeview = function(control)
         if #item.children ~= 0 then
             item.open = Mupen_lua_ugui.toggle_button({
                 uid = control.uid + i,
-                
+                is_enabled = true,
                 is_checked = item.open,
                 text = item.open and "-" or "+",
                 rectangle = button_rectangle
