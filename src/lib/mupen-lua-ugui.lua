@@ -1167,11 +1167,13 @@ Mupen_lua_ugui = {
 
         get_listbox_content_bounds = function(control)
             local max_width = 0
-            for _, value in pairs(control.items) do
-                local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size, Mupen_lua_ugui.standard_styler.font_name).width
-
-                if width > max_width then
-                    max_width = width
+            if control.horizontal_scroll == true then
+                for _, value in pairs(control.items) do
+                    local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size, Mupen_lua_ugui.standard_styler.font_name).width
+    
+                    if width > max_width then
+                        max_width = width
+                    end
                 end
             end
 
