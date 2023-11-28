@@ -22,7 +22,6 @@ return {
     mario_action = 0x00B39E0C,
     mario_action_arg = 0x00B39E1C,
     mario_f_speed = 0x00B39E54,
-    mario_buffered = 0x00B65CE4,
     global_timer = 0x00B2C264,
     rng_value = 0x00B8EEE0,
     mario_animation = 0x00B39E88 + 0x38
