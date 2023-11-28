@@ -44,11 +44,13 @@ function frame_advance(func)
     post_frame_advance_callback = func
 end
 
-folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
-res_path = folder .. "res\\"
-local tabs_path = folder .. "tabs\\"
-local core_path = folder .. "core\\"
-local lib_path = folder .. "lib\\"
+path_sep = package.config:gsub("\n.+$", "")
+
+folder = debug.getinfo(1).source:sub(2):match("(.*[\\/])")
+res_path = folder .. "res" .. path_sep
+local tabs_path = folder .. "tabs" .. path_sep
+local core_path = folder .. "core" .. path_sep
+local lib_path = folder .. "lib" .. path_sep
 
 
 dofile(lib_path .. "mupen-lua-ugui.lua")
