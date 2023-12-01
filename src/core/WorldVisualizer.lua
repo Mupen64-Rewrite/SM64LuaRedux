@@ -6,7 +6,7 @@ local camera_depth = 0
 local camera_yaw = 0
 local camera_pitch = 0
 
-gObjlist = 0x0033D488
+gObjlist = 0x8033D488
 objsize = 0x260
 
 --gets all active slots and returns vec3 array of positions

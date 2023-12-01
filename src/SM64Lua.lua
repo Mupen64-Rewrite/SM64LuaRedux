@@ -123,9 +123,9 @@ function at_input()
 
     if Settings.override_rng then
         if Settings.override_rng_use_index then
-            memory.writeword(0x00B8EEE0, get_value(Settings.override_rng_value))
+            memory.writeword(0x80B8EEE0, get_value(Settings.override_rng_value))
         else
-            memory.writeword(0x00B8EEE0, Settings.override_rng_value)
+            memory.writeword(0x80B8EEE0, Settings.override_rng_value)
         end
     end
 
