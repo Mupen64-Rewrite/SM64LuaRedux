@@ -33,7 +33,7 @@ return {
             minimum_value = 0,
             maximum_value = 8,
         })
-        
+
         if Mupen_lua_ugui.button({
                 uid = 20,
                 is_enabled = selected_var_index > 1,
@@ -60,18 +60,21 @@ return {
             text = "Show",
             is_checked = VarWatch.variables[selected_var_index].visible
         })
-        
+
 
         selected_var_index = Mupen_lua_ugui.listbox({
             uid = 13377331,
             rectangle = grid_rect(0, 2, 8, 7),
             selected_index = selected_var_index,
-            items = lualinq.select(VarWatch.variables, function (x)
+            items = lualinq.select(VarWatch.variables, function(x)
                 if not x.visible then
                     return x.identifier .. " (disabled)"
                 end
                 return x.identifier
             end),
         })
+
+        -- We need to signal the varwatch to regenerate everything
+        VarWatch.processed_values = {}
     end
 }

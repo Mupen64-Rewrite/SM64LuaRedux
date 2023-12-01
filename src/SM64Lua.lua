@@ -57,7 +57,6 @@ dofile(lib_path .. "linq.lua")
 dofile(res_path .. "base.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
-dofile(core_path .. "VarWatch.lua")
 dofile(core_path .. "Presets.lua")
 dofile(core_path .. "Drawing.lua")
 dofile(core_path .. "Memory.lua")
@@ -75,9 +74,11 @@ dofile(core_path .. "Lookahead.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
+dofile(core_path .. "VarWatch.lua")
 
 Memory.initialize()
 Joypad.update()
+VarWatch.initialize()
 VarWatch.update()
 Drawing.size_up()
 
@@ -104,8 +105,6 @@ function at_input()
 
     -- frame stage 1: set everything up
     Memory.update_previous()
-    Memory.update(true)
-    VarWatch.update()
 
     Joypad.update()
     Engine.input()

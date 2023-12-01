@@ -9,7 +9,7 @@ return {
 
             rectangle = grid_rect(0, 8, 8, 6),
             selected_index = nil,
-            items = VarWatch.current_values,
+            items = VarWatch.processed_values,
         })
         Settings.goal_angle = math.abs(Mupen_lua_ugui.numberbox({
             uid = 5,

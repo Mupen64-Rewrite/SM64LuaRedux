@@ -107,18 +107,18 @@ VarWatch = {
             end
         },
     },
-    current_values = {}
+    processed_values = {}
 }
 
-for key, value in pairs(VarWatch.variables) do
-    value.visible = true
+VarWatch.initialize = function()
+    for key, value in pairs(VarWatch.variables) do
+        value.visible = true
+    end
 end
 
+
 VarWatch.update = function()
-    VarWatch.current_values = {}
-    for key, value in pairs(VarWatch.variables) do
-        if value.visible then
-            VarWatch.current_values[#VarWatch.current_values + 1] = value.value()
-        end
+    for i = 1, #VarWatch.variables, 1 do
+        VarWatch.processed_values[i] = VarWatch.variables[i].value()
     end
 end
