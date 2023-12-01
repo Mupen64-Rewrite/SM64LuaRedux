@@ -107,16 +107,18 @@ VarWatch = {
             end
         },
     },
-    active_variables = {},
     current_values = {}
 }
 
-for _, value in pairs(VarWatch.variables) do
-    VarWatch.active_variables[#VarWatch.active_variables + 1] = value.identifier
+for key, value in pairs(VarWatch.variables) do
+    value.visible = true
 end
 
 VarWatch.update = function()
-    VarWatch.current_values = lualinq.select(VarWatch.variables, function(element)
-        return element.value()
-    end)
+    VarWatch.current_values = {}
+    for key, value in pairs(VarWatch.variables) do
+        if value.visible then
+            VarWatch.current_values[#VarWatch.current_values + 1] = value.value()
+        end
+    end
 end
