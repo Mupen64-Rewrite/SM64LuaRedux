@@ -394,7 +394,8 @@ Mupen_lua_ugui.numberbox = function(control)
 
     local text = string.format("%0" .. tostring(control.places) .. "d", control.value)
 
-    BreitbandGraphics.draw_text(control.rectangle, "center", "center", {},
+    BreitbandGraphics.draw_text(control.rectangle, "center", "center",
+        { aliased = not Mupen_lua_ugui.standard_styler.cleartype },
         Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state],
         font_size,
         font_name, text)
@@ -483,7 +484,8 @@ Mupen_lua_ugui.numberbox = function(control)
         -- draw the char at caret index in inverted color
         BreitbandGraphics.fill_rectangle(selected_char_rect, BreitbandGraphics.hex_to_color('#0078D7'))
         BreitbandGraphics.push_clip(selected_char_rect)
-        BreitbandGraphics.draw_text(control.rectangle, "center", "center", {},
+        BreitbandGraphics.draw_text(control.rectangle, "center", "center",
+            { aliased = not Mupen_lua_ugui.standard_styler.cleartype },
             BreitbandGraphics.invert_color(Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state]),
             font_size,
             font_name, text)
@@ -664,20 +666,19 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
             return
         end
 
+        local rect = BreitbandGraphics.inflate_rectangle(rectangle, -1)
+
         -- bad idea to cache these
-        BreitbandGraphics.draw_image_nineslice(rectangle,
+        BreitbandGraphics.draw_image_nineslice(rect,
             style.listbox_item.states[visual_state].source,
             style.listbox_item.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
-
-        local size = BreitbandGraphics.get_text_size(item, Mupen_lua_ugui.standard_styler.font_size,
-            Mupen_lua_ugui.standard_styler.font_name)
         BreitbandGraphics.draw_text({
-                x = rectangle.x + 2,
-                y = rectangle.y,
-                width = size.width * 2,
-                height = rectangle.height,
-            }, 'start', 'center', {},
+                x = rect.x + 2,
+                y = rect.y,
+                width = rect.width,
+                height = rect.height,
+            }, 'start', 'center', { clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype },
             Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
             Mupen_lua_ugui.standard_styler.font_size,
             Mupen_lua_ugui.standard_styler.font_name,
@@ -703,6 +704,7 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
     Mupen_lua_ugui.standard_styler.font_size = style.font_size
     Mupen_lua_ugui.standard_styler.list_text_colors = style.listbox.text_colors
     Mupen_lua_ugui.standard_styler.scrollbar_thickness = style.scrollbar_rail.width
+    Mupen_lua_ugui.standard_styler.cleartype = not style.pixelated_text
 end
 
 

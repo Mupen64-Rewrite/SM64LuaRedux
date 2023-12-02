@@ -211,7 +211,7 @@ BreitbandGraphics = {
     ---@param font_name string The font name
     ---@param text string The text
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-                         text)
+        text)
         if text == nil then
             text = ''
         end
@@ -352,8 +352,8 @@ if not d2d then
         wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
     end
     BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size,
-                                           font_name,
-                                           text)
+        font_name,
+        text)
         wgui.setcolor(BreitbandGraphics.color_to_hex(color))
         wgui.setfont(font_size - 2, font_name, '')
         local flags = 's'
@@ -425,7 +425,7 @@ Mupen_lua_ugui = {
         previous_input_state = nil,
 
         -- the position of the mouse at the last click
-        mouse_down_position = { x = 0, y = 0 },
+        mouse_down_position = {x = 0, y = 0},
 
         -- uid of the currently active control
         active_control = nil,
@@ -654,6 +654,7 @@ Mupen_lua_ugui = {
         bar_height = 16,
         item_height = 15,
         font_size = 12,
+        cleartype = true,
         scrollbar_thickness = 17,
         font_name = 'MS Shell Dlg 2',
         raised_frame_back_colors = {
@@ -820,8 +821,7 @@ Mupen_lua_ugui = {
             if not item then
                 return
             end
-            BreitbandGraphics.fill_rectangle(rectangle,
-                Mupen_lua_ugui.standard_styler.list_item_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(rectangle, Mupen_lua_ugui.standard_styler.list_item_back_colors[visual_state])
 
             local size = BreitbandGraphics.get_text_size(item, Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name)
@@ -830,17 +830,15 @@ Mupen_lua_ugui = {
                     y = rectangle.y,
                     width = size.width * 2,
                     height = rectangle.height,
-                }, 'start', 'center', {},
+                }, 'start', 'center', {aliased = not Mupen_lua_ugui.standard_styler.cleartype},
                 Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 item)
         end,
         draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
-            BreitbandGraphics.fill_rectangle(container_rectangle,
-                Mupen_lua_ugui.standard_styler.scrollbar_back_colors[visual_state])
-            BreitbandGraphics.fill_rectangle(thumb_rectangle,
-                Mupen_lua_ugui.standard_styler.scrollbar_thumb_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(container_rectangle, Mupen_lua_ugui.standard_styler.scrollbar_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(thumb_rectangle, Mupen_lua_ugui.standard_styler.scrollbar_thumb_colors[visual_state])
         end,
         draw_list = function(control, rectangle)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -903,7 +901,7 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.standard_styler.draw_raised_frame(control, visual_state)
 
             BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-                { clip = true },
+                {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype},
                 Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -925,7 +923,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'start', 'center', {}, Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
+                }, 'start', 'center', {aliased = not Mupen_lua_ugui.standard_styler.cleartype}, Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', '<')
             BreitbandGraphics.draw_text({
@@ -933,7 +931,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'end', 'center', {}, Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
+                }, 'end', 'center', {aliased = not Mupen_lua_ugui.standard_styler.cleartype}, Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', '>')
         end,
@@ -982,7 +980,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'start', 'start', { clip = true },
+                }, 'start', 'start', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype},
                 Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -1023,7 +1021,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', { clip = true },
+                    }, 'start', 'start', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype},
                     BreitbandGraphics.invert_color(Mupen_lua_ugui.standard_styler.edit_frame_text_colors
                         [visual_state]),
                     Mupen_lua_ugui.standard_styler.font_size,
@@ -1094,8 +1092,7 @@ Mupen_lua_ugui = {
 
             BreitbandGraphics.fill_rectangle(BreitbandGraphics.inflate_rectangle(track_rectangle, 1),
                 Mupen_lua_ugui.standard_styler.trackbar_border_colors[visual_state])
-            BreitbandGraphics.fill_rectangle(track_rectangle,
-                Mupen_lua_ugui.standard_styler.trackbar_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(track_rectangle, Mupen_lua_ugui.standard_styler.trackbar_back_colors[visual_state])
         end,
         draw_thumb = function(control, visual_state, is_horizontal, value)
             local head_rectangle = {}
@@ -1121,8 +1118,7 @@ Mupen_lua_ugui = {
                     height = effective_bar_height,
                 }
             end
-            BreitbandGraphics.fill_rectangle(head_rectangle,
-                Mupen_lua_ugui.standard_styler.trackbar_thumb_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(head_rectangle, Mupen_lua_ugui.standard_styler.trackbar_thumb_colors[visual_state])
         end,
         draw_trackbar = function(control)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -1153,7 +1149,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width,
                     height = control.rectangle.height,
-                }, 'start', 'center', { clip = true }, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'start', 'center', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype}, text_color, Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 control.items[control.selected_index])
 
@@ -1162,7 +1158,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 4,
                     height = control.rectangle.height,
-                }, 'end', 'center', { clip = true }, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'end', 'center', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype}, text_color, Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', 'v')
         end,
 
@@ -1174,8 +1170,7 @@ Mupen_lua_ugui = {
             local max_width = 0
             if control.horizontal_scroll == true then
                 for _, value in pairs(control.items) do
-                    local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size,
-                        Mupen_lua_ugui.standard_styler.font_name).width
+                    local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size, Mupen_lua_ugui.standard_styler.font_name).width
 
                     if width > max_width then
                         max_width = width
