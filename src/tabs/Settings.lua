@@ -73,8 +73,5 @@ return {
                 return x.identifier
             end),
         })
-
-        -- We need to signal the varwatch to regenerate everything
-        VarWatch.processed_values = {}
     end
 }

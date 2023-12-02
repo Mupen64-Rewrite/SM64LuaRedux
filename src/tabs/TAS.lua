@@ -6,7 +6,6 @@ return {
     draw = function()
         Mupen_lua_ugui.listbox({
             uid = 0,
-
             rectangle = grid_rect(0, 8, 8, 6),
             selected_index = nil,
             items = VarWatch.processed_values,

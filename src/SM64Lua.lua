@@ -94,6 +94,10 @@ local tabs = {
 local current_tab_index = 1
 local mouse_wheel = 0
 
+-- Reading memory in at_input returns stale data from previous frame, so we read it in atvi
+-- However, we use this flag to prevent reading multiple times per frame, as it is very expensive
+local new_frame = true
+
 function at_input()
     if queued_pause then
         emu.pause(false)
@@ -104,10 +108,10 @@ function at_input()
     end
 
     -- frame stage 1: set everything up
-    Memory.update_previous()
-
+    new_frame = true
     Joypad.update()
     Engine.input()
+
     if Settings.movement_mode ~= Settings.movement_modes.disabled then
         result = Engine.inputsForAngle(Settings.goal_angle)
         if Settings.goal_mag then
@@ -202,9 +206,12 @@ function at_update_screen()
 end
 
 function at_vi()
-    -- reading memory in at_input returns stale data(!) from previous frame...
-    Memory.update()
-    VarWatch.update()
+    if new_frame then
+        Memory.update_previous()
+        Memory.update()
+        VarWatch.update()
+        new_frame = false
+    end
 
     Engine.vi()
 end
