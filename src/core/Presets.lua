@@ -21,10 +21,9 @@ function Presets.apply(i)
     Settings = Presets.presets[i].settings
     VarWatch = Presets.presets[i].var_watch
     Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
+    VarWatch.update()
 end
 
 function Presets.reset(i)
     Presets.presets[i] = Mupen_lua_ugui.internal.deep_clone(default_preset)
 end
-
-Presets.apply(Presets.current_index)

@@ -57,7 +57,6 @@ dofile(lib_path .. "linq.lua")
 dofile(res_path .. "base.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
-dofile(core_path .. "Presets.lua")
 dofile(core_path .. "Drawing.lua")
 dofile(core_path .. "Memory.lua")
 dofile(core_path .. "Joypad.lua")
@@ -75,12 +74,13 @@ dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
 dofile(core_path .. "VarWatch.lua")
+dofile(core_path .. "Presets.lua")
 
 Memory.initialize()
 Joypad.update()
-VarWatch.initialize()
 VarWatch.update()
 Drawing.size_up()
+Presets.apply(Presets.current_index)
 
 local tabs = {
     dofile(tabs_path .. "TAS.lua"),
