@@ -5,6 +5,7 @@ function get_base_style()
         item_height = 15,
         font_size = 12,
         font_name = 'MS Sans Serif',
+        draw_joystick_inner = Mupen_lua_ugui.standard_styler.draw_joystick_inner,
         button = {
             text_colors = {
                 [1] = BreitbandGraphics.colors.black,

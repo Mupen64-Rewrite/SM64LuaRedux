@@ -705,6 +705,7 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
     Mupen_lua_ugui.standard_styler.list_text_colors = style.listbox.text_colors
     Mupen_lua_ugui.standard_styler.scrollbar_thickness = style.scrollbar_rail.width
     Mupen_lua_ugui.standard_styler.cleartype = not style.pixelated_text
+    Mupen_lua_ugui.standard_styler.draw_joystick_inner = style.draw_joystick_inner
 end
 
 
