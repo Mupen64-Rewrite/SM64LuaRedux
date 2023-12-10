@@ -46,7 +46,7 @@ end
 
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 res_path = folder .. "res\\"
-local tabs_path = folder .. "tabs\\"
+local views_path = folder .. "views\\"
 local core_path = folder .. "core\\"
 local lib_path = folder .. "lib\\"
 
@@ -83,13 +83,13 @@ VarWatch.update()
 Drawing.size_up()
 Presets.apply(Presets.current_index)
 
-local tabs = {
-    dofile(tabs_path .. "TAS.lua"),
-    dofile(tabs_path .. "Settings.lua"),
-    dofile(tabs_path .. "Timer.lua"),
-    dofile(tabs_path .. "Experiments.lua"),
-    dofile(tabs_path .. "RNG.lua"),
-    dofile(tabs_path .. "Ghost.lua"),
+local views = {
+    dofile(views_path .. "TAS.lua"),
+    dofile(views_path .. "Settings.lua"),
+    dofile(views_path .. "Timer.lua"),
+    dofile(views_path .. "Experiments.lua"),
+    dofile(views_path .. "RNG.lua"),
+    dofile(views_path .. "Ghost.lua"),
 }
 
 local current_tab_index = 1
@@ -164,7 +164,7 @@ function at_update_screen()
         height = Drawing.size.height
     }, Settings.styles[Settings.active_style_index].theme.background_color)
 
-    tabs[current_tab_index].draw()
+    views[current_tab_index].draw()
 
     -- navigation and presets
 
@@ -172,7 +172,7 @@ function at_update_screen()
         uid = -5000,
 
         rectangle = grid_rect(0, 15, 8, 1),
-        items = lualinq.select_key(tabs, "name"),
+        items = lualinq.select_key(views, "name"),
         selected_index = current_tab_index,
     })
 
