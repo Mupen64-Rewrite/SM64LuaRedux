@@ -70,6 +70,7 @@ dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "Grind.lua")
 dofile(core_path .. "WorldVisualizer.lua")
 dofile(core_path .. "Lookahead.lua")
+dofile(core_path .. "Timer.lua")
 dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
@@ -121,8 +122,6 @@ function at_input()
         Joypad.set('Y', result.Y)
     end
 
-    -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
-    tabs[current_tab_index].update()
 
     if Settings.override_rng then
         if Settings.override_rng_use_index then
@@ -132,9 +131,11 @@ function at_input()
         end
     end
 
+    -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
+    -- TODO: make this into a priority callback system?
+    Timer.update()
     Grind.update()
     Lookahead.update()
-
     Joypad.send()
     Swimming.swim()
     Framewalk.update()

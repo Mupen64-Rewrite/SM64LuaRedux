@@ -2,10 +2,6 @@ local selected_var_index = 1
 
 return {
     name = "Settings",
-    update = function()
-
-    end,
-
     draw = function()
         local new_active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,

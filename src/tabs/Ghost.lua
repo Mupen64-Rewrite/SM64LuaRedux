@@ -1,7 +1,5 @@
 return {
     name = "Ghost",
-    update = function()
-    end,
     draw = function()
         if Mupen_lua_ugui.button({
                 uid = 5,

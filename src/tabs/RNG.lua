@@ -1,7 +1,5 @@
 return {
     name = "RNG",
-    update = function()
-    end,
     draw = function()
         Settings.override_rng = Mupen_lua_ugui.toggle_button({
             uid = 1,

@@ -1,8 +1,5 @@
 return {
     name = "TAS",
-    update = function()
-
-    end,
     draw = function()
         Mupen_lua_ugui.listbox({
             uid = 0,

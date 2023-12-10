@@ -1,101 +1,29 @@
-local transitionTimes = {}
-transitionTimes[0] = 2
-transitionTimes[8] = 2
-transitionTimes[10] = 2
-transitionTimes[16] = 2
-transitionTimes[18] = 2
-local VIs = 0
-local PredictedVIs = 0
-local State = 0
-local StartVI = 0
-local is_control_automatic = true
-local curVI = 0
-local function reset()
-    State = 0
-    VIs = 0
-end
-local function start()
-    State = 1
-    VIs = 2
-    StartVI = curVI
-end
-local function stop()
-    State = 2
-end
-local function timerAutoDetect()
-    if ((State == 1) and ((Memory.current.mario_object_effective == 0) or (curVI < StartVI))) then -- Reset timer on star select, or if state before start time is loaded
-        reset()
-    end
-    if ((State ~= 1) and (Memory.current.camera_transition_progress ~= nil) and (Memory.current.mario_object_effective ~= 0) and (transitionTimes[Memory.current.camera_transition_type] == Memory.current.camera_transition_progress) and (Memory.current.mario_action ~= 0x1300)) then -- Start timer on fade in
-        start()
-    end
-    if ((Memory.current.mario_animation == 179) or (Memory.current.mario_animation == 205)) then -- Stop timer on star dance
-        if (State == 1) then                                                     -- Stop timer on star dance
-            if (PredictedVIs ~= curVI) then                                      -- fix mismatched time if there was lag as the time stops
-                VIs = curVI - StartVI
-            end
-            if ((Memory.current.mario_action_arg & 1) == 1) then -- Special state if a non-exit star is collected
-                State = 3
-            else
-                stop()
-            end
-        end
-    elseif (State == 3) then -- Reactivate timer after dance
-        State = 1
-    end
-end
-
-local function get_frame_text()
-    local decimals = (VIs * 1000 // 60 + 5) // 10 % 100
-    if (VIs < 3600) then
-        return string.format("%02d.%02d", VIs // 60, decimals)
-    elseif (VIs < 360000) then
-        return string.format("%02d:%02d.%02d", VIs // 3600, (VIs % 3600) // 60, decimals)
-    else
-        return "99:59.99"
-    end
-end
-
 return {
     name = "Timer",
-    update = function()
-        curVI = emu.framecount()
-        if (State == 1) then
-            if (curVI <= StartVI) then
-                VIs = 0
-            else
-                PredictedVIs = curVI + 2 -- assume it will increment by 2, fix it on the next frame if there's lag
-                VIs = PredictedVIs - StartVI
-            end
-        end
-        if (is_control_automatic) then
-            timerAutoDetect()
-        end
-    end,
     draw = function()
         if Mupen_lua_ugui.button({
                 uid = 10,
-                
+
                 rectangle = grid_rect(0, 0, 2, 1),
                 text = "Start"
             }) then
-            start()
+            Timer.start()
         end
         if Mupen_lua_ugui.button({
                 uid = 15,
-                
+
                 rectangle = grid_rect(2, 0, 2, 1),
                 text = "Stop"
             }) then
-            stop()
+            Timer.stop()
         end
         if Mupen_lua_ugui.button({
                 uid = 20,
-                
+
                 rectangle = grid_rect(4, 0, 2, 1),
                 text = "Reset"
             }) then
-            reset()
+            Timer.reset()
         end
         is_control_automatic = Mupen_lua_ugui.toggle_button({
             uid = 25,
@@ -105,7 +33,7 @@ return {
         })
         Mupen_lua_ugui.joystick({
             uid = 30,
-            
+
             rectangle = grid_rect(2, 1, 4, 4),
             position = {
                 x = Mupen_lua_ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
@@ -116,11 +44,11 @@ return {
         BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center", {},
             BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].theme.background_color), 24,
             "Consolas",
-            get_frame_text())
+            Timer.get_frame_text())
 
         Mupen_lua_ugui.toggle_button({
             uid = 35,
-            
+
             rectangle = grid_rect(4, 6, 2),
             text = "A",
             is_checked = Joypad.input.A
@@ -128,7 +56,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 40,
-            
+
             rectangle = grid_rect(2, 6, 2),
             text = "B",
             is_checked = Joypad.input.B
@@ -136,7 +64,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 45,
-            
+
             rectangle = grid_rect(3, 8, 1),
             text = "Z",
             is_checked = Joypad.input.Z
@@ -144,7 +72,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 50,
-            
+
             rectangle = grid_rect(4, 8, 1),
             text = "S",
             is_checked = Joypad.input.start
@@ -152,7 +80,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 55,
-            
+
             rectangle = grid_rect(1, 7),
             text = "L",
             is_checked = Joypad.input.L
@@ -160,7 +88,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 60,
-            
+
             rectangle = grid_rect(6, 7),
             text = "R",
             is_checked = Joypad.input.R
@@ -168,7 +96,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 65,
-            
+
             rectangle = grid_rect(0, 7),
             text = "C<",
             is_checked = Joypad.input.Cleft
@@ -176,7 +104,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 70,
-            
+
             rectangle = grid_rect(2, 7),
             text = "C>",
             is_checked = Joypad.input.Cright
@@ -184,7 +112,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 75,
-            
+
             rectangle = grid_rect(1, 6),
             text = "C^",
             is_checked = Joypad.input.Cup
@@ -192,7 +120,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 80,
-            
+
             rectangle = grid_rect(1, 8),
             text = "Cv",
             is_checked = Joypad.input.Cdown
@@ -200,7 +128,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 85,
-            
+
             rectangle = grid_rect(5, 7),
             text = "D<",
             is_checked = Joypad.input.left
@@ -208,7 +136,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 90,
-            
+
             rectangle = grid_rect(7, 7),
             text = "D>",
             is_checked = Joypad.input.right
@@ -216,7 +144,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 95,
-            
+
             rectangle = grid_rect(6, 6),
             text = "D^",
             is_checked = Joypad.input.up
@@ -224,7 +152,7 @@ return {
 
         Mupen_lua_ugui.toggle_button({
             uid = 100,
-            
+
             rectangle = grid_rect(6, 8),
             text = "Dv",
             is_checked = Joypad.input.down
