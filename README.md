@@ -24,7 +24,6 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 - n-Frame Lookahead[^5]
 - Customizable formatting[^6]
 - 3D Object Visualization[^7]
-- Up to 800% better performance on Mupen64 1.1.6
 
 [^1]: Only versions newer than 1.1.3 will support themes
 [^2]: The script will resize its elements intelligently to fit, and will thus work on small and huge resolutions
