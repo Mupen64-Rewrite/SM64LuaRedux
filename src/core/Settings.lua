@@ -59,6 +59,7 @@ Settings = {
         dofile(res_path .. "neptune.lua"),
         dofile(res_path .. "crackhex.lua"),
         dofile(res_path .. "fl-studio.lua"),
+        dofile(res_path .. "steam.lua"),
     },
     active_style_index = 1
 }
