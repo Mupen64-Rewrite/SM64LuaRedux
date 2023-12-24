@@ -220,7 +220,11 @@ end
 emu.atinput(at_input)
 emu.atupdatescreen(at_update_screen)
 emu.atvi(at_vi)
-emu.atstop(Drawing.size_down)
+emu.atstop(function ()
+    Drawing.size_down()
+    BreitbandGraphics.free()
+    Mupen_lua_ugui_ext.free()
+end)
 emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
     if msg_id == 522 then                         -- WM_MOUSEWHEEL
         -- high word (most significant 16 bits) is scroll rotation in multiples of WHEEL_DELTA (120)

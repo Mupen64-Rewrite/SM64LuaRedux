@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.4.0
+-- mupen-lua-ugui 1.5.0
 
 if emu.set_renderer then
     -- Specify D2D renderer
@@ -6,6 +6,28 @@ if emu.set_renderer then
 end
 
 BreitbandGraphics = {
+
+
+    internal = {
+        brushes = {},
+        images = {},
+        brush_from_color = function(color)
+            local key = (color.r << 24) | (color.g << 16) | (color.b << 8) | (color.a and color.a or 255)
+            if not BreitbandGraphics.internal.brushes[key] then
+                local float_color = BreitbandGraphics.color_to_float(color)
+                BreitbandGraphics.internal.brushes[key] = d2d.create_brush(float_color.r, float_color.g, float_color.b,
+                    float_color.a)
+            end
+            return BreitbandGraphics.internal.brushes[key]
+        end,
+        image_from_path = function(path)
+            if not BreitbandGraphics.internal.images[path] then
+                BreitbandGraphics.internal.images[path] = d2d.load_image(path)
+            end
+            return BreitbandGraphics.internal.images[path]
+        end,
+    },
+
     --- Converts a color value to its corresponding hexadecimal representation
     --- @param color table The color value to convert
     --- @return _ string The hexadecimal representation of the color
@@ -137,7 +159,6 @@ BreitbandGraphics = {
         }
     end,
 
-    bitmap_cache = {},
     ---Measures the size of a string
     ---@param text string The string to be measured
     ---@param font_size number The font size
@@ -151,17 +172,26 @@ BreitbandGraphics = {
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param thickness number The outline's thickness
     draw_rectangle = function(rectangle, color, thickness)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.draw_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, thickness)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+        d2d.draw_rectangle(
+            rectangle.x,
+            rectangle.y,
+            rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height,
+            thickness,
+            brush)
     end,
     ---Draws a rectangle
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     fill_rectangle = function(rectangle, color)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.fill_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+        d2d.fill_rectangle(
+            rectangle.x,
+            rectangle.y,
+            rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height,
+            brush)
     end,
     ---Draws a rounded rectangle's outline
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
@@ -169,37 +199,57 @@ BreitbandGraphics = {
     ---@param radii table The corner radii as `{x, y}`
     ---@param thickness number The outline's thickness
     draw_rounded_rectangle = function(rectangle, color, radii, thickness)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.draw_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0,
-            thickness)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+        d2d.draw_rounded_rectangle(
+            rectangle.x,
+            rectangle.y,
+            rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height,
+            radii.x,
+            radii.y,
+            thickness,
+            brush)
     end,
     ---Fills a rounded rectangle
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param radii table The corner radii as `{x, y}`
     fill_rounded_rectangle = function(rectangle, color, radii)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.fill_rounded_rectangle(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height, radii.x, radii.y, float_color.r, float_color.g, float_color.b, 1.0)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+        d2d.fill_rounded_rectangle(
+            rectangle.x,
+            rectangle.y,
+            rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height,
+            radii.x,
+            radii.y,
+            brush)
     end,
     ---Draws an ellipse's outline
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param thickness number The outline's thickness
     draw_ellipse = function(rectangle, color, thickness)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.draw_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
-            rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0,
-            thickness)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+        d2d.draw_ellipse(
+            rectangle.x + rectangle.width / 2,
+            rectangle.y + rectangle.height / 2,
+            rectangle.width / 2,
+            rectangle.height / 2,
+            thickness,
+            brush)
     end,
     ---Draws an ellipse
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     fill_ellipse = function(rectangle, color)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.fill_ellipse(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
-            rectangle.width / 2, rectangle.height / 2, float_color.r, float_color.g, float_color.b, 1.0)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+        d2d.fill_ellipse(
+            rectangle.x + rectangle.width / 2,
+            rectangle.y + rectangle.height / 2,
+            rectangle.width / 2,
+            rectangle.height / 2,
+            brush)
     end,
     ---Draws text
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
@@ -211,11 +261,12 @@ BreitbandGraphics = {
     ---@param font_name string The font name
     ---@param text string The text
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-        text)
+                         text)
         if text == nil then
             text = ''
         end
 
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
         local d_horizontal_alignment = 0
         local d_vertical_alignment = 0
         local d_style = 0
@@ -259,11 +310,21 @@ BreitbandGraphics = {
         if type(text) ~= 'string' then
             text = tostring(text)
         end
-        local float_color = BreitbandGraphics.color_to_float(color)
         d2d.set_text_antialias_mode(d_text_antialias_mode)
-        d2d.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, text, font_name,
-            font_size, d_weight, d_style, d_horizontal_alignment, d_vertical_alignment, d_options)
+        d2d.draw_text(
+            rectangle.x,
+            rectangle.y,
+            rectangle.x + rectangle.width,
+            rectangle.y + rectangle.height,
+            text,
+            font_name,
+            font_size,
+            d_weight,
+            d_style,
+            d_horizontal_alignment,
+            d_vertical_alignment,
+            d_options,
+            brush)
     end,
     ---Draws a line
     ---@param from table The start point as `{x, y}`
@@ -271,9 +332,15 @@ BreitbandGraphics = {
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param thickness number The line's thickness
     draw_line = function(from, to, color, thickness)
-        local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.draw_line(from.x, from.y, to.x, to.y, float_color.r, float_color.g, float_color.b, 1.0,
-            thickness)
+        local brush = BreitbandGraphics.internal.brush_from_color(color)
+
+        d2d.draw_line(
+            from.x,
+            from.y,
+            to.x,
+            to.y,
+            thickness,
+            brush)
     end,
     ---Pushes a clip layer to the clip stack
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
@@ -292,125 +359,174 @@ BreitbandGraphics = {
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param filter string The texture filter to be used while drawing the image. `nearest` | `linear`
     draw_image = function(destination_rectangle, source_rectangle, path, color, filter)
-        if not BreitbandGraphics.bitmap_cache[path] then
-            print('Loaded image from ' .. path)
-            d2d.load_image(path, path)
-            BreitbandGraphics.bitmap_cache[path] = path
-        end
         if not filter then
             filter = 'nearest'
         end
         local float_color = BreitbandGraphics.color_to_float(color)
-        d2d.draw_image(destination_rectangle.x, destination_rectangle.y,
+        local image = BreitbandGraphics.internal.image_from_path(path)
+        local interpolation = filter == 'nearest' and 0 or 1
+
+        d2d.draw_image(
+            destination_rectangle.x,
+            destination_rectangle.y,
             destination_rectangle.x + destination_rectangle.width,
             destination_rectangle.y + destination_rectangle.height,
-            source_rectangle.x, source_rectangle.y, source_rectangle.x + source_rectangle.width,
-            source_rectangle.y + source_rectangle.height, path, float_color.a, filter == 'nearest' and 0 or 1)
+            source_rectangle.x,
+            source_rectangle.y,
+            source_rectangle.x + source_rectangle.width,
+            source_rectangle.y + source_rectangle.height,
+            float_color.a,
+            interpolation,
+            image)
+    end,
+    ---Draws a nineslice-scalable image
+    ---@param destination_rectangle table The destination rectangle as `{x, y, width, height}` 
+    ---@param source_rectangle table The source rectangle as `{x, y, width, height}`
+    ---@param source_rectangle_center table The source rectangle's center part as `{x, y, width, height}`
+    ---@param path string The image's absolute path on disk
+    ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
+    ---@param filter string The texture filter to be used while drawing the image. `nearest` | `linear`
+    draw_image_nineslice = function(destination_rectangle, source_rectangle, source_rectangle_center, path,
+                                    color, filter)
+        destination_rectangle = {
+            x = math.floor(destination_rectangle.x),
+            y = math.floor(destination_rectangle.y),
+            width = math.ceil(destination_rectangle.width),
+            height = math.ceil(destination_rectangle.height),
+        }
+        source_rectangle = {
+            x = math.floor(source_rectangle.x),
+            y = math.floor(source_rectangle.y),
+            width = math.ceil(source_rectangle.width),
+            height = math.ceil(source_rectangle.height),
+        }
+        local corner_size = {
+            x = math.abs(source_rectangle_center.x - source_rectangle.x),
+            y = math.abs(source_rectangle_center.y - source_rectangle.y),
+        }
+
+
+        local top_left = {
+            x = source_rectangle.x,
+            y = source_rectangle.y,
+            width = corner_size.x,
+            height = corner_size.y,
+        }
+        local bottom_left = {
+            x = source_rectangle.x,
+            y = source_rectangle_center.y + source_rectangle_center.height,
+            width = corner_size.x,
+            height = corner_size.y,
+        }
+        local left = {
+            x = source_rectangle.x,
+            y = source_rectangle_center.y,
+            width = corner_size.x,
+            height = source_rectangle.height - corner_size.y * 2,
+        }
+        local top_right = {
+            x = source_rectangle.x + source_rectangle.width - corner_size.x,
+            y = source_rectangle.y,
+            width = corner_size.x,
+            height = corner_size.y,
+        }
+        local bottom_right = {
+            x = source_rectangle.x + source_rectangle.width - corner_size.x,
+            y = source_rectangle_center.y + source_rectangle_center.height,
+            width = corner_size.x,
+            height = corner_size.y,
+        }
+        local top = {
+            x = source_rectangle_center.x,
+            y = source_rectangle.y,
+            width = source_rectangle.width - corner_size.x * 2,
+            height = corner_size.y,
+        }
+        local right = {
+            x = source_rectangle.x + source_rectangle.width - corner_size.x,
+            y = source_rectangle_center.y,
+            width = corner_size.x,
+            height = source_rectangle.height - corner_size.y * 2,
+        }
+        local bottom = {
+            x = source_rectangle_center.x,
+            y = source_rectangle.y + source_rectangle.height - corner_size.y,
+            width = source_rectangle.width - corner_size.x * 2,
+            height = corner_size.y,
+        }
+
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x,
+            y = destination_rectangle.y,
+            width = top_left.width,
+            height = top_left.height,
+        }, top_left, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x + destination_rectangle.width - top_right.width,
+            y = destination_rectangle.y,
+            width = top_right.width,
+            height = top_right.height,
+        }, top_right, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x,
+            y = destination_rectangle.y + destination_rectangle.height - bottom_left.height,
+            width = bottom_left.width,
+            height = bottom_left.height,
+        }, bottom_left, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x + destination_rectangle.width - bottom_right.width,
+            y = destination_rectangle.y + destination_rectangle.height - bottom_right.height,
+            width = bottom_right.width,
+            height = bottom_right.height,
+        }, bottom_right, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x + top_left.width,
+            y = destination_rectangle.y + top_left.height,
+            width = destination_rectangle.width - bottom_right.width * 2,
+            height = destination_rectangle.height - bottom_right.height * 2,
+        }, source_rectangle_center, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x,
+            y = destination_rectangle.y + top_left.height,
+            width = left.width,
+            height = destination_rectangle.height - bottom_left.height * 2,
+        }, left, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x + destination_rectangle.width - top_right.width,
+            y = destination_rectangle.y + top_right.height,
+            width = left.width,
+            height = destination_rectangle.height - bottom_right.height * 2,
+        }, right, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x + top_left.width,
+            y = destination_rectangle.y,
+            width = destination_rectangle.width - top_right.width * 2,
+            height = top.height,
+        }, top, path, color, filter)
+        BreitbandGraphics.draw_image({
+            x = destination_rectangle.x + top_left.width,
+            y = destination_rectangle.y + destination_rectangle.height - bottom.height,
+            width = destination_rectangle.width - bottom_right.width * 2,
+            height = bottom.height,
+        }, bottom, path, color, filter)
     end,
     ---Gets an image's metadata
     ---@param path string The image's absolute path on disk
     get_image_info = function(path)
-        if not BreitbandGraphics.bitmap_cache[path] then
-            print('Loaded image from ' .. path)
-            d2d.load_image(path, path)
-            BreitbandGraphics.bitmap_cache[path] = path
+        local image = BreitbandGraphics.internal.image_from_path(path)
+        return d2d.get_image_info(image)
+    end,
+    ---Releases allocated resources
+    ---Must be called before stopping script
+    free = function()
+        for key, value in pairs(BreitbandGraphics.internal.brushes) do
+            d2d.free_brush(value)
         end
-        return d2d.get_image_info(path)
+        for key, value in pairs(BreitbandGraphics.internal.images) do
+            d2d.free_image(value)
+        end
     end,
 }
-
-if not d2d then
-    print('BreitbandGraphics: Applying GDI shim. This will degrade visual fidelity and performance.')
-    BreitbandGraphics.get_text_size = function(text, font_size, font_name)
-        wgui.setfont(font_size - 2, font_name, '')
-        return wgui.gettextextent(text)
-    end
-    BreitbandGraphics.draw_rectangle = function(rectangle, color, thickness)
-        wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
-        wgui.setbrush('null')
-        wgui.rect(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
-    end
-    BreitbandGraphics.fill_rectangle = function(rectangle, color)
-        wgui.setpen('null')
-        wgui.setbrush(BreitbandGraphics.color_to_hex(color))
-        wgui.rect(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
-    end
-    BreitbandGraphics.draw_rounded_rectangle = function(rectangle, color, radii, thickness)
-
-    end
-    BreitbandGraphics.fill_rounded_rectangle = function(rectangle, color, radii)
-
-    end
-    BreitbandGraphics.draw_ellipse = function(rectangle, color, thickness)
-        wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
-        wgui.setbrush('null')
-        wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
-    end
-    BreitbandGraphics.fill_ellipse = function(rectangle, color)
-        wgui.setpen('null')
-        wgui.setbrush(BreitbandGraphics.color_to_hex(color))
-        wgui.ellipse(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height)
-    end
-    BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size,
-        font_name,
-        text)
-        wgui.setcolor(BreitbandGraphics.color_to_hex(color))
-        wgui.setfont(font_size - 2, font_name, '')
-        local flags = 's'
-        if horizontal_alignment == 'start' then
-            flags = flags .. 'l'
-        end
-        if horizontal_alignment == 'center' then
-            flags = flags .. 'c'
-        end
-        if horizontal_alignment == 'end' then
-            flags = flags .. 'r'
-        end
-        if vertical_alignment == 'start' then
-            flags = flags .. 't'
-        end
-        if vertical_alignment == 'center' then
-            flags = flags .. 'v'
-        end
-        if vertical_alignment == 'end' then
-            flags = flags .. 'b'
-        end
-        wgui.drawtext(text, {
-            l = rectangle.x,
-            t = rectangle.y,
-            w = rectangle.width,
-            h = rectangle.height,
-        }, flags)
-    end
-    BreitbandGraphics.draw_line = function(from, to, color, thickness)
-        wgui.setpen(BreitbandGraphics.color_to_hex(color), thickness)
-        wgui.setbrush('null')
-        wgui.line(from.x, from.y, to.x, to.y)
-    end
-    BreitbandGraphics.push_clip = function(rectangle)
-        -- one-depth clip
-        -- TODO: we can emulate stacked clips but for now this is good
-        wgui.setclip(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
-    end
-    BreitbandGraphics.pop_clip = function()
-        wgui.resetclip()
-    end
-    BreitbandGraphics.draw_image = function(destination_rectangle, source_rectangle, path, color, filter)
-        if not BreitbandGraphics.bitmap_cache[path] then
-            BreitbandGraphics.bitmap_cache[path] = wgui.loadimage(path)
-        end
-        wgui.drawimage(BreitbandGraphics.bitmap_cache[path], destination_rectangle.x, destination_rectangle.y,
-            destination_rectangle.width, destination_rectangle.height,
-            source_rectangle.x, source_rectangle.y, source_rectangle.width, source_rectangle.height, 0)
-    end
-    BreitbandGraphics.get_image_info = function(path)
-        if not BreitbandGraphics.bitmap_cache[path] then
-            BreitbandGraphics.bitmap_cache[path] = wgui.loadimage(path)
-        end
-
-        return wgui.getimageinfo(BreitbandGraphics.bitmap_cache[path])
-    end
-end
 
 Mupen_lua_ugui = {
 
@@ -425,7 +541,7 @@ Mupen_lua_ugui = {
         previous_input_state = nil,
 
         -- the position of the mouse at the last click
-        mouse_down_position = {x = 0, y = 0},
+        mouse_down_position = { x = 0, y = 0 },
 
         -- uid of the currently active control
         active_control = nil,
@@ -821,7 +937,8 @@ Mupen_lua_ugui = {
             if not item then
                 return
             end
-            BreitbandGraphics.fill_rectangle(rectangle, Mupen_lua_ugui.standard_styler.list_item_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(rectangle,
+                Mupen_lua_ugui.standard_styler.list_item_back_colors[visual_state])
 
             local size = BreitbandGraphics.get_text_size(item, Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name)
@@ -830,15 +947,17 @@ Mupen_lua_ugui = {
                     y = rectangle.y,
                     width = size.width * 2,
                     height = rectangle.height,
-                }, 'start', 'center', {aliased = not Mupen_lua_ugui.standard_styler.cleartype},
+                }, 'start', 'center', { aliased = not Mupen_lua_ugui.standard_styler.cleartype },
                 Mupen_lua_ugui.standard_styler.list_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 item)
         end,
         draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
-            BreitbandGraphics.fill_rectangle(container_rectangle, Mupen_lua_ugui.standard_styler.scrollbar_back_colors[visual_state])
-            BreitbandGraphics.fill_rectangle(thumb_rectangle, Mupen_lua_ugui.standard_styler.scrollbar_thumb_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(container_rectangle,
+                Mupen_lua_ugui.standard_styler.scrollbar_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(thumb_rectangle,
+                Mupen_lua_ugui.standard_styler.scrollbar_thumb_colors[visual_state])
         end,
         draw_list = function(control, rectangle)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -901,7 +1020,7 @@ Mupen_lua_ugui = {
             Mupen_lua_ugui.standard_styler.draw_raised_frame(control, visual_state)
 
             BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-                {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype},
+                { clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype },
                 Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -923,7 +1042,8 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'start', 'center', {aliased = not Mupen_lua_ugui.standard_styler.cleartype}, Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
+                }, 'start', 'center', { aliased = not Mupen_lua_ugui.standard_styler.cleartype },
+                Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', '<')
             BreitbandGraphics.draw_text({
@@ -931,7 +1051,8 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'end', 'center', {aliased = not Mupen_lua_ugui.standard_styler.cleartype}, Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
+                }, 'end', 'center', { aliased = not Mupen_lua_ugui.standard_styler.cleartype },
+                Mupen_lua_ugui.standard_styler.raised_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', '>')
         end,
@@ -980,7 +1101,7 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                     height = control.rectangle.height,
-                }, 'start', 'start', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype},
+                }, 'start', 'start', { clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype },
                 Mupen_lua_ugui.standard_styler.edit_frame_text_colors[visual_state],
                 Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name, control.text)
@@ -1021,7 +1142,7 @@ Mupen_lua_ugui = {
                         y = control.rectangle.y,
                         width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 2,
                         height = control.rectangle.height,
-                    }, 'start', 'start', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype},
+                    }, 'start', 'start', { clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype },
                     BreitbandGraphics.invert_color(Mupen_lua_ugui.standard_styler.edit_frame_text_colors
                         [visual_state]),
                     Mupen_lua_ugui.standard_styler.font_size,
@@ -1092,7 +1213,8 @@ Mupen_lua_ugui = {
 
             BreitbandGraphics.fill_rectangle(BreitbandGraphics.inflate_rectangle(track_rectangle, 1),
                 Mupen_lua_ugui.standard_styler.trackbar_border_colors[visual_state])
-            BreitbandGraphics.fill_rectangle(track_rectangle, Mupen_lua_ugui.standard_styler.trackbar_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(track_rectangle,
+                Mupen_lua_ugui.standard_styler.trackbar_back_colors[visual_state])
         end,
         draw_thumb = function(control, visual_state, is_horizontal, value)
             local head_rectangle = {}
@@ -1118,7 +1240,8 @@ Mupen_lua_ugui = {
                     height = effective_bar_height,
                 }
             end
-            BreitbandGraphics.fill_rectangle(head_rectangle, Mupen_lua_ugui.standard_styler.trackbar_thumb_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(head_rectangle,
+                Mupen_lua_ugui.standard_styler.trackbar_thumb_colors[visual_state])
         end,
         draw_trackbar = function(control)
             local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -1149,7 +1272,8 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width,
                     height = control.rectangle.height,
-                }, 'start', 'center', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype}, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'start', 'center', { clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype }, text_color,
+                Mupen_lua_ugui.standard_styler.font_size,
                 Mupen_lua_ugui.standard_styler.font_name,
                 control.items[control.selected_index])
 
@@ -1158,7 +1282,8 @@ Mupen_lua_ugui = {
                     y = control.rectangle.y,
                     width = control.rectangle.width - Mupen_lua_ugui.standard_styler.textbox_padding * 4,
                     height = control.rectangle.height,
-                }, 'end', 'center', {clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype}, text_color, Mupen_lua_ugui.standard_styler.font_size,
+                }, 'end', 'center', { clip = true, aliased = not Mupen_lua_ugui.standard_styler.cleartype }, text_color,
+                Mupen_lua_ugui.standard_styler.font_size,
                 'Segoe UI Mono', 'v')
         end,
 
@@ -1170,7 +1295,8 @@ Mupen_lua_ugui = {
             local max_width = 0
             if control.horizontal_scroll == true then
                 for _, value in pairs(control.items) do
-                    local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size, Mupen_lua_ugui.standard_styler.font_name).width
+                    local width = BreitbandGraphics.get_text_size(value, Mupen_lua_ugui.standard_styler.font_size,
+                        Mupen_lua_ugui.standard_styler.font_name).width
 
                     if width > max_width then
                         max_width = width
