@@ -26,6 +26,8 @@ Mupen_lua_ugui_ext = {
     end,
     internal = {
         drawings = {},
+        -- 1.1.5 - 1.1.6
+        rt_lut = {},
         rectangle_to_key = function(rectangle)
             return rectangle.x .. rectangle.y .. rectangle.width .. rectangle.height
         end,
@@ -33,7 +35,7 @@ Mupen_lua_ugui_ext = {
             return type .. visual_state .. Mupen_lua_ugui_ext.internal.rectangle_to_key(rectangle)
         end,
         cached_draw = function(key, rectangle, draw_callback)
-            if not Mupen_lua_ugui_ext.internal.drawings[key] then
+            if not Mupen_lua_ugui_ext.internal.rt_lut[key] then
                 local render_target = d2d.create_render_target(rectangle.width, rectangle.height)
                 d2d.begin_render_target(render_target)
                 draw_callback({
@@ -43,31 +45,25 @@ Mupen_lua_ugui_ext = {
                     height = rectangle.height,
                 })
                 d2d.end_render_target(render_target)
-                Mupen_lua_ugui_ext.internal.drawings[key] = render_target
+
+                Mupen_lua_ugui_ext.internal.rt_lut[key] = render_target
             end
             -- bitmap has same key as render_target
-            d2d.draw_image(
-                rectangle.x,
-                rectangle.y,
+            d2d.draw_image(rectangle.x, rectangle.y,
                 rectangle.x + rectangle.width,
                 rectangle.y + rectangle.height,
-                0,
-                0,
-                rectangle.width,
-                rectangle.height,
-                1,
-                0,
-                d2d.get_render_target_bitmap(Mupen_lua_ugui_ext.internal.drawings[key]))
+                0, 0, rectangle.width,
+                rectangle.height, Mupen_lua_ugui_ext.internal.rt_lut[key], 1, 0)
         end,
 
     },
     free = function()
         if d2d and d2d.destroy_render_target then
-            for i = 1, #Mupen_lua_ugui_ext.internal.drawings, 1 do
-                d2d.destroy_render_target(Mupen_lua_ugui_ext.internal.drawings[i])
+            for i = 1, #Mupen_lua_ugui_ext.internal.rt_lut, 1 do
+                d2d.destroy_render_target(Mupen_lua_ugui_ext.internal.rt_lut[i])
             end
         end
-        Mupen_lua_ugui_ext.internal.drawings = {}
+        Mupen_lua_ugui_ext.internal.rt_lut = {}
         print("Purged render target cache")
     end,
 }
