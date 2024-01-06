@@ -63,7 +63,6 @@ dofile(core_path .. "Angles.lua")
 dofile(core_path .. "Engine.lua")
 dofile(core_path .. "MoreMaths.lua")
 dofile(core_path .. "Actions.lua")
-dofile(core_path .. "Swimming.lua")
 dofile(core_path .. "Grind.lua")
 dofile(core_path .. "WorldVisualizer.lua")
 dofile(core_path .. "Lookahead.lua")
@@ -90,7 +89,8 @@ local views = {
 }
 
 local processors = {
-    dofile(core_path .. "Framewalk.lua")
+    dofile(core_path .. "Framewalk.lua"),
+    dofile(core_path .. "Swimming.lua")
 }
 
 local current_tab_index = 1
@@ -143,7 +143,6 @@ function at_input()
     end
 
     Joypad.send()
-    Swimming.swim()
     Ghost.update()
 end
 
