@@ -576,6 +576,7 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
     Mupen_lua_ugui.standard_styler.edit_frame_text_colors = style.textbox.text_colors
     Mupen_lua_ugui.standard_styler.font_name = style.font_name
     Mupen_lua_ugui.standard_styler.font_size = style.font_size
+    Mupen_lua_ugui.standard_styler.item_height = style.item_height
     Mupen_lua_ugui.standard_styler.list_text_colors = style.listbox.text_colors
     Mupen_lua_ugui.standard_styler.scrollbar_thickness = style.scrollbar_rail.width
     Mupen_lua_ugui.standard_styler.cleartype = not style.pixelated_text
