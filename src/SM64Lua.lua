@@ -35,15 +35,6 @@ function expand_rect(t)
     }
 end
 
-local queued_pause = false
-local post_frame_advance_callback = nil
-
-function frame_advance(func)
-    emu.pause(true)
-    queued_pause = true
-    post_frame_advance_callback = func
-end
-
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 res_path = folder .. "res\\"
 views_path = folder .. "views\\"
@@ -102,13 +93,6 @@ local mouse_wheel = 0
 local new_frame = true
 
 function at_input()
-    if queued_pause then
-        emu.pause(false)
-        queued_pause = false
-        if post_frame_advance_callback then
-            post_frame_advance_callback()
-        end
-    end
 
     -- frame stage 1: set everything up
     new_frame = true
