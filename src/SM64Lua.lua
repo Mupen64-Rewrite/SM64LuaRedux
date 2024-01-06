@@ -90,7 +90,8 @@ local views = {
 
 local processors = {
     dofile(core_path .. "Framewalk.lua"),
-    dofile(core_path .. "Swimming.lua")
+    dofile(core_path .. "Swimming.lua"),
+    dofile(core_path .. "Grind.lua"),
 }
 
 local current_tab_index = 1
@@ -135,7 +136,6 @@ function at_input()
     -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
     -- TODO: make this into a priority callback system?
     Timer.update()
-    Grind.update()
     Lookahead.update()
 
     for i = 1, #processors, 1 do
