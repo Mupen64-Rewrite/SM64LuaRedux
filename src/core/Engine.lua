@@ -82,7 +82,7 @@ function Engine.getArctanAngle(r, d, n, s)
 	return Settings.goal_angle
 end
 
-function Engine.inputsForAngle(goal)
+Engine.inputsForAngle = function(goal, curr_input)
 	if (Settings.movement_mode == Settings.movement_modes.match_yaw) then
 		goal = Memory.current.mario_facing_yaw
 		if ((Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
@@ -101,7 +101,7 @@ function Engine.inputsForAngle(goal)
 	else
 		offset = 0
 	end
-	
+
 	if Settings.strain_speed_target then
 		if Memory.current.mario_action == 0x04000440 or Memory.current.mario_action == 0x0400044A or Memory.current.mario_action == 0x08000239 or Memory.current.mario_action == 0x0C000232 or Memory.current.mario_action == 0x04000442 or Memory.current.mario_action == 0x04000443 or Memory.current.mario_action == 0x010208B7 or Memory.current.mario_action == 0x04000445 or Memory.current.mario_action == 0x00840454 or Memory.current.mario_action == 0x00840452 or (Memory.current.mario_action > 0x0400046F and Memory.current.mario_action < 0x04000474) or (Memory.current.mario_action > 0x00000473 and Memory.current.mario_action < 0x00000478) then
 			actionflag = 1
@@ -116,7 +116,7 @@ function Engine.inputsForAngle(goal)
 			else
 				goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 			end
-		elseif (Memory.current.mario_f_speed >= 10 and offset ~= 0 and Memory.current.mario_f_speed < 34.85 and Memory.current.mario_action == 0x04808459 and joypad.get(Settings.controller_index).B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+		elseif (Memory.current.mario_f_speed >= 10 and offset ~= 0 and Memory.current.mario_f_speed < 34.85 and Memory.current.mario_action == 0x04808459 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			speedsign = 1
 			targetspeed = 32
 			if (Memory.current.mario_f_speed > 32) then
@@ -280,7 +280,7 @@ local function effectiveAngle(x, y)
 	return math.atan2(-y, x)
 end
 
-function Engine.scaleInputsForMagnitude(result, goal_mag, use_high_mag)
+local function scaleInputsForMagnitude(result, goal_mag, use_high_mag)
 	if goal_mag >= 127 then return end
 
 	local start_x, start_y = result.X, result.Y
@@ -383,3 +383,20 @@ end
 function Engine.GetLagFrames()
 	return vi_count - (inp_count * 2)
 end
+
+return {
+	process = function(input)
+		if Settings.movement_mode == Settings.movement_modes.disabled then
+			return input
+		end
+
+		local result = Engine.inputsForAngle(Settings.goal_angle, input)
+		if Settings.goal_mag then
+			scaleInputsForMagnitude(result, Settings.goal_mag, Settings.high_magnitude)
+		end
+
+		input.X = result.X
+		input.Y = result.Y
+		return input
+	end
+}

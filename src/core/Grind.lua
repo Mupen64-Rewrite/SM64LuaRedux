@@ -3,16 +3,16 @@
 local tries = 0
 local falling = false
 
-local function get_left_inputs()
-    local result = Engine.inputsForAngle(Memory.current.mario_facing_yaw + 32768 / Settings.grind_divisor)
+local function get_left_inputs(input)
+    local result = Engine.inputsForAngle(Memory.current.mario_facing_yaw + 32768 / Settings.grind_divisor, input)
     return {
         X = result.X,
         Y = result.Y,
     }
 end
 
-local function get_right_inputs()
-    local result = Engine.inputsForAngle(Memory.current.mario_facing_yaw - 32768 / Settings.grind_divisor)
+local function get_right_inputs(input)
+    local result = Engine.inputsForAngle(Memory.current.mario_facing_yaw - 32768 / Settings.grind_divisor, input)
     return {
         X = result.X,
         Y = result.Y,
@@ -40,7 +40,7 @@ return {
                 print("one cycle, now sliding")
             end
             tries = tries + 1
-            local grind_input = Settings.grind_left and get_right_inputs() or get_left_inputs()
+            local grind_input = Settings.grind_left and get_right_inputs(input) or get_left_inputs(input)
             input.X = grind_input.X + tries
             input.Y = grind_input.Y + tries
             input.B = true
@@ -53,7 +53,7 @@ return {
                 print("one cycle, now falling")
             end
             tries = tries + 1
-            local grind_input = Settings.grind_left and get_left_inputs() or get_right_inputs()
+            local grind_input = Settings.grind_left and get_left_inputs(input) or get_right_inputs(input)
             input.X = grind_input.X + tries
             input.Y = grind_input.Y + tries
             input.B = true

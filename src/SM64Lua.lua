@@ -82,6 +82,7 @@ local processors = {
     dofile(core_path .. "Framewalk.lua"),
     dofile(core_path .. "Swimming.lua"),
     dofile(core_path .. "Grind.lua"),
+    dofile(core_path .. "Engine.lua"),
 }
 
 local current_tab_index = 1
@@ -97,16 +98,6 @@ function at_input()
     new_frame = true
     Joypad.update()
     Engine.input()
-
-    if Settings.movement_mode ~= Settings.movement_modes.disabled then
-        result = Engine.inputsForAngle(Settings.goal_angle)
-        if Settings.goal_mag then
-            Engine.scaleInputsForMagnitude(result, Settings.goal_mag, Settings.high_magnitude)
-        end
-        Joypad.set('X', result.X)
-        Joypad.set('Y', result.Y)
-    end
-
 
     if Settings.override_rng then
         if Settings.override_rng_use_index then
