@@ -64,7 +64,6 @@ dofile(core_path .. "Engine.lua")
 dofile(core_path .. "MoreMaths.lua")
 dofile(core_path .. "Actions.lua")
 dofile(core_path .. "Swimming.lua")
-dofile(core_path .. "Framewalk.lua")
 dofile(core_path .. "Grind.lua")
 dofile(core_path .. "WorldVisualizer.lua")
 dofile(core_path .. "Lookahead.lua")
@@ -88,6 +87,10 @@ local views = {
     dofile(views_path .. "Experiments.lua"),
     dofile(views_path .. "RNG.lua"),
     dofile(views_path .. "Ghost.lua"),
+}
+
+local processors = {
+    dofile(core_path .. "Framewalk.lua")
 }
 
 local current_tab_index = 1
@@ -134,9 +137,13 @@ function at_input()
     Timer.update()
     Grind.update()
     Lookahead.update()
+
+    for i = 1, #processors, 1 do
+        Joypad.input = processors[i].process(Joypad.input)
+    end
+
     Joypad.send()
     Swimming.swim()
-    Framewalk.update()
     Ghost.update()
 end
 
