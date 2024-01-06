@@ -17,7 +17,7 @@ return {
         Settings.goal_mag = Mupen_lua_ugui.numberbox({
             uid = 10,
 
-            rectangle = grid_rect(4, 4, 4, 1),
+            rectangle = grid_rect(4, 4, 2, 1),
             places = 3,
             value = Settings.goal_mag
         })
@@ -25,16 +25,16 @@ return {
         Settings.high_magnitude = Mupen_lua_ugui.toggle_button({
             uid = 15,
 
-            rectangle = grid_rect(4, 6, 2, 1),
-            text = 'Hi-Mag',
+            rectangle = grid_rect(7, 4, 1, 1),
+            text = 'H',
             is_checked = Settings.high_magnitude
         })
 
         if Mupen_lua_ugui.button({
                 uid = 20,
 
-                rectangle = grid_rect(6, 6, 2, 1),
-                text = 'Reset',
+                rectangle = grid_rect(6, 4, 1, 1),
+                text = 'R',
             }) then
             Settings.goal_mag = 127
         end
@@ -74,7 +74,7 @@ return {
 
         Settings.swim = Mupen_lua_ugui.toggle_button({
             uid = 45,
-            rectangle = grid_rect(6.5, 7, 1.5, 1),
+            rectangle = grid_rect(6, 14, 2, 1),
             text = 'Swim',
             is_checked = Settings.swim
         })
