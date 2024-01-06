@@ -216,10 +216,17 @@ function at_vi()
     Engine.vi()
 end
 
+function at_loadstate()
+    Memory.update_previous()
+    Memory.update()
+    VarWatch.update()
+end
+
+emu.atloadstate(at_loadstate)
 emu.atinput(at_input)
 emu.atupdatescreen(at_update_screen)
 emu.atvi(at_vi)
-emu.atstop(function ()
+emu.atstop(function()
     Drawing.size_down()
     BreitbandGraphics.free()
     Mupen_lua_ugui_ext.free()
