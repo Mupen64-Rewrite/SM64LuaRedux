@@ -16,28 +16,27 @@ for i = 1, 6, 1 do
     Presets.presets[i] = create_default_preset()
 end
 
+Presets.set_style = function(theme)
+    local mod_theme = Mupen_lua_ugui.internal.deep_clone(theme)
+
+    -- HACK: We scale some visual properties according to drawing scale
+    mod_theme.font_size = theme.font_size * Drawing.scale
+    mod_theme.item_height = theme.item_height * Drawing.scale
+
+    print("Theme prop dump")
+    print(mod_theme.font_size)
+    print(mod_theme.item_height)
+    print("---")
+
+    Mupen_lua_ugui_ext.apply_nineslice(mod_theme)
+end
+
 function Presets.apply(i)
     Presets.current_index = i
     Settings = Presets.presets[i].settings
     VarWatch = Presets.presets[i].var_watch
 
-    -- HACK: We store the theme's original font size and scale it according to drawing scale
-    if not Settings.styles[Settings.active_style_index].theme.original_font_size then
-        Settings.styles[Settings.active_style_index].theme.original_font_size = Settings.styles
-            [Settings.active_style_index].theme.font_size
-    end
-    Settings.styles[Settings.active_style_index].theme.font_size = Settings.styles[Settings.active_style_index].theme
-        .original_font_size * Drawing.scale
-
-    -- HACK: We store the theme's original item height and scale it according to drawing scale
-    if not Settings.styles[Settings.active_style_index].theme.original_item_height then
-        Settings.styles[Settings.active_style_index].theme.original_item_height = Settings.styles
-            [Settings.active_style_index].theme.item_height
-    end
-    Settings.styles[Settings.active_style_index].theme.item_height = Settings.styles[Settings.active_style_index].theme
-        .original_item_height * Drawing.scale
-
-    Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
+    Presets.set_style(Settings.styles[Settings.active_style_index].theme)
     VarWatch.update()
 end
 
