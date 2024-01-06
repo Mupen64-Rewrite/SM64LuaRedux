@@ -157,5 +157,12 @@ return {
             text = "Dv",
             is_checked = Joypad.input.down
         })
+
+        Mupen_lua_ugui.listbox({
+            uid = 105,
+            rectangle = grid_rect(0, 9, 8, 6),
+            selected_index = nil,
+            items = VarWatch.processed_values,
+        })
     end
 }
