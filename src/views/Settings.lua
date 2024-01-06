@@ -6,13 +6,13 @@ return {
         local new_active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,
             rectangle = grid_rect(0, 0, 4, 1),
-            items = lualinq.select_key(Settings.styles, "name"),
+            items = lualinq.select_key(Presets.styles, "name"),
             selected_index = Settings.active_style_index,
         })
 
         if new_active_style_index ~= Settings.active_style_index then
             Settings.active_style_index = new_active_style_index
-            Presets.set_style(Settings.styles[Settings.active_style_index].theme)
+            Presets.set_style(Presets.styles[Settings.active_style_index].theme)
         end
 
         Settings.format_angles_degrees = Mupen_lua_ugui.toggle_button({

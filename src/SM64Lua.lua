@@ -46,15 +46,14 @@ end
 
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 res_path = folder .. "res\\"
-local views_path = folder .. "views\\"
-local core_path = folder .. "core\\"
-local lib_path = folder .. "lib\\"
-
+views_path = folder .. "views\\"
+core_path = folder .. "core\\"
+lib_path = folder .. "lib\\"
 
 dofile(lib_path .. "mupen-lua-ugui.lua")
 dofile(lib_path .. "mupen-lua-ugui-ext.lua")
 dofile(lib_path .. "linq.lua")
-dofile(res_path .. "base.lua")
+dofile(res_path .. "base_style.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
 dofile(core_path .. "Drawing.lua")
@@ -161,7 +160,7 @@ function at_update_screen()
         y = 0,
         width = Drawing.size.width - Drawing.initial_size.width,
         height = Drawing.size.height
-    }, Settings.styles[Settings.active_style_index].theme.background_color)
+    }, Presets.styles[Settings.active_style_index].theme.background_color)
 
     views[current_tab_index].draw()
 
@@ -218,7 +217,7 @@ end
 
 function at_loadstate()
     -- Previous state is now messed up, since it's not the actual previous frame but some other game state
-    -- What do we do at this point, leave it like this and let the engine calculate wrong diffs, or copy current state to previous one?  
+    -- What do we do at this point, leave it like this and let the engine calculate wrong diffs, or copy current state to previous one?
     Memory.update_previous()
     Memory.update()
     VarWatch.update()

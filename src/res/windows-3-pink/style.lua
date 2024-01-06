@@ -1,6 +1,5 @@
 local theme = get_base_style()
 
-theme.path = res_path .. "windows-3-pink-atlas.png"
 theme.background_color = { r = 54, g = 30, b = 53 }
 theme.font_size = 11.4
 theme.font_name = "Consolas"

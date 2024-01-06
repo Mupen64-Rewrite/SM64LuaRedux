@@ -42,7 +42,7 @@ return {
         })
 
         BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center", {},
-            BreitbandGraphics.invert_color(Settings.styles[Settings.active_style_index].theme.background_color), 24,
+            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color), 24,
             "Consolas",
             Timer.get_frame_text())
 

@@ -49,17 +49,5 @@ Settings = {
     format_angles_degrees = false,
     visualize_objects = false,
     truncate_effective_angle = false,
-    styles = {
-        dofile(res_path .. "windows-11.lua"),
-        dofile(res_path .. "windows-10.lua"),
-        dofile(res_path .. "windows-10-dark.lua"),
-        dofile(res_path .. "windows-7.lua"),
-        dofile(res_path .. "windows-3-pink.lua"),
-        dofile(res_path .. "windows-xp.lua"),
-        dofile(res_path .. "neptune.lua"),
-        dofile(res_path .. "crackhex.lua"),
-        dofile(res_path .. "fl-studio.lua"),
-        dofile(res_path .. "steam.lua"),
-    },
     active_style_index = 1
 }

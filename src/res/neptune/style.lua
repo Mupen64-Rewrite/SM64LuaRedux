@@ -1,6 +1,5 @@
 local theme = get_base_style()
 
-theme.path = res_path .. "neptune-atlas.png"
 theme.background_color = { r = 24, g = 27, b = 40 }
 theme.button.text_colors = {
     [1] = BreitbandGraphics.hex_to_color("#C2C6D0"),

@@ -1,6 +1,5 @@
 function get_base_style()
     return {
-        path = res_path .. "windows-10-atlas.png",
         background_color = BreitbandGraphics.repeated_to_color(240),
         item_height = 15,
         font_size = 12,

@@ -1,6 +1,5 @@
 local theme = get_base_style()
 
-theme.path = res_path .. "fl-studio-atlas.png"
 theme.background_color = { r = 107, g = 116, b = 121 }
 theme.font_size = 14
 -- not preinstalled

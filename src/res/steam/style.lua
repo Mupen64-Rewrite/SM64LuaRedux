@@ -1,5 +1,4 @@
 local theme = get_base_style()
-theme.path = res_path .. "steam-atlas.png"
 theme.background_color = BreitbandGraphics.hex_to_color("#4C5945")
 theme.font_size = 11.4
 theme.font_name = "Tahoma"
