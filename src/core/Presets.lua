@@ -20,6 +20,13 @@ function Presets.apply(i)
     Presets.current_index = i
     Settings = Presets.presets[i].settings
     VarWatch = Presets.presets[i].var_watch
+
+    -- HACK: We store the theme's original font size and scale it according to drawing scale
+    if not Settings.styles[Settings.active_style_index].theme.original_font_size then
+        Settings.styles[Settings.active_style_index].theme.original_font_size = Settings.styles[Settings.active_style_index].theme.font_size
+    end  
+    Settings.styles[Settings.active_style_index].theme.font_size = Settings.styles[Settings.active_style_index].theme.original_font_size * Drawing.scale
+
     Mupen_lua_ugui_ext.apply_nineslice(Settings.styles[Settings.active_style_index].theme)
     VarWatch.update()
 end
