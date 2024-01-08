@@ -57,5 +57,29 @@ return {
             text = "Visualize Objects",
             is_checked = Settings.visualize_objects
         })
+        local previous_track_moved_distance = Settings.track_moved_distance
+        Settings.track_moved_distance = Mupen_lua_ugui.toggle_button({
+            uid = 35,
+
+            rectangle = grid_rect(0, 14, 4, 1),
+            text = 'Moved Distance',
+            is_checked = Settings.track_moved_distance
+        })
+
+        if Settings.track_moved_distance and not previous_track_moved_distance then
+            Settings.moved_distance_axis.x = MoreMaths.dec_to_float(Memory.current.mario_x)
+            Settings.moved_distance_axis.y = MoreMaths.dec_to_float(Memory.current.mario_y)
+            Settings.moved_distance_axis.z = MoreMaths.dec_to_float(Memory.current.mario_z)
+        end
+        if not Settings.track_moved_distance and previous_track_moved_distance then
+            Settings.moved_distance = Engine.GetTotalDistMoved()
+        end
+
+        Settings.moved_distance_ignore_y = Mupen_lua_ugui.toggle_button({
+            uid = 40,
+            rectangle = grid_rect(4, 14, 2, 1),
+            text = 'Ignore Y',
+            is_checked = Settings.moved_distance_ignore_y
+        })
     end
 }
