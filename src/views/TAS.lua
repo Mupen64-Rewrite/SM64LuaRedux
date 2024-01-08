@@ -39,23 +39,24 @@ return {
             Settings.goal_mag = 127
         end
 
-        local foreground_color = BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color)
+        local foreground_color = BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme
+        .background_color)
         BreitbandGraphics.draw_text(
-            grid_rect(4, 6, 2, 1), 
-            "center", 
-            "center", 
-            {}, 
-            foreground_color, 
-            Presets.styles[Settings.active_style_index].theme.font_size * 1.25, 
+            grid_rect(4, 6, 2, 1),
+            "center",
+            "center",
+            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
+            foreground_color,
+            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
             "Consolas",
             "X: " .. Joypad.input.X)
-            BreitbandGraphics.draw_text(
-            grid_rect(6, 6, 2, 1), 
-            "center", 
-            "center", 
-            {}, 
-            foreground_color, 
-            Presets.styles[Settings.active_style_index].theme.font_size * 1.25, 
+        BreitbandGraphics.draw_text(
+            grid_rect(6, 6, 2, 1),
+            "center",
+            "center",
+            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
+            foreground_color,
+            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
             "Consolas",
             "Y: " .. Joypad.input.Y)
 

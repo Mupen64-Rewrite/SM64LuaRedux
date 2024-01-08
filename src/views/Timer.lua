@@ -41,8 +41,10 @@ return {
             }
         })
 
-        BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center", {},
-            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color), 24,
+        BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center",
+            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
+            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
+            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 2,
             "Consolas",
             Timer.get_frame_text())
 
