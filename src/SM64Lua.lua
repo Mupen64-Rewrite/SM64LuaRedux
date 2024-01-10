@@ -44,6 +44,7 @@ lib_path = folder .. "lib\\"
 dofile(lib_path .. "mupen-lua-ugui.lua")
 dofile(lib_path .. "mupen-lua-ugui-ext.lua")
 dofile(lib_path .. "linq.lua")
+json = dofile(lib_path .. "json.lua")
 dofile(res_path .. "base_style.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
@@ -65,9 +66,10 @@ dofile(core_path .. "Presets.lua")
 
 Memory.initialize()
 Joypad.update()
-VarWatch.update()
+VarWatch_update()
 Drawing.size_up()
 Presets.apply(Presets.current_index)
+Presets.restore()
 
 local views = {
     dofile(views_path .. "TAS.lua"),
@@ -188,7 +190,7 @@ function at_vi()
     if new_frame then
         Memory.update_previous()
         Memory.update()
-        VarWatch.update()
+        VarWatch_update()
         new_frame = false
     end
 
@@ -200,7 +202,7 @@ function at_loadstate()
     -- What do we do at this point, leave it like this and let the engine calculate wrong diffs, or copy current state to previous one?
     Memory.update_previous()
     Memory.update()
-    VarWatch.update()
+    VarWatch_update()
 end
 
 emu.atloadstate(at_loadstate)
@@ -208,6 +210,7 @@ emu.atinput(at_input)
 emu.atupdatescreen(at_update_screen)
 emu.atvi(at_vi)
 emu.atstop(function()
+    Presets.save()
     Drawing.size_down()
     BreitbandGraphics.free()
     Mupen_lua_ugui_ext.free()

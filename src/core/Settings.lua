@@ -49,5 +49,63 @@ Settings = {
     format_angles_degrees = false,
     visualize_objects = false,
     truncate_effective_angle = false,
-    active_style_index = 1
+    active_style_index = 1,
+    variables = {
+        {
+            identifier = "yaw_facing",
+            visible = true
+        },
+        {
+            identifier = "yaw_intended",
+            visible = true,
+        },
+        {
+            identifier = "h_spd",
+            visible = true,
+        },
+        {
+            identifier = "v_spd",
+            visible = true,
+        },
+        {
+            identifier = "spd_efficiency",
+            visible = true,
+        },
+        {
+            identifier = "position_x",
+            visible = true,
+        },
+        {
+            identifier = "position_y",
+            visible = true,
+        },
+        {
+            identifier = "position_z",
+            visible = true,
+        },
+        {
+            identifier = "xz_movement",
+            visible = true,
+        },
+        {
+            identifier = "action",
+            visible = true,
+        },
+        {
+            identifier = "rng",
+            visible = true,
+        },
+        {
+            identifier = "moved_dist",
+            visible = true
+        },
+        {
+            identifier = "atan_basic",
+            visible = true,
+        },
+        {
+            identifier = "atan_start_frame",
+            visible = true
+        },
+    },
 }

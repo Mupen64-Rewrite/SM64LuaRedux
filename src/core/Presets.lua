@@ -1,8 +1,5 @@
 local function create_default_preset()
-    return {
-        settings  = Mupen_lua_ugui.internal.deep_clone(Settings),
-        var_watch = Mupen_lua_ugui.internal.deep_clone(VarWatch)
-    }
+    return Mupen_lua_ugui.internal.deep_clone(Settings)
 end
 
 local default_preset = create_default_preset()
@@ -40,19 +37,38 @@ Presets.set_style = function(theme)
     -- HACK: We scale some visual properties according to drawing scale
     mod_theme.font_size = theme.font_size * Drawing.scale
     mod_theme.item_height = theme.item_height * Drawing.scale
-    
+
     Mupen_lua_ugui_ext.apply_nineslice(mod_theme)
 end
 
 function Presets.apply(i)
     Presets.current_index = i
-    Settings = Presets.presets[i].settings
-    VarWatch = Presets.presets[i].var_watch
-
+    Settings = Presets.presets[i]
     Presets.set_style(Presets.styles[Settings.active_style_index].theme)
-    VarWatch.update()
+    VarWatch_update()
 end
 
 function Presets.reset(i)
     Presets.presets[i] = Mupen_lua_ugui.internal.deep_clone(default_preset)
+end
+
+function Presets.save()
+    print("Saving preset...")
+    local serialized = json.encode(Presets.presets)
+    local file = io.open("presets.json", "w")
+    file:write(serialized)
+    io.close(file)
+end
+
+function Presets.restore()
+    print("Restoring presets...")
+    local file = io.open("presets.json", "r")
+    if not file then
+        print("No presets to restore")
+        return
+    end
+    local text = file:read("a")
+    io.close(file)
+    local deserialized = json.decode(text)
+    Presets.presets = deserialized
 end

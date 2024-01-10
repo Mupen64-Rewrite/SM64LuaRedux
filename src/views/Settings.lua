@@ -36,25 +36,25 @@ return {
                 rectangle = grid_rect(0, 9, 1, 1),
                 text = "^"
             }) then
-            swap(VarWatch.variables, selected_var_index, selected_var_index - 1)
+            swap(Settings.variables, selected_var_index, selected_var_index - 1)
             selected_var_index = selected_var_index - 1
         end
 
         if Mupen_lua_ugui.button({
                 uid = 25,
-                is_enabled = selected_var_index < #VarWatch.variables,
+                is_enabled = selected_var_index < #Settings.variables,
                 rectangle = grid_rect(1, 9, 1, 1),
                 text = "v"
             }) then
-            swap(VarWatch.variables, selected_var_index, selected_var_index + 1)
+            swap(Settings.variables, selected_var_index, selected_var_index + 1)
             selected_var_index = selected_var_index + 1
         end
 
-        VarWatch.variables[selected_var_index].visible = Mupen_lua_ugui.toggle_button({
+        Settings.variables[selected_var_index].visible = Mupen_lua_ugui.toggle_button({
             uid = 30,
             rectangle = grid_rect(2, 9, 2, 1),
             text = "Show",
-            is_checked = VarWatch.variables[selected_var_index].visible
+            is_checked = Settings.variables[selected_var_index].visible
         })
 
 
@@ -62,7 +62,7 @@ return {
             uid = 13377331,
             rectangle = grid_rect(0, 2, 8, 7),
             selected_index = selected_var_index,
-            items = lualinq.select(VarWatch.variables, function(x)
+            items = lualinq.select(Settings.variables, function(x)
                 if not x.visible then
                     return x.identifier .. " (disabled)"
                 end
