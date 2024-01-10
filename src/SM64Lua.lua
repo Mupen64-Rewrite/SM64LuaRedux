@@ -68,8 +68,8 @@ Memory.initialize()
 Joypad.update()
 VarWatch_update()
 Drawing.size_up()
-Presets.apply(Presets.current_index)
 Presets.restore()
+Presets.apply(Presets.persistent.current_index)
 
 local views = {
     dofile(views_path .. "TAS.lua"),
@@ -156,14 +156,14 @@ function at_update_screen()
         selected_index = current_tab_index,
     })
 
-    for i = 1, #Presets.presets, 1 do
-        local prev = Presets.current_index == i
+    for i = 1, #Presets.persistent.presets, 1 do
+        local prev = Presets.persistent.current_index == i
         local now = Mupen_lua_ugui.toggle_button({
             uid = -5000 - 5 * i,
 
             rectangle = grid_rect(i - 1, 16, 1, 1),
             text = i,
-            is_checked = Presets.current_index == i
+            is_checked = Presets.persistent.current_index == i
         })
 
         if now and not prev then
@@ -177,8 +177,8 @@ function at_update_screen()
             rectangle = grid_rect(6, 16, 2, 1),
             text = "Reset"
         }) then
-        Presets.reset(Presets.current_index)
-        Presets.apply(Presets.current_index)
+        Presets.reset(Presets.persistent.current_index)
+        Presets.apply(Presets.persistent.current_index)
     end
 
 

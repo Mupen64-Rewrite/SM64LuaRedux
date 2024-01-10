@@ -5,8 +5,11 @@ end
 local default_preset = create_default_preset()
 
 Presets = {
-    current_index = 1,
-    presets = {},
+    persistent = {
+        protocol = 1,
+        current_index = 1,
+        presets = {},
+    },
     styles = {
         "windows-11",
         "windows-10",
@@ -27,8 +30,10 @@ for i = 1, #Presets.styles, 1 do
     Presets.styles[i].theme.path = res_path .. name .. "\\" .. "style.png"
 end
 
+print("Creating default presets...")
+
 for i = 1, 6, 1 do
-    Presets.presets[i] = create_default_preset()
+    Presets.persistent.presets[i] = create_default_preset()
 end
 
 Presets.set_style = function(theme)
@@ -42,19 +47,19 @@ Presets.set_style = function(theme)
 end
 
 function Presets.apply(i)
-    Presets.current_index = i
-    Settings = Presets.presets[i]
+    Presets.persistent.current_index = i
+    Settings = Presets.persistent.presets[i]
     Presets.set_style(Presets.styles[Settings.active_style_index].theme)
     VarWatch_update()
 end
 
 function Presets.reset(i)
-    Presets.presets[i] = Mupen_lua_ugui.internal.deep_clone(default_preset)
+    Presets.persistent.presets[i] = Mupen_lua_ugui.internal.deep_clone(default_preset)
 end
 
 function Presets.save()
     print("Saving preset...")
-    local serialized = json.encode(Presets.presets)
+    local serialized = json.encode(Presets.persistent)
     local file = io.open("presets.json", "w")
     file:write(serialized)
     io.close(file)
@@ -70,5 +75,12 @@ function Presets.restore()
     local text = file:read("a")
     io.close(file)
     local deserialized = json.decode(text)
-    Presets.presets = deserialized
+
+    -- We can't load old protocol presets
+    if deserialized.protocol < Presets.persistent.protocol then
+        print("Preset is outdated")
+        return
+    end
+    
+    Presets.persistent = deserialized
 end
