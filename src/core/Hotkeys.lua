@@ -20,7 +20,7 @@ local hotkey_funcs = {
     copy_yaw_facing_to_match_angle = function()
         Settings.goal_angle = Memory.current.mario_facing_yaw
     end,
-    copy_yaw_facing_to_intended_angle = function()
+    copy_yaw_intended_to_match_angle = function()
         Settings.goal_angle = Memory.current.mario_intended_yaw
     end,
 }

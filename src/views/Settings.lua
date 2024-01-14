@@ -15,52 +15,24 @@ return {
             Presets.set_style(Presets.styles[Settings.active_style_index].theme)
         end
 
-        Settings.format_angles_degrees = Mupen_lua_ugui.toggle_button({
-            uid = 300,
-            rectangle = grid_rect(4, 0, 4, 1),
-            text = "Degree formatting",
-            is_checked = Settings.format_angles_degrees
-        })
+        if Mupen_lua_ugui.button({
+                uid = 300,
+                rectangle = grid_rect(4, 0, 1, 1),
+                text = Settings.format_angles_degrees and "DEG" or "S16",
+            }) then
+            Settings.format_angles_degrees = not Settings.format_angles_degrees
+        end
 
-        Settings.format_decimal_points = Mupen_lua_ugui.spinner({
+        Settings.format_decimal_points = Mupen_lua_ugui.numberbox({
             uid = 350,
-            rectangle = grid_rect(4, 1, 4, 1),
+            rectangle = grid_rect(5, 0, 1, 1),
             value = Settings.format_decimal_points,
-            minimum_value = 0,
-            maximum_value = 8,
+            places = 1
         })
-
-        if Mupen_lua_ugui.button({
-                uid = 20,
-                is_enabled = selected_var_index > 1,
-                rectangle = grid_rect(0, 9, 1, 1),
-                text = "^"
-            }) then
-            swap(Settings.variables, selected_var_index, selected_var_index - 1)
-            selected_var_index = selected_var_index - 1
-        end
-
-        if Mupen_lua_ugui.button({
-                uid = 25,
-                is_enabled = selected_var_index < #Settings.variables,
-                rectangle = grid_rect(1, 9, 1, 1),
-                text = "v"
-            }) then
-            swap(Settings.variables, selected_var_index, selected_var_index + 1)
-            selected_var_index = selected_var_index + 1
-        end
-
-        Settings.variables[selected_var_index].visible = Mupen_lua_ugui.toggle_button({
-            uid = 30,
-            rectangle = grid_rect(2, 9, 2, 1),
-            text = "Show",
-            is_checked = Settings.variables[selected_var_index].visible
-        })
-
 
         selected_var_index = Mupen_lua_ugui.listbox({
-            uid = 13377331,
-            rectangle = grid_rect(0, 2, 8, 7),
+            uid = 400,
+            rectangle = grid_rect(0, 1, 8, 6),
             selected_index = selected_var_index,
             items = lualinq.select(Settings.variables, function(x)
                 if not x.visible then
@@ -68,6 +40,33 @@ return {
                 end
                 return x.identifier
             end),
+        })
+
+        if Mupen_lua_ugui.button({
+                uid = 450,
+                is_enabled = selected_var_index > 1,
+                rectangle = grid_rect(0, 7, 1, 1),
+                text = "^"
+            }) then
+            swap(Settings.variables, selected_var_index, selected_var_index - 1)
+            selected_var_index = selected_var_index - 1
+        end
+
+        if Mupen_lua_ugui.button({
+                uid = 500,
+                is_enabled = selected_var_index < #Settings.variables,
+                rectangle = grid_rect(1, 7, 1, 1),
+                text = "v"
+            }) then
+            swap(Settings.variables, selected_var_index, selected_var_index + 1)
+            selected_var_index = selected_var_index + 1
+        end
+
+        Settings.variables[selected_var_index].visible = not Mupen_lua_ugui.toggle_button({
+            uid = 550,
+            rectangle = grid_rect(2, 7, 2, 1),
+            text = "Hide",
+            is_checked = not Settings.variables[selected_var_index].visible
         })
     end
 }
