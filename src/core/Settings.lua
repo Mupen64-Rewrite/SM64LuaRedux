@@ -149,5 +149,19 @@ Settings = {
                 "rightbracket",
             },
         },
+        {
+            identifier = "copy_yaw_facing_to_match_angle",
+            keys = {
+                "control",
+                "comma",
+            },
+        },
+        {
+            identifier = "copy_yaw_intended_to_match_angle",
+            keys = {
+                "control",
+                "period",
+            },
+        },
     },
 }

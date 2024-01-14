@@ -17,6 +17,12 @@ local hotkey_funcs = {
     preset_up = function()
         Presets.apply(Presets.persistent.current_index + 1)
     end,
+    copy_yaw_facing_to_match_angle = function()
+        Settings.goal_angle = Memory.current.mario_facing_yaw
+    end,
+    copy_yaw_facing_to_intended_angle = function()
+        Settings.goal_angle = Memory.current.mario_intended_yaw
+    end,
 }
 
 return {
