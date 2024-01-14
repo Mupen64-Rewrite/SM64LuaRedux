@@ -6,7 +6,7 @@ local default_preset = create_default_preset()
 
 Presets = {
     persistent = {
-        protocol = 1,
+        protocol = 2,
         current_index = 1,
         presets = {},
     },
@@ -47,8 +47,8 @@ Presets.set_style = function(theme)
 end
 
 function Presets.apply(i)
-    Presets.persistent.current_index = i
-    Settings = Presets.persistent.presets[i]
+    Presets.persistent.current_index = Mupen_lua_ugui.internal.clamp(i, 1, #Presets.persistent.presets)
+    Settings = Presets.persistent.presets[Presets.persistent.current_index]
     Presets.set_style(Presets.styles[Settings.active_style_index].theme)
     VarWatch_update()
 end

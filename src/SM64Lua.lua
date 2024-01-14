@@ -35,6 +35,12 @@ function expand_rect(t)
     }
 end
 
+function dictlen(t)
+    local count = 0
+    for _ in pairs(t) do count = count + 1 end
+    return count
+end
+
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 res_path = folder .. "res\\"
 views_path = folder .. "views\\"
@@ -63,6 +69,7 @@ dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
 dofile(core_path .. "VarWatch.lua")
 dofile(core_path .. "Presets.lua")
+Hotkeys = dofile(core_path .. "Hotkeys.lua")
 
 Memory.initialize()
 Joypad.update()
@@ -94,8 +101,10 @@ local mouse_wheel = 0
 -- However, we use this flag to prevent reading multiple times per frame, as it is very expensive
 local new_frame = true
 
-function at_input()
+local keys = input.get()
+local last_keys = input.get()
 
+function at_input()
     -- frame stage 1: set everything up
     new_frame = true
     Joypad.update()
@@ -123,7 +132,13 @@ function at_input()
 end
 
 function at_update_screen()
-    local keys = input.get()
+    last_keys = Mupen_lua_ugui.internal.deep_clone(keys)
+    keys = input.get()
+
+    if dictlen(input.diff(keys, last_keys)) > 0 then
+        Hotkeys.on_key_down(keys)
+    end
+    
     Mupen_lua_ugui.begin_frame({
         mouse_position = {
             x = keys.xmouse,
@@ -133,6 +148,7 @@ function at_update_screen()
         is_primary_down = keys.leftclick,
         held_keys = keys,
     })
+
     mouse_wheel = 0
 
     WorldVisualizer.draw()

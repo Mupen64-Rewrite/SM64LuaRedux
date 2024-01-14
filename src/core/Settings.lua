@@ -108,4 +108,46 @@ Settings = {
             visible = true
         },
     },
+    hotkeys = {
+        {
+            identifier = "movement_mode_disabled",
+            keys = {
+                "control",
+                "1",
+            },
+        },
+        {
+            identifier = "movement_mode_match_yaw",
+            keys = {
+                "control",
+                "2",
+            },
+        },
+        {
+            identifier = "movement_mode_reverse_angle",
+            keys = {
+                "control",
+                "3",
+            },
+        },
+        {
+            identifier = "movement_mode_match_angle",
+            keys = {
+                "control",
+                "4",
+            },
+        },
+        {
+            identifier = "preset_down",
+            keys = {
+                "leftbracket",
+            },
+        },
+        {
+            identifier = "preset_up",
+            keys = {
+                "rightbracket",
+            },
+        },
+    },
 }
