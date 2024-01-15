@@ -27,7 +27,9 @@ local hotkey_funcs = {
 
 return {
     on_key_down = function(keys)
-
+        if not emu.ismainwindowinforeground() then
+            return
+        end
         for _, hotkey in pairs(Settings.hotkeys) do
             local activated = true
             for _, key in pairs(hotkey.keys) do
