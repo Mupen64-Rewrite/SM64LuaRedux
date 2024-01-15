@@ -157,6 +157,7 @@ return {
             -- FIXME: do we really need to update memory
             Memory.update()
             Settings.atan_start = Memory.current.mario_global_timer
+            VarWatch_update()
         end
         Settings.atan_strain = atan_strain
 
@@ -173,6 +174,7 @@ return {
                 text = '+',
             }) then
             Settings.atan_r = Settings.atan_r + math.pow(10, Settings.atan_exp)
+            VarWatch_update()
         end
         if Mupen_lua_ugui.button({
                 uid = 90,
@@ -180,6 +182,7 @@ return {
                 text = '-',
             }) then
             Settings.atan_r = Settings.atan_r - math.pow(10, Settings.atan_exp)
+            VarWatch_update()
         end
 
 
@@ -189,6 +192,7 @@ return {
                 text = '+',
             }) then
             Settings.atan_d = Settings.atan_d + math.pow(10, Settings.atan_exp)
+            VarWatch_update()
         end
         if Mupen_lua_ugui.button({
                 uid = 100,
@@ -196,6 +200,7 @@ return {
                 text = '-',
             }) then
             Settings.atan_d = Settings.atan_d - math.pow(10, Settings.atan_exp)
+            VarWatch_update()
         end
 
         if Mupen_lua_ugui.button({
@@ -205,6 +210,7 @@ return {
             }) then
             Settings.atan_n = math.max(0,
                 Settings.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+                VarWatch_update()
         end
         if Mupen_lua_ugui.button({
                 uid = 110,
@@ -213,6 +219,7 @@ return {
             }) then
             Settings.atan_n = math.max(0,
                 Settings.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+                VarWatch_update()
         end
 
         if Mupen_lua_ugui.button({
@@ -221,6 +228,7 @@ return {
                 text = '+',
             }) then
             Settings.atan_start = math.max(0, Settings.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
+            VarWatch_update()
         end
         if Mupen_lua_ugui.button({
                 uid = 120,
@@ -228,6 +236,7 @@ return {
                 text = '-',
             }) then
             Settings.atan_start = math.max(0, Settings.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
+            VarWatch_update()
         end
 
         if Mupen_lua_ugui.button({
@@ -236,6 +245,7 @@ return {
                 text = '+',
             }) then
             Settings.atan_start = math.max(0, Settings.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
+            VarWatch_update()
         end
         if Mupen_lua_ugui.button({
                 uid = 130,
@@ -243,6 +253,7 @@ return {
                 text = '-',
             }) then
             Settings.atan_start = math.max(0, Settings.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
+            VarWatch_update()
         end
 
         if Mupen_lua_ugui.button({
@@ -251,6 +262,7 @@ return {
                 text = '+',
             }) then
             Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp + 1, 4))
+            VarWatch_update()
         end
         if Mupen_lua_ugui.button({
                 uid = 140,
@@ -258,6 +270,7 @@ return {
                 text = '-',
             }) then
             Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp - 1, 4))
+            VarWatch_update()
         end
 
         if Mupen_lua_ugui.toggle_button({
