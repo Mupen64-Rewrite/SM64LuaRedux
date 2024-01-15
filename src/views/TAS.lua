@@ -149,7 +149,7 @@ return {
         local atan_strain = Mupen_lua_ugui.toggle_button({
             uid = 75,
             rectangle = grid_rect(4, 2, 3, 1),
-            text = 'Atan Strain',
+            text = 'Arctan Strain',
             is_checked = Settings.atan_strain
         })
 
