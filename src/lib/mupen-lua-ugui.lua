@@ -529,7 +529,7 @@ BreitbandGraphics = {
 }
 
 -- 1.1.5 - 1.1.6 shim
-if d2d.create_render_target then
+if d2d and d2d.create_render_target then
     print("BreitbandGraphics: Using 1.1.5 - 1.1.6 shim. Please update to mupen64-rr-lua 1.1.7")
     BreitbandGraphics.bitmap_cache = {}
     
