@@ -16,6 +16,7 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 - RNG
 - Timer
 - Customizable ramwatch
+- Hotkeys
 - Dynamic resizing[^2]
 - Framewalk
 - Multicontroller support
