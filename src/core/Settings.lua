@@ -50,6 +50,7 @@ Settings = {
     visualize_objects = false,
     truncate_effective_angle = false,
     active_style_index = 1,
+    tab_index = 1,
     variables = {
         {
             identifier = "yaw_facing",

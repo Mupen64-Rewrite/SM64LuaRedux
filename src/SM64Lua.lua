@@ -94,7 +94,6 @@ local processors = {
     dofile(core_path .. "Engine.lua"),
 }
 
-local current_tab_index = 1
 local mouse_wheel = 0
 
 -- Reading memory in at_input returns stale data from previous frame, so we read it in atvi
@@ -160,16 +159,15 @@ function at_update_screen()
         height = Drawing.size.height
     }, Presets.styles[Settings.active_style_index].theme.background_color)
 
-    views[current_tab_index].draw()
+    views[Settings.tab_index].draw()
 
     -- navigation and presets
 
-    current_tab_index = Mupen_lua_ugui.carrousel_button({
+    Settings.tab_index = Mupen_lua_ugui.carrousel_button({
         uid = -5000,
-
         rectangle = grid_rect(0, 15, 8, 1),
         items = lualinq.select_key(views, "name"),
-        selected_index = current_tab_index,
+        selected_index = Settings.tab_index,
     })
 
     for i = 1, #Presets.persistent.presets, 1 do
