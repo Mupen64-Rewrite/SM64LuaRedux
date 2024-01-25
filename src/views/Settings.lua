@@ -68,5 +68,19 @@ return {
             text = "Hide",
             is_checked = not Settings.variables[selected_var_index].visible
         })
+
+        if Mupen_lua_ugui.button({
+                uid = 600,
+                rectangle = grid_rect(0, 8, 3, 1),
+                text = "Select map file..."
+            }) then
+            local path = iohelper.filediag("*.map", 0)
+            if string.len(path) > 0 then
+                local file = io.open(path, "r")
+                local text = file:read("a")
+                io.close(file)
+                Memory.load_offsets_from_map(text)
+            end
+        end
     end
 }

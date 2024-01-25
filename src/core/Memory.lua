@@ -45,3 +45,7 @@ function Memory.initialize()
 	Memory.update()
 	Memory.update_previous()
 end
+
+function Memory.load_offsets_from_map(map)
+
+end
