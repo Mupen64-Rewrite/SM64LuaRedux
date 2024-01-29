@@ -90,6 +90,7 @@ local views = {
 local processors = {
     dofile(core_path .. "Framewalk.lua"),
     dofile(core_path .. "Swimming.lua"),
+    dofile(core_path .. "Wallkicker.lua"),
     dofile(core_path .. "Grind.lua"),
     dofile(core_path .. "Engine.lua"),
 }
