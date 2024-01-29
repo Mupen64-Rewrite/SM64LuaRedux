@@ -10,7 +10,6 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 
 # What's new
 
-- Compatible with any mupen version[^1]
 - Themes
 - Arctan straining
 - RNG
@@ -19,6 +18,7 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 - Hotkeys
 - Dynamic resizing[^2]
 - Framewalk
+- Auto firsties
 - Multicontroller support
 - Presets[^3]
 - Divegrind Automation[^4]
@@ -26,7 +26,6 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 - Customizable formatting[^6]
 - 3D Object Visualization[^7]
 
-[^1]: Only versions newer than 1.1.3 will support themes
 [^2]: The script will resize its elements intelligently to fit, and will thus work on small and huge resolutions
 [^3]: A preset saves your current choices (e.g.: Match Yaw with DYaw = 11111), and allow you to change between saved presets for spontaneously testing new strats or reusing older known configurations
 [^4]: (WIP) Allows you to automate divegrinds by specifying a yaw divisor and direction, then letting it operate on the current emu state
@@ -44,5 +43,5 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 
 # Showcase
 
-![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/3cf3f63a-df4c-4418-be55-36eee56d7885)
+![grafik](https://github.com/Mupen64-Rewrite/SM64LuaRedux/assets/48759429/d87fd2df-c937-478c-bbe7-3a4e9929f3d8)
 
