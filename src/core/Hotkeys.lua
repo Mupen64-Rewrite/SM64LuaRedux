@@ -23,6 +23,9 @@ local hotkey_funcs = {
     copy_yaw_intended_to_match_angle = function()
         Settings.goal_angle = Memory.current.mario_intended_yaw
     end,
+    toggle_auto_firsties = function()
+        Settings.auto_firsties = not Settings.auto_firsties
+    end,
 }
 
 return {

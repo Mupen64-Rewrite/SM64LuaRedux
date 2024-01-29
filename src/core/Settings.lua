@@ -165,6 +165,13 @@ Settings = {
                 "period",
             },
         },
+        {
+            identifier = "toggle_auto_firsties",
+            keys = {
+                "control",
+                "I",
+            },
+        },
     },
     offsets = {
         camera_fov = 0x801961B8,
