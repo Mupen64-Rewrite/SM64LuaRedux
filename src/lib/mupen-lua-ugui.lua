@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.5.0
+-- mupen-lua-ugui 1.6.0
 
 if emu.set_renderer then
     -- Specify D2D renderer
@@ -39,6 +39,15 @@ BreitbandGraphics = {
     --- @param hex string The hexadecimal color to convert
     --- @return _ table The color
     hex_to_color = function(hex)
+        if #hex > 7 then
+            return
+            {
+                r = tonumber(hex:sub(2, 3), 16),
+                g = tonumber(hex:sub(4, 5), 16),
+                b = tonumber(hex:sub(6, 7), 16),
+                a = tonumber(hex:sub(8, 9), 16),
+            }
+        end
         return
         {
             r = tonumber(hex:sub(2, 3), 16),
@@ -380,7 +389,7 @@ BreitbandGraphics = {
             image)
     end,
     ---Draws a nineslice-scalable image
-    ---@param destination_rectangle table The destination rectangle as `{x, y, width, height}` 
+    ---@param destination_rectangle table The destination rectangle as `{x, y, width, height}`
     ---@param source_rectangle table The source rectangle as `{x, y, width, height}`
     ---@param source_rectangle_center table The source rectangle's center part as `{x, y, width, height}`
     ---@param path string The image's absolute path on disk
@@ -532,7 +541,7 @@ BreitbandGraphics = {
 if d2d and d2d.create_render_target then
     print("BreitbandGraphics: Using 1.1.5 - 1.1.6 shim. Please update to mupen64-rr-lua 1.1.7")
     BreitbandGraphics.bitmap_cache = {}
-    
+
     BreitbandGraphics.get_text_size = function(text, font_size, font_name)
         return d2d.get_text_size(text, font_name, font_size, 99999999, 99999999)
     end
@@ -580,8 +589,9 @@ if d2d and d2d.create_render_target then
     ---@param font_size number The font size
     ---@param font_name string The font name
     ---@param text string The text
-    BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
-        text)
+    BreitbandGraphics.draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size,
+                                           font_name,
+                                           text)
         if text == nil then
             text = ''
         end
@@ -1006,6 +1016,24 @@ Mupen_lua_ugui = {
             [3] = BreitbandGraphics.hex_to_color('#0000FF'),
             [0] = BreitbandGraphics.hex_to_color('#8080FF'),
         },
+        joystick_inner_mag_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#FF000022'),
+            [2] = BreitbandGraphics.hex_to_color('#FF000022'),
+            [3] = BreitbandGraphics.hex_to_color('#FF000022'),
+            [0] = BreitbandGraphics.hex_to_color('#00000000'),
+        },
+        joystick_outer_mag_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#FF0000'),
+            [2] = BreitbandGraphics.hex_to_color('#FF0000'),
+            [3] = BreitbandGraphics.hex_to_color('#FF0000'),
+            [0] = BreitbandGraphics.hex_to_color('#FF8080'),
+        },
+        joystick_mag_thicknesses = {
+            [1] = 2,
+            [2] = 2,
+            [3] = 2,
+            [0] = 2,
+        },
         scrollbar_back_colors = {
             [1] = BreitbandGraphics.hex_to_color('#F0F0F0'),
             [2] = BreitbandGraphics.hex_to_color('#F0F0F0'),
@@ -1059,6 +1087,9 @@ Mupen_lua_ugui = {
             local outline_color = BreitbandGraphics.colors.black
             local tip_color = Mupen_lua_ugui.standard_styler.joystick_tip_colors[visual_state]
             local line_color = Mupen_lua_ugui.standard_styler.joystick_line_colors[visual_state]
+            local inner_mag_color = Mupen_lua_ugui.standard_styler.joystick_inner_mag_colors[visual_state]
+            local outer_mag_color = Mupen_lua_ugui.standard_styler.joystick_outer_mag_colors[visual_state]
+            local mag_thickness = Mupen_lua_ugui.standard_styler.joystick_mag_thicknesses[visual_state]
 
             BreitbandGraphics.fill_ellipse(BreitbandGraphics.inflate_rectangle(rectangle, -1),
                 back_color)
@@ -1078,6 +1109,26 @@ Mupen_lua_ugui = {
                 x = rectangle.x + rectangle.width,
                 y = rectangle.y + rectangle.height / 2,
             }, outline_color, 1)
+
+
+            local r = position.r - mag_thickness
+            if r > 0 then
+                BreitbandGraphics.fill_ellipse({
+                    x = rectangle.x + rectangle.width / 2 - r / 2,
+                    y = rectangle.y + rectangle.height / 2 - r / 2,
+                    width = r,
+                    height = r
+                }, inner_mag_color)
+                r = position.r
+
+                BreitbandGraphics.draw_ellipse({
+                    x = rectangle.x + rectangle.width / 2 - r / 2,
+                    y = rectangle.y + rectangle.height / 2 - r / 2,
+                    width = r,
+                    height = r
+                }, outer_mag_color, mag_thickness)
+            end
+
 
             BreitbandGraphics.draw_line({
                 x = rectangle.x + rectangle.width / 2,
@@ -1350,6 +1401,8 @@ Mupen_lua_ugui = {
                     control.rectangle.x + control.rectangle.width),
                 y = Mupen_lua_ugui.internal.remap(control.position.y, 0, 1, control.rectangle.y,
                     control.rectangle.y + control.rectangle.height),
+                r = Mupen_lua_ugui.internal.remap(Mupen_lua_ugui.internal.clamp(control.mag, 0, 1), 0, 1, 0,
+                    math.min(control.rectangle.width, control.rectangle.height))
             })
         end,
         draw_track = function(control, visual_state, is_horizontal)
@@ -1680,6 +1733,7 @@ Mupen_lua_ugui = {
     ---Additional fields in the `control` table:
     ---
     --- `position` — `table` The joystick's position as `{x, y}` with the range `0-1`
+    --- `mag` - `number` The joystick's magnitude with the range `0-1`
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     joystick = function(control)
         Mupen_lua_ugui.standard_styler.draw_joystick(control)

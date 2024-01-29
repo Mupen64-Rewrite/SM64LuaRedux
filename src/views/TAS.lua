@@ -14,13 +14,13 @@ return {
             places = 5,
             value = Settings.goal_angle
         }))
-        Settings.goal_mag = Mupen_lua_ugui.numberbox({
+        Settings.goal_mag = math.abs(Mupen_lua_ugui.numberbox({
             uid = 10,
 
             rectangle = grid_rect(4, 4, 2, 1),
             places = 3,
             value = Settings.goal_mag
-        })
+        }))
 
         Settings.high_magnitude = Mupen_lua_ugui.toggle_button({
             uid = 15,
@@ -134,17 +134,9 @@ return {
             position = {
                 x = Mupen_lua_ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
                 y = Mupen_lua_ugui.internal.remap(-Joypad.input.Y, -128, 128, 0, 1),
-            }
+            },
+            mag = Settings.goal_mag / 128
         })
-        if Settings.goal_mag and Settings.goal_mag < 127 then
-            local r = Settings.goal_mag * Drawing.scale
-            BreitbandGraphics.draw_ellipse({
-                x = joystick_rect[1] + joystick_rect[3] / 2 - r / 2,
-                y = joystick_rect[2] + joystick_rect[4] / 2 - r / 2,
-                width = r,
-                height = r
-            }, BreitbandGraphics.colors.red, 1)
-        end
 
         local atan_strain = Mupen_lua_ugui.toggle_button({
             uid = 75,

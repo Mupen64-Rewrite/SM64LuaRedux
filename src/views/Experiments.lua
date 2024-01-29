@@ -26,13 +26,13 @@ return {
             text = ">",
             is_checked = not Settings.grind_left
         })
-        Settings.grind_divisor = Mupen_lua_ugui.numberbox({
+        Settings.grind_divisor = math.abs(Mupen_lua_ugui.numberbox({
             uid = 15,
 
             rectangle = grid_rect(3, 0, 3, 1),
             value = Settings.grind_divisor,
             places = 2,
-        })
+        }))
 
         local lookahead = Mupen_lua_ugui.toggle_button({
             uid = 20,
@@ -45,12 +45,12 @@ return {
         end
         Settings.lookahead = lookahead
 
-        Settings.lookahead_length = Mupen_lua_ugui.numberbox({
+        Settings.lookahead_length = math.abs(Mupen_lua_ugui.numberbox({
             uid = 25,
             rectangle = grid_rect(3, 1, 3, 1),
             value = Settings.lookahead_length,
             places = 1,
-        })
+        }))
         Settings.visualize_objects = Mupen_lua_ugui.toggle_button({
             uid = 30,
             rectangle = grid_rect(0, 2, 4, 1),

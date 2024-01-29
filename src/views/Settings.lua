@@ -23,12 +23,12 @@ return {
             Settings.format_angles_degrees = not Settings.format_angles_degrees
         end
 
-        Settings.format_decimal_points = Mupen_lua_ugui.numberbox({
+        Settings.format_decimal_points = math.abs(Mupen_lua_ugui.numberbox({
             uid = 350,
             rectangle = grid_rect(5, 0, 1, 1),
             value = Settings.format_decimal_points,
             places = 1
-        })
+        }))
 
         selected_var_index = Mupen_lua_ugui.listbox({
             uid = 400,

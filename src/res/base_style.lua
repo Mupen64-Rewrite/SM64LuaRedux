@@ -4,7 +4,6 @@ function get_base_style()
         item_height = 15,
         font_size = 12,
         font_name = 'MS Sans Serif',
-        draw_joystick_inner = Mupen_lua_ugui.standard_styler.draw_joystick_inner,
         button = {
             text_colors = {
                 [1] = BreitbandGraphics.colors.black,
@@ -122,6 +121,38 @@ function get_base_style()
                     center = expand_rect({ 38, 114, 2, 3 }),
                 }
             }
+        },
+        joystick = {
+            tip_colors = {
+                [1] = BreitbandGraphics.hex_to_color('#FF0000'),
+                [2] = BreitbandGraphics.hex_to_color('#FF0000'),
+                [3] = BreitbandGraphics.hex_to_color('#FF0000'),
+                [0] = BreitbandGraphics.hex_to_color('#FF8080'),
+            },
+            line_colors = {
+                [1] = BreitbandGraphics.hex_to_color('#0000FF'),
+                [2] = BreitbandGraphics.hex_to_color('#0000FF'),
+                [3] = BreitbandGraphics.hex_to_color('#0000FF'),
+                [0] = BreitbandGraphics.hex_to_color('#8080FF'),
+            },
+            inner_mag_colors = {
+                [1] = BreitbandGraphics.hex_to_color('#FF000022'),
+                [2] = BreitbandGraphics.hex_to_color('#FF000022'),
+                [3] = BreitbandGraphics.hex_to_color('#FF000022'),
+                [0] = BreitbandGraphics.hex_to_color('#00000000'),
+            },
+            outer_mag_colors = {
+                [1] = BreitbandGraphics.hex_to_color('#FF0000'),
+                [2] = BreitbandGraphics.hex_to_color('#FF0000'),
+                [3] = BreitbandGraphics.hex_to_color('#FF0000'),
+                [0] = BreitbandGraphics.hex_to_color('#FF8080'),
+            },
+            mag_thicknesses = {
+                [1] = 2,
+                [2] = 2,
+                [3] = 2,
+                [0] = 2,
+            },
         },
         scrollbar_rail = expand_rect({ 30, 99, 17, 11 })
     }

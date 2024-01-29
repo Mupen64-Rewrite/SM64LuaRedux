@@ -1,4 +1,4 @@
--- mupen-lua-ugui-ext 1.2.0
+-- mupen-lua-ugui-ext 1.3.0
 -- https://github.com/Aurumaker72/mupen-lua-ugui-ext
 
 Mupen_lua_ugui_ext = {
@@ -572,6 +572,7 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
                     style.path, BreitbandGraphics.colors.white, "nearest")
             end)
     end
+    -- TODO: Refactor this into property override mask!!!
     Mupen_lua_ugui.standard_styler.raised_frame_text_colors = style.button.text_colors
     Mupen_lua_ugui.standard_styler.edit_frame_text_colors = style.textbox.text_colors
     Mupen_lua_ugui.standard_styler.font_name = style.font_name
@@ -580,7 +581,11 @@ Mupen_lua_ugui_ext.apply_nineslice = function(style)
     Mupen_lua_ugui.standard_styler.list_text_colors = style.listbox.text_colors
     Mupen_lua_ugui.standard_styler.scrollbar_thickness = style.scrollbar_rail.width
     Mupen_lua_ugui.standard_styler.cleartype = not style.pixelated_text
-    Mupen_lua_ugui.standard_styler.draw_joystick_inner = style.draw_joystick_inner
+    Mupen_lua_ugui.standard_styler.joystick_inner_mag_colors = style.joystick.inner_mag_colors
+    Mupen_lua_ugui.standard_styler.joystick_outer_mag_colors = style.joystick.outer_mag_colors
+    Mupen_lua_ugui.standard_styler.joystick_mag_thicknesses = style.joystick.mag_thicknesses
+    Mupen_lua_ugui.standard_styler.joystick_line_colors = style.joystick.line_colors
+    Mupen_lua_ugui.standard_styler.joystick_tip_colors = style.joystick.tip_colors
 end
 
 
