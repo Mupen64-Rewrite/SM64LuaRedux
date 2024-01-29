@@ -123,6 +123,18 @@ function get_base_style()
             }
         },
         joystick = {
+            back_colors = {
+                [1] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+                [2] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+                [3] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+                [0] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+            },
+            outline_colors = {
+                [1] = BreitbandGraphics.hex_to_color('#000000'),
+                [2] = BreitbandGraphics.hex_to_color('#000000'),
+                [3] = BreitbandGraphics.hex_to_color('#000000'),
+                [0] = BreitbandGraphics.hex_to_color('#000000'),
+            },
             tip_colors = {
                 [1] = BreitbandGraphics.hex_to_color('#FF0000'),
                 [2] = BreitbandGraphics.hex_to_color('#FF0000'),

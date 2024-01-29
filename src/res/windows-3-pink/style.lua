@@ -21,7 +21,42 @@ theme.listbox.text_colors = {
     [3] = BreitbandGraphics.colors.white,
     [0] = BreitbandGraphics.repeated_to_color(209),
 }
-
+theme.joystick.back_colors = {
+    [1] = BreitbandGraphics.hex_to_color("#00000000"),
+    [2] = BreitbandGraphics.hex_to_color("#00000000"),
+    [3] = BreitbandGraphics.hex_to_color("#00000000"),
+    [0] = BreitbandGraphics.hex_to_color("#00000000"),
+}
+theme.joystick.outline_colors = {
+    [1] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [2] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [3] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [0] = BreitbandGraphics.hex_to_color("#2D022B"),
+}
+theme.joystick.inner_mag_colors = {
+    [1] = BreitbandGraphics.hex_to_color("#2D022B22"),
+    [2] = BreitbandGraphics.hex_to_color("#2D022B22"),
+    [3] = BreitbandGraphics.hex_to_color("#2D022B22"),
+    [0] = BreitbandGraphics.hex_to_color("#2D022B22"),
+}
+theme.joystick.outer_mag_colors = {
+    [1] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [2] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [3] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [0] = BreitbandGraphics.hex_to_color("#2D022B"),
+}
+theme.joystick.line_colors = {
+    [1] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [2] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [3] = BreitbandGraphics.hex_to_color("#2D022B"),
+    [0] = BreitbandGraphics.hex_to_color("#2D022B"),
+}
+theme.joystick.tip_colors = {
+    [1] = BreitbandGraphics.hex_to_color("#560453"),
+    [2] = BreitbandGraphics.hex_to_color("#560453"),
+    [3] = BreitbandGraphics.hex_to_color("#560453"),
+    [0] = BreitbandGraphics.hex_to_color("#560453"),
+}
 return {
     name = 'Windows 3 Pink',
     theme = theme

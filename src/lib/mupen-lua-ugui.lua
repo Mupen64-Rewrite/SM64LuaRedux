@@ -1004,6 +1004,18 @@ Mupen_lua_ugui = {
             [3] = BreitbandGraphics.hex_to_color('#0078D7'),
             [0] = BreitbandGraphics.hex_to_color('#FFFFFF'),
         },
+        joystick_back_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+            [2] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+            [3] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+            [0] = BreitbandGraphics.hex_to_color('#FFFFFF'),
+        },
+        joystick_outline_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#000000'),
+            [2] = BreitbandGraphics.hex_to_color('#000000'),
+            [3] = BreitbandGraphics.hex_to_color('#000000'),
+            [0] = BreitbandGraphics.hex_to_color('#000000'),
+        },
         joystick_tip_colors = {
             [1] = BreitbandGraphics.hex_to_color('#FF0000'),
             [2] = BreitbandGraphics.hex_to_color('#FF0000'),
@@ -1083,8 +1095,8 @@ Mupen_lua_ugui = {
                 Mupen_lua_ugui.standard_styler.list_frame_back_colors[visual_state])
         end,
         draw_joystick_inner = function(rectangle, visual_state, position)
-            local back_color = BreitbandGraphics.colors.white
-            local outline_color = BreitbandGraphics.colors.black
+            local back_color = Mupen_lua_ugui.standard_styler.joystick_back_colors[visual_state]
+            local outline_color = Mupen_lua_ugui.standard_styler.joystick_outline_colors[visual_state]
             local tip_color = Mupen_lua_ugui.standard_styler.joystick_tip_colors[visual_state]
             local line_color = Mupen_lua_ugui.standard_styler.joystick_line_colors[visual_state]
             local inner_mag_color = Mupen_lua_ugui.standard_styler.joystick_inner_mag_colors[visual_state]
