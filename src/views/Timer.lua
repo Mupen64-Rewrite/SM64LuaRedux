@@ -33,12 +33,12 @@ return {
         })
         Mupen_lua_ugui.joystick({
             uid = 30,
-
             rectangle = grid_rect(2, 1, 4, 4),
             position = {
                 x = Mupen_lua_ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
                 y = Mupen_lua_ugui.internal.remap(-Joypad.input.Y, -128, 128, 0, 1),
-            }
+            },
+            mag = 0
         })
 
         BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center",
