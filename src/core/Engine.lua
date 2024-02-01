@@ -280,7 +280,7 @@ local function effectiveAngle(x, y)
 	return math.atan2(-y, x)
 end
 
-local function scaleInputsForMagnitude(result, goal_mag, use_high_mag)
+Engine.scaleInputsForMagnitude = function(result, goal_mag, use_high_mag)
 	if goal_mag >= 127 then return end
 
 	local start_x, start_y = result.X, result.Y
@@ -383,20 +383,3 @@ end
 function Engine.GetLagFrames()
 	return vi_count - (inp_count * 2)
 end
-
-return {
-	process = function(input)
-		if Settings.movement_mode == Settings.movement_modes.disabled then
-			return input
-		end
-
-		local result = Engine.inputsForAngle(Settings.goal_angle, input)
-		if Settings.goal_mag then
-			scaleInputsForMagnitude(result, Settings.goal_mag, Settings.high_magnitude)
-		end
-
-		input.X = result.X
-		input.Y = result.Y
-		return input
-	end
-}

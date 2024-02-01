@@ -46,6 +46,7 @@ res_path = folder .. "res\\"
 views_path = folder .. "views\\"
 core_path = folder .. "core\\"
 lib_path = folder .. "lib\\"
+processors_path = folder .. "processors\\"
 
 dofile(lib_path .. "mupen-lua-ugui.lua")
 dofile(lib_path .. "mupen-lua-ugui-ext.lua")
@@ -88,11 +89,11 @@ local views = {
 }
 
 local processors = {
-    dofile(core_path .. "Framewalk.lua"),
-    dofile(core_path .. "Swimming.lua"),
-    dofile(core_path .. "Wallkicker.lua"),
-    dofile(core_path .. "Grind.lua"),
-    dofile(core_path .. "Engine.lua"),
+    dofile(processors_path .. "Framewalk.lua"),
+    dofile(processors_path .. "Swimming.lua"),
+    dofile(processors_path .. "Wallkicker.lua"),
+    dofile(processors_path .. "Grind.lua"),
+    dofile(processors_path .. "Walk.lua"),
 }
 
 local mouse_wheel = 0
