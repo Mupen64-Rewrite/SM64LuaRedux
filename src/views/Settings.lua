@@ -82,5 +82,12 @@ return {
                 Memory.load_offsets_from_map(text)
             end
         end
+
+        Settings.repaint_throttle = math.max(1, math.abs(Mupen_lua_ugui.numberbox({
+            uid = 650,
+            rectangle = grid_rect(6, 0, 1, 1),
+            value = Settings.repaint_throttle,
+            places = 1
+        })))
     end
 }

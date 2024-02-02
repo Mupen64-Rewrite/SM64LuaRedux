@@ -102,6 +102,12 @@ local mouse_wheel = 0
 -- However, we use this flag to prevent reading multiple times per frame, as it is very expensive
 local new_frame = true
 
+-- Amount of updatescreen invocations, used for throttling repaints during ff
+local paints = 0
+
+-- Whether the current paint cycle is being skipped
+paint_skipped = false
+
 local keys = input.get()
 local last_keys = input.get()
 
@@ -133,13 +139,21 @@ function at_input()
 end
 
 function at_update_screen()
+    paints = paints + 1
+    paint_skipped = (paints % Settings.repaint_throttle) ~= 0 and emu.get_ff and emu.get_ff()
+
+    -- Throttle repaints in ff
+    if paint_skipped then
+        return
+    end
+
     last_keys = Mupen_lua_ugui.internal.deep_clone(keys)
     keys = input.get()
 
     if dictlen(input.diff(keys, last_keys)) > 0 then
         Hotkeys.on_key_down(keys)
     end
-    
+
     Mupen_lua_ugui.begin_frame({
         mouse_position = {
             x = keys.xmouse,
@@ -196,8 +210,6 @@ function at_update_screen()
         Presets.reset(Presets.persistent.current_index)
         Presets.apply(Presets.persistent.current_index)
     end
-
-
 
     Mupen_lua_ugui.end_frame()
 end

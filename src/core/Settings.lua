@@ -52,6 +52,7 @@ Settings = {
     active_style_index = 1,
     tab_index = 1,
     auto_firsties = false,
+    repaint_throttle = 2,
     variables = {
         {
             identifier = "yaw_facing",

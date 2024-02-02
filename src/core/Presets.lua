@@ -6,7 +6,7 @@ local default_preset = create_default_preset()
 
 Presets = {
     persistent = {
-        protocol = 5,
+        protocol = 6,
         current_index = 1,
         presets = {},
     },
