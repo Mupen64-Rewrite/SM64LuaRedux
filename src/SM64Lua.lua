@@ -71,6 +71,7 @@ dofile(core_path .. "Ghost.lua")
 dofile(core_path .. "VarWatch.lua")
 dofile(core_path .. "Presets.lua")
 Hotkeys = dofile(core_path .. "Hotkeys.lua")
+Addresses = dofile(core_path .. "Addresses.lua")
 
 Memory.initialize()
 Joypad.update()

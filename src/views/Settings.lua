@@ -79,12 +79,19 @@ return {
                 local file = io.open(path, "r")
                 local text = file:read("a")
                 io.close(file)
-                Memory.load_offsets_from_map(text)
+                -- TODO: Implement
             end
         end
 
-        Settings.repaint_throttle = math.max(1, math.abs(Mupen_lua_ugui.numberbox({
+        Settings.address_source_index = Mupen_lua_ugui.combobox({
             uid = 650,
+            rectangle = grid_rect(0, 9, 3, 1),
+            items = lualinq.select_key(Addresses, "name"),
+            selected_index = Settings.address_source_index,
+        })
+
+        Settings.repaint_throttle = math.max(1, math.abs(Mupen_lua_ugui.numberbox({
+            uid = 700,
             rectangle = grid_rect(6, 0, 1, 1),
             value = Settings.repaint_throttle,
             places = 1
