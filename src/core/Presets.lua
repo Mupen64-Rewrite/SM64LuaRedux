@@ -12,6 +12,7 @@ Presets = {
     },
     styles = {
         "windows-11",
+        "windows-11-v2",
         "windows-10",
         "windows-10-dark",
         "windows-3-pink",
