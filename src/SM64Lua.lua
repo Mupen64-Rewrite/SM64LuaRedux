@@ -20,6 +20,12 @@ if not math.atan2 then
     math.atan2 = math.atan
 end
 
+--1.1.7+ shim: atupdatescreen no longer allows you to use d2d
+if emu.atdrawd2d then
+    print("Applied atdrawd2d shim")
+    emu.atupdatescreen = emu.atdrawd2d
+end
+
 function swap(arr, index_1, index_2)
     local tmp = arr[index_2]
     arr[index_2] = arr[index_1]
