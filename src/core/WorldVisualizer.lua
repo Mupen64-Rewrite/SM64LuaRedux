@@ -85,8 +85,8 @@ WorldVisualizer.draw = function()
         local offset = 30000 / p.z
 
         local rect = {
-            x = math.floor(p.x - offset),
-            y = math.floor(p.y - offset),
+            x = math.floor(p.x - offset / 2),
+            y = math.floor(p.y - offset / 2),
             width = math.floor(offset),
             height = math.floor(offset),
         }
