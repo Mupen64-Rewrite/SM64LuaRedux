@@ -96,11 +96,11 @@ local views = {
 }
 
 local processors = {
-    dofile(processors_path .. "Framewalk.lua"),
+    dofile(processors_path .. "Walk.lua"),
     dofile(processors_path .. "Swimming.lua"),
     dofile(processors_path .. "Wallkicker.lua"),
     dofile(processors_path .. "Grind.lua"),
-    dofile(processors_path .. "Walk.lua"),
+    dofile(processors_path .. "Framewalk.lua"),
 }
 
 local mouse_wheel = 0
