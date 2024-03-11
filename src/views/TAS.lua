@@ -37,6 +37,7 @@ return {
                 text = 'R',
             }) then
             Settings.goal_mag = 127
+            Settings.high_magnitude = false
         end
 
         local foreground_color = BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme
