@@ -436,7 +436,7 @@ Mupen_lua_ugui.numberbox = function(control)
         -- handle number key press
         for key, _ in pairs(Mupen_lua_ugui.internal.get_just_pressed_keys()) do
             local num_1 = tonumber(key)
-            local num_2 = tonumber(key:sub(6))
+            local num_2 = tonumber(key:sub(7))
             local value = num_1 and num_1 or num_2
 
             if value then
