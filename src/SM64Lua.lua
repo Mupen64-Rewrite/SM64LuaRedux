@@ -115,10 +115,19 @@ local paints = 0
 -- Whether the current paint cycle is being skipped
 paint_skipped = false
 
+-- Flag keeping track of whether atinput has fired for one time
+local first_input = true
+
 local keys = input.get()
 local last_keys = input.get()
 
 function at_input()
+    if first_input then
+        if Settings.autodetect_address then
+            Settings.address_source_index = Memory.find_matching_address_source_index()
+        end
+        first_input = false
+    end
     -- frame stage 1: set everything up
     new_frame = true
     Joypad.update()

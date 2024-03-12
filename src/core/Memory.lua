@@ -45,3 +45,12 @@ function Memory.initialize()
 	Memory.update()
 	Memory.update_previous()
 end
+
+function Memory.find_matching_address_source_index()
+	for key, value in pairs(Addresses) do
+		if memory.readdword(value.pattern) == value.pattern_value then
+			return key
+		end
+	end
+	return 1
+end

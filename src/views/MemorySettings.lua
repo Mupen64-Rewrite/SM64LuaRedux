@@ -5,7 +5,7 @@ return {
                 uid = 600,
                 rectangle = grid_rect(0, 0, 4, 1),
                 text = "Select map file...",
-                disabled = true
+                is_enabled = false
             }) then
             local path = iohelper.filediag("*.map", 0)
             if string.len(path) > 0 then
@@ -18,9 +18,24 @@ return {
 
         Settings.address_source_index = Mupen_lua_ugui.combobox({
             uid = 650,
-            rectangle = grid_rect(4, 0, 3, 1),
+            rectangle = grid_rect(4, 0, 4, 1),
             items = lualinq.select_key(Addresses, "name"),
             selected_index = Settings.address_source_index,
+        })
+
+        if Mupen_lua_ugui.button({
+                uid = 700,
+                rectangle = grid_rect(0, 1, 4, 1),
+                text = "Autodetect",
+            }) then
+            Settings.address_source_index = Memory.find_matching_address_source_index()
+        end
+
+        Settings.autodetect_address = Mupen_lua_ugui.toggle_button({
+            uid = 750,
+            rectangle = grid_rect(4, 1, 4, 1),
+            text = "Always",
+            is_checked = Settings.autodetect_address
         })
     end
 }

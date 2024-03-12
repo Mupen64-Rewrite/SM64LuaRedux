@@ -30,7 +30,9 @@ return {
         mario_buffered = 0x80B67054,
         global_timer = 0x80B2D5D4,
         rng_value = 0x80B8EEE0,
-        mario_animation = 0x80B3B1F8 + 0x38
+        mario_animation = 0x80B3B1F8 + 0x38,
+        pattern = 0x00B22B24,
+        pattern_value = 2410020892,
     },
     {
         name = "Japan (WIP)",
@@ -64,5 +66,7 @@ return {
         global_timer = 0x80B2C694,
         rng_value = 0,
         mario_animation = 11823600,
+        pattern = 0x00B22B24,
+        pattern_value = 1174429700,
     }
 }
