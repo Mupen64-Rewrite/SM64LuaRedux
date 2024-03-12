@@ -51,6 +51,7 @@ Settings = {
     truncate_effective_angle = false,
     active_style_index = 1,
     tab_index = 1,
+    settings_tab_index = 1,
     auto_firsties = false,
     repaint_throttle = 2,
     variables = {

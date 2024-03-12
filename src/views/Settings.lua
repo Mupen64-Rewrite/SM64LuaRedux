@@ -1,8 +1,19 @@
 local selected_var_index = 1
 
+local views = {
+    dofile(views_path .. "VisualSettings.lua"),
+}
+
 return {
     name = "Settings",
     draw = function()
+        Settings.settings_tab_index = Mupen_lua_ugui.carrousel_button({
+            uid = 100,
+            rectangle = grid_rect(0, 14, 8, 1),
+            items = lualinq.select_key(views, "name"),
+            selected_index = Settings.settings_tab_index,
+        })
+
         local new_active_style_index = Mupen_lua_ugui.combobox({
             uid = 1,
             rectangle = grid_rect(0, 0, 4, 1),
