@@ -37,7 +37,7 @@ return {
     {
         name = "Japan (WIP)",
         camera_fov = 0,
-        camera_angle = 0,
+        camera_angle = 0x80B3B3A4,
         camera_transition_type = 0,
         camera_transition_progress = 0,
         camera_x = 0,
