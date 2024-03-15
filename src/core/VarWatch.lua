@@ -61,7 +61,7 @@ local var_funcs = {
         )
     end,
     ["atan_start_frame"] = function()
-        return "S: " .. (Settings.atan_start + 1)
+        return "S: " .. math.floor(Settings.atan_start + 1)
     end
 }
 VarWatch = {
