@@ -114,11 +114,11 @@ return {
             text = '<',
             is_checked = Settings.strain_left
         }) then
-			Settings.strain_right = false
-			Settings.strain_left = true
-			else
-			Settings.strain_left = false
-			end
+		Settings.strain_right = false
+		Settings.strain_left = true
+	   else
+		Settings.strain_left = false
+	   end
 
         if Mupen_lua_ugui.toggle_button({
             uid = 60,
@@ -127,11 +127,11 @@ return {
             text = '>',
             is_checked = Settings.strain_right
         }) then
-			Settings.strain_left = false
-			Settings.strain_right = true
-			else
-			Settings.strain_right = false
-			end
+		Settings.strain_left = false
+		Settings.strain_right = true
+           else
+		Settings.strain_right = false
+	   end
 
         local joystick_rect = grid(0, 4, 4, 4)
         Mupen_lua_ugui.joystick({
