@@ -107,21 +107,31 @@ return {
             text = 'D-Yaw',
             is_checked = Settings.dyaw
         })
-        Settings.strain_left = Mupen_lua_ugui.toggle_button({
+        if Mupen_lua_ugui.toggle_button({
             uid = 55,
 
             rectangle = grid_rect(6, 1, 1, 1),
             text = '<',
             is_checked = Settings.strain_left
-        })
+        }) then
+			Settings.strain_right = false
+			Settings.strain_left = true
+			else
+			Settings.strain_left = false
+			end
 
-        Settings.strain_right = Mupen_lua_ugui.toggle_button({
+        if Mupen_lua_ugui.toggle_button({
             uid = 60,
 
             rectangle = grid_rect(7, 1, 1, 1),
             text = '>',
             is_checked = Settings.strain_right
-        })
+        }) then
+			Settings.strain_left = false
+			Settings.strain_right = true
+			else
+			Settings.strain_right = false
+			end
 
         local joystick_rect = grid(0, 4, 4, 4)
         Mupen_lua_ugui.joystick({
@@ -225,23 +235,6 @@ return {
         end
         if Mupen_lua_ugui.button({
                 uid = 120,
-                rectangle = grid_rect(5.5, 7.5, 0.5, 0.5),
-                text = '-',
-            }) then
-            Settings.atan_start = math.max(0, Settings.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
-            VarWatch_update()
-        end
-
-        if Mupen_lua_ugui.button({
-                uid = 125,
-                rectangle = grid_rect(5.5, 7, 0.5, 0.5),
-                text = '+',
-            }) then
-            Settings.atan_start = math.max(0, Settings.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
-            VarWatch_update()
-        end
-        if Mupen_lua_ugui.button({
-                uid = 130,
                 rectangle = grid_rect(5.5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
