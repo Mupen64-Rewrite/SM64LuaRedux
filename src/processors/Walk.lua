@@ -3,7 +3,7 @@ return {
         if Settings.movement_mode == Settings.movement_modes.disabled then
             return input
         end
-
+        Memory.update()
         local result = Engine.inputsForAngle(Settings.goal_angle, input)
         if Settings.goal_mag then
             Engine.scaleInputsForMagnitude(result, Settings.goal_mag, Settings.high_magnitude)
