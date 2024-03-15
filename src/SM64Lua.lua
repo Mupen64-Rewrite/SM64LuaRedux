@@ -163,6 +163,10 @@ function at_update_screen()
         return
     end
 
+    if d2d and d2d.clear then
+        d2d.clear(0, 0, 0, 0)
+    end
+
     last_keys = Mupen_lua_ugui.internal.deep_clone(keys)
     keys = input.get()
 
