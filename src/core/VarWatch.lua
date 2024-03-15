@@ -68,6 +68,10 @@ VarWatch = {
     processed_values = {}
 }
 
+VarWatch_compute_value = function (key)
+    return var_funcs[key]()
+end
+
 VarWatch_update = function()
     if paint_skipped then
         return

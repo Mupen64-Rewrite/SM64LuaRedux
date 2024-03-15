@@ -63,6 +63,12 @@ return {
             text = "Auto-firsties",
             is_checked = Settings.auto_firsties
         })
+        Settings.mini_visualizer = Mupen_lua_ugui.toggle_button({
+            uid = 36,
+            rectangle = grid_rect(0, 4, 4, 1),
+            text = "Minivisualizer",
+            is_checked = Settings.mini_visualizer
+        })
         local previous_track_moved_distance = Settings.track_moved_distance
         Settings.track_moved_distance = Mupen_lua_ugui.toggle_button({
             uid = 40,

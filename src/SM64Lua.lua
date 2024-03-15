@@ -69,6 +69,7 @@ dofile(core_path .. "Engine.lua")
 dofile(core_path .. "MoreMaths.lua")
 dofile(core_path .. "Actions.lua")
 dofile(core_path .. "WorldVisualizer.lua")
+dofile(core_path .. "MiniVisualizer.lua")
 dofile(core_path .. "Lookahead.lua")
 dofile(core_path .. "Timer.lua")
 dofile(core_path .. "RNGToIndex.lua")
@@ -187,6 +188,7 @@ function at_update_screen()
     mouse_wheel = 0
 
     WorldVisualizer.draw()
+    MiniVisualizer.draw()
 
     BreitbandGraphics.fill_rectangle({
         x = Drawing.initial_size.width,
