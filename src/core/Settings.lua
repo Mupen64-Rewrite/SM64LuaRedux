@@ -17,7 +17,7 @@ Settings = {
     strain_left = true,
     strain_right = false,
     dyaw = false,
-    strain_speed_target = false,
+    strain_speed_target = true,
     strain_always = false,
     high_magnitude = false,
     atan_strain = false,
@@ -54,7 +54,7 @@ Settings = {
     settings_tab_index = 1,
     autodetect_address = false,
     auto_firsties = false,
-    mini_visualizer = false,
+	mini_visualizer = false,
     repaint_throttle = 2,
     variables = {
         {
