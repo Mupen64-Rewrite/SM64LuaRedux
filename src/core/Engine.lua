@@ -12,11 +12,11 @@ end
 
 function Engine.getDyaw(angle)
 	if Settings.strain_left and Settings.strain_right == false then
-		return Memory.current.mario_facing_yaw + angle
+		return corrected_facing_yaw + angle
 	elseif Settings.strain_left == false and Settings.strain_right then
-		return Memory.current.mario_facing_yaw - angle
+		return corrected_facing_yaw - angle
 	elseif Settings.strain_left == false and Settings.strain_right == false then
-		return Memory.current.mario_facing_yaw + angle * (math.pow(-1, Memory.current.mario_global_timer % 2))
+		return corrected_facing_yaw + angle * (math.pow(-1, Memory.current.mario_global_timer % 2))
 	else
 		return angle
 	end
@@ -34,7 +34,7 @@ function Engine.getDyawsign()
 	end
 end
 
-ENABLE_REVERSE_ANGLE_ON_WALLKICK = 1
+ENABLE_REVERSE_ANGLE_ON_WALLKICK = true
 actionflag = 0
 speedsign = 0
 targetspeed = 0.0
@@ -45,54 +45,63 @@ function Engine.getgoal(targetspd) -- getting angle for target speed
 	return math.floor(math.acos((targetspd - 0.35 - Memory.current.mario_f_speed) / 1.5) * 32768 / math.pi)
 end
 
-function Engine.getArctanAngle(r, d, n, s)
+function Engine.getArctanAngle(r, d, n, s, goal)
 	-- r is ratio, d is displacement (offset), n is number of frames and  s is starting frame
 	s = s - 1
 	if (s < Memory.current.mario_global_timer and s > Memory.current.mario_global_timer - n - 1) then
+		yaw = 0
+		if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
+			yaw = 32768
+		end
 		if Settings.movement_mode == Settings.movement_modes.match_angle then
-			if (math.abs(Memory.current.mario_facing_yaw - Settings.goal_angle) > 16384) then
+			yaw = (corrected_facing_yaw + yaw) % 65536
+			if (math.abs(yaw - goal) > 16384) then
 				r = -math.abs(math.tan(math.pi / 2 -
-					(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
+					(Engine.get_effective_angle(yaw) - goal) * math.pi / 32768))
 			else
 				r = math.abs(math.tan(math.pi / 2 -
-					(Memory.current.mario_facing_yaw - Settings.goal_angle) * math.pi / 32768))
+					(Engine.get_effective_angle(yaw) - goal) * math.pi / 32768))
 			end
 		end
 		if (Settings.reverse_arc == false) then
 			dyaw = math.floor((math.pi / 2 - math.atan(0.15 * (r * math.max(1, (n + 1 - Memory.current.mario_global_timer + s)) + d / math.min(1, n + 1 - Memory.current.mario_global_timer + s)))) *
 				32768 / math.pi)
 			if (Settings.movement_mode == Settings.movement_modes.match_angle) then
-				if (Memory.current.mario_facing_yaw - Settings.goal_angle > 0 and Memory.current.mario_facing_yaw - Settings.goal_angle < 32768) then
-					return Memory.current.mario_facing_yaw - dyaw
+				if ((yaw - goal + 32768) % 65536 - 32768 > 0) then
+					return yaw - dyaw
 				end
-				return Memory.current.mario_facing_yaw + dyaw
+				return yaw + dyaw
 			end
-			return Engine.getDyaw(dyaw)
+			return (Engine.getDyaw(dyaw) + yaw) % 65536
 		end
 		dyaw = math.floor((math.pi / 2 - math.atan(0.15 * (r * math.max(1, (Memory.current.mario_global_timer - s)) + d / math.min(1, Memory.current.mario_global_timer - s)))) *
 			32768 / math.pi)
 		if (Settings.movement_mode == Settings.movement_modes.match_angle) then
-			if (Memory.current.mario_facing_yaw - goal > 0 and Memory.current.mario_facing_yaw - Settings.goal_angle < 32768) then
-				return Memory.current.mario_facing_yaw - dyaw
+			if ((yaw - goal + 32768) % 65536 - 32768 > 0) then
+				return yaw - dyaw
 			end
-			return Memory.current.mario_facing_yaw + dyaw
+			return yaw + dyaw
 		end
-		return Engine.getDyaw(dyaw)
+		return (Engine.getDyaw(dyaw) + yaw) % 65536
 	end
-	return Settings.goal_angle
+	return goal
 end
 
 Engine.inputsForAngle = function(goal, curr_input)
+	corrected_facing_yaw = Memory.current.mario_facing_yaw
+	if(Memory.current.camera_flags % 4 < 2 and Memory.current.mario_pressed_buttons % 16 > 7 and Memory.current.mario_held_buttons < 128 and curr_input.A and (Memory.current.mario_animation == 127 or Memory.current.mario_animation == 128)) then
+		corrected_facing_yaw = Memory.current.mario_gfx_angle
+	end
 	if (Settings.movement_mode == Settings.movement_modes.match_yaw) then
-		goal = Memory.current.mario_facing_yaw
-		if ((Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
+		goal = corrected_facing_yaw
+		if ((Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
 			goal = (goal + 32768) % 65536
 		end
 	end
 	if (Settings.movement_mode == Settings.movement_modes.reverse_angle) then
-		goal = (Memory.current.mario_facing_yaw + 32768) % 65536
-		if ((Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
-			goal = Memory.current.mario_facing_yaw
+		goal = (corrected_facing_yaw + 32768) % 65536
+		if ((Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343) and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
+			goal = corrected_facing_yaw
 		end
 	end
 
@@ -108,7 +117,7 @@ Engine.inputsForAngle = function(goal, curr_input)
 		else
 			actionflag = 0
 		end
-		if (Memory.current.mario_f_speed > 937 / 30 and Memory.current.mario_f_speed < 31.9 + offset * 3000000 and (Memory.current.mario_action == 0x04808459 or Memory.current.mario_action == 0x00000479) and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+		if (Memory.current.mario_f_speed > 937 / 30 and Memory.current.mario_f_speed < 31.9 + offset * 3000000 and (Memory.current.mario_action == 0x04808459 or Memory.current.mario_action == 0x00000479) and Memory.current.mario_held_buttons < 128 and curr_input.A and (Memory.current.mario_held_buttons % 128 > 63 or not curr_input.B) and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			targetspeed = 48 - Memory.current.mario_f_speed / 2
 			speedsign = 1
 			if (Memory.current.mario_f_speed > 32) then
@@ -116,7 +125,7 @@ Engine.inputsForAngle = function(goal, curr_input)
 			else
 				goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 			end
-		elseif (Memory.current.mario_f_speed >= 10 and offset ~= 0 and Memory.current.mario_f_speed < 34.85 and Memory.current.mario_action == 0x04808459 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+		elseif (Memory.current.mario_f_speed >= 10 and offset ~= 0 and Memory.current.mario_f_speed < 34.85 and Memory.current.mario_action == 0x04808459 and (Memory.current.mario_held_buttons > 127 or not curr_input.A) and  Memory.current.mario_held_buttons % 128 < 64 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			speedsign = 1
 			targetspeed = 32
 			if (Memory.current.mario_f_speed > 32) then
@@ -135,30 +144,48 @@ Engine.inputsForAngle = function(goal, curr_input)
 			if (Memory.current.mario_f_speed > 49.85) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif (Memory.current.mario_f_speed > 30.85 and Memory.current.mario_f_speed < 31.85 + offset and actionflag == 0 and Memory.current.mario_action ~= 0x03000888 and Memory.current.mario_action ~= 0x00000479 and Memory.current.mario_action ~= 0x04808459 and Memory.current.mario_action ~= 0x00880456 and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+		elseif (Memory.current.mario_f_speed > 30.85 and Memory.current.mario_f_speed < 31.85 + offset and (actionflag == 0 or (Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 > 7 and Memory.current.mario_held_buttons < 128 and curr_input.A)) and Memory.current.mario_action ~= 0x03000888 and Memory.current.mario_action ~= 0x00000479 and Memory.current.mario_action ~= 0x04808459 and (Memory.current.mario_action ~= 0x00880456 or ((Memory.current.mario_held_buttons < 128 and curr_input.A) or (Memory.current.mario_held_buttons % 128 < 64 and curr_input.B))) and ((Memory.current.mario_held_buttons % 128 > 63 or not curr_input.B) or Memory.current.mario_action == 0x00880456) and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			targetspeed = 32
 			if (Memory.current.mario_f_speed > 33.85) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-			if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
+			if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
+				goal = (goal + 32768) % 65536
+			end
+		elseif (Memory.current.mario_f_speed > 15.85 and Memory.current.mario_f_speed < 16.85 + offset and (((Memory.current.mario_action == 0x01000882 or Memory.current.mario_action == 0x030008AF or Memory.current.mario_action == 0x03000886 or Memory.current.mario_action == 0x03000894 or Memory.current.mario_action == 0x01000887 or Memory.current.mario_action == 0x0100088C) or (Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 > 7)) and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B) and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+			targetspeed = 32 - 15
+			if (Memory.current.mario_f_speed > 18.85 ) then targetspeed = targetspeed + 1 end
+			speedsign = 1
+			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
+			if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
 				goal = (goal + 32768) % 65536
 			end
 		elseif (Memory.current.mario_f_speed > -32 and Memory.current.mario_f_speed < 32 and ((Memory.current.mario_action >= 0x0C008220 and Memory.current.mario_action < 0x0C008224) or Memory.current.mario_action == 0x0400047A or Memory.current.mario_action == 0x0800022F) and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
 			speedsign = -1
 			goal = Engine.getDyaw(18840)
-		elseif (Memory.current.mario_f_speed > -16.85 - offset and Memory.current.mario_f_speed < -14.85 and Memory.current.mario_action ~= 0x00000479 and actionflag == 0 and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
+		elseif (Memory.current.mario_f_speed > -16.85 - offset and Memory.current.mario_f_speed < -14.85 and Memory.current.mario_action ~= 0x00000479 and ((actionflag == 0 and (Memory.current.mario_action ~= 0x01000882 and Memory.current.mario_action ~= 0x030008AF and Memory.current.mario_action ~= 0x03000886 and Memory.current.mario_action ~= 0x03000894 and Memory.current.mario_action ~= 0x01000887 and Memory.current.mario_action ~= 0x0100088C or Memory.current.mario_held_buttons % 128 > 63 or not curr_input.B)) or (Memory.current.mario_action == 0x04000472 and Memory.current.mario_held_buttons < 128 and curr_input.A and (Memory.current.mario_held_buttons % 128 > 63 or not curr_input.B) and Memory.current.mario_hat_state % 16 > 7)) and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
 			targetspeed = -16
 			if (Memory.current.mario_f_speed < -17.85) then targetspeed = targetspeed - 2 end
 			speedsign = -1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif (Memory.current.mario_f_speed > -21.0625 - offset / 0.8 and Memory.current.mario_f_speed < -18.5625 and Memory.current.mario_action ~= 0x00000479 and (actionflag == 1 or Memory.current.mario_action == 0x04808459) and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
+		elseif (Memory.current.mario_f_speed > -31.85 - offset and Memory.current.mario_f_speed < -29.85 and Memory.current.mario_action ~= 0x00000479 and (((Memory.current.mario_action == 0x01000882 or Memory.current.mario_action == 0x030008AF or Memory.current.mario_action == 0x03000886 or Memory.current.mario_action == 0x03000894 or Memory.current.mario_action == 0x01000887 or Memory.current.mario_action == 0x0100088C) or (Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 > 7)) and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B) and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
+			targetspeed = -16 - 15
+			if (Memory.current.mario_f_speed < -32.85 ) then targetspeed = targetspeed - 2 end
+			speedsign = -1
+			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
+		elseif (Memory.current.mario_f_speed > -21.0625 - offset / 0.8 and Memory.current.mario_f_speed < -18.5625 and Memory.current.mario_action ~= 0x00000479 and (Memory.current.mario_action ~= 0x04000472 or Memory.current.mario_hat_state % 16 < 8) and (actionflag == 1 or Memory.current.mario_action == 0x04808459) and Memory.current.mario_held_buttons < 128 and curr_input.A and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
 			targetspeed = -16 + Memory.current.mario_f_speed / 5
 			if (Memory.current.mario_f_speed < -22.3125) then targetspeed = targetspeed - 2 end
 			speedsign = -1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif (Memory.current.mario_f_speed > 38.5625 and Memory.current.mario_f_speed < 39.8125 + offset / 0.8 and Memory.current.mario_action ~= 0x00000479 and Memory.current.mario_action ~= 0x03000888 and actionflag == 1 and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+		elseif (Memory.current.mario_f_speed > 38.5625 and Memory.current.mario_f_speed < 39.8125 + offset / 0.8 and Memory.current.mario_action ~= 0x00000479 and Memory.current.mario_action ~= 0x03000888 and (Memory.current.mario_action ~= 0x04000472 or Memory.current.mario_hat_state % 16 < 8) and actionflag == 1 and Memory.current.mario_held_buttons < 128 and curr_input.A and (Memory.current.mario_held_buttons % 128 > 63 or not curr_input.B) and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			targetspeed = 32 + Memory.current.mario_f_speed / 5
 			if (Memory.current.mario_f_speed > 42.3125) then targetspeed = targetspeed + 1 end
+			speedsign = 1
+			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
+		elseif (Memory.current.mario_f_speed > 20 and Memory.current.mario_f_speed < 21.0625 + offset/0.8 and Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 < 8 and Memory.current.mario_held_buttons < 128 and curr_input.A and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+			targetspeed = 32 - 15 + Memory.current.mario_f_speed/5
+			if (Memory.current.mario_f_speed > 23.5625) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 		else
@@ -168,18 +195,14 @@ Engine.inputsForAngle = function(goal, curr_input)
 	end
 	if (Settings.movement_mode == Settings.movement_modes.match_angle and Settings.dyaw) then
 		goal = Engine.getDyaw(goal)
-		if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
+		if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
 			goal = (goal + 32768) % 65536
 		end
 	end
 	--if (Settings.atan_strain and Settings.atan_start < Memory.current.mario_global_timer and Settings.atan_start > Memory.current.mario_global_timer - Settings.atan_n - 1) then
 	if (Settings.atan_strain) then
-		goal = Engine.getArctanAngle(Settings.atan_r, Settings.atan_d, Settings.atan_n, Settings.atan_start)
-		if (Settings.movement_mode ~= Settings.movement_modes.match_angle) then
-			if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK == 1) then
-				goal = (goal + 32768) % 65536
-			end
-		end
+		goal = goal % 65536
+		goal = Engine.getArctanAngle(Settings.atan_r, Settings.atan_d, Settings.atan_n, Settings.atan_start, goal)
 	end
 	-- if(Settings.movement_mode ~= Settings.movement_modes.match_angle or Settings.dyaw or Settings.atan_strain) then
 	-- goal = goal + Memory.current.mario_facing_yaw % 16
@@ -194,9 +217,9 @@ Engine.inputsForAngle = function(goal, curr_input)
 	midang = math.floor((minang + maxang) / 2)
 	-- Binary search
 	while (minang <= maxang) do
-		if (Engine.get_effective_angle(Angles.ANGLE[midang].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw < goal) then
+		if (Angles.ANGLE[midang].angle + Memory.current.camera_angle < goal) then
 			minang = midang + 1
-		elseif (Engine.get_effective_angle(Angles.ANGLE[midang].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw == goal) then
+		elseif (Angles.ANGLE[midang].angle + Memory.current.camera_angle == goal) then
 			minang = midang
 			maxang = midang - 1
 		else
@@ -207,7 +230,7 @@ Engine.inputsForAngle = function(goal, curr_input)
 	-- If binary search fails, optimal angle is between Angles.Count and 1. Checks which one is closer.
 	if minang > Angles.COUNT then
 		minang = 1
-		if math.abs(Engine.get_effective_angle(Angles.ANGLE[1].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw - (goal - 65536)) > math.abs(Engine.get_effective_angle(Angles.ANGLE[Angles.COUNT].angle + Memory.current.camera_angle - Memory.current.mario_facing_yaw) + Memory.current.mario_facing_yaw - goal) then
+		if math.abs(Angles.ANGLE[1].angle + Memory.current.camera_angle - (goal - 65536)) > math.abs(Angles.ANGLE[Angles.COUNT].angle + Memory.current.camera_angle - goal) then
 			minang = Angles.COUNT
 		end
 	end
@@ -224,10 +247,10 @@ function Engine.GetQFs(Mariospeed)
 end
 
 function Engine.GetSpeedEfficiency()
-	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_sped > 0 then
+	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_speed > 0 then
 		return Engine.get_distance_moved() / math.abs(math.sqrt(
 			MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
-			MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)
+			MoreMaths.dec_to_float(Memory.current.mario_z_sliding_speed) ^ 2)
 		)
 	else
 		return 0
@@ -250,7 +273,7 @@ end
 
 function Engine.GetHSlidingSpeed()
 	return math.sqrt(MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
-		MoreMaths.dec_to_float(Memory.current.mario_z_sliding_sped) ^ 2)
+		MoreMaths.dec_to_float(Memory.current.mario_z_sliding_speed) ^ 2)
 end
 
 local function magnitude(x, y)
