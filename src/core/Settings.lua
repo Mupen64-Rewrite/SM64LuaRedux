@@ -54,7 +54,7 @@ Settings = {
     settings_tab_index = 1,
     autodetect_address = false,
     auto_firsties = false,
-	mini_visualizer = false,
+    mini_visualizer = false,
     repaint_throttle = 2,
     variables = {
         {
