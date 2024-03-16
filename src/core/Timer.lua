@@ -37,13 +37,13 @@ local function timerAutoDetect()
 end
 
 Timer.get_frame_text = function()
-    local decimals = (VIs * 1000 // 60 + 5) // 10 % 100
+    local decimals = ((VIs % 60) * 1000 // 60 + 5) // 10 % 100
     if (VIs < 3600) then
         return string.format("%02d.%02d", VIs // 60, decimals)
-    elseif (VIs < 360000) then
+    elseif (VIs < 216000) then
         return string.format("%02d:%02d.%02d", VIs // 3600, (VIs % 3600) // 60, decimals)
     else
-        return "99:59.99"
+		return string.format("%d:%02d:%02d.%02d", VIs // 216000, (VIs % 216000) // 3600, (VIs % 3600) // 60, decimals)
     end
 end
 
