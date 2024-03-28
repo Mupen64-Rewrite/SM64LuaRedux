@@ -1285,12 +1285,6 @@ Mupen_lua_ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new value
     scrollbar = function(control)
-        if not Mupen_lua_ugui.internal.control_data[control.uid] then
-            Mupen_lua_ugui.internal.control_data[control.uid] = {
-                start_value = 0,
-            }
-        end
-
         local pushed = Mupen_lua_ugui.internal.process_push(control)
         local is_horizontal = control.rectangle.width > control.rectangle.height
 
@@ -1304,52 +1298,47 @@ Mupen_lua_ugui = {
             end
         end
 
-        -- new activation via direct click
-        if pushed then
-            Mupen_lua_ugui.internal.control_data[control.uid].start_value = control.value
+        if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
+            local relative_mouse = {
+                x = Mupen_lua_ugui.internal.input_state.mouse_position.x - control.rectangle.x,
+                y = Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y,
+            }
+            local relative_mouse_down = {
+                x = Mupen_lua_ugui.internal.mouse_down_position.x - control.rectangle.x,
+                y = Mupen_lua_ugui.internal.mouse_down_position.y - control.rectangle.y,
+            }
+            local current
+            local start
+            if is_horizontal then
+                current = relative_mouse.x / control.rectangle.width
+                start = relative_mouse_down.x / control.rectangle.width
+            else
+                current = relative_mouse.y / control.rectangle.height
+                start = relative_mouse_down.y / control.rectangle.height
+            end
+            control.value = Mupen_lua_ugui.internal.clamp(start + (current - start), 0, 1)
         end
 
-        -- figure out basic bounds of thumb
-        local thumb_bounds = {
-            width = control.rectangle.width * control.ratio,
-            height = control.rectangle.height * control.ratio,
-        }
-
         local thumb_rectangle
-
         -- we center the scrollbar around the translation value, and shrink it accordingly
         if is_horizontal then
-            local scrollbar_x = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0,
-                control.rectangle.width - thumb_bounds.width)
-
+            local scrollbar_width = control.rectangle.width * control.ratio
+            local scrollbar_x = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0, control.rectangle.width - scrollbar_width)
             thumb_rectangle = {
                 x = control.rectangle.x + scrollbar_x,
                 y = control.rectangle.y,
-                width = thumb_bounds.width,
+                width = scrollbar_width,
                 height = control.rectangle.height,
             }
-            if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
-                local v_current = (Mupen_lua_ugui.internal.input_state.mouse_position.x - control.rectangle.x) /
-                    control.rectangle.width
-                control.value = Mupen_lua_ugui.internal.control_data[control.uid].start_value +
-                    (v_current - Mupen_lua_ugui.internal.control_data[control.uid].start_value)
-            end
         else
-            local scrollbar_y = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0,
-                control.rectangle.height - thumb_bounds.height)
-
+            local scrollbar_height = control.rectangle.height * control.ratio
+            local scrollbar_y = Mupen_lua_ugui.internal.remap(control.value, 0, 1, 0, control.rectangle.height - scrollbar_height)
             thumb_rectangle = {
                 x = control.rectangle.x,
                 y = control.rectangle.y + scrollbar_y,
                 width = control.rectangle.width,
-                height = thumb_bounds.height,
+                height = scrollbar_height,
             }
-            if Mupen_lua_ugui.internal.active_control == control.uid and control.is_enabled ~= false and Mupen_lua_ugui.internal.input_state.is_primary_down then
-                local v_current = (Mupen_lua_ugui.internal.input_state.mouse_position.y - control.rectangle.y) /
-                    control.rectangle.height
-                control.value = Mupen_lua_ugui.internal.control_data[control.uid].start_value +
-                    (v_current - Mupen_lua_ugui.internal.control_data[control.uid].start_value)
-            end
         end
 
         local visual_state = Mupen_lua_ugui.get_visual_state(control)
@@ -1358,6 +1347,6 @@ Mupen_lua_ugui = {
         end
         Mupen_lua_ugui.standard_styler.draw_scrollbar(control.rectangle, thumb_rectangle, visual_state)
 
-        return Mupen_lua_ugui.internal.clamp(control.value, 0, 1)
+        return control.value
     end,
 }
