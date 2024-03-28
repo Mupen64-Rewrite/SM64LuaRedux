@@ -26,7 +26,7 @@ return {
         if Mupen_lua_ugui.button({
                 uid = 700,
                 rectangle = grid_rect(0, 1, 4, 1),
-                text = "Autodetect",
+                text = "Autodetect now",
             }) then
             Settings.address_source_index = Memory.find_matching_address_source_index()
         end
@@ -34,7 +34,7 @@ return {
         Settings.autodetect_address = Mupen_lua_ugui.toggle_button({
             uid = 750,
             rectangle = grid_rect(4, 1, 4, 1),
-            text = "Always",
+            text = "Autodetect on start",
             is_checked = Settings.autodetect_address
         })
     end
