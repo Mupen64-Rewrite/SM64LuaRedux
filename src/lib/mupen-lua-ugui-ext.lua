@@ -1,5 +1,5 @@
 -- mupen-lua-ugui-ext 1.3.0
--- https://github.com/Aurumaker72/mupen-lua-ugui-ext
+-- https://github.com/Aurumaker72/mupen-lua-ugui
 
 Mupen_lua_ugui_ext = {
     spread = function(template)
