@@ -41,7 +41,7 @@ return {
             mag = 0
         })
 
-        BreitbandGraphics.draw_text(grid_rect(2, 5, 4, 1), "center", "center",
+        BreitbandGraphics.draw_text(grid_rect(0, 5, 8, 1), "center", "center",
             { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
             BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
             Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 2,
