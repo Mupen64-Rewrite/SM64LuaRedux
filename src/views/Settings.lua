@@ -8,7 +8,7 @@ local views = {
 return {
     name = "Settings",
     draw = function()
-        Settings.settings_tab_index = Mupen_lua_ugui.carrousel_button({
+        Settings.settings_tab_index = ugui.carrousel_button({
             uid = 100,
             rectangle = grid_rect(0, 14, 8, 1),
             items = lualinq.select_key(views, "name"),

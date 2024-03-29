@@ -1,7 +1,7 @@
 return {
     name = "Experiments",
     draw = function()
-        if Mupen_lua_ugui.button({
+        if ugui.button({
                 uid = 0,
 
                 rectangle = grid_rect(0, 0, 3, 1),
@@ -12,21 +12,21 @@ return {
                 Grind.start()
             end
         end
-        Settings.grind_left = Mupen_lua_ugui.toggle_button({
+        Settings.grind_left = ugui.toggle_button({
             uid = 5,
 
             rectangle = grid_rect(6, 0, 1, 1),
             text = "<",
             is_checked = Settings.grind_left
         })
-        Settings.grind_left = not Mupen_lua_ugui.toggle_button({
+        Settings.grind_left = not ugui.toggle_button({
             uid = 10,
 
             rectangle = grid_rect(7, 0, 1, 1),
             text = ">",
             is_checked = not Settings.grind_left
         })
-        Settings.grind_divisor = math.abs(Mupen_lua_ugui.numberbox({
+        Settings.grind_divisor = math.abs(ugui.numberbox({
             uid = 15,
 
             rectangle = grid_rect(3, 0, 3, 1),
@@ -34,7 +34,7 @@ return {
             places = 2,
         }))
 
-        local lookahead = Mupen_lua_ugui.toggle_button({
+        local lookahead = ugui.toggle_button({
             uid = 20,
             rectangle = grid_rect(0, 1, 3, 1),
             text = "Lookahead",
@@ -45,32 +45,32 @@ return {
         end
         Settings.lookahead = lookahead
 
-        Settings.lookahead_length = math.abs(Mupen_lua_ugui.numberbox({
+        Settings.lookahead_length = math.abs(ugui.numberbox({
             uid = 25,
             rectangle = grid_rect(3, 1, 3, 1),
             value = Settings.lookahead_length,
             places = 1,
         }))
-        Settings.visualize_objects = Mupen_lua_ugui.toggle_button({
+        Settings.visualize_objects = ugui.toggle_button({
             uid = 30,
             rectangle = grid_rect(0, 2, 4, 1),
             text = "Visualize Objects",
             is_checked = Settings.visualize_objects
         })
-        Settings.auto_firsties = Mupen_lua_ugui.toggle_button({
+        Settings.auto_firsties = ugui.toggle_button({
             uid = 35,
             rectangle = grid_rect(0, 3, 4, 1),
             text = "Auto-firsties",
             is_checked = Settings.auto_firsties
         })
-        Settings.mini_visualizer = Mupen_lua_ugui.toggle_button({
+        Settings.mini_visualizer = ugui.toggle_button({
             uid = 36,
             rectangle = grid_rect(0, 4, 4, 1),
             text = "Minivisualizer",
             is_checked = Settings.mini_visualizer
         })
         local previous_track_moved_distance = Settings.track_moved_distance
-        Settings.track_moved_distance = Mupen_lua_ugui.toggle_button({
+        Settings.track_moved_distance = ugui.toggle_button({
             uid = 40,
 
             rectangle = grid_rect(0, 14, 4, 1),
@@ -87,7 +87,7 @@ return {
             Settings.moved_distance = Engine.GetTotalDistMoved()
         end
 
-        Settings.moved_distance_ignore_y = Mupen_lua_ugui.toggle_button({
+        Settings.moved_distance_ignore_y = ugui.toggle_button({
             uid = 45,
             rectangle = grid_rect(4, 14, 2, 1),
             text = 'Ignore Y',
