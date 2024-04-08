@@ -168,14 +168,14 @@ function at_update_screen()
         d2d.clear(0, 0, 0, 0)
     end
 
-    last_keys = Mupen_lua_ugui.internal.deep_clone(keys)
+    last_keys = ugui.internal.deep_clone(keys)
     keys = input.get()
 
     if dictlen(input.diff(keys, last_keys)) > 0 then
         Hotkeys.on_key_down(keys)
     end
 
-    Mupen_lua_ugui.begin_frame({
+    ugui.begin_frame({
         mouse_position = {
             x = keys.xmouse,
             y = keys.ymouse,
@@ -201,7 +201,7 @@ function at_update_screen()
 
     -- navigation and presets
 
-    Settings.tab_index = Mupen_lua_ugui.carrousel_button({
+    Settings.tab_index = ugui.carrousel_button({
         uid = -5000,
         rectangle = grid_rect(0, 15, 8, 1),
         items = lualinq.select_key(views, "name"),
@@ -210,7 +210,7 @@ function at_update_screen()
 
     for i = 1, #Presets.persistent.presets, 1 do
         local prev = Presets.persistent.current_index == i
-        local now = Mupen_lua_ugui.toggle_button({
+        local now = ugui.toggle_button({
             uid = -5000 - 5 * i,
 
             rectangle = grid_rect(i - 1, 16, 1, 1),
@@ -223,7 +223,7 @@ function at_update_screen()
         end
     end
 
-    if Mupen_lua_ugui.button({
+    if ugui.button({
             uid = -6000,
 
             rectangle = grid_rect(6, 16, 2, 1),
@@ -233,7 +233,7 @@ function at_update_screen()
         Presets.apply(Presets.persistent.current_index)
     end
 
-    Mupen_lua_ugui.end_frame()
+    ugui.end_frame()
 end
 
 function at_vi()
@@ -263,7 +263,7 @@ emu.atstop(function()
     Presets.save()
     Drawing.size_down()
     BreitbandGraphics.free()
-    Mupen_lua_ugui_ext.free()
+    ugui_ext.free()
 end)
 emu.atwindowmessage(function(hwnd, msg_id, wparam, lparam)
     if msg_id == 522 then                         -- WM_MOUSEWHEEL

@@ -1,5 +1,5 @@
 local function create_default_preset()
-    return Mupen_lua_ugui.internal.deep_clone(Settings)
+    return ugui.internal.deep_clone(Settings)
 end
 
 local default_preset = create_default_preset()
@@ -38,24 +38,24 @@ for i = 1, 6, 1 do
 end
 
 Presets.set_style = function(theme)
-    local mod_theme = Mupen_lua_ugui.internal.deep_clone(theme)
+    local mod_theme = ugui.internal.deep_clone(theme)
 
     -- HACK: We scale some visual properties according to drawing scale
     mod_theme.font_size = theme.font_size * Drawing.scale
     mod_theme.item_height = theme.item_height * Drawing.scale
 
-    Mupen_lua_ugui_ext.apply_nineslice(mod_theme)
+    ugui_ext.apply_nineslice(mod_theme)
 end
 
 function Presets.apply(i)
-    Presets.persistent.current_index = Mupen_lua_ugui.internal.clamp(i, 1, #Presets.persistent.presets)
+    Presets.persistent.current_index = ugui.internal.clamp(i, 1, #Presets.persistent.presets)
     Settings = Presets.persistent.presets[Presets.persistent.current_index]
     Presets.set_style(Presets.styles[Settings.active_style_index].theme)
     VarWatch_update()
 end
 
 function Presets.reset(i)
-    Presets.persistent.presets[i] = Mupen_lua_ugui.internal.deep_clone(default_preset)
+    Presets.persistent.presets[i] = ugui.internal.deep_clone(default_preset)
 end
 
 function Presets.save()

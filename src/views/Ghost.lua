@@ -1,7 +1,7 @@
 return {
     name = "Ghost",
     draw = function()
-        if Mupen_lua_ugui.button({
+        if ugui.button({
                 uid = 5,
                 
                 rectangle = grid_rect(0, 0, 4, 1),

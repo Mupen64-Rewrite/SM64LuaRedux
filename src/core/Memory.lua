@@ -43,7 +43,7 @@ end
 
 function Memory.update_previous()
 	-- update previous values
-	Memory.previous = Mupen_lua_ugui.internal.deep_clone(Memory.current)
+	Memory.previous = ugui.internal.deep_clone(Memory.current)
 end
 
 function Memory.initialize()

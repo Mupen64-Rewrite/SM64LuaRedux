@@ -31,7 +31,7 @@ end
 
 
 local function project(vec3)
-    local p = Mupen_lua_ugui.internal.deep_clone(vec3)
+    local p = ugui.internal.deep_clone(vec3)
 
     --cam to origin, move point relatively
     p.x = p.x - Memory.current.camera_x

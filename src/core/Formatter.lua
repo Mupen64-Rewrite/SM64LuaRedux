@@ -6,7 +6,7 @@ Formatter = {}
 Formatter.angle = function(value)
     if Settings.format_angles_degrees then
         return string.format("%sdeg",
-            MoreMaths.round(Mupen_lua_ugui.internal.remap(value, 0, 65536, 0, 360), Settings.format_decimal_points))
+            MoreMaths.round(ugui.internal.remap(value, 0, 65536, 0, 360), Settings.format_decimal_points))
     else
         return tostring(MoreMaths.round(value, Settings.format_decimal_points))
     end

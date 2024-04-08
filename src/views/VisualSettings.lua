@@ -1,7 +1,7 @@
 return {
     name = "Visuals",
     draw = function()
-        local new_active_style_index = Mupen_lua_ugui.combobox({
+        local new_active_style_index = ugui.combobox({
             uid = 1,
             rectangle = grid_rect(0, 0, 4, 1),
             items = lualinq.select_key(Presets.styles, "name"),
@@ -13,7 +13,7 @@ return {
             Presets.set_style(Presets.styles[Settings.active_style_index].theme)
         end
 
-        if Mupen_lua_ugui.button({
+        if ugui.button({
                 uid = 5,
                 rectangle = grid_rect(4, 0, 1, 1),
                 text = Settings.format_angles_degrees and "DEG" or "S16",
@@ -21,14 +21,14 @@ return {
             Settings.format_angles_degrees = not Settings.format_angles_degrees
         end
 
-        Settings.format_decimal_points = math.abs(Mupen_lua_ugui.numberbox({
+        Settings.format_decimal_points = math.abs(ugui.numberbox({
             uid = 10,
             rectangle = grid_rect(5, 0, 1, 1),
             value = Settings.format_decimal_points,
             places = 1
         }))
 
-        Settings.repaint_throttle = math.max(1, math.abs(Mupen_lua_ugui.numberbox({
+        Settings.repaint_throttle = math.max(1, math.abs(ugui.numberbox({
             uid = 15,
             rectangle = grid_rect(6, 0, 1, 1),
             value = Settings.repaint_throttle,
