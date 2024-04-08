@@ -55,7 +55,7 @@ function Engine.getArctanAngle(r, d, n, s, goal)
 		end
 		if Settings.movement_mode == Settings.movement_modes.match_angle then
 			yaw = (corrected_facing_yaw + yaw) % 65536
-			if (math.abs(yaw - goal) > 16384) then
+			if (math.abs(yaw - goal) > 16384 and math.abs(yaw - goal) <= 49152) then
 				r = -math.abs(math.tan(math.pi / 2 -
 					(Engine.get_effective_angle(yaw) - goal) * math.pi / 32768))
 			else
