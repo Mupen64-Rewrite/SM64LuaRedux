@@ -68,7 +68,7 @@ VarWatch = {
     processed_values = {}
 }
 
-VarWatch_compute_value = function (key)
+VarWatch_compute_value = function(key)
     return var_funcs[key]()
 end
 

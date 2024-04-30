@@ -12,6 +12,7 @@ local State = 0
 local StartVI = 0
 local is_control_automatic = true
 local curVI = 0
+local frames = 0
 
 local function timerAutoDetect()
     if ((State == 1) and ((Memory.current.mario_object_effective == 0) or (curVI < StartVI))) then -- Reset timer on star select, or if state before start time is loaded
@@ -43,8 +44,12 @@ Timer.get_frame_text = function()
     elseif (VIs < 216000) then
         return string.format("%02d:%02d.%02d", VIs // 3600, (VIs % 3600) // 60, decimals)
     else
-		return string.format("%d:%02d:%02d.%02d", VIs // 216000, (VIs % 216000) // 3600, (VIs % 3600) // 60, decimals)
+        return string.format("%d:%02d:%02d.%02d", VIs // 216000, (VIs % 216000) // 3600, (VIs % 3600) // 60, decimals)
     end
+end
+
+Timer.get_frames = function()
+    return frames
 end
 
 Timer.update = function(
@@ -54,9 +59,11 @@ Timer.update = function(
     if (State == 1) then
         if (curVI <= StartVI) then
             VIs = 0
+            frames = 0
         else
             PredictedVIs = curVI + 2 -- assume it will increment by 2, fix it on the next frame if there's lag
             VIs = PredictedVIs - StartVI
+            frames = frames + 1
         end
     end
     if (is_control_automatic) then
