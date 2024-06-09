@@ -176,13 +176,15 @@ function at_update_screen()
         Hotkeys.on_key_down(keys)
     end
 
+    local focused = emu.ismainwindowinforeground()
+    
     ugui.begin_frame({
         mouse_position = {
             x = keys.xmouse,
             y = keys.ymouse,
         },
         wheel = mouse_wheel,
-        is_primary_down = keys.leftclick,
+        is_primary_down = keys.leftclick and focused,
         held_keys = keys,
     })
 
