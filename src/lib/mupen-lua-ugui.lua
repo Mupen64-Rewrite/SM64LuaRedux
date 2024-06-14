@@ -1,4 +1,4 @@
--- mupen-lua-ugui 1.6.0
+-- mupen-lua-ugui 1.6.1
 -- https://github.com/Aurumaker72/mupen-lua-ugui
 
 local function folder(file)
@@ -925,8 +925,14 @@ ugui = {
             local relative_x = ugui.internal.input_state.mouse_position.x - control.rectangle.x
             if relative_x > control.rectangle.width / 2 then
                 selected_index = selected_index + 1
+                if selected_index > #control.items then
+                    selected_index = 1
+                end
             else
                 selected_index = selected_index - 1
+                if selected_index < 1 then
+                    selected_index = #control.items
+                end
             end
         end
 
