@@ -12,6 +12,14 @@ SM64 Lua Redux is an SM64 TASing utility powered by [mupen-lua-ugui](https://git
 
 The [SM64 Lua Redux Wiki](https://github.com/Mupen64-Rewrite/SM64LuaRedux/wiki) contains information about usage.
 
+# Quickstart
+
+1. [Download](https://github.com/Mupen64-Rewrite/SM64LuaRedux/archive/refs/heads/master.zip) the latest version
+2. Unzip the archive
+3. Open a lua console in Mupen64
+4. Browse to the `src/SM64Lua.lua` file and select it
+5. Run the script
+
 # What's new
 
 - Themes
@@ -36,14 +44,6 @@ The [SM64 Lua Redux Wiki](https://github.com/Mupen64-Rewrite/SM64LuaRedux/wiki) 
 [^5]: Preview input changes in real-time, with no need for frame advancing manually. Useful for finding angles, testing BLJs and more. The lookahead timeout is, by default, 0 (1 frame lookahead), but can be increased
 [^6]: The amount of decimal points values are rounded to can be changed, as well as angles being expressed as degrees or game units
 [^7]: Allows you to see object positions as well as other useful information directly in the game world
-
-# Quickstart
-
-1. [Download](https://github.com/Mupen64-Rewrite/SM64LuaRedux/archive/refs/heads/master.zip) the latest version
-2. Unzip the archive
-3. Open a lua console in Mupen64
-4. Browse to the `src/SM64Lua.lua` file and select it
-5. Run the script
 
 # Showcase
 
