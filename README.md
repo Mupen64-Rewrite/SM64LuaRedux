@@ -20,6 +20,10 @@ The [SM64 Lua Redux Wiki](https://github.com/Mupen64-Rewrite/SM64LuaRedux/wiki) 
 4. Browse to the `src/SM64Lua.lua` file and select it
 5. Run the script
 
+or...
+
+3. Drag and drop the `src/SM64Lua.lua` file onto Mupen64
+
 # What's new
 
 - Themes
