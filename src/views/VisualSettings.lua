@@ -34,5 +34,12 @@ return {
             value = Settings.repaint_throttle,
             places = 1
         })))
+
+        Settings.read_memory_every_vi = ugui.toggle_button({
+            uid = 20,
+            rectangle = grid_rect(0, 1, 4, 1),
+            text = "Update every VI",
+            is_checked = Settings.read_memory_every_vi
+        })
     end
 }

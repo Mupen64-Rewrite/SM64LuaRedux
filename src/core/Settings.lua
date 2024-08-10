@@ -56,6 +56,7 @@ Settings = {
     auto_firsties = false,
     mini_visualizer = false,
     repaint_throttle = 2,
+    read_memory_every_vi = false,
     variables = {
         {
             identifier = "yaw_facing",

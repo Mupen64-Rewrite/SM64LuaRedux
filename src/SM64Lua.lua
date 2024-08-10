@@ -177,7 +177,7 @@ function at_update_screen()
     end
 
     local focused = emu.ismainwindowinforeground()
-    
+
     ugui.begin_frame({
         mouse_position = {
             x = keys.xmouse,
@@ -240,11 +240,13 @@ function at_update_screen()
 end
 
 function at_vi()
-    if new_frame then
+    if new_frame or Settings.read_memory_every_vi then
         Memory.update_previous()
         Memory.update()
         VarWatch_update()
-        new_frame = false
+        if not Settings.read_memory_every_vi then
+            new_frame = false
+        end
     end
 
     Engine.vi()
