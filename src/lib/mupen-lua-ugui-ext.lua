@@ -581,6 +581,7 @@ ugui_ext.apply_nineslice = function(style)
     ugui.standard_styler.list_text_colors = style.listbox.text_colors
     ugui.standard_styler.scrollbar_thickness = style.scrollbar_rail.width
     ugui.standard_styler.cleartype = not style.pixelated_text
+    ugui.standard_styler.joystick_tip_size = style.joystick_tip_size
     ugui.standard_styler.joystick_back_colors = style.joystick.back_colors
     ugui.standard_styler.joystick_outline_colors = style.joystick.outline_colors
     ugui.standard_styler.joystick_inner_mag_colors = style.joystick.inner_mag_colors

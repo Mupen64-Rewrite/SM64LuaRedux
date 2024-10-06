@@ -43,6 +43,7 @@ Presets.set_style = function(theme)
     -- HACK: We scale some visual properties according to drawing scale
     mod_theme.font_size = theme.font_size * Drawing.scale
     mod_theme.item_height = theme.item_height * Drawing.scale
+    mod_theme.joystick_tip_size = (theme.joystick_tip_size or 8) * Drawing.scale
 
     ugui_ext.apply_nineslice(mod_theme)
 end

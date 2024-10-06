@@ -253,6 +253,7 @@ ugui = {
         font_size = 12,
         cleartype = true,
         scrollbar_thickness = 17,
+        joystick_tip_size = 8,
         font_name = 'MS Shell Dlg 2',
         raised_frame_back_colors = {
             [1] = BreitbandGraphics.hex_to_color('#E1E1E1'),
@@ -459,12 +460,12 @@ ugui = {
                 x = position.x,
                 y = position.y,
             }, line_color, 3)
-            local tip_size = 8
+
             BreitbandGraphics.fill_ellipse({
-                x = position.x - tip_size / 2,
-                y = position.y - tip_size / 2,
-                width = tip_size,
-                height = tip_size,
+                x = position.x - ugui.standard_styler.joystick_tip_size / 2,
+                y = position.y - ugui.standard_styler.joystick_tip_size / 2,
+                width = ugui.standard_styler.joystick_tip_size,
+                height = ugui.standard_styler.joystick_tip_size,
             }, tip_color)
         end,
         draw_list_item = function(item, rectangle, visual_state)
