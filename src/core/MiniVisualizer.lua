@@ -10,8 +10,8 @@ MiniVisualizer.draw = function()
         uid = -100,
         rectangle = grid_rect_abs(0, 14, 3, 3),
         position = {
-            x = ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
-            y = ugui.internal.remap(-Joypad.input.Y, -128, 128, 0, 1),
+            x = Joypad.input.X,
+            y = -Joypad.input.Y,
         },
         mag = 0
     })

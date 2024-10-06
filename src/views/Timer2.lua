@@ -34,8 +34,8 @@ return {
             uid = 30,
             rectangle = grid_rect(x_offset, 0, 4, 4),
             position = {
-                x = ugui.internal.remap(Joypad.input.X, -128, 128, 0, 1),
-                y = ugui.internal.remap(-Joypad.input.Y, -128, 128, 0, 1),
+                x = Joypad.input.X,
+                y = -Joypad.input.Y,
             },
             mag = 0
         })
