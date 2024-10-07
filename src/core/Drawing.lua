@@ -2,6 +2,7 @@ Drawing = {
     initial_size = nil,
     size = nil,
     scale = 1,
+    offset_stack = {},
 }
 
 function Drawing.size_up()
@@ -46,22 +47,41 @@ function grid(x, y, x_span, y_span, abs)
     return { math.floor(rect[1]), math.floor(rect[2]), math.floor(rect[3]), math.floor(rect[4]) }
 end
 
+function Drawing.push_offset(x, y)
+    Drawing.offset_stack[#Drawing.offset_stack + 1] = { x = x, y = y }
+end
+
+function Drawing.pop_offset()
+    if #Drawing.offset_stack == 0 then
+        return
+    end
+    table.remove(Drawing.offset_stack, #Drawing.offset_stack)
+end
+
+local function adjust_rect(rect)
+    for _, value in pairs(Drawing.offset_stack) do
+        rect.x = rect.x + value.x
+        rect.y = rect.y + value.y
+    end
+    return rect
+end
+
 function grid_rect(x, y, x_span, y_span)
     local value = grid(x, y, x_span, y_span, false)
-    return {
+    return adjust_rect({
         x = value[1],
         y = value[2],
         width = value[3],
         height = value[4],
-    }
+    })
 end
 
 function grid_rect_abs(x, y, x_span, y_span)
     local value = grid(x, y, x_span, y_span, true)
-    return {
+    return adjust_rect({
         x = value[1],
         y = value[2],
         width = value[3],
         height = value[4],
-    }
+    })
 end

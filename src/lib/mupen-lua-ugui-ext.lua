@@ -223,13 +223,25 @@ ugui.tabcontrol = function(control)
     if not ugui.standard_styler.tab_control_rail_thickness then
         ugui.standard_styler.tab_control_rail_thickness = 17
     end
+    if ugui.standard_styler.tab_control_draw_frame == nil then
+        ugui.standard_styler.tab_control_draw_frame = true
+    end
+    if ugui.standard_styler.tab_control_gap_x == nil then
+        ugui.standard_styler.tab_control_gap_x = 0
+    end
+    if ugui.standard_styler.tab_control_gap_y == nil then
+        ugui.standard_styler.tab_control_gap_y = 0
+    end
+
     ugui.internal.control_data[control.uid] = {
         y_translation = 0
     }
 
-    local clone = ugui.internal.deep_clone(control)
-    clone.items = {}
-    ugui.standard_styler.draw_list(clone, clone.rectangle)
+    if ugui.standard_styler.tab_control_draw_frame then
+        local clone = ugui.internal.deep_clone(control)
+        clone.items = {}
+        ugui.standard_styler.draw_list(clone, clone.rectangle)
+    end
 
     local x = 0
     local y = 0
@@ -244,7 +256,7 @@ ugui.tabcontrol = function(control)
         -- if it would overflow, we wrap onto a new line
         if x + width > control.rectangle.width then
             x = 0
-            y = y + ugui.standard_styler.tab_control_rail_thickness
+            y = y + ugui.standard_styler.tab_control_rail_thickness + ugui.standard_styler.tab_control_gap_y
         end
 
         local previous = selected_index == i
@@ -265,7 +277,7 @@ ugui.tabcontrol = function(control)
             selected_index = i
         end
 
-        x = x + width
+        x = x + width + ugui.standard_styler.tab_control_gap_x
     end
 
     return {
@@ -512,7 +524,7 @@ ugui_ext.apply_nineslice = function(style)
         end)
     end
     ugui.standard_styler.draw_edit_frame = function(control, rectangle,
-                                                              visual_state)
+                                                    visual_state)
         local key = ugui_ext.internal.params_to_key("edit_frame", rectangle, visual_state)
 
         ugui_ext.internal.cached_draw(key, rectangle, function(eff_rectangle)

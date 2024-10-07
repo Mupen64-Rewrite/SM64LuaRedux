@@ -45,6 +45,12 @@ Presets.set_style = function(theme)
     mod_theme.item_height = theme.item_height * Drawing.scale
     mod_theme.joystick_tip_size = (theme.joystick_tip_size or 8) * Drawing.scale
 
+    -- HACK: I guess just apply this here lol
+    ugui.standard_styler.tab_control_rail_thickness = grid_rect(0, 0, 0, 1).height
+    ugui.standard_styler.tab_control_draw_frame = false
+    ugui.standard_styler.tab_control_gap_x = Settings.grid_gap
+    ugui.standard_styler.tab_control_gap_y = Settings.grid_gap
+
     ugui_ext.apply_nineslice(mod_theme)
 end
 
