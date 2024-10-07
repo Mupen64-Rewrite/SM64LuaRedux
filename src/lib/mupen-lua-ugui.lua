@@ -36,6 +36,15 @@ ugui = {
         -- array of functions which will be called at the end of the frame
         late_callbacks = {},
 
+        -- Map of uids used in an active section (between begin_frame and end_frame)
+        used_uids = {},
+
+        register_uid = function (uid)
+            if ugui.internal.used_uids[uid] then
+                error(string.format("Uid %d is already in use!", uid))
+            end
+            ugui.internal.used_uids[uid] = uid
+        end,
         deep_clone = function(obj, seen)
             if type(obj) ~= 'table' then return obj end
             if seen and seen[obj] then return seen[obj] end
@@ -870,6 +879,7 @@ ugui = {
 
         ugui.internal.late_callbacks = {}
         ugui.internal.hittest_free_rects = {}
+        ugui.internal.used_uids = {}
 
         if not ugui.internal.input_state.is_primary_down and ugui.internal.clear_active_control_after_mouse_up then
             ugui.internal.active_control = nil
@@ -884,6 +894,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button has been pressed this frame
     button = function(control)
+        ugui.internal.register_uid(control.uid)
+
         local pushed = ugui.internal.process_push(control)
         ugui.standard_styler.draw_button(control)
 
@@ -898,6 +910,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button is checked
     toggle_button = function(control)
+        ugui.internal.register_uid(control.uid)
+
         local pushed = ugui.internal.process_push(control)
         ugui.standard_styler.draw_togglebutton(control)
 
@@ -916,6 +930,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new selected index
     carrousel_button = function(control)
+        ugui.internal.register_uid(control.uid)
+
         local pushed = ugui.internal.process_push(control)
         local selected_index = control.selected_index
 
@@ -946,6 +962,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ string The textbox's text
     textbox = function(control)
+        ugui.internal.register_uid(control.uid)
+
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
                 caret_index = 1,
@@ -1063,6 +1081,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ `table` The joystick's new position as `{x, y}` with the range `0-128`
     joystick = function(control)
+        ugui.internal.register_uid(control.uid)
+
         ugui.standard_styler.draw_joystick(control)
 
         local position = ugui.internal.deep_clone(control.position)
@@ -1088,6 +1108,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The trackbar's value
     trackbar = function(control)
+        ugui.internal.register_uid(control.uid)
+
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
                 active = false,
@@ -1125,6 +1147,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
     combobox = function(control)
+        ugui.internal.register_uid(control.uid)
+
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
                 is_open = false,
@@ -1189,6 +1213,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
     listbox = function(_control)
+        ugui.internal.register_uid(_control.uid)
+
         if not ugui.internal.control_data[_control.uid] then
             ugui.internal.control_data[_control.uid] = {
                 scroll_x = 0,
@@ -1337,6 +1363,8 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new value
     scrollbar = function(control)
+        ugui.internal.register_uid(control.uid)
+
         local pushed = ugui.internal.process_push(control)
         local is_horizontal = control.rectangle.width > control.rectangle.height
 
