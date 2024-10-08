@@ -39,9 +39,9 @@ ugui = {
         -- Map of uids used in an active section (between begin_frame and end_frame)
         used_uids = {},
 
-        register_uid = function (uid)
+        register_uid = function(uid)
             if ugui.internal.used_uids[uid] then
-                error(string.format("Uid %d is already in use!", uid))
+                error(string.format('Uid %d is already in use!', uid))
             end
             ugui.internal.used_uids[uid] = uid
         end,
@@ -263,6 +263,7 @@ ugui = {
         cleartype = true,
         scrollbar_thickness = 17,
         joystick_tip_size = 8,
+        icon_size = 12,
         font_name = 'MS Shell Dlg 2',
         raised_frame_back_colors = {
             [1] = BreitbandGraphics.hex_to_color('#E1E1E1'),
@@ -396,6 +397,59 @@ ugui = {
             [3] = BreitbandGraphics.hex_to_color('#CCCCCC'),
             [0] = BreitbandGraphics.hex_to_color('#CCCCCC'),
         },
+
+        ---Draws an icon with the specified parameters
+        ---The draw_icon implementation may choose to use either the color or visual_state parameter to determine the icon's appearance. 
+        ---Therefore, the caller must provide either a color or a visual state, or both.
+        draw_icon = function(rectangle, color, visual_state, key)
+
+            if not color and visual_state then
+                BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
+                return
+            end
+
+            if key == 'arrow_left' then
+                BreitbandGraphics.draw_text(rectangle,
+                    'center',
+                    'center',
+                    {aliased = not ugui.standard_styler.cleartype},
+                    color,
+                    ugui.standard_styler.font_size,
+                    'Segoe UI Mono',
+                    '<')
+            elseif key == 'arrow_right' then
+                BreitbandGraphics.draw_text(rectangle,
+                    'center',
+                    'center',
+                    {aliased = not ugui.standard_styler.cleartype},
+                    color,
+                    ugui.standard_styler.font_size,
+                    'Segoe UI Mono',
+                    '>')
+            elseif key == 'arrow_up' then
+                BreitbandGraphics.draw_text(rectangle,
+                    'center',
+                    'center',
+                    {aliased = not ugui.standard_styler.cleartype},
+                    color,
+                    ugui.standard_styler.font_size,
+                    'Segoe UI Mono',
+                    '^')
+            elseif key == 'arrow_down' then
+                BreitbandGraphics.draw_text(rectangle,
+                    'center',
+                    'center',
+                    {aliased = not ugui.standard_styler.cleartype},
+                    color,
+                    ugui.standard_styler.font_size,
+                    'Segoe UI Mono',
+                    'v')
+            else
+                -- Unknown icon, probably a good idea to nag the user
+                BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
+            end
+        end,
+
         draw_raised_frame = function(control, visual_state)
             BreitbandGraphics.fill_rectangle(control.rectangle,
                 ugui.standard_styler.raised_frame_border_colors[visual_state])
@@ -581,24 +635,19 @@ ugui = {
             local visual_state = ugui.get_visual_state(control)
 
             -- draw the arrows
-            BreitbandGraphics.draw_text({
-                    x = control.rectangle.x + ugui.standard_styler.textbox_padding,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width - ugui.standard_styler.textbox_padding * 2,
-                    height = control.rectangle.height,
-                }, 'start', 'center', {aliased = not ugui.standard_styler.cleartype},
-                ugui.standard_styler.raised_frame_text_colors[visual_state],
-                ugui.standard_styler.font_size,
-                'Segoe UI Mono', '<')
-            BreitbandGraphics.draw_text({
-                    x = control.rectangle.x + ugui.standard_styler.textbox_padding,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width - ugui.standard_styler.textbox_padding * 2,
-                    height = control.rectangle.height,
-                }, 'end', 'center', {aliased = not ugui.standard_styler.cleartype},
-                ugui.standard_styler.raised_frame_text_colors[visual_state],
-                ugui.standard_styler.font_size,
-                'Segoe UI Mono', '>')
+            ugui.standard_styler.draw_icon({
+                x = control.rectangle.x + ugui.standard_styler.textbox_padding,
+                y = control.rectangle.y,
+                width = ugui.standard_styler.icon_size,
+                height = control.rectangle.height,
+            }, ugui.standard_styler.raised_frame_text_colors[visual_state], visual_state, 'arrow_left')
+            ugui.standard_styler.draw_icon({
+                x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.textbox_padding -
+                    ugui.standard_styler.icon_size,
+                y = control.rectangle.y,
+                width = ugui.standard_styler.icon_size,
+                height = control.rectangle.height,
+            }, ugui.standard_styler.raised_frame_text_colors[visual_state], visual_state, 'arrow_right')
         end,
         draw_textbox = function(control)
             local visual_state = ugui.get_visual_state(control)
@@ -729,9 +778,12 @@ ugui = {
 
             ugui.standard_styler.draw_raised_frame(control, visual_state)
             ugui.standard_styler.draw_joystick_inner(control.rectangle, visual_state, {
-                x = ugui.internal.remap(ugui.internal.clamp(control.position.x, -128, 128), -128, 128, control.rectangle.x, control.rectangle.x + control.rectangle.width),
-                y = ugui.internal.remap(ugui.internal.clamp(control.position.y, -128, 128), -128, 128, control.rectangle.y, control.rectangle.y + control.rectangle.height),
-                r = ugui.internal.remap(ugui.internal.clamp(control.mag or 0, 0, 128), 0, 128, 0, math.min(control.rectangle.width, control.rectangle.height)),
+                x = ugui.internal.remap(ugui.internal.clamp(control.position.x, -128, 128), -128, 128,
+                    control.rectangle.x, control.rectangle.x + control.rectangle.width),
+                y = ugui.internal.remap(ugui.internal.clamp(control.position.y, -128, 128), -128, 128,
+                    control.rectangle.y, control.rectangle.y + control.rectangle.height),
+                r = ugui.internal.remap(ugui.internal.clamp(control.mag or 0, 0, 128), 0, 128, 0,
+                    math.min(control.rectangle.width, control.rectangle.height)),
             })
         end,
         draw_track = function(control, visual_state, is_horizontal)
@@ -820,14 +872,12 @@ ugui = {
                 ugui.standard_styler.font_name,
                 control.items[control.selected_index])
 
-            BreitbandGraphics.draw_text({
-                    x = control.rectangle.x,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width - ugui.standard_styler.textbox_padding * 4,
-                    height = control.rectangle.height,
-                }, 'end', 'center', {clip = true, aliased = not ugui.standard_styler.cleartype}, text_color,
-                ugui.standard_styler.font_size,
-                'Segoe UI Mono', 'v')
+            ugui.standard_styler.draw_icon({
+                x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.icon_size - ugui.standard_styler.textbox_padding * 2,
+                y = control.rectangle.y,
+                width = ugui.standard_styler.icon_size,
+                height = control.rectangle.height,
+            }, text_color, visual_state, 'arrow_down')
         end,
 
         draw_listbox = function(control)
@@ -1093,8 +1143,12 @@ ugui = {
             not control.topmost
 
         if ugui.internal.active_control == control.uid and not ignored then
-            position.x = ugui.internal.clamp(ugui.internal.remap(ugui.internal.input_state.mouse_position.x - control.rectangle.x, 0, control.rectangle.width, -128, 128), -128, 128)
-            position.y = ugui.internal.clamp(ugui.internal.remap(ugui.internal.input_state.mouse_position.y - control.rectangle.y, 0, control.rectangle.height, -128, 128), -128, 128)
+            position.x = ugui.internal.clamp(
+                ugui.internal.remap(ugui.internal.input_state.mouse_position.x - control.rectangle.x, 0,
+                    control.rectangle.width, -128, 128), -128, 128)
+            position.y = ugui.internal.clamp(
+                ugui.internal.remap(ugui.internal.input_state.mouse_position.y - control.rectangle.y, 0,
+                    control.rectangle.height, -128, 128), -128, 128)
         end
 
         return position
@@ -1309,7 +1363,8 @@ ugui = {
                 end
             end
 
-            ugui.internal.control_data[control.uid].scroll_y = ugui.internal.clamp(ugui.internal.control_data[control.uid].scroll_y + inc, 0, 1)
+            ugui.internal.control_data[control.uid].scroll_y = ugui.internal.clamp(
+                ugui.internal.control_data[control.uid].scroll_y + inc, 0, 1)
         end
 
 
