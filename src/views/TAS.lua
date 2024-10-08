@@ -7,27 +7,27 @@ return {
             selected_index = nil,
             items = VarWatch.processed_values,
         })
-        Settings.goal_angle = math.abs(ugui.numberbox({
+        TASState.goal_angle = math.abs(ugui.numberbox({
             uid = 5,
-            is_enabled = Settings.movement_mode == Settings.movement_modes.match_angle,
+            is_enabled = TASState.movement_mode == Settings.movement_modes.match_angle,
             rectangle = grid_rect(4, 3, 4, 1),
             places = 5,
-            value = Settings.goal_angle
+            value = TASState.goal_angle
         }))
-        Settings.goal_mag = math.abs(ugui.numberbox({
+        TASState.goal_mag = math.abs(ugui.numberbox({
             uid = 10,
 
             rectangle = grid_rect(4, 4, 2, 1),
             places = 3,
-            value = Settings.goal_mag
+            value = TASState.goal_mag
         }))
 
-        Settings.high_magnitude = ugui.toggle_button({
+        TASState.high_magnitude = ugui.toggle_button({
             uid = 15,
 
             rectangle = grid_rect(7, 4, 1, 1),
             text = 'H',
-            is_checked = Settings.high_magnitude
+            is_checked = TASState.high_magnitude
         })
 
         if ugui.button({
@@ -36,8 +36,8 @@ return {
                 rectangle = grid_rect(6, 4, 1, 1),
                 text = 'R',
             }) then
-            Settings.goal_mag = 127
-            Settings.high_magnitude = false
+            TASState.goal_mag = 127
+            TASState.high_magnitude = false
         end
 
         local foreground_color = BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme
@@ -67,71 +67,72 @@ return {
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
-            Settings.goal_mag = 48
-            Settings.high_magnitude = true
+            TASState.goal_mag = 48
+            TASState.high_magnitude = true
         end
 
-        Settings.framewalk = ugui.toggle_button({
+        TASState.framewalk = ugui.toggle_button({
             uid = 30,
 
             rectangle = grid_rect(6, 5, 2, 1),
             text = 'Framewalk',
-            is_checked = Settings.framewalk
+            is_checked = TASState.framewalk
         })
 
-        Settings.strain_always = ugui.toggle_button({
+        TASState.strain_always = ugui.toggle_button({
             uid = 35,
-            is_enabled = Settings.strain_speed_target,
+            is_enabled = TASState.strain_speed_target,
             rectangle = grid_rect(4, 0, 3, 1),
             text = 'Always',
-            is_checked = Settings.strain_always
+            is_checked = TASState.strain_always
         })
-        Settings.strain_speed_target = ugui.toggle_button({
+        TASState.strain_speed_target = ugui.toggle_button({
             uid = 40,
 
             rectangle = grid_rect(7, 0, 1, 1),
             text = '.99',
-            is_checked = Settings.strain_speed_target
+            is_checked = TASState.strain_speed_target
         })
 
-        Settings.swim = ugui.toggle_button({
+        TASState.swim = ugui.toggle_button({
             uid = 45,
             rectangle = grid_rect(6.5, 7, 1.5, 1),
             text = 'Swim',
-            is_checked = Settings.swim
+            is_checked = TASState.swim
         })
-        Settings.dyaw = ugui.toggle_button({
+        TASState.dyaw = ugui.toggle_button({
             uid = 50,
-            is_enabled = Settings.movement_mode == Settings.movement_modes.match_angle,
+            is_enabled = TASState.movement_mode == Settings.movement_modes.match_angle,
             rectangle = grid_rect(4, 1, 2, 1),
             text = 'D-Yaw',
-            is_checked = Settings.dyaw
+            is_checked = TASState.dyaw
         })
+
         if ugui.toggle_button({
             uid = 55,
 
             rectangle = grid_rect(6, 1, 1, 1),
             text = '<',
-            is_checked = Settings.strain_left
+            is_checked = TASState.strain_left
         }) then
-		Settings.strain_right = false
-		Settings.strain_left = true
-	   else
-		Settings.strain_left = false
-	   end
+            TASState.strain_right = false
+            TASState.strain_left = true
+	    else
+		    TASState.strain_left = false
+	    end
 
         if ugui.toggle_button({
             uid = 60,
 
             rectangle = grid_rect(7, 1, 1, 1),
             text = '>',
-            is_checked = Settings.strain_right
+            is_checked = TASState.strain_right
         }) then
-		Settings.strain_left = false
-		Settings.strain_right = true
-           else
-		Settings.strain_right = false
-	   end
+            TASState.strain_left = false
+            TASState.strain_right = true
+        else
+            TASState.strain_right = false
+        end
 
         local joystick_rect = grid(0, 4, 4, 4)
         ugui.joystick({
@@ -146,29 +147,29 @@ return {
                 x = Joypad.input.X,
                 y = -Joypad.input.Y,
             },
-            mag = Settings.goal_mag >= 127 and 0 or Settings.goal_mag
+            mag = TASState.goal_mag >= 127 and 0 or TASState.goal_mag
         })
 
         local atan_strain = ugui.toggle_button({
             uid = 75,
             rectangle = grid_rect(4, 2, 3, 1),
             text = 'Arctan Strain',
-            is_checked = Settings.atan_strain
+            is_checked = TASState.atan_strain
         })
 
-        if atan_strain and not Settings.atan_strain then
+        if atan_strain and not TASState.atan_strain then
             -- FIXME: do we really need to update memory
             Memory.update()
-            Settings.atan_start = Memory.current.mario_global_timer
+            TASState.atan_start = Memory.current.mario_global_timer
             VarWatch_update()
         end
-        Settings.atan_strain = atan_strain
+        TASState.atan_strain = atan_strain
 
-        Settings.reverse_arc = ugui.toggle_button({
+        TASState.reverse_arc = ugui.toggle_button({
             uid = 80,
             rectangle = grid_rect(7, 2, 1, 1),
             text = 'I',
-            is_checked = Settings.reverse_arc
+            is_checked = TASState.reverse_arc
         })
 
         if ugui.button({
@@ -176,7 +177,7 @@ return {
                 rectangle = grid_rect(4, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            Settings.atan_r = Settings.atan_r + math.pow(10, Settings.atan_exp)
+            TASState.atan_r = TASState.atan_r + math.pow(10, Settings.atan_exp)
             VarWatch_update()
         end
         if ugui.button({
@@ -184,7 +185,7 @@ return {
                 rectangle = grid_rect(4, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            Settings.atan_r = Settings.atan_r - math.pow(10, Settings.atan_exp)
+            TASState.atan_r = TASState.atan_r - math.pow(10, Settings.atan_exp)
             VarWatch_update()
         end
 
@@ -194,7 +195,7 @@ return {
                 rectangle = grid_rect(4.5, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            Settings.atan_d = Settings.atan_d + math.pow(10, Settings.atan_exp)
+            TASState.atan_d = TASState.atan_d + math.pow(10, Settings.atan_exp)
             VarWatch_update()
         end
         if ugui.button({
@@ -202,7 +203,7 @@ return {
                 rectangle = grid_rect(4.5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            Settings.atan_d = Settings.atan_d - math.pow(10, Settings.atan_exp)
+            TASState.atan_d = TASState.atan_d - math.pow(10, Settings.atan_exp)
             VarWatch_update()
         end
 
@@ -211,18 +212,18 @@ return {
                 rectangle = grid_rect(5, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            Settings.atan_n = math.max(0,
-                Settings.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
-                VarWatch_update()
+            TASState.atan_n = math.max(0,
+                TASState.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+            VarWatch_update()
         end
         if ugui.button({
                 uid = 110,
                 rectangle = grid_rect(5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            Settings.atan_n = math.max(0,
-                Settings.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
-                VarWatch_update()
+            TASState.atan_n = math.max(0,
+                TASState.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+            VarWatch_update()
         end
 
         if ugui.button({
@@ -230,7 +231,7 @@ return {
                 rectangle = grid_rect(5.5, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            Settings.atan_start = math.max(0, Settings.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
+            TASState.atan_start = math.max(0, TASState.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
             VarWatch_update()
         end
         if ugui.button({
@@ -238,7 +239,7 @@ return {
                 rectangle = grid_rect(5.5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            Settings.atan_start = math.max(0, Settings.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
+            TASState.atan_start = math.max(0, TASState.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
             VarWatch_update()
         end
 
@@ -263,33 +264,33 @@ return {
                 uid = 145,
                 rectangle = grid_rect(0, 0, 4, 1),
                 text = 'Disabled',
-                is_checked = Settings.movement_mode == Settings.movement_modes.disabled
-            }) ~= (Settings.movement_mode == Settings.movement_modes.disabled) then
-            Settings.movement_mode = Settings.movement_modes.disabled
+                is_checked = TASState.movement_mode == Settings.movement_modes.disabled
+            }) ~= (TASState.movement_mode == Settings.movement_modes.disabled) then
+            TASState.movement_mode = Settings.movement_modes.disabled
         end
         if ugui.toggle_button({
                 uid = 150,
                 rectangle = grid_rect(0, 1, 4, 1),
                 text = 'Match Yaw',
-                is_checked = Settings.movement_mode == Settings.movement_modes.match_yaw
-            }) ~= (Settings.movement_mode == Settings.movement_modes.match_yaw) then
-            Settings.movement_mode = Settings.movement_modes.match_yaw
+                is_checked = TASState.movement_mode == Settings.movement_modes.match_yaw
+            }) ~= (TASState.movement_mode == Settings.movement_modes.match_yaw) then
+            TASState.movement_mode = Settings.movement_modes.match_yaw
         end
         if ugui.toggle_button({
                 uid = 155,
                 rectangle = grid_rect(0, 2, 4, 1),
                 text = 'Reverse Angle',
-                is_checked = Settings.movement_mode == Settings.movement_modes.reverse_angle
-            }) ~= (Settings.movement_mode == Settings.movement_modes.reverse_angle) then
-            Settings.movement_mode = Settings.movement_modes.reverse_angle
+                is_checked = TASState.movement_mode == Settings.movement_modes.reverse_angle
+            }) ~= (TASState.movement_mode == Settings.movement_modes.reverse_angle) then
+            TASState.movement_mode = Settings.movement_modes.reverse_angle
         end
         if ugui.toggle_button({
                 uid = 160,
                 rectangle = grid_rect(0, 3, 4, 1),
                 text = 'Match Angle',
-                is_checked = Settings.movement_mode == Settings.movement_modes.match_angle
-            }) ~= (Settings.movement_mode == Settings.movement_modes.match_angle) then
-            Settings.movement_mode = Settings.movement_modes.match_angle
+                is_checked = TASState.movement_mode == Settings.movement_modes.match_angle
+            }) ~= (TASState.movement_mode == Settings.movement_modes.match_angle) then
+            TASState.movement_mode = Settings.movement_modes.match_angle
         end
     end
 }
