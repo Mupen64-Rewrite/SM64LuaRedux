@@ -105,6 +105,7 @@ local processors = {
     dofile(processors_path .. "Framewalk.lua"),
 }
 
+uguiInputContext = {}
 local mouse_wheel = 0
 
 -- Reading memory in at_input returns stale data from previous frame, so we read it in atvi
@@ -178,7 +179,7 @@ function at_update_screen()
 
     local focused = emu.ismainwindowinforeground()
 
-    ugui.begin_frame({
+    uguiInputContext = {
         mouse_position = {
             x = keys.xmouse,
             y = keys.ymouse,
@@ -186,7 +187,8 @@ function at_update_screen()
         wheel = mouse_wheel,
         is_primary_down = keys.leftclick and focused,
         held_keys = keys,
-    })
+    }
+    ugui.begin_frame(uguiInputContext)
 
     mouse_wheel = 0
 
