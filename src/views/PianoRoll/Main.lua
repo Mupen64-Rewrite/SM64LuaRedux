@@ -21,6 +21,15 @@ local function Record(input)
     for k,v in pairs(joypad.get(1)) do
         input.joy[k] = v
     end
+    for k,v in pairs(TASState) do
+        input[k] = v
+    end
+
+    if TASState.movement_mode == MovementModes.disabled then
+        input.movement_mode = MovementModes.manual
+        input.manual_joystick_x = Joypad.input.X
+        input.manual_joystick_y = Joypad.input.Y
+    end
 end
 
 local SelectionGui = dofile(views_path .. "PianoRoll/SelectionGui.lua")

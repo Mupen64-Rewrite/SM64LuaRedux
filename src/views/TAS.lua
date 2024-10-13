@@ -50,7 +50,7 @@ return {
             foreground_color,
             Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
             "Consolas",
-            "X: " .. Joypad.input.X)
+            "X: " .. Engine.stick_for_input_x(TASState))
         BreitbandGraphics.draw_text(
             grid_rect(6, 6, 2, 1),
             "center",
@@ -59,7 +59,7 @@ return {
             foreground_color,
             Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
             "Consolas",
-            "Y: " .. Joypad.input.Y)
+            "Y: " .. Engine.stick_for_input_y(TASState))
 
         if ugui.button({
                 uid = 25,
@@ -135,7 +135,8 @@ return {
         end
 
         local joystick_rect = grid(0, 4, 4, 4)
-        ugui.joystick({
+        local displayPosition = {x = Engine.stick_for_input_x(TASState), y = -Engine.stick_for_input_y(TASState)}
+        local newPosition = ugui.joystick({
             uid = 70,
             rectangle = {
                 x = joystick_rect[1],
@@ -143,12 +144,14 @@ return {
                 width = joystick_rect[3],
                 height = joystick_rect[4]
             },
-            position = {
-                x = Joypad.input.X,
-                y = -Joypad.input.Y,
-            },
+            position = displayPosition,
             mag = TASState.goal_mag >= 127 and 0 or TASState.goal_mag
         })
+        if (newPosition.x ~= displayPosition.x or newPosition.y ~= displayPosition.y) then
+            TASState.movement_mode = MovementModes.manual
+            TASState.manual_joystick_x = math.min(127, math.floor(newPosition.x + 0.5))
+            TASState.manual_joystick_y = math.min(127, -math.floor(newPosition.y + 0.5))
+        end
 
         local atan_strain = ugui.toggle_button({
             uid = 75,

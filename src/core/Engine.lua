@@ -4,14 +4,17 @@ Engine = {
 
 MovementModes = {
     disabled = 1,
-    match_yaw = 2,
-    reverse_angle = 3,
-    match_angle = 4,
+    manual = 2,
+    match_yaw = 3,
+    reverse_angle = 4,
+    match_angle = 5,
 }
 
 function NewTASState()
     return {
         movement_mode = 1,
+		manual_joystick_x = 0,
+		manual_joystick_y = 0,
         goal_angle = 0,
         goal_mag = 127,
         strain_always = false,
@@ -33,6 +36,14 @@ end
 
 DefaultTASState = NewTASState()
 TASState = DefaultTASState
+
+function Engine.stick_for_input_x(state)
+	return state.movement_mode == MovementModes.manual and state.manual_joystick_x or Joypad.input.X or 0
+end
+
+function Engine.stick_for_input_y(state)
+	return state.movement_mode == MovementModes.manual and state.manual_joystick_y or Joypad.input.Y or 0
+end
 
 function Engine.get_effective_angle(angle)
 	-- NOTE: previous input lua snaps angle to multiple 16 by default, incurring a precision loss

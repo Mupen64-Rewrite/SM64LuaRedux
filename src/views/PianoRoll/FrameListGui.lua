@@ -2,7 +2,7 @@ UID = dofile(views_path .. "PianoRoll/UID.lua")
 
 ---constants---
 
-local ModeTexts = { "-", "M", "Y", "R", "A" }
+local ModeTexts = { "-", "D", "M", "Y", "R", "A" }
 local Buttons = {
     {input = 'A', text = 'A'},
     {input = 'B', text = 'B'},
@@ -220,7 +220,7 @@ local function DrawFramesGui(draw, buttonDrawData)
         ugui.joystick({
             uid = uidBase + 1,
             rectangle = span(col1, col2, 0.5),
-            position = {x = input.joy.X, y = -input.joy.Y},
+            position = {x = Engine.stick_for_input_x(input), y = -Engine.stick_for_input_y(input)},
         })
 
         local joystickBox = span(col1, col2)
