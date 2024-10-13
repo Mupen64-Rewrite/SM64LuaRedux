@@ -9,7 +9,7 @@ return {
         })
         TASState.goal_angle = math.abs(ugui.numberbox({
             uid = 5,
-            is_enabled = TASState.movement_mode == Settings.movement_modes.match_angle,
+            is_enabled = TASState.movement_mode == MovementModes.match_angle,
             rectangle = grid_rect(4, 3, 4, 1),
             places = 5,
             value = TASState.goal_angle
@@ -102,7 +102,7 @@ return {
         })
         TASState.dyaw = ugui.toggle_button({
             uid = 50,
-            is_enabled = TASState.movement_mode == Settings.movement_modes.match_angle,
+            is_enabled = TASState.movement_mode == MovementModes.match_angle,
             rectangle = grid_rect(4, 1, 2, 1),
             text = 'D-Yaw',
             is_checked = TASState.dyaw
@@ -264,33 +264,33 @@ return {
                 uid = 145,
                 rectangle = grid_rect(0, 0, 4, 1),
                 text = 'Disabled',
-                is_checked = TASState.movement_mode == Settings.movement_modes.disabled
-            }) ~= (TASState.movement_mode == Settings.movement_modes.disabled) then
-            TASState.movement_mode = Settings.movement_modes.disabled
+                is_checked = TASState.movement_mode == MovementModes.disabled
+            }) ~= (TASState.movement_mode == MovementModes.disabled) then
+            TASState.movement_mode = MovementModes.disabled
         end
         if ugui.toggle_button({
                 uid = 150,
                 rectangle = grid_rect(0, 1, 4, 1),
                 text = 'Match Yaw',
-                is_checked = TASState.movement_mode == Settings.movement_modes.match_yaw
-            }) ~= (TASState.movement_mode == Settings.movement_modes.match_yaw) then
-            TASState.movement_mode = Settings.movement_modes.match_yaw
+                is_checked = TASState.movement_mode == MovementModes.match_yaw
+            }) ~= (TASState.movement_mode == MovementModes.match_yaw) then
+            TASState.movement_mode = MovementModes.match_yaw
         end
         if ugui.toggle_button({
                 uid = 155,
                 rectangle = grid_rect(0, 2, 4, 1),
                 text = 'Reverse Angle',
-                is_checked = TASState.movement_mode == Settings.movement_modes.reverse_angle
-            }) ~= (TASState.movement_mode == Settings.movement_modes.reverse_angle) then
-            TASState.movement_mode = Settings.movement_modes.reverse_angle
+                is_checked = TASState.movement_mode == MovementModes.reverse_angle
+            }) ~= (TASState.movement_mode == MovementModes.reverse_angle) then
+            TASState.movement_mode = MovementModes.reverse_angle
         end
         if ugui.toggle_button({
                 uid = 160,
                 rectangle = grid_rect(0, 3, 4, 1),
                 text = 'Match Angle',
-                is_checked = TASState.movement_mode == Settings.movement_modes.match_angle
-            }) ~= (TASState.movement_mode == Settings.movement_modes.match_angle) then
-            TASState.movement_mode = Settings.movement_modes.match_angle
+                is_checked = TASState.movement_mode == MovementModes.match_angle
+            }) ~= (TASState.movement_mode == MovementModes.match_angle) then
+            TASState.movement_mode = MovementModes.match_angle
         end
     end
 }

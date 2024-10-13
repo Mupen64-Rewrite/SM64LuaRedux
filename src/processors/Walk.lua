@@ -1,6 +1,6 @@
 return {
     process = function(input)
-        if TASState.movement_mode == Settings.movement_modes.disabled then
+        if TASState.movement_mode == MovementModes.disabled then
             return input
         end
         Memory.update()

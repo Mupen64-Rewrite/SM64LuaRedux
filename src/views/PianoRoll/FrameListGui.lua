@@ -239,7 +239,7 @@ local function DrawFramesGui(draw, buttonDrawData)
 
         draw:text(span(col2, col3, 0.5), "center", ModeTexts[input.movement_mode + 1])
 
-        if input.movement_mode == Settings.movement_modes.match_angle then
+        if input.movement_mode == MovementModes.match_angle then
             draw:text(span(col4, col5, 0.5), "end", tostring(input.goal_angle))
             draw:text(span(col5, col6, 0.5), "end", input.strain_left and '<' or (input.strain_right and '>' or '-'))
         end

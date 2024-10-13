@@ -1,10 +1,4 @@
 Settings = {
-    movement_modes = {
-        disabled = 1,
-        match_yaw = 2,
-        reverse_angle = 3,
-        match_angle = 4,
-    },
     swimming_button = "A",
     controller_index = 1,
     override_rng = false,
