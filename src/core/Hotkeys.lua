@@ -1,15 +1,15 @@
 local hotkey_funcs = {
     movement_mode_disabled = function()
-        TASState.movement_mode = Settings.movement_modes.disabled
+        TASState.movement_mode = MovementModes.disabled
     end,
     movement_mode_match_yaw = function()
-        TASState.movement_mode = Settings.movement_modes.match_yaw
+        TASState.movement_mode = MovementModes.match_yaw
     end,
     movement_mode_reverse_angle = function()
-        TASState.movement_mode = Settings.movement_modes.reverse_angle
+        TASState.movement_mode = MovementModes.reverse_angle
     end,
     movement_mode_match_angle = function()
-        TASState.movement_mode = Settings.movement_modes.match_angle
+        TASState.movement_mode = MovementModes.match_angle
     end,
     preset_down = function()
         Presets.apply(Presets.persistent.current_index - 1)
