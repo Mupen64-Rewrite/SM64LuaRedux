@@ -150,9 +150,12 @@ local function PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDr
     local mouseX = uguiInputContext.mouse_position.x
     local relativeY = uguiInputContext.mouse_position.y - frameRect.y
     local inRange = mouseX >= frameRect.x and mouseX <= frameRect.x + frameRect.width and relativeY >= 0
-    local hoveringGlobalTimer = math.floor(relativeY / frameRect.height) + scrollOffset + PianoRollContext.current.startGT
+    local frameIndex = math.floor(relativeY / frameRect.height)
+    local hoveringGlobalTimer = frameIndex + scrollOffset + PianoRollContext.current.startGT
     local frame = PianoRollContext.current.frames[hoveringGlobalTimer]
     local anyChange = false
+    inRange = inRange and frameIndex <= PianoRollContext.maxDisplayedFrames
+    if inRange then UpdateScroll() end
 
     if inRange and frame ~= nil then
         for buttonIndex, v in ipairs(Buttons) do
@@ -275,8 +278,6 @@ function __clsLuaGui.Render() end
 ---@type LuaGui
 return {
     Render = function()
-        UpdateScroll()
-
         -- hack to get a denser UI
         local previousGridGap = Settings.grid_gap
         Settings.grid_gap = 0
