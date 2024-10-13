@@ -5,12 +5,13 @@ function GetGlobalTimer()
 end
 
 function CloneInto(destination, source)
-    local anyChanges = false
+    local changes = {}
     for k, v in pairs(source) do
+        if v ~= destination[k] then changes[k] = v end
         anyChanges = anyChanges or v ~= destination[k]
         destination[k] = v
     end
-    return anyChanges
+    return changes
 end
 
 local function Record(input)
@@ -34,6 +35,7 @@ end
 
 local SelectionGui = dofile(views_path .. "PianoRoll/SelectionGui.lua")
 local FrameListGui = dofile(views_path .. "PianoRoll/FrameListGui.lua")
+local JoystickGui = dofile(views_path .. "PianoRoll/JoystickGui.lua")
 
 emu.atupdatescreen(function()
     -- prevent reentrant calls caused by GUI actions while the game is running
@@ -82,7 +84,7 @@ return {
 
         -- prevent reentrant calls caused by GUI actions while the game is running
         if PianoRollContext.current == nil or PianoRollContext.current.busy then return end
-        if FrameListGui.Render() then
+        if FrameListGui.Render() or JoystickGui.Render() then
             PianoRollContext.current:jumpTo(PianoRollContext.current.previewGT)
         end
     end,
