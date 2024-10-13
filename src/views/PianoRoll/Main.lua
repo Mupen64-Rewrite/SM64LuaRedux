@@ -44,6 +44,7 @@ function CurrentPianoRollOverride()
     return PianoRollContext.current.frames[GetGlobalTimer()]
 end
 
+-- TODO: recording should also happen when the tab isn't "active", but I don't know how to do that right now
 local function Record(input)
     for k,v in pairs(TASState) do
         input[k] = v
@@ -51,6 +52,12 @@ local function Record(input)
     input.joy = {}
     for k,v in pairs(joypad.get(1)) do
         input.joy[k] = v
+
+        if TASState.movement_mode == MovementModes.disabled then
+            input.movement_mode = MovementModes.manual
+            input.manual_joystick_x = Joypad.input.X
+            input.manual_joystick_y = Joypad.input.Y
+        end
     end
 end
 
