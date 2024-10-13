@@ -89,6 +89,7 @@ Presets.apply(Presets.persistent.current_index)
 
 local views = {
     dofile(views_path .. "TAS.lua"),
+    dofile(views_path .. "PianoRoll/Main.lua"),
     dofile(views_path .. "Settings.lua"),
     dofile(views_path .. "Timer.lua"),
     dofile(views_path .. "Timer2.lua"),
@@ -98,6 +99,7 @@ local views = {
 }
 
 local processors = {
+    dofile(processors_path .. "PianoRoll.lua"),
     dofile(processors_path .. "Walk.lua"),
     dofile(processors_path .. "Swimming.lua"),
     dofile(processors_path .. "Wallkicker.lua"),
@@ -105,6 +107,7 @@ local processors = {
     dofile(processors_path .. "Framewalk.lua"),
 }
 
+uguiInputContext = {}
 local mouse_wheel = 0
 
 -- Reading memory in at_input returns stale data from previous frame, so we read it in atvi
@@ -178,7 +181,7 @@ function at_update_screen()
 
     local focused = emu.ismainwindowinforeground()
 
-    ugui.begin_frame({
+    uguiInputContext = {
         mouse_position = {
             x = keys.xmouse,
             y = keys.ymouse,
@@ -186,7 +189,8 @@ function at_update_screen()
         wheel = mouse_wheel,
         is_primary_down = keys.leftclick and focused,
         held_keys = keys,
-    })
+    }
+    ugui.begin_frame(uguiInputContext)
 
     mouse_wheel = 0
 
