@@ -89,7 +89,7 @@ end
 
 Engine.inputsForAngle = function(goal, curr_input)
 	corrected_facing_yaw = Memory.current.mario_facing_yaw
-	if(Memory.current.camera_flags % 4 < 2 and Memory.current.mario_pressed_buttons % 16 > 7 and Memory.current.mario_held_buttons < 128 and curr_input.A and (Memory.current.mario_animation == 127 or Memory.current.mario_animation == 128)) then
+	if (Memory.current.camera_flags % 4 < 2 and Memory.current.mario_pressed_buttons % 16 > 7 and Memory.current.mario_held_buttons < 128 and curr_input.A and (Memory.current.mario_animation == 127 or Memory.current.mario_animation == 128)) then
 		corrected_facing_yaw = Memory.current.mario_gfx_angle
 	end
 	if (Settings.movement_mode == Settings.movement_modes.match_yaw) then
@@ -125,7 +125,7 @@ Engine.inputsForAngle = function(goal, curr_input)
 			else
 				goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 			end
-		elseif (Memory.current.mario_f_speed >= 10 and offset ~= 0 and Memory.current.mario_f_speed < 34.85 and Memory.current.mario_action == 0x04808459 and (Memory.current.mario_held_buttons > 127 or not curr_input.A) and  Memory.current.mario_held_buttons % 128 < 64 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+		elseif (Memory.current.mario_f_speed >= 10 and offset ~= 0 and Memory.current.mario_f_speed < 34.85 and Memory.current.mario_action == 0x04808459 and (Memory.current.mario_held_buttons > 127 or not curr_input.A) and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			speedsign = 1
 			targetspeed = 32
 			if (Memory.current.mario_f_speed > 32) then
@@ -154,7 +154,7 @@ Engine.inputsForAngle = function(goal, curr_input)
 			end
 		elseif (Memory.current.mario_f_speed > 15.85 and Memory.current.mario_f_speed < 16.85 + offset and (((Memory.current.mario_action == 0x01000882 or Memory.current.mario_action == 0x030008AF or Memory.current.mario_action == 0x03000886 or Memory.current.mario_action == 0x03000894 or Memory.current.mario_action == 0x01000887 or Memory.current.mario_action == 0x0100088C) or (Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 > 7)) and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B) and Settings.movement_mode == Settings.movement_modes.match_yaw) then
 			targetspeed = 32 - 15
-			if (Memory.current.mario_f_speed > 18.85 ) then targetspeed = targetspeed + 1 end
+			if (Memory.current.mario_f_speed > 18.85) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 			if (Memory.current.mario_action == 0x000008A7 or Memory.current.mario_action == 0x010208B6 or Memory.current.mario_action == 0x010208B0 or Memory.current.mario_action == 0x08100340 or Memory.current.mario_action == 0x00100343 and ENABLE_REVERSE_ANGLE_ON_WALLKICK) then
@@ -170,7 +170,7 @@ Engine.inputsForAngle = function(goal, curr_input)
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 		elseif (Memory.current.mario_f_speed > -31.85 - offset and Memory.current.mario_f_speed < -29.85 and Memory.current.mario_action ~= 0x00000479 and (((Memory.current.mario_action == 0x01000882 or Memory.current.mario_action == 0x030008AF or Memory.current.mario_action == 0x03000886 or Memory.current.mario_action == 0x03000894 or Memory.current.mario_action == 0x01000887 or Memory.current.mario_action == 0x0100088C) or (Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 > 7)) and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B) and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
 			targetspeed = -16 - 15
-			if (Memory.current.mario_f_speed < -32.85 ) then targetspeed = targetspeed - 2 end
+			if (Memory.current.mario_f_speed < -32.85) then targetspeed = targetspeed - 2 end
 			speedsign = -1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
 		elseif (Memory.current.mario_f_speed > -21.0625 - offset / 0.8 and Memory.current.mario_f_speed < -18.5625 and Memory.current.mario_action ~= 0x00000479 and (Memory.current.mario_action ~= 0x04000472 or Memory.current.mario_hat_state % 16 < 8) and (actionflag == 1 or Memory.current.mario_action == 0x04808459) and Memory.current.mario_held_buttons < 128 and curr_input.A and Settings.movement_mode == Settings.movement_modes.reverse_angle) then
@@ -183,8 +183,8 @@ Engine.inputsForAngle = function(goal, curr_input)
 			if (Memory.current.mario_f_speed > 42.3125) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
-		elseif (Memory.current.mario_f_speed > 20 and Memory.current.mario_f_speed < 21.0625 + offset/0.8 and Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 < 8 and Memory.current.mario_held_buttons < 128 and curr_input.A and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
-			targetspeed = 32 - 15 + Memory.current.mario_f_speed/5
+		elseif (Memory.current.mario_f_speed > 20 and Memory.current.mario_f_speed < 21.0625 + offset / 0.8 and Memory.current.mario_action == 0x04000472 and Memory.current.mario_hat_state % 16 < 8 and Memory.current.mario_held_buttons < 128 and curr_input.A and Memory.current.mario_held_buttons % 128 < 64 and curr_input.B and Settings.movement_mode == Settings.movement_modes.match_yaw) then
+			targetspeed = 32 - 15 + Memory.current.mario_f_speed / 5
 			if (Memory.current.mario_f_speed > 23.5625) then targetspeed = targetspeed + 1 end
 			speedsign = 1
 			goal = Engine.getDyaw(Engine.getgoal(targetspeed))
@@ -249,8 +249,8 @@ end
 function Engine.GetSpeedEfficiency()
 	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_speed > 0 then
 		return Engine.get_distance_moved() / math.abs(math.sqrt(
-			MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
-			MoreMaths.dec_to_float(Memory.current.mario_z_sliding_speed) ^ 2)
+			Memory.current.mario_x_sliding_speed ^ 2 +
+			Memory.current.mario_z_sliding_speed ^ 2)
 		)
 	else
 		return 0
@@ -258,22 +258,22 @@ function Engine.GetSpeedEfficiency()
 end
 
 function Engine.get_distance_moved()
-	return math.sqrt((MoreMaths.dec_to_float(Memory.previous.mario_x) - MoreMaths.dec_to_float(Memory.current.mario_x)) ^
-		2 + (MoreMaths.dec_to_float(Memory.previous.mario_z) - MoreMaths.dec_to_float(Memory.current.mario_z)) ^ 2)
+	return math.sqrt((Memory.previous.mario_x - Memory.current.mario_x) ^
+		2 + (Memory.previous.mario_z - Memory.current.mario_z) ^ 2)
 end
 
 function Engine.GetTotalDistMoved()
-	eckswhy = (Settings.moved_distance_axis.x - MoreMaths.dec_to_float(Memory.current.mario_x)) ^ 2 +
-		(Settings.moved_distance_axis.z - MoreMaths.dec_to_float(Memory.current.mario_z)) ^ 2
+	eckswhy = (Settings.moved_distance_axis.x - Memory.current.mario_x) ^ 2 +
+		(Settings.moved_distance_axis.z - Memory.current.mario_z) ^ 2
 	if (Settings.moved_distance_ignore_y == false) then
-		eckswhy = eckswhy + (Settings.moved_distance_axis.y - MoreMaths.dec_to_float(Memory.current.mario_y)) ^ 2
+		eckswhy = eckswhy + (Settings.moved_distance_axis.y - Memory.current.mario_y) ^ 2
 	end
 	return math.sqrt(eckswhy)
 end
 
 function Engine.GetHSlidingSpeed()
-	return math.sqrt(MoreMaths.dec_to_float(Memory.current.mario_x_sliding_speed) ^ 2 +
-		MoreMaths.dec_to_float(Memory.current.mario_z_sliding_speed) ^ 2)
+	return math.sqrt(Memory.current.mario_x_sliding_speed ^ 2 +
+		Memory.current.mario_z_sliding_speed) ^ 2
 end
 
 local function magnitude(x, y)

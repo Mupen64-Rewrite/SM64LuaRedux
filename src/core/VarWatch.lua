@@ -20,25 +20,25 @@ local var_funcs = {
         return string.format("Intended Yaw: %s (O: %s)", Formatter.angle(angle), Formatter.angle(opposite))
     end,
     ["h_spd"] = function()
-        local h_speed = MoreMaths.dec_to_float(Memory.current.mario_h_speed)
+        local h_speed = Memory.current.mario_h_speed
         local h_sliding_speed = Engine.GetHSlidingSpeed()
         return string.format("H Spd: %s (S: %s)", Formatter.ups(h_speed), Formatter.ups(h_sliding_speed))
     end,
     ["v_spd"] = function()
-        local y_speed = MoreMaths.dec_to_float(Memory.current.mario_v_speed)
+        local y_speed = Memory.current.mario_v_speed
         return string.format("Y Spd: %s", Formatter.ups(y_speed))
     end,
     ["spd_efficiency"] = function()
         return string.format("Spd Efficiency: %s", Formatter.percent(Engine.GetSpeedEfficiency()))
     end,
     ["position_x"] = function()
-        return string.format("X: %s", Formatter.u(MoreMaths.dec_to_float(Memory.current.mario_x)))
+        return string.format("X: %s", Formatter.u(Memory.current.mario_x))
     end,
     ["position_y"] = function()
-        return string.format("Y: %s", Formatter.u(MoreMaths.dec_to_float(Memory.current.mario_y)))
+        return string.format("Y: %s", Formatter.u(Memory.current.mario_y))
     end,
     ["position_z"] = function()
-        return string.format("Z: %s", Formatter.u(MoreMaths.dec_to_float(Memory.current.mario_z)))
+        return string.format("Z: %s", Formatter.u(Memory.current.mario_z))
     end,
     ["xz_movement"] = function()
         return string.format("XZ Movement: %s", Formatter.u(Engine.get_distance_moved()))

@@ -79,9 +79,9 @@ return {
         })
 
         if Settings.track_moved_distance and not previous_track_moved_distance then
-            Settings.moved_distance_axis.x = MoreMaths.dec_to_float(Memory.current.mario_x)
-            Settings.moved_distance_axis.y = MoreMaths.dec_to_float(Memory.current.mario_y)
-            Settings.moved_distance_axis.z = MoreMaths.dec_to_float(Memory.current.mario_z)
+            Settings.moved_distance_axis.x = Memory.current.mario_x
+            Settings.moved_distance_axis.y = Memory.current.mario_y
+            Settings.moved_distance_axis.z = Memory.current.mario_z
         end
         if not Settings.track_moved_distance and previous_track_moved_distance then
             Settings.moved_distance = Engine.GetTotalDistMoved()
@@ -93,5 +93,21 @@ return {
             text = 'Ignore Y',
             is_checked = Settings.moved_distance_ignore_y
         })
+
+        local previous_dump_enabled = Settings.dump_enabled
+        local now_dump_enabled = ugui.toggle_button({
+            uid = 50,
+            rectangle = grid_rect(0, 5, 4, 1),
+            text = 'Logging',
+            is_checked = previous_dump_enabled
+        })
+
+        if now_dump_enabled and not previous_dump_enabled then
+            Dumping.start()
+        end
+
+        if not now_dump_enabled and previous_dump_enabled then
+            Dumping.stop()
+        end
     end
 }
