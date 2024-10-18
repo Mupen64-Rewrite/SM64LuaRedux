@@ -75,6 +75,10 @@ PianoRollContext = {
 return {
     name = "Piano Roll",
     draw = function()
+        -- hack to get a denser UI
+        local previousGridGap = Settings.grid_gap
+        Settings.grid_gap = 0
+
         SelectionGui.Render()
 
         -- prevent reentrant calls caused by GUI actions while the game is running
@@ -82,5 +86,7 @@ return {
         if FrameListGui.Render() or JoystickGui.Render() then
             PianoRollContext.current:jumpTo(PianoRollContext.current.previewGT)
         end
+
+        Settings.grid_gap = previousGridGap
     end,
 }

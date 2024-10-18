@@ -290,10 +290,6 @@ function __clsLuaGui.Render() end
 ---@type LuaGui
 return {
     Render = function()
-        -- hack to get a denser UI
-        local previousGridGap = Settings.grid_gap
-        Settings.grid_gap = 0
-
         local draw = DrawFactory(Presets.styles[Settings.active_style_index].theme)
         local buttonDrawData = DrawColorCodes()
         DrawHeaders(draw, buttonDrawData)
@@ -302,8 +298,6 @@ return {
         ugui.standard_styler.joystick_tip_size = 4 * Drawing.scale
         local anyChange = DrawFramesGui(draw, buttonDrawData)
         ugui.standard_styler.joystick_tip_size = prev_joystick_tip_size
-
-        Settings.grid_gap = previousGridGap
 
         return anyChange
     end,
