@@ -67,28 +67,19 @@ end
 
 function Presets.save()
     print("Saving preset...")
-    local serialized = json.encode(Presets.persistent)
-    local file = io.open("presets.json", "w")
-    file:write(serialized)
-    io.close(file)
+    persistence.store("presets.lua", Presets.persistent)
 end
 
 function Presets.restore()
     print("Restoring presets...")
-    local file = io.open("presets.json", "r")
-    if not file then
-        print("No presets to restore")
-        return
-    end
-    local text = file:read("a")
-    io.close(file)
-    local deserialized = json.decode(text)
+    local deserialized = persistence.load("presets.lua")
+    if (deserialized == nil) then return end
 
     -- We can't load old protocol presets
     if deserialized.protocol < Presets.persistent.protocol then
         print("Preset is outdated")
         return
     end
-    
+
     Presets.persistent = deserialized
 end

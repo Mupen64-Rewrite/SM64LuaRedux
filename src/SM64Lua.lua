@@ -57,7 +57,7 @@ processors_path = folder .. "processors\\"
 dofile(lib_path .. "mupen-lua-ugui.lua")
 dofile(lib_path .. "mupen-lua-ugui-ext.lua")
 dofile(lib_path .. "linq.lua")
-json = dofile(lib_path .. "json.lua")
+persistence = dofile(lib_path .. "persistence.lua")
 dofile(res_path .. "base_style.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
