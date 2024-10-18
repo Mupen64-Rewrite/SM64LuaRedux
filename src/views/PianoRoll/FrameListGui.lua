@@ -209,6 +209,19 @@ local function DrawFramesGui(draw, buttonDrawData)
         end
 
         local input = PianoRollContext.current.frames[globalTimer]
+        if input == nil then
+            input = {}
+            local previous = PianoRollContext.current.frames[globalTimer - 1]
+            if previous == nil then
+                RecordPianoRollInput(input)
+            else
+                CloneInto(input, previous)
+                input.joy = {}
+                CloneInto(input.joy, previous.joy)
+             end
+            PianoRollContext.current.frames[globalTimer] = input
+        end
+
         local uidBase = UID.UIDCOUNT + i * 20
         local frameBox = span(col0 + 0.25, col1)
         draw:text(frameBox, "end", frameNumber .. ":")

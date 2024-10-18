@@ -14,17 +14,12 @@ function CloneInto(destination, source)
     return changes
 end
 
-local function Record(input)
+function RecordPianoRollInput(input)
     for k,v in pairs(TASState) do
         input[k] = v
     end
     input.joy = {}
-    for k,v in pairs(joypad.get(1)) do
-        input.joy[k] = v
-    end
-    for k,v in pairs(TASState) do
-        input[k] = v
-    end
+    CloneInto(input.joy, joypad.get(1))
 
     if TASState.movement_mode == MovementModes.disabled then
         input.movement_mode = MovementModes.manual
@@ -56,7 +51,7 @@ function CurrentPianoRollOverride()
     local globalTimer = GetGlobalTimer()
     if PianoRollContext.current ~= nil and globalTimer >= PianoRollContext.current.endGT then
         local input = {}
-        Record(input)
+        RecordPianoRollInput(input)
         PianoRollContext.current.endGT = globalTimer + 1
         PianoRollContext.current.previewGT = globalTimer
         PianoRollContext.current.editingGT = globalTimer
