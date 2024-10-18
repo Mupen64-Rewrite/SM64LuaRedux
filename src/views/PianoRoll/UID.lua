@@ -24,5 +24,7 @@ return {
     MovementModeMatchAngle = EnumNext(),
     MovementModeReverseAngle = EnumNext(),
     DYaw = EnumNext(),
+    TrimEnd = EnumNext(),
+    Reset = EnumNext(),
     UIDCOUNT = EnumNext(),
 }

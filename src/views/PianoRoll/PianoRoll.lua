@@ -7,9 +7,10 @@
 ---@field public name string A name for the piano roll for convenience.
 local __clsPianoRoll = {}
 
----@return PianoRoll result Creates a new PianoRoll starting at the provided global timer value
----@param globalTimer integer TODO: This should always be the current global timer, there's no sense in trying to use this
-function __clsPianoRoll.new(globalTimer)
+---@return PianoRoll result Creates a new PianoRoll starting at the current global timer value
+function __clsPianoRoll.new()
+    local globalTimer = GetGlobalTimer()
+
     ---@type PianoRoll
     local newInstance = {
         busy = false,
@@ -26,6 +27,7 @@ function __clsPianoRoll.new(globalTimer)
         edit = __clsPianoRoll.edit,
         update = __clsPianoRoll.update,
         jumpTo = __clsPianoRoll.jumpTo,
+        trimEnd = __clsPianoRoll.trimEnd,
     }
     savestate.savefile("piano_roll_" .. globalTimer .. ".st")
     return newInstance
@@ -69,6 +71,15 @@ function __clsPianoRoll:update()
         self:jumpTo(self.previewGT)
         self._updatePending = false
     end
+end
+
+function __clsPianoRoll:trimEnd()
+    for k, _ in pairs(self.frames) do
+        if k > self.previewGT then
+            self.frames[k] = nil
+        end
+    end
+    self.endGT = self.previewGT + 1
 end
 
 return {

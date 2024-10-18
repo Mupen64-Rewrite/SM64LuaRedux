@@ -31,6 +31,7 @@ end
 local SelectionGui = dofile(views_path .. "PianoRoll/SelectionGui.lua")
 local FrameListGui = dofile(views_path .. "PianoRoll/FrameListGui.lua")
 local JoystickGui = dofile(views_path .. "PianoRoll/JoystickGui.lua")
+local ToolsGui = dofile(views_path .. "PianoRoll/ToolsGui.lua")
 
 emu.atupdatescreen(function()
     -- prevent reentrant calls caused by GUI actions while the game is running
@@ -83,6 +84,8 @@ return {
 
         -- prevent reentrant calls caused by GUI actions while the game is running
         if PianoRollContext.current == nil or PianoRollContext.current.busy then return end
+
+        ToolsGui.Render()
         if FrameListGui.Render() or JoystickGui.Render() then
             PianoRollContext.current:jumpTo(PianoRollContext.current.previewGT)
         end
