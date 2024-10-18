@@ -65,9 +65,9 @@ end
 
 local function NumDisplayFrames() return math.min(PianoRollContext.current:numFrames(), PianoRollContext.maxDisplayedFrames) end
 
-local function UpdateScroll()
+local function UpdateScroll(wheel)
     local maxScroll = PianoRollContext.current:numFrames() - PianoRollContext.maxDisplayedFrames
-    scrollOffset = math.max(0, math.min(maxScroll, scrollOffset - uguiInputContext.wheel))
+    scrollOffset = math.max(0, math.min(maxScroll, scrollOffset - wheel))
 end
 
 local function DrawFactory(theme)
@@ -155,7 +155,7 @@ local function PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDr
     local frame = PianoRollContext.current.frames[hoveringGlobalTimer]
     local anyChange = false
     inRange = inRange and frameIndex <= PianoRollContext.maxDisplayedFrames
-    if inRange then UpdateScroll() end
+    UpdateScroll(inRange and uguiInputContext.wheel or 0)
 
     if inRange and frame ~= nil then
         for buttonIndex, v in ipairs(Buttons) do
