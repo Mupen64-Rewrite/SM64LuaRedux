@@ -26,6 +26,8 @@ function RecordPianoRollInput(input)
         input.manual_joystick_x = Joypad.input.X
         input.manual_joystick_y = Joypad.input.Y
     end
+    input.preview_joystick_x = input.manual_joystick_x
+    input.preview_joystick_y = input.manual_joystick_y
 end
 
 local SelectionGui = dofile(views_path .. "PianoRoll/SelectionGui.lua")

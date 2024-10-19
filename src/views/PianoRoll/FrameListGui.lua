@@ -233,7 +233,7 @@ local function DrawFramesGui(draw, buttonDrawData)
         ugui.joystick({
             uid = uidBase + 1,
             rectangle = span(col1, col2, 0.5),
-            position = {x = Engine.stick_for_input_x(input), y = -Engine.stick_for_input_y(input)},
+            position = {x = input.preview_joystick_x, y = -input.preview_joystick_y},
         })
 
         local joystickBox = span(col1, col2)

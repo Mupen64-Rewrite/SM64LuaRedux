@@ -50,6 +50,9 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
     emu.set_ff(true)
     local runUntilSelected
     runUntilSelected = function()
+        local frame = self.frames[GetGlobalTimer()]
+        frame.preview_joystick_x = Joypad.input.X
+        frame.preview_joystick_y = Joypad.input.Y
         if GetGlobalTimer() >= self.previewGT then
             emu.pause(false)
             emu.set_ff(was_ff)
