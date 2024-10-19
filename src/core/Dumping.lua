@@ -26,6 +26,11 @@ Dumping.update = function()
         return
     end
 
+    if (Memory.current.mario_action & 0x100) ~= 0 then
+        print("Skipping non-input frame while dumping")
+        return
+    end
+
     Dumping.data[#Dumping.data + 1] = {
         frame = #Dumping.data,
         input = ugui.internal.deep_clone(Joypad.input),
