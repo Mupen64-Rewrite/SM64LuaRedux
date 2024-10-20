@@ -92,6 +92,19 @@ return {
             PianoRollContext.current:jumpTo(PianoRollContext.current.previewGT)
         end
 
+        -- hack to make the listbox transparent
+        Memory.update()
+        VarWatch_update()
+        local previousAlpha = BreitbandGraphics.colors.white.a
+        BreitbandGraphics.colors.white.a = 110
+        ugui.listbox({
+            uid = 0,
+            rectangle = grid_rect(-5, 10, 5, 7),
+            selected_index = nil,
+            items = VarWatch.processed_values,
+        })
+        BreitbandGraphics.colors.white.a = previousAlpha
+
         Settings.grid_gap = previousGridGap
     end,
 }
