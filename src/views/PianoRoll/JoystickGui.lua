@@ -39,7 +39,7 @@ local function ControlsForSelected()
 
     newValues.goal_angle = math.abs(ugui.numberbox({
         uid = UID.GoalAngle,
-        is_enabled = TASState.movement_mode == MovementModes.match_angle,
+        is_enabled = newValues.movement_mode == MovementModes.match_angle,
         rectangle = grid_rect(2, top + 1, 2, 1),
         places = 5,
         value = newValues.goal_angle
@@ -125,6 +125,23 @@ local function ControlsForSelected()
         text='DYaw',
         is_checked = newValues.dyaw
     })
+
+    local newAtan = ugui.toggle_button({
+        uid = UID.AtanStrain,
+        rectangle = grid_rect(5, top + 2, 1, 0.5),
+        text='Atan',
+        is_checked = newValues.atan_strain
+    })
+    if PianoRollContext.selection ~= nil and newAtan and not newValues.atan_strain then
+        newValues.atan_start = PianoRollContext.selection:min()
+        newValues.atan_n = PianoRollContext.selection:max() - PianoRollContext.selection:min() + 2
+        newValues.dyaw = true
+        newValues.movement_mode = MovementModes.match_angle
+    end
+    newValues.atan_strain = newAtan
+    if newValues.movement_mode ~= MovementModes.match_angle then
+        newValues.atan_strain = false
+    end
 
     local changes = CloneInto(TASState, newValues)
     local anyChanges = AnyEntries(changes)
