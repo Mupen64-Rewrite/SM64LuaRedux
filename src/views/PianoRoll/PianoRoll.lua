@@ -46,6 +46,7 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
     self.busy = true
     savestate.loadfile("piano_roll_" .. self.startGT .. ".st")
     emu.pause(true)
+    local previousTASState = TASState
     local was_ff = emu.get_ff()
     emu.set_ff(true)
     local runUntilSelected
@@ -57,6 +58,7 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
             emu.pause(false)
             emu.set_ff(was_ff)
             emu.atinput(runUntilSelected, true)
+            TASState = previousTASState
             self.busy = false
         end
     end
