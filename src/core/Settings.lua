@@ -94,6 +94,10 @@ Settings = {
             visible = true,
         },
         {
+            identifier = "pitch",
+            visible = true,
+        },
+        {
             identifier = "xz_movement",
             visible = true,
         },
