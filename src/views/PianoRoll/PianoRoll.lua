@@ -1,8 +1,31 @@
+---@class Selection
+---@field public startGT integer The global timer value of the frame that was clicked to begin creating this selection, which may be greater than endGT
+---@field public endGT integer The global timer value of the frame on which this selection's range was ended, which may be less than startGT
+local __clsSelection = {}
+
+function __clsSelection.new(state, globalTimer)
+    return {
+        state = state,
+        startGT = globalTimer,
+        endGT = globalTimer,
+        min = __clsSelection.min,
+        max = __clsSelection.max,
+    }
+end
+
+---The smaller value of startGT and endGT
+function __clsSelection:min() return math.min(self.startGT, self.endGT) end
+
+---The greater value of startGT and endGT
+function __clsSelection:max() return math.max(self.startGT, self.endGT) end
+
+
 ---@class PianoRoll
 ---@field public previewGT integer The global timer value to which to advance to when changes to the piano roll have been made.
 ---@field public startGT integer The global timer value indicating the inclusive start of this piano roll.
 ---@field public editingGT integer The global timer value indicating the frame of this piano roll that is currently being edited.
 ---@field public endGT integer The global timer value indicating the exclusive end of this piano roll.
+---@field public selection Selection | nil A single selection range for which to apply changes in the joystick gui to.
 ---@field public frames table A table mapping from global timer values to the respective intended inputs and TASState.
 ---@field public name string A name for the piano roll for convenience.
 local __clsPianoRoll = {}
@@ -18,6 +41,7 @@ function __clsPianoRoll.new()
         endGT = globalTimer,
         previewGT = globalTimer,
         editingGT = globalTimer,
+        selection = nil,
         frames = {},
         name = "Default",
         _oldTASState = {},
@@ -89,4 +113,7 @@ end
 
 return {
     new = __clsPianoRoll.new
+},
+{
+    new = __clsSelection.new
 }

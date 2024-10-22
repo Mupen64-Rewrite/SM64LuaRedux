@@ -72,7 +72,15 @@ PianoRollContext = {
     current = nil,
     all = {},
     maxDisplayedFrames = 15,
-    selection = nil,
+
+    ---Retrieves the current piano roll, raising error when it is nil
+    ---@return PianoRoll current The current PianoRoll, never nil
+    AssertedCurrent = function()
+        if PianoRollContext.current == nil then
+            error("Expected PianoRollContext.current to not be nil.", 2)
+        end
+        return PianoRollContext.current
+    end,
 }
 
 return {

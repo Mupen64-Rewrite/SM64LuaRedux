@@ -1,4 +1,5 @@
 UID = dofile(views_path .. "PianoRoll/UID.lua")
+local _, Selection = dofile(views_path .. "PianoRoll/PianoRoll.lua")
 
 ---constants---
 
@@ -53,16 +54,6 @@ local buttonColors = {
 
 local lastInput = {}
 
-local function NewSelection(state, globalTimer)
-    return {
-        state = state,
-        startGT = globalTimer,
-        endGT = globalTimer,
-        min = function(self) return math.min(self.startGT, self.endGT) end,
-        max = function(self) return math.max(self.startGT, self.endGT) end,
-    }
-end
-
 local function NumDisplayFrames() return math.min(PianoRollContext.current:numFrames(), PianoRollContext.maxDisplayedFrames) end
 
 local function UpdateScroll(wheel)
@@ -86,17 +77,17 @@ local function DrawFactory(theme)
     }
 end
 
-local function DrawHeaders(draw, buttonDrawData)
+local function DrawHeaders(pianoRoll, draw, buttonDrawData)
     BreitbandGraphics.fill_rectangle(grid_rect(0, row0, col_1, row4 - row0), {r=211, g=211, b=211})
 
-    draw:text(grid_rect(0, row0, 2, 1), "start", "Start: " .. PianoRollContext.current.startGT)
+    draw:text(grid_rect(0, row0, 2, 1), "start", "Start: " .. pianoRoll.startGT)
 
     draw:small_text(grid_rect(2, row0, 4, 1), "start", "Name")
-    PianoRollContext.current.name = ugui.textbox({
+    pianoRoll.name = ugui.textbox({
         uid = UID.PianoRollName,
         is_enabled = true,
         rectangle = grid_rect(2, row2 - 0.15, 4, 0.45), -- guessing values to look alright
-        text = PianoRollContext.current.name
+        text = pianoRoll.name
     })
 
     draw:text(grid_rect(col0, row2, col1 - col0, 1), "start", "Frame")
@@ -173,15 +164,15 @@ local function PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDr
     return anyChange
 end
 
-local function DrawFramesGui(draw, buttonDrawData)
+local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
 
     local currentInput = input.get()
     local pressed = input.diff(currentInput, lastInput)
     local released = input.diff(lastInput, currentInput)
     lastInput = currentInput;
 
-    if released.leftclick and PianoRollContext.selection ~= nil then
-        PianoRollContext.current:edit(PianoRollContext.selection.endGT)
+    if released.leftclick and pianoRoll.selection ~= nil then
+        pianoRoll:edit(pianoRoll.selection.endGT)
     end
 
     local frameRect = grid_rect(col0, row4, col_1 - col0, 0.5)
@@ -193,14 +184,14 @@ local function DrawFramesGui(draw, buttonDrawData)
     end
 
     local globalTimerValue = GetGlobalTimer()
-    for i = 0, PianoRollContext.current:numFrames() - 1, 1 do
+    for i = 0, pianoRoll:numFrames() - 1, 1 do
         local frameNumber = i + scrollOffset
-        local globalTimer = PianoRollContext.current.startGT + frameNumber
+        local globalTimer = pianoRoll.startGT + frameNumber
         local shade = globalTimer % 2 == 0 and 123 or 80
         local blueMultiplier = globalTimer < globalTimerValue and 2 or 1
 
         if i >= PianoRollContext.maxDisplayedFrames then
-            local extraFrames = PianoRollContext.current.endGT - globalTimer
+            local extraFrames = pianoRoll.endGT - globalTimer
             if extraFrames > 0 then
                 BreitbandGraphics.fill_rectangle(frameRect, {r=138, g=148, b=138, a=66})
                 draw:text(span(col1, col_1), "start", "+ " .. extraFrames .. " frames")
@@ -208,10 +199,10 @@ local function DrawFramesGui(draw, buttonDrawData)
             break
         end
 
-        local input = PianoRollContext.current.frames[globalTimer]
+        local input = pianoRoll.frames[globalTimer]
         if input == nil then
             input = {}
-            local previous = PianoRollContext.current.frames[globalTimer - 1]
+            local previous = pianoRoll.frames[globalTimer - 1]
             if previous == nil then
                 RecordPianoRollInput(input)
             else
@@ -219,7 +210,7 @@ local function DrawFramesGui(draw, buttonDrawData)
                 input.joy = {}
                 CloneInto(input.joy, previous.joy)
              end
-            PianoRollContext.current.frames[globalTimer] = input
+            pianoRoll.frames[globalTimer] = input
         end
 
         local uidBase = UID.UIDCOUNT + i * 20
@@ -227,7 +218,7 @@ local function DrawFramesGui(draw, buttonDrawData)
         draw:text(frameBox, "end", frameNumber .. ":")
 
         if pressed.leftclick and BreitbandGraphics.is_point_inside_rectangle(uguiInputContext.mouse_position, frameBox) then
-            PianoRollContext.current:jumpTo(globalTimer)
+            pianoRoll:jumpTo(globalTimer)
         end
 
         ugui.joystick({
@@ -241,12 +232,12 @@ local function DrawFramesGui(draw, buttonDrawData)
 
         if BreitbandGraphics.is_point_inside_rectangle(uguiInputContext.mouse_position, joystickBox) then
             if pressed.leftclick  then
-                PianoRollContext.selection = NewSelection(input.goal_angle, globalTimer)
-            elseif PianoRollContext.selection ~= nil and currentInput.leftclick then
-                PianoRollContext.selection.endGT = globalTimer
+                pianoRoll.selection = Selection.new(input.goal_angle, globalTimer)
+            elseif pianoRoll.selection ~= nil and currentInput.leftclick then
+                pianoRoll.selection.endGT = globalTimer
             end
         end
-        if PianoRollContext.selection ~= nil and PianoRollContext.selection:min() <= globalTimer and PianoRollContext.selection:max() >= globalTimer then
+        if pianoRoll.selection ~= nil and pianoRoll.selection:min() <= globalTimer and pianoRoll.selection:max() >= globalTimer then
             BreitbandGraphics.fill_rectangle(joystickBox, {r = 0, g = 200, b = 0, a = 100})
         end
 
@@ -267,11 +258,11 @@ local function DrawFramesGui(draw, buttonDrawData)
             BreitbandGraphics.draw_ellipse(rect, {r=0, g=0, b=0, a=input.joy[v.input] and 255 or 80}, 1)
         end
 
-        if (globalTimer == PianoRollContext.current.previewGT) then
+        if (globalTimer == pianoRoll.previewGT) then
             BreitbandGraphics.draw_rectangle(frameRect, {r=255, g=0, b=0}, 1)
         end
 
-        if (globalTimer == PianoRollContext.current.editingGT) then
+        if (globalTimer == pianoRoll.editingGT) then
             BreitbandGraphics.draw_rectangle(frameRect, {r=100, g=255, b=100}, 1)
         end
 
@@ -290,13 +281,15 @@ function __clsLuaGui.Render() end
 ---@type LuaGui
 return {
     Render = function()
+        local pianoRoll = PianoRollContext.AssertedCurrent()
+
         local draw = DrawFactory(Presets.styles[Settings.active_style_index].theme)
         local buttonDrawData = DrawColorCodes()
-        DrawHeaders(draw, buttonDrawData)
+        DrawHeaders(pianoRoll, draw, buttonDrawData)
 
         local prev_joystick_tip_size = ugui.standard_styler.joystick_tip_size
         ugui.standard_styler.joystick_tip_size = 4 * Drawing.scale
-        local anyChange = DrawFramesGui(draw, buttonDrawData)
+        local anyChange = DrawFramesGui(pianoRoll, draw, buttonDrawData)
         ugui.standard_styler.joystick_tip_size = prev_joystick_tip_size
 
         return anyChange

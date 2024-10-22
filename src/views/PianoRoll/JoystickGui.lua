@@ -5,6 +5,8 @@ local top = 10
 local function AnyEntries(table) for _ in pairs(table) do return true end return false end
 
 local function ControlsForSelected()
+    local pianoRoll = PianoRollContext.AssertedCurrent()
+
     local newValues = {}
     CloneInto(newValues, TASState)
 
@@ -132,9 +134,9 @@ local function ControlsForSelected()
         text='Atan',
         is_checked = newValues.atan_strain
     })
-    if PianoRollContext.selection ~= nil and newAtan and not newValues.atan_strain then
-        newValues.atan_start = PianoRollContext.selection:min()
-        newValues.atan_n = PianoRollContext.selection:max() - PianoRollContext.selection:min() + 2
+    if pianoRoll.selection ~= nil and newAtan and not newValues.atan_strain then
+        newValues.atan_start = pianoRoll.selection:min()
+        newValues.atan_n = pianoRoll.selection:max() - pianoRoll.selection:min() + 2
         newValues.dyaw = true
         newValues.movement_mode = MovementModes.match_angle
     end
@@ -145,8 +147,8 @@ local function ControlsForSelected()
 
     local changes = CloneInto(TASState, newValues)
     local anyChanges = AnyEntries(changes)
-    if anyChanges and PianoRollContext.selection ~= nil then
-        for i = PianoRollContext.selection:min(), PianoRollContext.selection:max(), 1 do
+    if anyChanges and pianoRoll.selection ~= nil then
+        for i = pianoRoll.selection:min(), pianoRoll.selection:max(), 1 do
             CloneInto(PianoRollContext.current.frames[i], changes)
         end
     end
