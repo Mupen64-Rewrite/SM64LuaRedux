@@ -26,7 +26,7 @@ Dumping.update = function()
         return
     end
 
-    if (Memory.current.mario_action & 0x100) ~= 0 then
+    if ((Memory.current.timestop_enabled ~= 0) or (Memory.current.play_mode ~= 0)) then
         print("Skipping non-input frame while dumping")
         return
     end
