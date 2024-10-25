@@ -33,6 +33,12 @@ local var_funcs = {
     ["pitch"] = function()
         return string.format("Pitch: %s", Formatter.angle(Memory.current.mario_pitch))
     end,
+    ["yaw_vel"] = function()
+        return string.format("Yaw Vel: %s", Formatter.angle(Memory.mario_yaw_vel))
+    end,
+    ["pitch_vel"] = function() 
+        return string.format("Pitch Vel: %s", Formatter.angle(Memory.mario_pitch_vel))
+    end,
     ["xz_movement"] = function()
         return string.format("XZ Movement: %s", Formatter.u(Engine.get_distance_moved()))
     end,
