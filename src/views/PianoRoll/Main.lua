@@ -34,6 +34,7 @@ local SelectionGui = dofile(views_path .. "PianoRoll/SelectionGui.lua")
 local FrameListGui = dofile(views_path .. "PianoRoll/FrameListGui.lua")
 local JoystickGui = dofile(views_path .. "PianoRoll/JoystickGui.lua")
 local ToolsGui = dofile(views_path .. "PianoRoll/ToolsGui.lua")
+local Help = dofile(views_path .. "PianoRoll/Help.lua")
 
 emu.atupdatescreen(function()
     -- prevent reentrant calls caused by GUI actions while the game is running
@@ -86,6 +87,10 @@ PianoRollContext = {
 return {
     name = "Piano Roll",
     draw = function()
+
+        -- if we're showing help, stop rendering anything else
+        if Help.Render() then return end
+
         SelectionGui.Render()
 
         -- prevent reentrant calls caused by GUI actions while the game is running

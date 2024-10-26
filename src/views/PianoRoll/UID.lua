@@ -6,6 +6,9 @@ local function EnumNext(count)
 end
 
 return {
+    ToggleHelp = EnumNext(),
+    HelpNext = EnumNext(),
+    HelpBack = EnumNext(),
     PianoRollName = EnumNext(),
     AddPianoRoll = EnumNext(),
     SelectionSpinner = EnumNext(),
