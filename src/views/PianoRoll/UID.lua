@@ -8,7 +8,7 @@ end
 return {
     PianoRollName = EnumNext(),
     AddPianoRoll = EnumNext(),
-    SelectPianoRoll = EnumNext(8), -- up to 7 simultaneuos piano rolls, plus one for "none"
+    SelectionSpinner = EnumNext(),
     SavePianoRoll = EnumNext(),
     LoadPianoRoll = EnumNext(),
     Joypad = EnumNext(),

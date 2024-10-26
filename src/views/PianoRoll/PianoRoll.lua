@@ -31,7 +31,7 @@ function __clsSelection:max() return math.max(self.startGT, self.endGT) end
 local __clsPianoRoll = {}
 
 ---@return PianoRoll result Creates a new PianoRoll starting at the current global timer value
-function __clsPianoRoll.new()
+function __clsPianoRoll.new(name)
     local globalTimer = GetGlobalTimer()
 
     ---@type PianoRoll
@@ -43,7 +43,7 @@ function __clsPianoRoll.new()
         editingGT = globalTimer,
         selection = nil,
         frames = {},
-        name = "Default",
+        name = name,
         _oldTASState = {},
         _oldClock = 0,
         _updatePending = false,
