@@ -86,10 +86,6 @@ PianoRollContext = {
 return {
     name = "Piano Roll",
     draw = function()
-        -- hack to get a denser UI
-        local previousGridGap = Settings.grid_gap
-        Settings.grid_gap = 0
-
         SelectionGui.Render()
 
         -- prevent reentrant calls caused by GUI actions while the game is running
@@ -112,7 +108,5 @@ return {
             items = VarWatch.processed_values,
         })
         BreitbandGraphics.colors.white.a = previousAlpha
-
-        Settings.grid_gap = previousGridGap
     end,
 }

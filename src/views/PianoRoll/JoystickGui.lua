@@ -1,6 +1,6 @@
 UID = dofile(views_path .. "PianoRoll/UID.lua")
 
-local top = 10
+local top = 9
 
 local function AnyEntries(table) for _ in pairs(table) do return true end return false end
 

@@ -31,10 +31,8 @@ local col6 = 4.15
 local col_1 = 8.0
 
 local row0 = -0.25
-local row1 = 0.125
-local row2 = 0.5
-local row3 = 0.75
-local row4 = 1.35
+local row1 = 0.25
+local row2 = 1.00
 
 local small = 0.25
 
@@ -64,6 +62,7 @@ end
 local function DrawFactory(theme)
     return {
         foregroundColor = BreitbandGraphics.invert_color(theme.background_color),
+        backgroundColor = theme.background_color,
         fontSize = theme.font_size * Drawing.scale * 0.75,
         style = { aliased = theme.pixelated_text },
 
@@ -77,27 +76,39 @@ local function DrawFactory(theme)
     }
 end
 
+local function InterpolateVectorsToInt(a, b, f)
+    local result = {}
+    for k, v in pairs(a) do
+        result[k] = math.floor(v + (b[k] - v) * f)
+    end
+    return result
+end
+
 local function DrawHeaders(pianoRoll, draw, buttonDrawData)
-    BreitbandGraphics.fill_rectangle(grid_rect(0, row0, col_1, row4 - row0), {r=211, g=211, b=211})
+    local backgroundColor = InterpolateVectorsToInt(draw.backgroundColor, {r = 127, g = 127, b = 127}, 0.25)
+    BreitbandGraphics.fill_rectangle(grid_rect(0, row0, col_1, row2 - row0), backgroundColor)
 
     draw:text(grid_rect(0, row0, 2, 1), "start", "Start: " .. pianoRoll.startGT)
 
-    draw:small_text(grid_rect(2, row0, 4, 1), "start", "Name")
+    draw:text(grid_rect(3, 0, 1, 0.5), "start", "Name")
+    local prev_font_size = ugui.standard_styler.font_size
+    ugui.standard_styler.font_size = ugui.standard_styler.font_size * 0.75
     pianoRoll.name = ugui.textbox({
         uid = UID.PianoRollName,
         is_enabled = true,
-        rectangle = grid_rect(2, row2 - 0.15, 4, 0.45), -- guessing values to look alright
+        rectangle = grid_rect(4, 0, 4, 0.5),
         text = pianoRoll.name
     })
+    ugui.standard_styler.font_size = prev_font_size
 
-    draw:text(grid_rect(col0, row2, col1 - col0, 1), "start", "Frame")
-    draw:text(grid_rect(col1, row2, col6 - col1, 1), "start", "Joystick")
-    draw:text(grid_rect(col6, row2, col_1 - col6, 1), "start", "Buttons")
 
-    local rect = grid_rect(0, row3 + 0.35, 0.333, 0.333)
+    draw:text(grid_rect(col0, row1, col1 - col0, 1), "start", "Frame")
+    draw:text(grid_rect(col1, row1, col6 - col1, 1), "start", "Joystick")
+
+    local rect = grid_rect(0, row1, 0.333, 1)
     for i, v in ipairs(Buttons) do
         rect.x = buttonDrawData[i].x
-        draw:small_text(rect, "center", v.text)
+        draw:text(rect, "center", v.text)
     end
 end
 
@@ -105,7 +116,7 @@ local function DrawColorCodes()
     local offset = 0
 
     local width = small * 1.1
-    local rect = grid_rect(col6 + offset, row4, width, 0.5)
+    local rect = grid_rect(col6 + offset, row2, width, 0.5)
     local height = rect.height * NumDisplayFrames()
 
     local i = 1
@@ -175,7 +186,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         pianoRoll:edit(pianoRoll.selection.endGT)
     end
 
-    local frameRect = grid_rect(col0, row4, col_1 - col0, 0.5)
+    local frameRect = grid_rect(col0, row2, col_1 - col0, 0.5)
     local anyChange = PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDrawData)
 
     local function span(x1, x2, height)

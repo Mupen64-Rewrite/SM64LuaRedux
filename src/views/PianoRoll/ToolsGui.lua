@@ -3,7 +3,7 @@ local PianoRoll = dofile(views_path .. "PianoRoll/PianoRoll.lua")
 
 return {
     Render = function()
-        local top = 9.5
+        local top = 9
 
         if ugui.button({
             uid = UID.TrimEnd,
