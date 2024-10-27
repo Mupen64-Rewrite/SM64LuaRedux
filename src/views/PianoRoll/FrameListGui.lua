@@ -1,4 +1,4 @@
-UID = dofile(views_path .. "PianoRoll/UID.lua")
+local UID = dofile(views_path .. "PianoRoll/UID.lua")
 local _, Selection = dofile(views_path .. "PianoRoll/PianoRoll.lua")
 
 ---constants---
