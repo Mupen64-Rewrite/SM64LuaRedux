@@ -73,6 +73,7 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
         self._updatePending = true
         return
     end
+    if self.endGT == self.startGT then return end
     self.previewGT = globalTimerTarget
     self._busy = true
     self._updatePending = false
