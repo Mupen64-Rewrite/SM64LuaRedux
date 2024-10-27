@@ -1,10 +1,62 @@
 local UID = dofile(views_path .. "PianoRoll/UID.lua")
 
-local top = 9
-
 local function AnyEntries(table) for _ in pairs(table) do return true end return false end
 
-local function ControlsForSelected()
+local function AtanControls(draw, pianoRoll, newValues, top)
+    local newAtan = ugui.toggle_button({
+        uid = UID.AtanStrain,
+        rectangle = grid_rect(0, top, 1, 0.5),
+        text='Atan',
+        is_checked = newValues.atan_strain
+    })
+    if pianoRoll.selection ~= nil and newAtan and not newValues.atan_strain then
+        newValues.atan_start = pianoRoll.selection:min()
+        newValues.atan_n = pianoRoll.selection:max() - pianoRoll.selection:min() + 1
+        newValues.dyaw = true
+        newValues.movement_mode = MovementModes.match_angle
+    end
+    newValues.atan_strain = newAtan
+    if newValues.movement_mode ~= MovementModes.match_angle then
+        newValues.atan_strain = false
+    end
+
+    draw:text(grid_rect(1, top, 0.5, 0.5), "end", "Qf:")
+    local quarterStep = (newValues.atan_n % 1) * 4
+    local newQuarterstep = ugui.spinner({
+        uid = UID.AtanN,
+
+        rectangle = grid_rect(1.5, top, 1, 0.5),
+        value = quarterStep == 0 and 4 or quarterStep,
+        minimum_value = 1,
+        maximum_value = 4,
+    })
+    newValues.atan_n = math.ceil(newValues.atan_n - 1) + newQuarterstep / 4
+
+    draw:text(grid_rect(2.5, top, 0.5, 0.5), "end", "D:")
+    newValues.atan_d = ugui.spinner({
+        uid = UID.AtanD,
+
+        rectangle = grid_rect(3, top, 2, 0.5),
+        value = newValues.atan_d,
+        minimum_value = -10000,
+        maximum_value = 10000,
+        increment = math.pow(10, Settings.atan_exp),
+    })
+
+    draw:text(grid_rect(5, top, 0.5, 0.5), "end", "E:")
+    Settings.atan_exp = ugui.spinner({
+        uid = UID.AtanE,
+
+        rectangle = grid_rect(5.5, top, 1, 0.5),
+        value = Settings.atan_exp,
+        minimum_value = -10,
+        maximum_value = 10,
+    })
+end
+
+local function ControlsForSelected(draw)
+    local top = 9
+
     local pianoRoll = PianoRollContext.AssertedCurrent()
 
     local newValues = {}
@@ -37,7 +89,6 @@ local function ControlsForSelected()
         minimum_value = -128,
         maximum_value = 127
     })
-    ugui.standard_styler.spinner_button_thickness = previousThickness
 
     newValues.goal_angle = math.abs(ugui.numberbox({
         uid = UID.GoalAngle,
@@ -128,22 +179,32 @@ local function ControlsForSelected()
         is_checked = newValues.dyaw
     })
 
-    local newAtan = ugui.toggle_button({
-        uid = UID.AtanStrain,
+    if ugui.button({
+        uid = UID.SpeedKick,
         rectangle = grid_rect(3, top + 3, 1, 0.5),
-        text='Atan',
-        is_checked = newValues.atan_strain
+        text='Spdk',
+    }) then
+        newValues.goal_mag = 48
+    end
+
+    newValues.goal_mag = ugui.numberbox({
+        uid = UID.GoalMag,
+        rectangle = grid_rect(4, top + 3, 1, 0.5),
+        places = 3,
+        value = newValues.goal_mag
     })
-    if pianoRoll.selection ~= nil and newAtan and not newValues.atan_strain then
-        newValues.atan_start = pianoRoll.selection:min()
-        newValues.atan_n = pianoRoll.selection:max() - pianoRoll.selection:min() + 2
-        newValues.dyaw = true
-        newValues.movement_mode = MovementModes.match_angle
+
+    if ugui.button({
+        uid = UID.ResetMag,
+        rectangle = grid_rect(5, top + 3, 0.5, 0.5),
+        text='R',
+    }) then
+        newValues.goal_mag = 127
     end
-    newValues.atan_strain = newAtan
-    if newValues.movement_mode ~= MovementModes.match_angle then
-        newValues.atan_strain = false
-    end
+
+    AtanControls(draw, pianoRoll, newValues, top + 4)
+
+    ugui.standard_styler.spinner_button_thickness = previousThickness
 
     local changes = CloneInto(TASState, newValues)
     local anyChanges = AnyEntries(changes)

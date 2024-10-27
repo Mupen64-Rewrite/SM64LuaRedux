@@ -84,6 +84,23 @@ PianoRollContext = {
     end,
 }
 
+local function DrawFactory(theme)
+    return {
+        foregroundColor = BreitbandGraphics.invert_color(theme.background_color),
+        backgroundColor = theme.background_color,
+        fontSize = theme.font_size * Drawing.scale * 0.75,
+        style = { aliased = theme.pixelated_text },
+
+        text = function(self, rect, horizontal_alignment, text)
+            BreitbandGraphics.draw_text(rect, horizontal_alignment, "center", self.style, self.foregroundColor, self.fontSize, "Consolas", text)
+        end,
+
+        small_text = function(self, rect, horizontal_alignment, text)
+            BreitbandGraphics.draw_text(rect, horizontal_alignment, "center", self.style, self.foregroundColor, self.fontSize * 0.75, "Consolas", text)
+        end
+    }
+end
+
 return {
     name = "Piano Roll",
     draw = function()
@@ -95,8 +112,10 @@ return {
 
         if PianoRollContext.current == nil then return end
 
+        local draw = DrawFactory(Presets.styles[Settings.active_style_index].theme)
+
         ToolsGui.Render()
-        if FrameListGui.Render() or JoystickGui.Render() then
+        if FrameListGui.Render(draw) or JoystickGui.Render(draw) then
             PianoRollContext.current:jumpTo(PianoRollContext.current.previewGT)
         end
 

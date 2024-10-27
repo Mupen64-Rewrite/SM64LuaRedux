@@ -116,12 +116,14 @@ end
 --- `value` — `number` The spinner's numerical value
 --- `minimum_value` — `number` The spinner's minimum numerical value
 --- `maximum_value` — `number` The spinner's maximum numerical value
+--- `incremental` — `number` The increment applied when the + or - buttons are clicked value
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 ugui.spinner = function(control)
     if not ugui.standard_styler.spinner_button_thickness then
         ugui.standard_styler.spinner_button_thickness = 15
     end
+    local increment = control.increment or 1
 
     local value = control.value
 
@@ -154,7 +156,7 @@ ugui.spinner = function(control)
                 text = "-",
             }))
         then
-            value = value - 1
+            value = value - increment
         end
 
         if (ugui.button({
@@ -170,7 +172,7 @@ ugui.spinner = function(control)
                 text = "+",
             }))
         then
-            value = value + 1
+            value = value + control.increment
         end
     else
         if (ugui.button({
@@ -186,7 +188,7 @@ ugui.spinner = function(control)
                 text = "+",
             }))
         then
-            value = value + 1
+            value = value + increment
         end
 
         if (ugui.button({
@@ -202,7 +204,7 @@ ugui.spinner = function(control)
                 text = "-",
             }))
         then
-            value = value - 1
+            value = value - increment
         end
     end
 

@@ -59,23 +59,6 @@ local function UpdateScroll(wheel)
     scrollOffset = math.max(0, math.min(maxScroll, scrollOffset - wheel))
 end
 
-local function DrawFactory(theme)
-    return {
-        foregroundColor = BreitbandGraphics.invert_color(theme.background_color),
-        backgroundColor = theme.background_color,
-        fontSize = theme.font_size * Drawing.scale * 0.75,
-        style = { aliased = theme.pixelated_text },
-
-        text = function(self, rect, horizontal_alignment, text)
-            BreitbandGraphics.draw_text(rect, horizontal_alignment, "center", self.style, self.foregroundColor, self.fontSize, "Consolas", text)
-        end,
-
-        small_text = function(self, rect, horizontal_alignment, text)
-            BreitbandGraphics.draw_text(rect, horizontal_alignment, "center", self.style, self.foregroundColor, self.fontSize * 0.75, "Consolas", text)
-        end
-    }
-end
-
 local function InterpolateVectorsToInt(a, b, f)
     local result = {}
     for k, v in pairs(a) do
@@ -291,10 +274,9 @@ function __clsLuaGui.Render() end
 
 ---@type LuaGui
 return {
-    Render = function()
+    Render = function(draw)
         local pianoRoll = PianoRollContext.AssertedCurrent()
 
-        local draw = DrawFactory(Presets.styles[Settings.active_style_index].theme)
         local buttonDrawData = DrawColorCodes()
         DrawHeaders(pianoRoll, draw, buttonDrawData)
 
