@@ -32,16 +32,7 @@ return {
                 ugui.end_frame()
                 local filePath = iohelper.filediag("*.pianoroll", 1)
                 if filePath ~= "" then
-                    persistence.store(filePath,
-                        {
-                            frames      = PianoRollContext.current.frames,
-                            name        = PianoRollContext.current.name,
-                            startGT     = PianoRollContext.current.startGT,
-                            endGT       = PianoRollContext.current.endGT,
-                            editingGT   = PianoRollContext.current.editingGT,
-                            previewGT   = PianoRollContext.current.previewGT,
-                        }
-                    )
+                    PianoRollContext.current:save(filePath)
                 end
             end
 
@@ -54,10 +45,8 @@ return {
             })) then
                 ugui.end_frame()
                 local filePath = iohelper.filediag("*.pianoroll", 0)
-                local contents = persistence.load(filePath);
-                if contents ~= nil then
-                    CloneInto(PianoRollContext.current, contents)
-                    PianoRollContext.current:jumpTo(PianoRollContext.current.previewGT)
+                if filePath ~= "" then
+                    PianoRollContext.current:load(filePath)
                 end
             end
         end

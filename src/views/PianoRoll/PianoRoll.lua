@@ -44,6 +44,7 @@ function __clsPianoRoll.new(name)
         selection = nil,
         frames = {},
         name = name,
+        _savestateFile = name .. ".tmp.savestate",
         _oldTASState = {},
         _oldClock = 0,
         _updatePending = false,
@@ -52,8 +53,10 @@ function __clsPianoRoll.new(name)
         update = __clsPianoRoll.update,
         jumpTo = __clsPianoRoll.jumpTo,
         trimEnd = __clsPianoRoll.trimEnd,
+        save = __clsPianoRoll.save,
+        load = __clsPianoRoll.load,
     }
-    savestate.savefile("piano_roll_" .. globalTimer .. ".st")
+    savestate.savefile(newInstance._savestateFile)
     return newInstance
 end
 
@@ -68,7 +71,7 @@ end
 function __clsPianoRoll:jumpTo(globalTimerTarget)
     self.previewGT = globalTimerTarget
     self.busy = true
-    savestate.loadfile("piano_roll_" .. self.startGT .. ".st")
+    savestate.loadfile(self._savestateFile)
     emu.pause(true)
     local previousTASState = TASState
     local was_ff = emu.get_ff()
@@ -87,6 +90,43 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
         end
     end
     emu.atinput(runUntilSelected)
+end
+
+function __clsPianoRoll:save(file)
+    local savestateFile = file .. ".savestate"
+    if self._savestateFile ~= savestateFile then
+        local infile = io.open(self._savestateFile, "rb")
+        local outfile = io.open(savestateFile, "wb")
+        if (infile == nil or outfile == nil) then
+            print("Failed to copy savestate for " .. self.name)
+            return
+        end
+        outfile:write(infile:read("a"))
+        infile:close()
+        outfile:close()
+        self._savestateFile = savestateFile
+    end
+
+    persistence.store(
+        file,
+        {
+            frames      = PianoRollContext.current.frames,
+            name        = PianoRollContext.current.name,
+            startGT     = PianoRollContext.current.startGT,
+            endGT       = PianoRollContext.current.endGT,
+            editingGT   = PianoRollContext.current.editingGT,
+            previewGT   = PianoRollContext.current.previewGT,
+        }
+    )
+end
+
+function __clsPianoRoll:load(file)
+    local contents = persistence.load(file);
+    if contents ~= nil then
+        self._savestateFile = file .. ".savestate"
+        CloneInto(PianoRollContext.current, contents)
+        self:jumpTo(PianoRollContext.current.previewGT)
+    end
 end
 
 function __clsPianoRoll:update()
