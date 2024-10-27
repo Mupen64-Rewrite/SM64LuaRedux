@@ -42,14 +42,28 @@ local function ControlsForSelected()
     newValues.goal_angle = math.abs(ugui.numberbox({
         uid = UID.GoalAngle,
         is_enabled = newValues.movement_mode == MovementModes.match_angle,
-        rectangle = grid_rect(2, top + 1, 2, 1),
+        rectangle = grid_rect(2, top + 2, 2, 1),
         places = 5,
         value = newValues.goal_angle
     }))
 
+    newValues.strain_always = ugui.toggle_button({
+        uid = UID.StrainAlways,
+        rectangle = grid_rect(2, top + 1, 1.2, 0.5),
+        text = 'always',
+        is_checked = newValues.strain_always
+    })
+
+    newValues.strain_speed_target = ugui.toggle_button({
+        uid = UID.StrainSpeedTarget,
+        rectangle = grid_rect(3.2, top + 1, 0.8, 0.5),
+        text = '.99',
+        is_checked = newValues.strain_speed_target
+    })
+
     if ugui.toggle_button({
         uid = UID.StrainLeft,
-        rectangle = grid_rect(2, top + 2, 1, 0.5),
+        rectangle = grid_rect(2, top + 1.5, 1, 0.5),
         text = '<',
         is_checked = newValues.strain_left
     }) then
@@ -61,7 +75,7 @@ local function ControlsForSelected()
 
     if ugui.toggle_button({
         uid = UID.StrainRight,
-        rectangle = grid_rect(3, top + 2, 1, 0.5),
+        rectangle = grid_rect(3, top + 1.5, 1, 0.5),
         text = '>',
         is_checked = newValues.strain_right
     }) then
@@ -71,23 +85,9 @@ local function ControlsForSelected()
         newValues.strain_right = false
     end
 
-    newValues.strain_always = ugui.toggle_button({
-        uid = UID.StrainAlways,
-        rectangle = grid_rect(2, top + 2.5, 1.2, 0.5),
-        text = 'always',
-        is_checked = newValues.strain_always
-    })
-
-    newValues.strain_speed_target = ugui.toggle_button({
-        uid = UID.StrainSpeedTarget,
-        rectangle = grid_rect(3.2, top + 2.5, 0.8, 0.5),
-        text = '.99',
-        is_checked = newValues.strain_speed_target
-    })
-
     if ugui.toggle_button({
         uid = UID.MovementModeManual,
-        rectangle = grid_rect(4, top + 1, 1.5, 0.5),
+        rectangle = grid_rect(4, top + 1, 1.5, 1),
         text='Manual',
         is_checked = newValues.movement_mode == MovementModes.manual
     }) then
@@ -96,7 +96,7 @@ local function ControlsForSelected()
 
     if ugui.toggle_button({
         uid = UID.MovementModeMatchYaw,
-        rectangle = grid_rect(5.5, top + 1, 1.5, 0.5),
+        rectangle = grid_rect(5.5, top + 1, 1.5, 1),
         text='Yaw',
         is_checked = newValues.movement_mode == MovementModes.match_yaw
     }) then
@@ -105,7 +105,7 @@ local function ControlsForSelected()
 
     if ugui.toggle_button({
         uid = UID.MovementModeMatchAngle,
-        rectangle = grid_rect(4, top + 1.5, 1.5, 0.5),
+        rectangle = grid_rect(4, top + 2, 1.5, 1),
         text='Angle',
         is_checked = newValues.movement_mode == MovementModes.match_angle
     }) then
@@ -114,7 +114,7 @@ local function ControlsForSelected()
 
     if ugui.toggle_button({
         uid = UID.MovementModeReverseAngle,
-        rectangle = grid_rect(5.5, top + 1.5, 1.5, 0.5),
+        rectangle = grid_rect(5.5, top + 2, 1.5, 1),
         text='Reverse',
         is_checked = newValues.movement_mode == MovementModes.reverse_angle
     }) then
@@ -123,14 +123,14 @@ local function ControlsForSelected()
 
     newValues.dyaw = ugui.toggle_button({
         uid = UID.DYaw,
-        rectangle = grid_rect(4, top + 2, 1, 0.5),
+        rectangle = grid_rect(2, top + 3, 1, 0.5),
         text='DYaw',
         is_checked = newValues.dyaw
     })
 
     local newAtan = ugui.toggle_button({
         uid = UID.AtanStrain,
-        rectangle = grid_rect(5, top + 2, 1, 0.5),
+        rectangle = grid_rect(3, top + 3, 1, 0.5),
         text='Atan',
         is_checked = newValues.atan_strain
     })
