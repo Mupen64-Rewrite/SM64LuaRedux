@@ -36,7 +36,6 @@ function __clsPianoRoll.new(name)
 
     ---@type PianoRoll
     local newInstance = {
-        busy = false,
         startGT = globalTimer,
         endGT = globalTimer,
         previewGT = globalTimer,
@@ -47,6 +46,7 @@ function __clsPianoRoll.new(name)
         _savestateFile = name .. ".tmp.savestate",
         _oldTASState = {},
         _oldClock = 0,
+        _busy = false,
         _updatePending = false,
         numFrames = __clsPianoRoll.numFrames,
         edit = __clsPianoRoll.edit,
@@ -69,8 +69,14 @@ function __clsPianoRoll:edit(globalTimerTarget)
 end
 
 function __clsPianoRoll:jumpTo(globalTimerTarget)
+    if self._busy then
+        self._updatePending = true
+        return
+    end
     self.previewGT = globalTimerTarget
-    self.busy = true
+    self._busy = true
+    self._updatePending = false
+
     savestate.loadfile(self._savestateFile)
     emu.pause(true)
     local previousTASState = TASState
@@ -78,6 +84,7 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
     emu.set_ff(true)
     local runUntilSelected
     runUntilSelected = function()
+        TASState = previousTASState
         local frame = self.frames[GetGlobalTimer()]
         frame.preview_joystick_x = Joypad.input.X
         frame.preview_joystick_y = Joypad.input.Y
@@ -85,8 +92,7 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
             emu.pause(false)
             emu.set_ff(was_ff)
             emu.atinput(runUntilSelected, true)
-            TASState = previousTASState
-            self.busy = false
+            self._busy = false
         end
     end
     emu.atinput(runUntilSelected)
@@ -135,10 +141,9 @@ function __clsPianoRoll:update()
     if anyChange then
         self._oldClock = now
         self._updatePending = true
-    elseif self._updatePending and now - self._oldClock > 0.25 then
+    elseif self._updatePending then
         self._oldClock = now
         self:jumpTo(self.previewGT)
-        self._updatePending = false
     end
 end
 

@@ -93,8 +93,7 @@ return {
 
         SelectionGui.Render()
 
-        -- prevent reentrant calls caused by GUI actions while the game is running
-        if PianoRollContext.current == nil or PianoRollContext.current.busy then return end
+        if PianoRollContext.current == nil then return end
 
         ToolsGui.Render()
         if FrameListGui.Render() or JoystickGui.Render() then
