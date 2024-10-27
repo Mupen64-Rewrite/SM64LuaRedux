@@ -116,10 +116,12 @@ end
 --- `value` — `number` The spinner's numerical value
 --- `minimum_value` — `number` The spinner's minimum numerical value
 --- `maximum_value` — `number` The spinner's maximum numerical value
---- `incremental` — `number` The increment applied when the + or - buttons are clicked value
+--- `increment` — `number` The increment applied when the + or - buttons are clicked
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 ugui.spinner = function(control)
+    -- no validate_and_register_control, because the textbox will do this for us
+
     if not ugui.standard_styler.spinner_button_thickness then
         ugui.standard_styler.spinner_button_thickness = 15
     end
@@ -172,7 +174,7 @@ ugui.spinner = function(control)
                 text = "+",
             }))
         then
-            value = value + control.increment
+            value = value + increment
         end
     else
         if (ugui.button({
@@ -222,6 +224,8 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ table A table structured as follows: { selected_index, rectangle }
 ugui.tabcontrol = function(control)
+    ugui.internal.validate_and_register_control(control)
+
     if not ugui.standard_styler.tab_control_rail_thickness then
         ugui.standard_styler.tab_control_rail_thickness = 17
     end
@@ -302,6 +306,8 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 ugui.numberbox = function(control)
+    ugui.internal.validate_and_register_control(control)
+
     if not ugui.internal.control_data[control.uid] then
         ugui.internal.control_data[control.uid] = {
             caret_index = 1,
@@ -349,7 +355,7 @@ ugui.numberbox = function(control)
 
     -- if active and user clicks elsewhere, deactivate
     if ugui.internal.active_control == control.uid then
-        if not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle) then
+        if not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle) then
             if ugui.internal.is_mouse_just_down() then
                 -- deactivate, then clear selection
                 ugui.internal.active_control = nil
@@ -442,9 +448,9 @@ ugui.numberbox = function(control)
 
     if ugui.internal.active_control == control.uid then
         -- find the clicked number, change caret index
-        if ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle) then
+        if ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle) then
             ugui.internal.control_data[control.uid].caret_index = get_caret_index_at_relative_x(text,
-                ugui.internal.input_state.mouse_position.x - control.rectangle.x)
+                ugui.internal.environment.mouse_position.x - control.rectangle.x)
         end
 
         -- handle number key press
@@ -633,6 +639,8 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 ugui.treeview = function(control)
+    ugui.internal.validate_and_register_control(control)
+
     -- TODO: scrolling
     if not ugui.internal.control_data[control.uid] then
         ugui.internal.control_data[control.uid] = {
@@ -685,7 +693,7 @@ ugui.treeview = function(control)
 
         local effective_rectangle = #item.children ~= 0 and text_rectangle or item_rectangle
 
-        if BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, effective_rectangle) and ugui.internal.is_mouse_just_down() then
+        if BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, effective_rectangle) and ugui.internal.is_mouse_just_down() then
             ugui.internal.control_data[control.uid].selected_uid = item.uid
         end
 

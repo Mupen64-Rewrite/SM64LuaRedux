@@ -16,10 +16,10 @@ ugui = {
         control_data = {},
 
         -- the current input state
-        input_state = nil,
+        environment = nil,
 
         -- the last frame's input state
-        previous_input_state = nil,
+        previous_environment = nil,
 
         -- the position of the mouse at the last click
         mouse_down_position = {x = 0, y = 0},
@@ -39,11 +39,22 @@ ugui = {
         -- Map of uids used in an active section (between begin_frame and end_frame)
         used_uids = {},
 
-        register_uid = function(uid)
-            if ugui.internal.used_uids[uid] then
-                error(string.format('Uid %d is already in use!', uid))
+        ---Validates the structure of a control and registers its uid. Must be called in every control function.
+        ---@param control table A control which may or may not abide by the mupen-lua-ugui control contract
+        validate_and_register_control = function(control)
+            if not control.uid
+                or not control.rectangle
+                or not control.rectangle.x
+                or not control.rectangle.y
+                or not control.rectangle.width
+                or not control.rectangle.height
+            then
+                error('Attempted to show a malformed control.\r\n' .. debug.traceback())
             end
-            ugui.internal.used_uids[uid] = uid
+            if ugui.internal.used_uids[control.uid] then
+                error(string.format('Attempted to show a control with uid %d, which is already in use! Note that some controls reserve more than one uid slot after them.', control.uid))
+            end
+            ugui.internal.used_uids[control.uid] = control.uid
         end,
         deep_clone = function(obj, seen)
             if type(obj) ~= 'table' then return obj end
@@ -64,14 +75,18 @@ ugui = {
             return string.sub(string, 1, start_index - 1) .. string.sub(string, end_index)
         end,
         is_mouse_just_down = function()
-            return ugui.internal.input_state.is_primary_down and
-                not ugui.internal.previous_input_state.is_primary_down
+            return ugui.internal.environment.is_primary_down and
+                not ugui.internal.previous_environment.is_primary_down
+        end,
+        is_mouse_just_up = function()
+            return not ugui.internal.environment.is_primary_down and
+                ugui.internal.previous_environment.is_primary_down
         end,
         is_mouse_wheel_up = function()
-            return ugui.internal.input_state.wheel == 1
+            return ugui.internal.environment.wheel == 1
         end,
         is_mouse_wheel_down = function()
-            return ugui.internal.input_state.wheel == -1
+            return ugui.internal.environment.wheel == -1
         end,
         remove_at = function(string, index)
             if index == 0 then
@@ -93,8 +108,8 @@ ugui = {
         end,
         get_just_pressed_keys = function()
             local keys = {}
-            for key, _ in pairs(ugui.internal.input_state.held_keys) do
-                if not ugui.internal.previous_input_state.held_keys[key] then
+            for key, _ in pairs(ugui.internal.environment.held_keys) do
+                if not ugui.internal.previous_environment.held_keys[key] then
                     keys[key] = 1
                 end
             end
@@ -105,10 +120,10 @@ ugui = {
                 return false
             end
 
-            if ugui.internal.input_state.is_primary_down and not ugui.internal.previous_input_state.is_primary_down then
+            if ugui.internal.environment.is_primary_down and not ugui.internal.previous_environment.is_primary_down then
                 if BreitbandGraphics.is_point_inside_rectangle(ugui.internal.mouse_down_position,
                         control.rectangle) then
-                    if not control.topmost and BreitbandGraphics.is_point_inside_any_rectangle(ugui.internal.input_state.mouse_position, ugui.internal.hittest_free_rects) then
+                    if not control.topmost and BreitbandGraphics.is_point_inside_any_rectangle(ugui.internal.environment.mouse_position, ugui.internal.hittest_free_rects) then
                         return false
                     end
 
@@ -225,10 +240,10 @@ ugui = {
         end
 
         local now_inside = BreitbandGraphics.is_point_inside_rectangle(
-                ugui.internal.input_state.mouse_position,
+                ugui.internal.environment.mouse_position,
                 control.rectangle)
             and
-            not BreitbandGraphics.is_point_inside_any_rectangle(ugui.internal.input_state.mouse_position,
+            not BreitbandGraphics.is_point_inside_any_rectangle(ugui.internal.environment.mouse_position,
                 ugui.internal.hittest_free_rects)
 
         local down_inside = BreitbandGraphics.is_point_inside_rectangle(
@@ -237,15 +252,15 @@ ugui = {
             not BreitbandGraphics.is_point_inside_any_rectangle(ugui.internal.mouse_down_position,
                 ugui.internal.hittest_free_rects)
 
-        if now_inside and not ugui.internal.input_state.is_primary_down then
+        if now_inside and not ugui.internal.environment.is_primary_down then
             return ugui.visual_states.hovered
         end
 
-        if down_inside and ugui.internal.input_state.is_primary_down and not now_inside then
+        if down_inside and ugui.internal.environment.is_primary_down and not now_inside then
             return ugui.visual_states.hovered
         end
 
-        if now_inside and down_inside and ugui.internal.input_state.is_primary_down then
+        if now_inside and down_inside and ugui.internal.environment.is_primary_down then
             return ugui.visual_states.active
         end
 
@@ -259,6 +274,10 @@ ugui = {
         bar_width = 6,
         bar_height = 16,
         item_height = 15,
+        menu_item_height = 22,
+        menu_overlap_size = 3,
+        menu_item_left_padding = 32,
+        menu_item_right_padding = 32,
         font_size = 12,
         cleartype = true,
         scrollbar_thickness = 17,
@@ -300,6 +319,30 @@ ugui = {
             [2] = BreitbandGraphics.hex_to_color('#7A7A7A'),
             [3] = BreitbandGraphics.hex_to_color('#7A7A7A'),
             [0] = BreitbandGraphics.hex_to_color('#7A7A7A'),
+        },
+        menu_frame_back_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#F2F2F2'),
+            [2] = BreitbandGraphics.hex_to_color('#F2F2F2'),
+            [3] = BreitbandGraphics.hex_to_color('#F2F2F2'),
+            [0] = BreitbandGraphics.hex_to_color('#F2F2F2'),
+        },
+        menu_frame_border_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#CCCCCC'),
+            [2] = BreitbandGraphics.hex_to_color('#CCCCCC'),
+            [3] = BreitbandGraphics.hex_to_color('#CCCCCC'),
+            [0] = BreitbandGraphics.hex_to_color('#CCCCCC'),
+        },
+        menu_item_text_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#000000'),
+            [2] = BreitbandGraphics.hex_to_color('#000000'),
+            [3] = BreitbandGraphics.hex_to_color('#000000'),
+            [0] = BreitbandGraphics.hex_to_color('#6D6D6D'),
+        },
+        menu_item_back_colors = {
+            [1] = BreitbandGraphics.hex_to_color('#00000000'),
+            [2] = BreitbandGraphics.hex_to_color('#91C9F7'),
+            [3] = BreitbandGraphics.hex_to_color('#91C9F7'),
+            [0] = BreitbandGraphics.hex_to_color('#00000000'),
         },
         raised_frame_text_colors = {
             [1] = BreitbandGraphics.colors.black,
@@ -399,10 +442,9 @@ ugui = {
         },
 
         ---Draws an icon with the specified parameters
-        ---The draw_icon implementation may choose to use either the color or visual_state parameter to determine the icon's appearance. 
+        ---The draw_icon implementation may choose to use either the color or visual_state parameter to determine the icon's appearance.
         ---Therefore, the caller must provide either a color or a visual state, or both.
         draw_icon = function(rectangle, color, visual_state, key)
-
             if not color and visual_state then
                 BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
                 return
@@ -444,6 +486,10 @@ ugui = {
                     ugui.standard_styler.font_size,
                     'Segoe UI Mono',
                     'v')
+            elseif key == 'checkmark' then
+                local connection_point = {x = rectangle.x + rectangle.width * 0.3, y = rectangle.y + rectangle.height}
+                BreitbandGraphics.draw_line({x = rectangle.x, y = rectangle.y + rectangle.height / 2}, connection_point, color, 1)
+                BreitbandGraphics.draw_line(connection_point, {x = rectangle.x + rectangle.width, y = rectangle.y}, color, 1)
             else
                 -- Unknown icon, probably a good idea to nag the user
                 BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
@@ -531,6 +577,12 @@ ugui = {
                 height = ugui.standard_styler.joystick_tip_size,
             }, tip_color)
         end,
+        draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
+            BreitbandGraphics.fill_rectangle(container_rectangle,
+                ugui.standard_styler.scrollbar_back_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(thumb_rectangle,
+                ugui.standard_styler.scrollbar_thumb_colors[visual_state])
+        end,
         draw_list_item = function(item, rectangle, visual_state)
             if not item then
                 return
@@ -551,17 +603,11 @@ ugui = {
                 ugui.standard_styler.font_name,
                 item)
         end,
-        draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
-            BreitbandGraphics.fill_rectangle(container_rectangle,
-                ugui.standard_styler.scrollbar_back_colors[visual_state])
-            BreitbandGraphics.fill_rectangle(thumb_rectangle,
-                ugui.standard_styler.scrollbar_thumb_colors[visual_state])
-        end,
         draw_list = function(control, rectangle)
             local visual_state = ugui.get_visual_state(control)
             ugui.standard_styler.draw_list_frame(rectangle, visual_state)
 
-            local content_bounds = ugui.standard_styler.get_listbox_content_bounds(control)
+            local content_bounds = ugui.standard_styler.get_desired_listbox_content_bounds(control)
             -- item y position:
             -- y = (20 * (i - 1)) - (scroll_y * ((20 * #control.items) - control.rectangle.height))
             local scroll_x = ugui.internal.control_data[control.uid].scroll_x and
@@ -607,6 +653,80 @@ ugui = {
 
             BreitbandGraphics.pop_clip()
         end,
+        draw_menu_frame = function(rectangle, visual_state)
+            BreitbandGraphics.fill_rectangle(rectangle,
+                ugui.standard_styler.menu_frame_border_colors[visual_state])
+            BreitbandGraphics.fill_rectangle(BreitbandGraphics.inflate_rectangle(rectangle, -1),
+                ugui.standard_styler.menu_frame_back_colors[visual_state])
+        end,
+        draw_menu_item = function(item, rectangle, visual_state)
+            BreitbandGraphics.fill_rectangle(rectangle,
+                ugui.standard_styler.menu_item_back_colors[visual_state])
+            BreitbandGraphics.push_clip({
+                x = rectangle.x,
+                y = rectangle.y,
+                width = rectangle.width,
+                height = rectangle.height,
+            })
+
+            if item.checked then
+                local icon_rect = BreitbandGraphics.inflate_rectangle({
+                    x = rectangle.x + (ugui.standard_styler.menu_item_left_padding - rectangle.height) * 0.5,
+                    y = rectangle.y,
+                    width = rectangle.height,
+                    height = rectangle.height,
+                }, -7)
+                ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.menu_item_text_colors[visual_state], nil, 'checkmark')
+            end
+
+            if item.items then
+                local icon_rect = BreitbandGraphics.inflate_rectangle({
+                    x = rectangle.x + rectangle.width - (ugui.standard_styler.menu_item_right_padding),
+                    y = rectangle.y,
+                    width = ugui.standard_styler.menu_item_right_padding,
+                    height = rectangle.height,
+                }, -7)
+                ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.menu_item_text_colors[visual_state], nil, 'arrow_right')
+            end
+
+            BreitbandGraphics.draw_text({
+                    x = rectangle.x + ugui.standard_styler.menu_item_left_padding,
+                    y = rectangle.y,
+                    width = 9999999,
+                    height = rectangle.height,
+                }, 'start', 'center', {aliased = not ugui.standard_styler.cleartype},
+                ugui.standard_styler.menu_item_text_colors[visual_state],
+                ugui.standard_styler.font_size,
+                ugui.standard_styler.font_name,
+                item.text)
+            BreitbandGraphics.pop_clip()
+        end,
+        draw_menu = function(control, rectangle)
+            local visual_state = ugui.get_visual_state(control)
+            ugui.standard_styler.draw_menu_frame(rectangle, visual_state)
+
+            local y = rectangle.y
+
+            for i, item in pairs(control.items) do
+                local rectangle = BreitbandGraphics.inflate_rectangle({
+                    x = rectangle.x,
+                    y = y,
+                    width = rectangle.width,
+                    height = ugui.standard_styler.menu_item_height,
+                }, -1)
+
+                local visual_state = ugui.visual_states.normal
+                if ugui.internal.control_data[control.uid].hovered_index and ugui.internal.control_data[control.uid].hovered_index == i then
+                    visual_state = ugui.visual_states.hovered
+                end
+                if item.enabled == false then
+                    visual_state = ugui.visual_states.disabled
+                end
+                ugui.standard_styler.draw_menu_item(item, rectangle, visual_state)
+
+                y = y + ugui.standard_styler.menu_item_height
+            end
+        end,
         draw_button = function(control)
             local visual_state = ugui.get_visual_state(control)
 
@@ -629,7 +749,7 @@ ugui = {
         draw_carrousel_button = function(control)
             -- add a "fake" text field
             local copy = ugui.internal.deep_clone(control)
-            copy.text = control.items[control.selected_index]
+            copy.text = control.items and control.items[control.selected_index] or ''
             ugui.standard_styler.draw_button(copy)
 
             local visual_state = ugui.get_visual_state(control)
@@ -651,6 +771,7 @@ ugui = {
         end,
         draw_textbox = function(control)
             local visual_state = ugui.get_visual_state(control)
+            local text = control.text or ''
 
             if ugui.internal.active_control == control.uid and control.is_enabled ~= false then
                 visual_state = ugui.visual_states.active
@@ -664,9 +785,9 @@ ugui = {
                 not (ugui.internal.control_data[control.uid].selection_start == ugui.internal.control_data[control.uid].selection_end)
 
             if should_visualize_selection then
-                local string_to_selection_start = control.text:sub(1,
+                local string_to_selection_start = text:sub(1,
                     ugui.internal.control_data[control.uid].selection_start - 1)
-                local string_to_selection_end = control.text:sub(1,
+                local string_to_selection_end = text:sub(1,
                     ugui.internal.control_data[control.uid].selection_end - 1)
 
                 BreitbandGraphics.fill_rectangle({
@@ -697,7 +818,7 @@ ugui = {
                 }, 'start', 'start', {clip = true, aliased = not ugui.standard_styler.cleartype},
                 ugui.standard_styler.edit_frame_text_colors[visual_state],
                 ugui.standard_styler.font_size,
-                ugui.standard_styler.font_name, control.text)
+                ugui.standard_styler.font_name, text)
 
             if should_visualize_selection then
                 local lower = ugui.internal.control_data[control.uid].selection_start
@@ -707,9 +828,9 @@ ugui = {
                     higher = ugui.internal.control_data[control.uid].selection_start
                 end
 
-                local string_to_selection_start = control.text:sub(1,
+                local string_to_selection_start = text:sub(1,
                     lower - 1)
-                local string_to_selection_end = control.text:sub(1,
+                local string_to_selection_end = text:sub(1,
                     higher - 1)
 
                 local selection_start_x = control.rectangle.x +
@@ -739,12 +860,12 @@ ugui = {
                     BreitbandGraphics.invert_color(ugui.standard_styler.edit_frame_text_colors
                         [visual_state]),
                     ugui.standard_styler.font_size,
-                    ugui.standard_styler.font_name, control.text)
+                    ugui.standard_styler.font_name, text)
                 BreitbandGraphics.pop_clip()
             end
 
 
-            local string_to_caret = control.text:sub(1, ugui.internal.control_data[control.uid].caret_index - 1)
+            local string_to_caret = text:sub(1, ugui.internal.control_data[control.uid].caret_index - 1)
             local caret_x = BreitbandGraphics.get_text_size(string_to_caret,
                     ugui.standard_styler.font_size,
                     ugui.standard_styler.font_name).width +
@@ -770,6 +891,9 @@ ugui = {
         end,
         draw_joystick = function(control)
             local visual_state = ugui.get_visual_state(control)
+            local x = control.position and control.position.x or 0
+            local y = control.position and control.position.y or 0
+            local mag = control.mag or 0
 
             -- joystick has no hover or active states
             if not (visual_state == ugui.visual_states.disabled) then
@@ -778,11 +902,11 @@ ugui = {
 
             ugui.standard_styler.draw_raised_frame(control, visual_state)
             ugui.standard_styler.draw_joystick_inner(control.rectangle, visual_state, {
-                x = ugui.internal.remap(ugui.internal.clamp(control.position.x, -128, 128), -128, 128,
+                x = ugui.internal.remap(ugui.internal.clamp(x, -128, 128), -128, 128,
                     control.rectangle.x, control.rectangle.x + control.rectangle.width),
-                y = ugui.internal.remap(ugui.internal.clamp(control.position.y, -128, 128), -128, 128,
+                y = ugui.internal.remap(ugui.internal.clamp(y, -128, 128), -128, 128,
                     control.rectangle.y, control.rectangle.y + control.rectangle.height),
-                r = ugui.internal.remap(ugui.internal.clamp(control.mag or 0, 0, 128), 0, 128, 0,
+                r = ugui.internal.remap(ugui.internal.clamp(mag, 0, 128), 0, 128, 0,
                     math.min(control.rectangle.width, control.rectangle.height)),
             })
         end,
@@ -853,6 +977,7 @@ ugui = {
         end,
         draw_combobox = function(control)
             local visual_state = ugui.get_visual_state(control)
+            local selected_item = control.items and (control.selected_index and control.items[control.selected_index] or '') or ''
 
             if ugui.internal.control_data[control.uid].is_open and control.is_enabled ~= false then
                 visual_state = ugui.visual_states.active
@@ -870,7 +995,7 @@ ugui = {
                 }, 'start', 'center', {clip = true, aliased = not ugui.standard_styler.cleartype}, text_color,
                 ugui.standard_styler.font_size,
                 ugui.standard_styler.font_name,
-                control.items[control.selected_index])
+                selected_item)
 
             ugui.standard_styler.draw_icon({
                 x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.icon_size - ugui.standard_styler.textbox_padding * 2,
@@ -884,7 +1009,11 @@ ugui = {
             ugui.standard_styler.draw_list(control, control.rectangle)
         end,
 
-        get_listbox_content_bounds = function(control)
+        ---Gets the desired bounds of a listbox's content.
+        ---@param control table A table abiding by the mupen-lua-ugui control contract
+        ---@return _ table A rectangle specifying the desired bounds of the content as `{x = 0, y = 0, width: number, height: number}`.
+        get_desired_listbox_content_bounds = function(control)
+            -- Since horizontal content bounds measuring is expensive, we only do this if explicitly enabled.
             local max_width = 0
             if control.horizontal_scroll == true then
                 for _, value in pairs(control.items) do
@@ -901,23 +1030,27 @@ ugui = {
                 x = 0,
                 y = 0,
                 width = max_width,
-                height = ugui.standard_styler.item_height * #control.items,
+                height = ugui.standard_styler.item_height * (control.items and #control.items or 0),
             }
         end,
     },
 
     ---Begins a new frame
-    ---@param input_state table A table describing the state of the user's input devices as `{ mouse_position = {x, y}, wheel, is_primary_down, held_keys }`
-    begin_frame = function(input_state)
-        if not ugui.internal.input_state then
-            ugui.internal.input_state = input_state
+    ---@param environment table A table describing the state of the environment as `{ mouse_position = {x, y}, wheel, is_primary_down, held_keys, window_size = {x, y} }`
+    begin_frame = function(environment)
+        if not ugui.internal.environment then
+            ugui.internal.environment = environment
         end
-        ugui.internal.previous_input_state = ugui.internal.deep_clone(ugui.internal
-            .input_state)
-        ugui.internal.input_state = ugui.internal.deep_clone(input_state)
+        if not environment.window_size then
+            -- Assume unbounded window size if user is too lazy to provide one
+            environment.window_size = {x = math.maxinteger, y = math.maxinteger}
+        end
+        ugui.internal.previous_environment = ugui.internal.deep_clone(ugui.internal
+            .environment)
+        ugui.internal.environment = ugui.internal.deep_clone(environment)
 
         if ugui.internal.is_mouse_just_down() then
-            ugui.internal.mouse_down_position = ugui.internal.input_state.mouse_position
+            ugui.internal.mouse_down_position = ugui.internal.environment.mouse_position
         end
     end,
 
@@ -931,7 +1064,7 @@ ugui = {
         ugui.internal.hittest_free_rects = {}
         ugui.internal.used_uids = {}
 
-        if not ugui.internal.input_state.is_primary_down and ugui.internal.clear_active_control_after_mouse_up then
+        if not ugui.internal.environment.is_primary_down and ugui.internal.clear_active_control_after_mouse_up then
             ugui.internal.active_control = nil
         end
     end,
@@ -944,7 +1077,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button has been pressed this frame
     button = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         ugui.standard_styler.draw_button(control)
@@ -960,7 +1093,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button is checked
     toggle_button = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         ugui.standard_styler.draw_togglebutton(control)
@@ -980,13 +1113,13 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new selected index
     carrousel_button = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         local selected_index = control.selected_index
 
         if pushed then
-            local relative_x = ugui.internal.input_state.mouse_position.x - control.rectangle.x
+            local relative_x = ugui.internal.environment.mouse_position.x - control.rectangle.x
             if relative_x > control.rectangle.width / 2 then
                 selected_index = selected_index + 1
                 if selected_index > #control.items then
@@ -1002,7 +1135,7 @@ ugui = {
 
         ugui.standard_styler.draw_carrousel_button(control)
 
-        return ugui.internal.clamp(selected_index, 1, #control.items)
+        return control.items and ugui.internal.clamp(selected_index, 1, #control.items) or nil
     end,
     ---Places a TextBox
     ---
@@ -1012,7 +1145,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ string The textbox's text
     textbox = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
@@ -1023,7 +1156,7 @@ ugui = {
         end
 
         local pushed = ugui.internal.process_push(control)
-        local text = control.text
+        local text = control.text or ''
 
         if pushed then
             ugui.internal.clear_active_control_after_mouse_up = false
@@ -1031,7 +1164,7 @@ ugui = {
 
         -- if active and user clicks elsewhere, deactivate
         if ugui.internal.active_control == control.uid
-            and not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle) then
+            and not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle) then
             if ugui.internal.is_mouse_just_down() then
                 -- deactivate, then clear selection
                 ugui.internal.active_control = nil
@@ -1054,16 +1187,16 @@ ugui = {
 
         if ugui.internal.active_control == control.uid and control.is_enabled ~= false then
             local theoretical_caret_index = ugui.internal.get_caret_index(text,
-                ugui.internal.input_state.mouse_position.x - control.rectangle.x)
+                ugui.internal.environment.mouse_position.x - control.rectangle.x)
 
             -- start a new selection
-            if ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle) then
+            if ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle) then
                 ugui.internal.control_data[control.uid].caret_index = theoretical_caret_index
                 ugui.internal.control_data[control.uid].selection_start = theoretical_caret_index
             end
 
             -- already has selection, move end to appropriate index
-            if ugui.internal.input_state.is_primary_down and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.mouse_down_position, control.rectangle) then
+            if ugui.internal.environment.is_primary_down and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.mouse_down_position, control.rectangle) then
                 ugui.internal.control_data[control.uid].selection_end = theoretical_caret_index
             end
 
@@ -1131,23 +1264,23 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ `table` The joystick's new position as `{x, y}` with the range `0-128`
     joystick = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         ugui.standard_styler.draw_joystick(control)
 
-        local position = ugui.internal.deep_clone(control.position)
+        local position = control.position and ugui.internal.deep_clone(control.position) or {x = 0, y = 0}
 
         local pushed = ugui.internal.process_push(control)
         local ignored = BreitbandGraphics.is_point_inside_any_rectangle(
-                ugui.internal.input_state.mouse_position, ugui.internal.hittest_free_rects) and
+                ugui.internal.environment.mouse_position, ugui.internal.hittest_free_rects) and
             not control.topmost
 
         if ugui.internal.active_control == control.uid and not ignored then
             position.x = ugui.internal.clamp(
-                ugui.internal.remap(ugui.internal.input_state.mouse_position.x - control.rectangle.x, 0,
+                ugui.internal.remap(ugui.internal.environment.mouse_position.x - control.rectangle.x, 0,
                     control.rectangle.width, -128, 128), -128, 128)
             position.y = ugui.internal.clamp(
-                ugui.internal.remap(ugui.internal.input_state.mouse_position.y - control.rectangle.y, 0,
+                ugui.internal.remap(ugui.internal.environment.mouse_position.y - control.rectangle.y, 0,
                     control.rectangle.height, -128, 128), -128, 128)
         end
 
@@ -1162,7 +1295,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The trackbar's value
     trackbar = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
@@ -1176,12 +1309,12 @@ ugui = {
         if ugui.internal.active_control == control.uid then
             if control.rectangle.width > control.rectangle.height then
                 value = ugui.internal.clamp(
-                    (ugui.internal.input_state.mouse_position.x - control.rectangle.x) /
+                    (ugui.internal.environment.mouse_position.x - control.rectangle.x) /
                     control.rectangle.width,
                     0, 1)
             else
                 value = ugui.internal.clamp(
-                    (ugui.internal.input_state.mouse_position.y - control.rectangle.y) /
+                    (ugui.internal.environment.mouse_position.y - control.rectangle.y) /
                     control.rectangle.height,
                     0, 1)
             end
@@ -1201,7 +1334,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
     combobox = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
@@ -1215,12 +1348,12 @@ ugui = {
         end
 
         if ugui.internal.is_mouse_just_down() and control.is_enabled ~= false then
-            if BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle) then
+            if BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle) then
                 ugui.internal.control_data[control.uid].is_open = not ugui.internal.control_data
                     [control.uid].is_open
             else
-                local content_bounds = ugui.standard_styler.get_listbox_content_bounds(control)
-                if not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, {
+                local content_bounds = ugui.standard_styler.get_desired_listbox_content_bounds(control)
+                if not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, {
                         x = control.rectangle.x,
                         y = control.rectangle.y + control.rectangle.height,
                         width = control.rectangle.width,
@@ -1234,7 +1367,7 @@ ugui = {
         local selected_index = control.selected_index
 
         if ugui.internal.control_data[control.uid].is_open and control.is_enabled ~= false then
-            local content_bounds = ugui.standard_styler.get_listbox_content_bounds(control)
+            local content_bounds = ugui.standard_styler.get_desired_listbox_content_bounds(control)
 
             local list_rect = {
                 x = control.rectangle.x,
@@ -1267,7 +1400,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
     listbox = function(_control)
-        ugui.internal.register_uid(_control.uid)
+        ugui.internal.validate_and_register_control(_control)
 
         if not ugui.internal.control_data[_control.uid] then
             ugui.internal.control_data[_control.uid] = {
@@ -1282,7 +1415,7 @@ ugui = {
             ugui.internal.control_data[_control.uid].scroll_y = 0
         end
 
-        local content_bounds = ugui.standard_styler.get_listbox_content_bounds(_control)
+        local content_bounds = ugui.standard_styler.get_desired_listbox_content_bounds(_control)
         local x_overflow = content_bounds.width > _control.rectangle.width
         local y_overflow = content_bounds.height > _control.rectangle.height
 
@@ -1300,11 +1433,11 @@ ugui = {
 
         local pushed = ugui.internal.process_push(control)
         local ignored = BreitbandGraphics.is_point_inside_any_rectangle(
-                ugui.internal.input_state.mouse_position, ugui.internal.hittest_free_rects) and
+                ugui.internal.environment.mouse_position, ugui.internal.hittest_free_rects) and
             not control.topmost
 
         if ugui.internal.active_control == control.uid and not ignored then
-            local relative_y = ugui.internal.input_state.mouse_position.y - control.rectangle.y
+            local relative_y = ugui.internal.environment.mouse_position.y - control.rectangle.y
             local new_index = math.ceil((relative_y + (ugui.internal.control_data[control.uid].scroll_y *
                     ((ugui.standard_styler.item_height * #control.items) - control.rectangle.height))) /
                 ugui.standard_styler.item_height)
@@ -1316,7 +1449,7 @@ ugui = {
         end
 
         if not ignored
-            and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle)
+            and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle)
                 or ugui.internal.active_control == control.uid) then
             for key, _ in pairs(ugui.internal.get_just_pressed_keys()) do
                 if key == 'up' then
@@ -1338,7 +1471,7 @@ ugui = {
 
         if not ignored
             and y_overflow
-            and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle)
+            and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle)
                 or ugui.internal.active_control == control.uid) then
             local inc = 0
             if ugui.internal.is_mouse_wheel_up() then
@@ -1418,14 +1551,14 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new value
     scrollbar = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         local is_horizontal = control.rectangle.width > control.rectangle.height
 
         -- if active and user clicks elsewhere, deactivate
         if ugui.internal.active_control == control.uid then
-            if not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.input_state.mouse_position, control.rectangle) then
+            if not BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle) then
                 if ugui.internal.is_mouse_just_down() then
                     -- deactivate, then clear selection
                     ugui.internal.active_control = nil
@@ -1433,10 +1566,10 @@ ugui = {
             end
         end
 
-        if ugui.internal.active_control == control.uid and control.is_enabled ~= false and ugui.internal.input_state.is_primary_down then
+        if ugui.internal.active_control == control.uid and control.is_enabled ~= false and ugui.internal.environment.is_primary_down then
             local relative_mouse = {
-                x = ugui.internal.input_state.mouse_position.x - control.rectangle.x,
-                y = ugui.internal.input_state.mouse_position.y - control.rectangle.y,
+                x = ugui.internal.environment.mouse_position.x - control.rectangle.x,
+                y = ugui.internal.environment.mouse_position.y - control.rectangle.y,
             }
             local relative_mouse_down = {
                 x = ugui.internal.mouse_down_position.x - control.rectangle.x,
@@ -1477,11 +1610,145 @@ ugui = {
         end
 
         local visual_state = ugui.get_visual_state(control)
-        if ugui.internal.active_control == control.uid and control.is_enabled ~= false and ugui.internal.input_state.is_primary_down then
+        if ugui.internal.active_control == control.uid and control.is_enabled ~= false and ugui.internal.environment.is_primary_down then
             visual_state = ugui.visual_states.active
         end
         ugui.standard_styler.draw_scrollbar(control.rectangle, thumb_rectangle, visual_state)
 
         return control.value
+    end,
+
+    ---Places a Menu
+    ---
+    ---Additional fields in the `control` table:
+    ---
+    --- `items` — `table[]` The items contained in the dropdown as (`{ enabled: boolean | nil, checked: boolean | nil, text: string }`)
+    ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
+    ---@return _ table The interaction result as (`{ item: table | nil, dismissed: boolean }`). The `item` field is nil if no item was clicked.
+    menu = function(control)
+
+        -- Avoid tripping the control validation... it's going to be overwritten anyway
+        if control.rectangle and not control.rectangle.width then
+            control.rectangle.width = 0
+        end
+        if control.rectangle and not control.rectangle.height then
+            control.rectangle.height = 0
+        end
+
+        ugui.internal.validate_and_register_control(control)
+
+        if not ugui.internal.control_data[control.uid] then
+            print("Top-level menu")
+            ugui.internal.control_data[control.uid] = {
+                hovered_index = nil,
+                parent_rectangle = nil,
+            }
+        end
+
+        -- We adjust the dimensions with what should fit the content
+        local max_text_width = 0
+        for _, item in pairs(control.items) do
+            local size = BreitbandGraphics.get_text_size(item.text, ugui.standard_styler.font_size, ugui.standard_styler.font_name)
+            if size.width > max_text_width then
+                max_text_width = size.width
+            end
+        end
+
+        control.rectangle.width = max_text_width + ugui.standard_styler.menu_item_left_padding + ugui.standard_styler.menu_item_right_padding
+        control.rectangle.height = #control.items * ugui.standard_styler.menu_item_height
+
+        -- Overflow avoidance: shift the X/Y position to avoid going out of bounds
+        if control.rectangle.x + control.rectangle.width > ugui.internal.environment.window_size.x then
+            local parent_rect = ugui.internal.control_data[control.uid].parent_rectangle
+            -- If the menu has a parent and there's an overflow on the X axis, try snaking out of the situation by moving left of the menu
+            if parent_rect then
+                control.rectangle.x = parent_rect.x - control.rectangle.width + ugui.standard_styler.menu_overlap_size
+            else
+                control.rectangle.x = control.rectangle.x - (control.rectangle.x + control.rectangle.width - ugui.internal.environment.window_size.x)
+            end
+        end
+        if control.rectangle.y + control.rectangle.height > ugui.internal.environment.window_size.y then
+            control.rectangle.y = control.rectangle.y - (control.rectangle.y + control.rectangle.height - ugui.internal.environment.window_size.y)
+        end
+
+        local result = {
+            item = nil,
+            dismissed = false,
+        }
+
+        local mouse_inside_control = BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle)
+
+        if control.is_enabled ~= false then
+            ugui.internal.hittest_free_rects[#ugui.internal.hittest_free_rects + 1] = control.rectangle
+
+            if ugui.internal.is_mouse_just_down() and not mouse_inside_control then
+                -- This path is also reached when a subitem is clicked, so we'll delay clearing the hover indicies until the submenu has also given a result
+                result.dismissed = true
+            end
+
+            if mouse_inside_control then
+                local i = math.floor((ugui.internal.environment.mouse_position.y - control.rectangle.y) / ugui.standard_styler.menu_item_height) + 1
+                local item = control.items[i]
+
+                ugui.internal.control_data[control.uid].hovered_index = i
+
+                if ugui.internal.is_mouse_just_up() then
+                    if (item.enabled == nil or item.enabled == true) and (item.items == nil or #item.items == 0) then
+                        result.item = item
+                    end
+                end
+            end
+
+            if ugui.internal.control_data[control.uid].hovered_index ~= nil then
+                local i = ugui.internal.control_data[control.uid].hovered_index
+                local item = control.items[i]
+                if item.items and (item.enabled == nil or item.enabled == true) then
+                    local submenu_uid = control.uid + 1
+
+                    if not ugui.internal.control_data[submenu_uid] then
+                        ugui.internal.control_data[submenu_uid] = {
+                            hovered_index = nil,
+                            parent_rectangle = ugui.internal.deep_clone(control.rectangle),
+                        }
+                    end
+
+                    local submenu_result = ugui.menu({
+                        uid = submenu_uid,
+                        rectangle = {
+                            x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.menu_overlap_size,
+                            y = control.rectangle.y + ((i - 1) * ugui.standard_styler.menu_item_height),
+                        },
+                        items = item.items,
+                    })
+
+                    if submenu_result.item then
+                        result.dismissed = false
+                        result.item = submenu_result.item
+                    end
+                end
+            end
+        end
+
+        if result.dismissed or result.item then
+            -- We need to clear the hover index or all menus in this tree, which means a massively annoying tree traversal
+            local function clear_hover_index_for_menu(uid, items)
+                if ugui.internal.control_data[uid] and ugui.internal.control_data[uid].hovered_index then
+                    ugui.internal.control_data[uid].hovered_index = nil
+                end
+                for _, item in pairs(items) do
+                    if item.items then
+                        clear_hover_index_for_menu(uid + 1, item.items)
+                    end
+                end
+            end
+            clear_hover_index_for_menu(control.uid, control.items)
+        end
+
+        -- Menus are late-drawn, but in reverse order since submenus must overlap and draw over the parent
+        table.insert(ugui.internal.late_callbacks, 1, function()
+            ugui.standard_styler.draw_menu(control, control.rectangle)
+        end)
+
+        return result
     end,
 }
