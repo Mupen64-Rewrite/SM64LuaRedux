@@ -129,20 +129,39 @@ ugui.spinner = function(control)
 
     local value = control.value
 
+    local textbox_rect = {
+        x = control.rectangle.x,
+        y = control.rectangle.y,
+        width = control.rectangle.width - ugui.standard_styler.spinner_button_thickness * 2,
+        height = control.rectangle.height,
+    }
+
     local new_text = ugui.textbox({
         uid = control.uid,
-        rectangle = {
-            x = control.rectangle.x,
-            y = control.rectangle.y,
-            width = control.rectangle.width - ugui.standard_styler.spinner_button_thickness * 2,
-            height = control.rectangle.height,
-        },
+        rectangle = textbox_rect,
         text = tostring(value),
     })
 
     if tonumber(new_text) then
         value = tonumber(new_text)
     end
+
+    local ignored = BreitbandGraphics.is_point_inside_any_rectangle(
+        ugui.internal.environment.mouse_position, ugui.internal.hittest_free_rects)
+
+    if control.is_enabled ~= false
+        and not ignored
+        and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, textbox_rect) or ugui.internal.active_control == control.uid) 
+        then
+        if ugui.internal.is_mouse_wheel_up() then
+            value = value + 1
+        end
+        if ugui.internal.is_mouse_wheel_down() then
+            value = value - 1
+        end
+    end
+
+    value = ugui.internal.clamp(value, control.minimum_value, control.maximum_value)
 
     if control.is_horizontal then
         if (ugui.button({
