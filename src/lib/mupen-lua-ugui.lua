@@ -39,12 +39,30 @@ ugui = {
         -- Map of uids used in an active section (between begin_frame and end_frame)
         used_uids = {},
 
-        register_uid = function(uid)
-            if ugui.internal.used_uids[uid] then
-                error(string.format('Uid %d is already in use!', uid))
+        ---Validates the structure of a control. Must be called in every control function.
+        ---@param control table A control which may or may not abide by the mupen-lua-ugui control contract
+        validate_control = function(control)
+            if not control.uid
+                or not control.rectangle
+                or not control.rectangle.x
+                or not control.rectangle.y
+                or not control.rectangle.width
+                or not control.rectangle.height
+            then
+                error('Attempted to show a malformed control.\r\n' .. debug.traceback())
             end
-            ugui.internal.used_uids[uid] = uid
         end,
+        
+        ---Validates the structure of a control and registers its uid. Must be called in every control function.
+        ---@param control table A control which may or may not abide by the mupen-lua-ugui control contract
+        validate_and_register_control = function(control)
+            ugui.internal.validate_control(control)
+            if ugui.internal.used_uids[control.uid] then
+                error(string.format('Attempted to show a control with uid %d, which is already in use! Note that some controls reserve more than one uid slot after them.', control.uid))
+            end
+            ugui.internal.used_uids[control.uid] = control.uid
+        end,
+
         deep_clone = function(obj, seen)
             if type(obj) ~= 'table' then return obj end
             if seen and seen[obj] then return seen[obj] end
@@ -264,6 +282,7 @@ ugui = {
         bar_height = 16,
         item_height = 15,
         menu_item_height = 22,
+        menu_overlap_size = 3,
         menu_item_left_padding = 32,
         menu_item_right_padding = 32,
         font_size = 12,
@@ -965,7 +984,7 @@ ugui = {
         end,
         draw_combobox = function(control)
             local visual_state = ugui.get_visual_state(control)
-            local selected_item = control.items and (control.selected_index and control.items[control.selected_index] or "") or ""
+            local selected_item = control.items and (control.selected_index and control.items[control.selected_index] or '') or ''
 
             if ugui.internal.control_data[control.uid].is_open and control.is_enabled ~= false then
                 visual_state = ugui.visual_states.active
@@ -997,12 +1016,11 @@ ugui = {
             ugui.standard_styler.draw_list(control, control.rectangle)
         end,
 
-        ---Gets the desired bounds of a listbox's content. 
+        ---Gets the desired bounds of a listbox's content.
         ---@param control table A table abiding by the mupen-lua-ugui control contract
         ---@return _ table A rectangle specifying the desired bounds of the content as `{x = 0, y = 0, width: number, height: number}`.
         get_desired_listbox_content_bounds = function(control)
-
-            -- Since horizontal content bounds measuring is expensive, we only do this if explicitly enabled. 
+            -- Since horizontal content bounds measuring is expensive, we only do this if explicitly enabled.
             local max_width = 0
             if control.horizontal_scroll == true then
                 for _, value in pairs(control.items) do
@@ -1066,7 +1084,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button has been pressed this frame
     button = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         ugui.standard_styler.draw_button(control)
@@ -1082,7 +1100,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ boolean Whether the button is checked
     toggle_button = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         ugui.standard_styler.draw_togglebutton(control)
@@ -1102,7 +1120,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new selected index
     carrousel_button = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         local selected_index = control.selected_index
@@ -1134,7 +1152,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ string The textbox's text
     textbox = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
@@ -1253,12 +1271,12 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ `table` The joystick's new position as `{x, y}` with the range `0-128`
     joystick = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         ugui.standard_styler.draw_joystick(control)
-        
+
         local position = control.position and ugui.internal.deep_clone(control.position) or {x = 0, y = 0}
-        
+
         local pushed = ugui.internal.process_push(control)
         local ignored = BreitbandGraphics.is_point_inside_any_rectangle(
                 ugui.internal.environment.mouse_position, ugui.internal.hittest_free_rects) and
@@ -1284,7 +1302,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The trackbar's value
     trackbar = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
@@ -1323,7 +1341,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
     combobox = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
             ugui.internal.control_data[control.uid] = {
@@ -1389,7 +1407,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The selected index in the `items` array
     listbox = function(_control)
-        ugui.internal.register_uid(_control.uid)
+        ugui.internal.validate_and_register_control(_control)
 
         if not ugui.internal.control_data[_control.uid] then
             ugui.internal.control_data[_control.uid] = {
@@ -1540,7 +1558,7 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ number The new value
     scrollbar = function(control)
-        ugui.internal.register_uid(control.uid)
+        ugui.internal.validate_and_register_control(control)
 
         local pushed = ugui.internal.process_push(control)
         local is_horizontal = control.rectangle.width > control.rectangle.height
@@ -1615,9 +1633,18 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ table The interaction result as (`{ item: table | nil, dismissed: boolean }`). The `item` field is nil if no item was clicked.
     menu = function(control)
-        ugui.internal.register_uid(control.uid)
+        -- Avoid tripping the control validation... it's going to be overwritten anyway
+        if control.rectangle and not control.rectangle.width then
+            control.rectangle.width = 0
+        end
+        if control.rectangle and not control.rectangle.height then
+            control.rectangle.height = 0
+        end
+
+        ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
+            print('Top-level menu')
             ugui.internal.control_data[control.uid] = {
                 hovered_index = nil,
                 parent_rectangle = nil,
@@ -1641,7 +1668,7 @@ ugui = {
             local parent_rect = ugui.internal.control_data[control.uid].parent_rectangle
             -- If the menu has a parent and there's an overflow on the X axis, try snaking out of the situation by moving left of the menu
             if parent_rect then
-                control.rectangle.x = parent_rect.x - control.rectangle.width
+                control.rectangle.x = parent_rect.x - control.rectangle.width + ugui.standard_styler.menu_overlap_size
             else
                 control.rectangle.x = control.rectangle.x - (control.rectangle.x + control.rectangle.width - ugui.internal.environment.window_size.x)
             end
@@ -1694,7 +1721,7 @@ ugui = {
                     local submenu_result = ugui.menu({
                         uid = submenu_uid,
                         rectangle = {
-                            x = control.rectangle.x + control.rectangle.width - 3,
+                            x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.menu_overlap_size,
                             y = control.rectangle.y + ((i - 1) * ugui.standard_styler.menu_item_height),
                         },
                         items = item.items,
