@@ -272,8 +272,7 @@ function Engine.GetTotalDistMoved()
 end
 
 function Engine.GetHSlidingSpeed()
-	return math.sqrt(Memory.current.mario_x_sliding_speed ^ 2 +
-		Memory.current.mario_z_sliding_speed) ^ 2
+	return math.sqrt((Memory.current.mario_x_sliding_speed ^ 2) + (Memory.current.mario_z_sliding_speed ^ 2))
 end
 
 local function magnitude(x, y)
