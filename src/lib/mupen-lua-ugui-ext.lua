@@ -1,6 +1,11 @@
 -- mupen-lua-ugui-ext 1.3.0
 -- https://github.com/Aurumaker72/mupen-lua-ugui
 
+if not ugui then
+    error("ugui must be present in the global scope prior to executing ugui-ext", 0)
+    return
+end
+
 ugui_ext = {
     spread = function(template)
         local result = {}
