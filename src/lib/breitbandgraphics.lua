@@ -168,7 +168,7 @@ BreitbandGraphics = {
     ---@param text string The string to be measured
     ---@param font_size number The font size
     ---@param font_name string The font name
-    ---@return _ table The text's bounding box as `{x, y}`
+    ---@return _ table The text's bounding box as `{width, height}`
     get_text_size = function(text, font_size, font_name)
         return d2d.get_text_size(text, font_name, font_size, 99999999, 99999999)
     end,
@@ -260,7 +260,7 @@ BreitbandGraphics = {
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
     ---@param horizontal_alignment string The text's horizontal alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
     ---@param vertical_alignment string The text's vertical alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
-    ---@param style table The miscellaneous text styling as `{is_bold, is_italic, clip, grayscale, aliased}`
+    ---@param style table The miscellaneous text styling as `{is_bold, is_italic, clip, grayscale, aliased, fit}`
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param font_size number The font size
     ---@param font_name string The font name
@@ -271,6 +271,10 @@ BreitbandGraphics = {
             text = ''
         end
 
+        local rect_x = rectangle.x
+        local rect_y = rectangle.y
+        local rect_w = rectangle.width
+        local rect_h = rectangle.height
         local brush = BreitbandGraphics.internal.brush_from_color(color)
         local d_horizontal_alignment = 0
         local d_vertical_alignment = 0
@@ -312,15 +316,52 @@ BreitbandGraphics = {
         if style.aliased then
             d_text_antialias_mode = 3
         end
+        if style.fit then
+            -- Try to fit the text into the specified rectangle by reducing the font size
+            local text_size = d2d.get_text_size(text, font_name, font_size, math.maxinteger, math.maxinteger)
+
+            if text_size.width > rectangle.width then
+                font_size = font_size / math.max(0.01, (text_size.width / rectangle.width))
+            end
+            if text_size.height > rectangle.height then
+                font_size = font_size / math.max(0.01, (text_size.height / rectangle.height))
+            end
+
+            local text_size = d2d.get_text_size(text, font_name, font_size, math.maxinteger, math.maxinteger)
+
+            -- Since the rect stays the same, the text will want to wrap.
+            -- We solve that by recomputing the rect and alignments
+            if horizontal_alignment == 'center' or horizontal_alignment == 'stretch' then
+                rect_x = rect_x + rect_w / 2 - text_size.width / 2
+            elseif horizontal_alignment == 'start' then
+                rect_x = rect_x
+            elseif horizontal_alignment == 'end' then
+                rect_x = rect_x + rect_w - text_size.width
+            end
+
+            if vertical_alignment == 'center' or vertical_alignment == 'stretch' then
+                rect_y = rect_y + rect_h / 2 - text_size.height / 2
+            elseif vertical_alignment == 'start' then
+                rect_y = rect_y
+            elseif vertical_alignment == 'end' then
+                rect_y = rect_y + rect_h - text_size.height
+            end
+
+            d_horizontal_alignment = 0
+            d_vertical_alignment = 0
+
+            rect_w = text_size.width + 1
+            rect_h = text_size.height + 1
+        end
         if type(text) ~= 'string' then
             text = tostring(text)
         end
         d2d.set_text_antialias_mode(d_text_antialias_mode)
         d2d.draw_text(
-            rectangle.x,
-            rectangle.y,
-            rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height,
+            rect_x,
+            rect_y,
+            rect_x + rect_w,
+            rect_y + rect_h,
             text,
             font_name,
             font_size,
@@ -582,7 +623,7 @@ if d2d and d2d.create_render_target then
     ---@param rectangle table The bounding rectangle as `{x, y, width, height}`
     ---@param horizontal_alignment string The text's horizontal alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
     ---@param vertical_alignment string The text's vertical alignment inside the bounding rectangle. `center` | `start` | `end` | `stretch`
-    ---@param style table The miscellaneous text styling as `{is_bold, is_italic, clip, grayscale, aliased}`
+    ---@param style table The miscellaneous text styling as `{is_bold, is_italic, clip, grayscale, aliased, fit}`
     ---@param color table The color as `{r, g, b, [optional] a}` with a channel range of `0-255`
     ---@param font_size number The font size
     ---@param font_name string The font name
@@ -594,6 +635,10 @@ if d2d and d2d.create_render_target then
             text = ''
         end
 
+        local rect_x = rectangle.x
+        local rect_y = rectangle.y
+        local rect_w = rectangle.width
+        local rect_h = rectangle.height
         local d_horizontal_alignment = 0
         local d_vertical_alignment = 0
         local d_style = 0
@@ -634,13 +679,49 @@ if d2d and d2d.create_render_target then
         if style.aliased then
             d_text_antialias_mode = 3
         end
+        if style.fit then
+            -- Try to fit the text into the specified rectangle by reducing the font size
+            local text_size = d2d.get_text_size(text, font_name, font_size, math.maxinteger, math.maxinteger)
+
+            if text_size.width > rectangle.width then
+                font_size = font_size / math.max(0.01, (text_size.width / rectangle.width))
+            end
+            if text_size.height > rectangle.height then
+                font_size = font_size / math.max(0.01, (text_size.height / rectangle.height))
+            end
+
+            local text_size = d2d.get_text_size(text, font_name, font_size, math.maxinteger, math.maxinteger)
+
+            -- Since the rect stays the same, the text will want to wrap.
+            -- We solve that by recomputing the rect and alignments
+            if horizontal_alignment == 'center' or horizontal_alignment == 'stretch' then
+                rect_x = rect_x + rect_w / 2 - text_size.width / 2
+            elseif horizontal_alignment == 'start' then
+                rect_x = rect_x
+            elseif horizontal_alignment == 'end' then
+                rect_x = rect_x + rect_w - text_size.width
+            end
+
+            if vertical_alignment == 'center' or vertical_alignment == 'stretch' then
+                rect_y = rect_y + rect_h / 2 - text_size.height / 2
+            elseif vertical_alignment == 'start' then
+                rect_y = rect_y
+            elseif vertical_alignment == 'end' then
+                rect_y = rect_y + rect_h - text_size.height
+            end
+
+            d_horizontal_alignment = 0
+            d_vertical_alignment = 0
+
+            rect_w = text_size.width + 1
+            rect_h = text_size.height + 1
+        end
         if type(text) ~= 'string' then
             text = tostring(text)
         end
         local float_color = BreitbandGraphics.color_to_float(color)
         d2d.set_text_antialias_mode(d_text_antialias_mode)
-        d2d.draw_text(rectangle.x, rectangle.y, rectangle.x + rectangle.width,
-            rectangle.y + rectangle.height, float_color.r, float_color.g, float_color.b, 1.0, text, font_name,
+        d2d.draw_text(rect_x, rect_y, rect_w, rect_h, float_color.r, float_color.g, float_color.b, 1.0, text, font_name,
             font_size, d_weight, d_style, d_horizontal_alignment, d_vertical_alignment, d_options)
     end
     ---Draws a line

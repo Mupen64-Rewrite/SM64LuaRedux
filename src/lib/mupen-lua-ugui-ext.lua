@@ -589,10 +589,10 @@ ugui_ext.apply_nineslice = function(style)
             style.listbox_item.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, "nearest")
         BreitbandGraphics.draw_text({
-                x = rect.x + 2,
-                y = rect.y,
-                width = rect.width,
-                height = rect.height,
+                x = rectangle.x + 2,
+                y = rectangle.y,
+                width = rectangle.width,
+                height = rectangle.height,
             }, 'start', 'center', { clip = true, aliased = not ugui.standard_styler.cleartype },
             ugui.standard_styler.list_text_colors[visual_state],
             ugui.standard_styler.font_size,
