@@ -13,14 +13,6 @@ return {
             PianoRollContext.current:trimEnd()
         end
 
-        if ugui.button({
-            uid = UID.Reset,
-            rectangle = grid_rect(1, top, 1, 0.5),
-            text = "Reset",
-        }) then
-            PianoRollContext.current = PianoRoll.new(PianoRollContext.current.name)
-        end
-
         if PianoRollContext.current ~= nil then
             if (ugui.button({
                 uid = UID.SavePianoRoll,

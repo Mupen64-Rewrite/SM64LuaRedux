@@ -35,6 +35,6 @@ return {
     AtanD = EnumNext(3),
     AtanE = EnumNext(3),
     TrimEnd = EnumNext(),
-    Reset = EnumNext(),
+    Delete = EnumNext(),
     UIDCOUNT = EnumNext(),
 }
