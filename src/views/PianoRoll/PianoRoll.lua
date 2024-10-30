@@ -32,7 +32,7 @@ local __clsPianoRoll = {}
 
 ---@return PianoRoll result Creates a new PianoRoll starting at the current global timer value
 function __clsPianoRoll.new(name)
-    local globalTimer = GetGlobalTimer()
+    local globalTimer = Memory.current.mario_global_timer
 
     ---@type PianoRoll
     local newInstance = {
@@ -86,10 +86,11 @@ function __clsPianoRoll:jumpTo(globalTimerTarget)
     local runUntilSelected
     runUntilSelected = function()
         TASState = previousTASState
-        local frame = self.frames[GetGlobalTimer()]
+        local globalTimer = memory.readdword(Addresses[Settings.address_source_index].global_timer)
+        local frame = self.frames[globalTimer]
         frame.preview_joystick_x = Joypad.input.X
         frame.preview_joystick_y = Joypad.input.Y
-        if GetGlobalTimer() >= self.previewGT then
+        if globalTimer >= self.previewGT then
             emu.pause(false)
             emu.set_ff(was_ff)
             emu.atinput(runUntilSelected, true)

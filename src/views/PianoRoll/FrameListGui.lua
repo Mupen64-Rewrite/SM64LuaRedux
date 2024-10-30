@@ -177,7 +177,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         return {x = r.x, y = frameRect.y, width = r.width, height = height and r.height or frameRect.height}
     end
 
-    local globalTimerValue = GetGlobalTimer()
+    local globalTimerValue = Memory.current.mario_global_timer
     for i = 0, pianoRoll:numFrames() - 1, 1 do
         local frameNumber = i + scrollOffset
         local globalTimer = pianoRoll.startGT + frameNumber

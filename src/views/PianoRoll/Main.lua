@@ -1,9 +1,5 @@
 ---utility functions---
 
-function GetGlobalTimer()
-    return memory.readdword(Addresses[Settings.address_source_index].global_timer)
-end
-
 function CloneInto(destination, source)
     local changes = {}
     for k, v in pairs(source) do
@@ -52,7 +48,7 @@ end)
 ---@return table|nil override A table that can be assigned to TASState, additionally holding a field 'joy' that can be passed to joypad.set(...).
 function CurrentPianoRollOverride()
     if (PianoRollContext.current == nil) then return nil end
-    local globalTimer = GetGlobalTimer()
+    local globalTimer = memory.readdword(Addresses[Settings.address_source_index].global_timer)
     if PianoRollContext.current ~= nil and globalTimer >= PianoRollContext.current.endGT then
         local input = {}
         RecordPianoRollInput(input)
