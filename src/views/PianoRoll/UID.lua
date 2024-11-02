@@ -39,5 +39,6 @@ return {
     Delete = EnumNext(),
     ConfirmationYes = EnumNext(),
     ConfirmationNo = EnumNext(),
+    FrameListScrollbar = EnumNext(),
     UIDCOUNT = EnumNext(),
 }

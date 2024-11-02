@@ -37,6 +37,7 @@ local row2 = 1.00
 local buttonColumnWidth = 0.3
 local buttonSize = 0.22
 local frameColumnHeight = 0.5
+local scrollbarWidth = 0.3
 
 local scrollOffset = 0
 
@@ -54,11 +55,16 @@ local buttonColors = {
 
 local lastInput = {}
 
-local function NumDisplayFrames() return math.min(PianoRollContext.current:numFrames(), PianoRollContext.maxDisplayedFrames) end
+local function NumDisplayFrames()
+    return math.min(PianoRollContext.current:numFrames(), PianoRollContext.maxDisplayedFrames)
+end
+
+local function MaxScroll()
+    return PianoRollContext.current:numFrames() - PianoRollContext.maxDisplayedFrames
+end
 
 local function UpdateScroll(wheel)
-    local maxScroll = PianoRollContext.current:numFrames() - PianoRollContext.maxDisplayedFrames
-    scrollOffset = math.max(0, math.min(maxScroll, scrollOffset - wheel))
+    scrollOffset = math.max(0, math.min(MaxScroll(), scrollOffset - wheel))
 end
 
 local function InterpolateVectorsToInt(a, b, f)
@@ -99,9 +105,32 @@ end
 
 local function DrawColorCodes()
 
-    local start = grid_rect(col_1, row2, buttonColumnWidth, frameColumnHeight, 0)
-    local rect = { x = start.x - start.width * #Buttons, y = start.y, width = start.width, height = start.height }
-    local height = rect.height * NumDisplayFrames()
+    local unit = Settings.grid_size * Drawing.scale
+    local numDisplayFrames = NumDisplayFrames()
+    local baseline = grid_rect(col_1, row2, buttonColumnWidth, frameColumnHeight, 0)
+    local scrollbarRect = {
+        x = baseline.x - scrollbarWidth * unit,
+        y = baseline.y,
+        width = scrollbarWidth * unit,
+        height = baseline.height * numDisplayFrames
+    }
+    local rect = {
+        x = scrollbarRect.x - baseline.width * #Buttons,
+        y = baseline.y,
+        width = baseline.width,
+        height = baseline.height * numDisplayFrames
+     }
+
+    if numDisplayFrames > 0 then
+        local maxScroll = MaxScroll()
+        local relativeScroll = ugui.scrollbar({
+            uid = UID.FrameListScrollbar,
+            rectangle = scrollbarRect,
+            value = scrollOffset / maxScroll,
+            ratio = 1 / (PianoRollContext.current:numFrames() / numDisplayFrames),
+        })
+        scrollOffset = math.floor(relativeScroll * maxScroll + 0.5)
+    end
 
     local i = 1
     local colorIndex = 1
@@ -113,7 +142,7 @@ local function DrawColorCodes()
             i = i + 1
         end
         BreitbandGraphics.fill_rectangle(
-            {x = rect.x, y = rect.y, width = rect.width * amount, height = height},
+            {x = rect.x, y = rect.y, width = rect.width * amount, height = rect.height},
             buttonColors[colorIndex].background
         )
         colorIndex = colorIndex + 1
@@ -127,6 +156,7 @@ local function DrawColorCodes()
     DrawNext(4) -- 4 C Buttons
     DrawNext(2) -- L + R Buttons
     DrawNext(4) -- 4 DPad Buttons
+    buttonDrawData[#buttonDrawData + 1] = { x = rect.x }
 
     return buttonDrawData
 end
@@ -150,7 +180,7 @@ local function PlaceAndUnplaceButtons(frameRect, buttonDrawData)
 
     if inRange and frame ~= nil then
         for buttonIndex, v in ipairs(Buttons) do
-            local inRangeX = mouseX >= buttonDrawData[buttonIndex].x and mouseX < (buttonDrawData[buttonIndex + 1] or {x=9999999}).x
+            local inRangeX = mouseX >= buttonDrawData[buttonIndex].x and mouseX < buttonDrawData[buttonIndex + 1].x
             if ugui.internal.is_mouse_just_down() and inRangeX then
                 placing = not frame.joy[v.input]
                 frame.joy[v.input] = placing
@@ -175,7 +205,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         pianoRoll:edit(pianoRoll.selection.endGT)
     end
 
-    local frameRect = grid_rect(col0, row2, col_1 - col0, frameColumnHeight, 0)
+    local frameRect = grid_rect(col0, row2, col_1 - col0 - scrollbarWidth, frameColumnHeight, 0)
     local anyChange = PlaceAndUnplaceButtons(frameRect, buttonDrawData)
 
     local function span(x1, x2, height)
@@ -193,7 +223,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         if i >= PianoRollContext.maxDisplayedFrames then
             local extraFrames = pianoRoll.endGT - globalTimer
             if extraFrames > 0 then
-                BreitbandGraphics.fill_rectangle(frameRect, {r=138, g=148, b=138, a=66})
+                BreitbandGraphics.fill_rectangle(span(0, col_1), {r=138, g=148, b=138, a=66})
                 draw:text(span(col1, col_1), "start", "+ " .. extraFrames .. " frames")
             end
             break
@@ -228,7 +258,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         })
 
         local joystickBox = span(col1, col2)
-        BreitbandGraphics.fill_rectangle(span(0, col_1), {r=shade, g=shade, b=shade * blueMultiplier, a=66})
+        BreitbandGraphics.fill_rectangle(frameRect, {r=shade, g=shade, b=shade * blueMultiplier, a=66})
 
         if BreitbandGraphics.is_point_inside_rectangle(uguiInputContext.mouse_position, joystickBox) then
             if pressed.leftclick  then
