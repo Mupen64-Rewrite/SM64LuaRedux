@@ -191,8 +191,13 @@ local function ControlsForSelected(draw)
         uid = UID.GoalMag,
         rectangle = grid_rect(4, top + 3, 1, 0.5),
         places = 3,
-        value = newValues.goal_mag
+        value = math.max(0, math.min(127, newValues.goal_mag))
     })
+    -- a value starting with a 9 likely indicates that the user scrolled down
+    -- on the most significant digit while its value was 0, so we "clamp" to 0 here
+    -- this makes it so typing in a 9 explicitly will set the entire value to 0 as well,
+    -- but I'll accept this weirdness for now until a more coherently bounded numberbox implementation exists.
+    if newValues.goal_mag >= 900 then newValues.goal_mag = 0 end
 
     if ugui.button({
         uid = UID.ResetMag,

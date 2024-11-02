@@ -339,7 +339,7 @@ ugui.numberbox = function(control)
     end
 
 
-    local is_positive = control.value > 0
+    local is_positive = control.value >= 0
 
     -- conditionally visible negative sign button
     if control.show_negative then
