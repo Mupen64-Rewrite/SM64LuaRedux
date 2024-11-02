@@ -53,8 +53,6 @@ local buttonColors = {
 
 ---logic---
 
-local lastInput = {}
-
 local function NumDisplayFrames()
     return math.min(PianoRollContext.current:numFrames(), PianoRollContext.maxDisplayedFrames)
 end
@@ -199,12 +197,7 @@ end
 
 local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
 
-    local currentInput = input.get()
-    local pressed = input.diff(currentInput, lastInput)
-    local released = input.diff(lastInput, currentInput)
-    lastInput = currentInput;
-
-    if released.leftclick and pianoRoll.selection ~= nil then
+    if ugui.internal.is_mouse_just_up() and pianoRoll.selection ~= nil then
         pianoRoll:edit(pianoRoll.selection.endGT)
     end
 
@@ -250,7 +243,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         local frameBox = span(col0 + 0.25, col1)
         draw:text(frameBox, "end", frameNumber .. ":")
 
-        if pressed.leftclick and BreitbandGraphics.is_point_inside_rectangle(ugui_input_context.mouse_position, frameBox) then
+        if ugui.internal.is_mouse_just_down() and BreitbandGraphics.is_point_inside_rectangle(ugui_input_context.mouse_position, frameBox) then
             pianoRoll:jumpTo(globalTimer)
         end
 
@@ -264,9 +257,9 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         BreitbandGraphics.fill_rectangle(frameRect, {r=shade, g=shade, b=shade * blueMultiplier, a=66})
 
         if BreitbandGraphics.is_point_inside_rectangle(ugui_input_context.mouse_position, joystickBox) then
-            if pressed.leftclick  then
+            if ugui.internal.is_mouse_just_down()  then
                 pianoRoll.selection = Selection.new(input.goal_angle, globalTimer)
-            elseif pianoRoll.selection ~= nil and currentInput.leftclick then
+            elseif pianoRoll.selection ~= nil and ugui.internal.environment.is_primary_down then
                 pianoRoll.selection.endGT = globalTimer
             end
         end
