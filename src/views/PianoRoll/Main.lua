@@ -17,7 +17,7 @@ function RecordPianoRollInput(input)
     input.joy = {}
     CloneInto(input.joy, joypad.get(1))
 
-    if TASState.movement_mode == MovementModes.disabled then
+    if TASState.movement_mode == MovementModes.disabled or movie.get_readonly() then
         input.movement_mode = MovementModes.manual
         input.manual_joystick_x = Joypad.input.X
         input.manual_joystick_y = Joypad.input.Y
