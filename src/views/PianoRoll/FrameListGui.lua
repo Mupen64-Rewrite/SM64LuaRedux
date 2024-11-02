@@ -132,7 +132,7 @@ local function DrawColorCodes()
 end
 
 local placing = false
-local function PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDrawData)
+local function PlaceAndUnplaceButtons(frameRect, buttonDrawData)
     local mouseX = uguiInputContext.mouse_position.x
     local relativeY = uguiInputContext.mouse_position.y - frameRect.y
     local inRange = mouseX >= frameRect.x and mouseX <= frameRect.x + frameRect.width and relativeY >= 0
@@ -140,17 +140,22 @@ local function PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDr
     local hoveringGlobalTimer = frameIndex + scrollOffset + PianoRollContext.current.startGT
     local frame = PianoRollContext.current.frames[hoveringGlobalTimer]
     local anyChange = false
-    inRange = inRange and frameIndex <= PianoRollContext.maxDisplayedFrames
+    inRange = inRange and frameIndex < PianoRollContext.maxDisplayedFrames
     UpdateScroll(inRange and uguiInputContext.wheel or 0)
+    if inRange then
+        -- act as if the mouse wheel was not moved in order to prevent other controls from scrolling on accident
+        uguiInputContext.wheel = 0
+        ugui.internal.environment.wheel = 0
+    end
 
     if inRange and frame ~= nil then
         for buttonIndex, v in ipairs(Buttons) do
             local inRangeX = mouseX >= buttonDrawData[buttonIndex].x and mouseX < (buttonDrawData[buttonIndex + 1] or {x=9999999}).x
-            if pressed.leftclick and inRangeX then
+            if ugui.internal.is_mouse_just_down() and inRangeX then
                 placing = not frame.joy[v.input]
                 frame.joy[v.input] = placing
                 anyChange = true
-            elseif currentInput.leftclick and inRangeX then
+            elseif ugui.internal.environment.is_primary_down and inRangeX then
                 anyChange = frame.joy[v.input] ~= placing
                 frame.joy[v.input] = placing
             end
@@ -171,7 +176,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
     end
 
     local frameRect = grid_rect(col0, row2, col_1 - col0, frameColumnHeight, 0)
-    local anyChange = PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDrawData)
+    local anyChange = PlaceAndUnplaceButtons(frameRect, buttonDrawData)
 
     local function span(x1, x2, height)
         local r = grid_rect(x1, 0, x2 - x1, height, 0)
