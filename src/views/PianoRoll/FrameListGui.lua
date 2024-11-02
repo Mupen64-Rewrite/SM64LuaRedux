@@ -92,7 +92,6 @@ local function DrawHeaders(pianoRoll, draw, buttonDrawData)
     })
     ugui.standard_styler.font_size = prev_font_size
 
-
     draw:text(grid_rect(col0, row1, col1 - col0, 1), "start", "Frame")
     draw:text(grid_rect(col1, row1, col6 - col1, 1), "start", "Joystick")
 
@@ -161,7 +160,7 @@ local function DrawColorCodes()
     return buttonDrawData
 end
 
-local placing = false
+local placing = 0
 local function PlaceAndUnplaceButtons(frameRect, buttonDrawData)
     local mouseX = uguiInputContext.mouse_position.x
     local relativeY = uguiInputContext.mouse_position.y - frameRect.y
@@ -182,12 +181,16 @@ local function PlaceAndUnplaceButtons(frameRect, buttonDrawData)
         for buttonIndex, v in ipairs(Buttons) do
             local inRangeX = mouseX >= buttonDrawData[buttonIndex].x and mouseX < buttonDrawData[buttonIndex + 1].x
             if ugui.internal.is_mouse_just_down() and inRangeX then
-                placing = not frame.joy[v.input]
+                placing = frame.joy[v.input] and -1 or 1
                 frame.joy[v.input] = placing
                 anyChange = true
-            elseif ugui.internal.environment.is_primary_down and inRangeX then
-                anyChange = frame.joy[v.input] ~= placing
-                frame.joy[v.input] = placing
+            elseif ugui.internal.environment.is_primary_down and placing ~= 0 then
+                if inRangeX then
+                    anyChange = frame.joy[v.input] ~= (placing == 1)
+                    frame.joy[v.input] = placing == 1
+                end
+            else
+                placing = 0
             end
         end
     end
