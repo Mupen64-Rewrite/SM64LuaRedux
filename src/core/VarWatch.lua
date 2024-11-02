@@ -1,13 +1,3 @@
-local function get_current_action()
-    for i = 1, #Actions, 1 do
-        local action = Actions[i]
-        if action.value == Memory.current.mario_action then
-            return action.name
-        end
-    end
-    return "Unknown action " .. Memory.current.mario_action
-end
-
 local var_funcs = {
     ["yaw_facing"] = function()
         local angle = (Settings.show_effective_angles and Engine.get_effective_angle(Memory.current.mario_facing_yaw) or Memory.current.mario_facing_yaw)
@@ -20,31 +10,41 @@ local var_funcs = {
         return string.format("Intended Yaw: %s (O: %s)", Formatter.angle(angle), Formatter.angle(opposite))
     end,
     ["h_spd"] = function()
-        local h_speed = MoreMaths.dec_to_float(Memory.current.mario_h_speed)
+        local h_speed = Memory.current.mario_h_speed
         local h_sliding_speed = Engine.GetHSlidingSpeed()
         return string.format("H Spd: %s (S: %s)", Formatter.ups(h_speed), Formatter.ups(h_sliding_speed))
     end,
     ["v_spd"] = function()
-        local y_speed = MoreMaths.dec_to_float(Memory.current.mario_v_speed)
+        local y_speed = Memory.current.mario_v_speed
         return string.format("Y Spd: %s", Formatter.ups(y_speed))
     end,
     ["spd_efficiency"] = function()
         return string.format("Spd Efficiency: %s", Formatter.percent(Engine.GetSpeedEfficiency()))
     end,
     ["position_x"] = function()
-        return string.format("X: %s", Formatter.u(MoreMaths.dec_to_float(Memory.current.mario_x)))
+        return string.format("X: %s", Formatter.u(Memory.current.mario_x))
     end,
     ["position_y"] = function()
-        return string.format("Y: %s", Formatter.u(MoreMaths.dec_to_float(Memory.current.mario_y)))
+        return string.format("Y: %s", Formatter.u(Memory.current.mario_y))
     end,
     ["position_z"] = function()
-        return string.format("Z: %s", Formatter.u(MoreMaths.dec_to_float(Memory.current.mario_z)))
+        return string.format("Z: %s", Formatter.u(Memory.current.mario_z))
+    end,
+    ["pitch"] = function()
+        return string.format("Pitch: %s", Formatter.angle(Memory.current.mario_pitch))
+    end,
+    ["yaw_vel"] = function()
+        return string.format("Yaw Vel: %s", Formatter.angle(Memory.mario_yaw_vel))
+    end,
+    ["pitch_vel"] = function() 
+        return string.format("Pitch Vel: %s", Formatter.angle(Memory.mario_pitch_vel))
     end,
     ["xz_movement"] = function()
         return string.format("XZ Movement: %s", Formatter.u(Engine.get_distance_moved()))
     end,
     ["action"] = function()
-        return "Action: " .. get_current_action()
+        local name = Actions.name_from_value(Memory.current.mario_action)
+        return "Action: " .. (name or ("Unknown action " .. Memory.current.mario_action))
     end,
     ["rng"] = function()
         return "RNG: " .. Memory.current.rng_value .. " (index: " .. get_index(Memory.current.rng_value) .. ")"

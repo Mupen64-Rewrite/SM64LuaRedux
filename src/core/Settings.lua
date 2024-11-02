@@ -34,6 +34,9 @@ Settings = {
     mini_visualizer = false,
     repaint_throttle = 2,
     read_memory_every_vi = false,
+    -- Writes memory values, input data, and frame indicies to a buffer each frame
+    dump_enabled = false,
+    dump_start_frame = 0,
     variables = {
         {
             identifier = "yaw_facing",
@@ -65,6 +68,10 @@ Settings = {
         },
         {
             identifier = "position_z",
+            visible = true,
+        },
+        {
+            identifier = "pitch",
             visible = true,
         },
         {
