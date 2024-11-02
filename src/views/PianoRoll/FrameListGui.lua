@@ -162,18 +162,18 @@ end
 
 local placing = 0
 local function PlaceAndUnplaceButtons(frameRect, buttonDrawData)
-    local mouseX = uguiInputContext.mouse_position.x
-    local relativeY = uguiInputContext.mouse_position.y - frameRect.y
+    local mouseX = ugui_input_context.mouse_position.x
+    local relativeY = ugui_input_context.mouse_position.y - frameRect.y
     local inRange = mouseX >= frameRect.x and mouseX <= frameRect.x + frameRect.width and relativeY >= 0
     local frameIndex = math.floor(relativeY / frameRect.height)
     local hoveringGlobalTimer = frameIndex + scrollOffset + PianoRollContext.current.startGT
     local frame = PianoRollContext.current.frames[hoveringGlobalTimer]
     local anyChange = false
     inRange = inRange and frameIndex < PianoRollContext.maxDisplayedFrames
-    UpdateScroll(inRange and uguiInputContext.wheel or 0)
+    UpdateScroll(inRange and ugui_input_context.wheel or 0)
     if inRange then
         -- act as if the mouse wheel was not moved in order to prevent other controls from scrolling on accident
-        uguiInputContext.wheel = 0
+        ugui_input_context.wheel = 0
         ugui.internal.environment.wheel = 0
     end
 
@@ -250,7 +250,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         local frameBox = span(col0 + 0.25, col1)
         draw:text(frameBox, "end", frameNumber .. ":")
 
-        if pressed.leftclick and BreitbandGraphics.is_point_inside_rectangle(uguiInputContext.mouse_position, frameBox) then
+        if pressed.leftclick and BreitbandGraphics.is_point_inside_rectangle(ugui_input_context.mouse_position, frameBox) then
             pianoRoll:jumpTo(globalTimer)
         end
 
@@ -263,7 +263,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         local joystickBox = span(col1, col2)
         BreitbandGraphics.fill_rectangle(frameRect, {r=shade, g=shade, b=shade * blueMultiplier, a=66})
 
-        if BreitbandGraphics.is_point_inside_rectangle(uguiInputContext.mouse_position, joystickBox) then
+        if BreitbandGraphics.is_point_inside_rectangle(ugui_input_context.mouse_position, joystickBox) then
             if pressed.leftclick  then
                 pianoRoll.selection = Selection.new(input.goal_angle, globalTimer)
             elseif pianoRoll.selection ~= nil and currentInput.leftclick then
