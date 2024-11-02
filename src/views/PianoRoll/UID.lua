@@ -14,6 +14,7 @@ return {
     SelectionSpinner = EnumNext(),
     SavePianoRoll = EnumNext(),
     LoadPianoRoll = EnumNext(),
+    CopyEntireState = EnumNext(),
     Joypad = EnumNext(),
     JoypadSpinnerX = EnumNext(3),
     JoypadSpinnerY = EnumNext(3),

@@ -65,10 +65,12 @@ end
 ---@field public current PianoRoll|nil The currently selected and active piano roll.
 ---@field public all table An array of up to 7 piano rolls to easily switch between for rapid iteration, indexed from 1 through 7 inclusively.
 ---@field public maxDisplayedFrames integer The maximum number of frames to display at once.
+---@field public copyEntireState boolean If true, the entire TASState of the active edited frame is copied to all selected. If false, only the changes made will be copied instead.
 PianoRollContext = {
     current = nil,
     all = {},
     maxDisplayedFrames = 15,
+    copyEntireState = true,
 
     ---Retrieves the current piano roll, raising error when it is nil
     ---@return PianoRoll current The current PianoRoll, never nil

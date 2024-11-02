@@ -12,6 +12,13 @@ return {
             PianoRollContext.current:trimEnd()
         end
 
+        PianoRollContext.copyEntireState = ugui.toggle_button({
+            uid = UID.CopyEntireState,
+            rectangle = grid_rect(4, top, 3, 0.5),
+            text = "Copy entire state",
+            is_checked = PianoRollContext.copyEntireState,
+        })
+
         if PianoRollContext.current ~= nil then
             if (ugui.button({
                 uid = UID.SavePianoRoll,

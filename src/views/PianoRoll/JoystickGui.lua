@@ -215,7 +215,11 @@ local function ControlsForSelected(draw)
     local anyChanges = AnyEntries(changes)
     if anyChanges and pianoRoll.selection ~= nil then
         for i = pianoRoll.selection:min(), pianoRoll.selection:max(), 1 do
-            CloneInto(PianoRollContext.current.frames[i], changes)
+            local dest = PianoRollContext.current.frames[i]
+            -- we need to restore the button state in case PianoRollContext.copyEntireState is true
+            local btns = dest.joy
+            CloneInto(dest, PianoRollContext.copyEntireState and TASState or changes)
+            dest.joy = btns
         end
     end
     return anyChanges
