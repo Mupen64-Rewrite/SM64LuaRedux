@@ -2,11 +2,13 @@ local UID = dofile(views_path .. "PianoRoll/UID.lua")
 
 return {
     Render = function()
+
+        local controlHeight = 0.75
         local top = 9
 
         if ugui.button({
             uid = UID.TrimEnd,
-            rectangle = grid_rect(0, top, 1, 0.5),
+            rectangle = grid_rect(0, top, 1.5, controlHeight),
             text = "Trim",
         }) then
             PianoRollContext.current:trimEnd()
@@ -14,7 +16,7 @@ return {
 
         PianoRollContext.copyEntireState = ugui.toggle_button({
             uid = UID.CopyEntireState,
-            rectangle = grid_rect(4, top, 3, 0.5),
+            rectangle = grid_rect(4.5, top, 3.5, controlHeight),
             text = "Copy entire state",
             is_checked = PianoRollContext.copyEntireState,
         })
@@ -23,7 +25,7 @@ return {
             if (ugui.button({
                 uid = UID.SavePianoRoll,
 
-                rectangle = grid_rect(1, top, 1, 0.5),
+                rectangle = grid_rect(1.5, top, 1.5, controlHeight),
                 is_enabled = true,
                 text = 'Save'
             })) then
@@ -37,7 +39,7 @@ return {
             if (ugui.button({
                 uid = UID.LoadPianoRoll,
 
-                rectangle = grid_rect(2, top, 1, 0.5),
+                rectangle = grid_rect(3, top, 1.5, controlHeight),
                 is_enabled = true,
                 text = 'Load'
             })) then

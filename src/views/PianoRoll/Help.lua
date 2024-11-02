@@ -53,8 +53,10 @@ return {
     Render = function()
         local theme = Presets.styles[Settings.active_style_index].theme
         local foregroundColor = theme.listbox.text_colors[1]
-        local top = 14.5
-        local buttonPosition = grid_rect(0, top, 1.2, 0.5)
+
+        local controlHeight = 0.75
+        local top = 15 - controlHeight
+        local buttonPosition = grid_rect(0, top, 1.5, controlHeight)
         if ugui.button(
             {
                 uid = UID.ToggleHelp,
@@ -74,7 +76,7 @@ return {
                 {
                     uid = UID.HelpBack,
 
-                    rectangle = grid_rect(6, top, 1, 0.5),
+                    rectangle = grid_rect(5, top, 1.5, controlHeight),
                     text = "back",
                     is_enabled = page > 1
                 }
@@ -86,7 +88,7 @@ return {
                 {
                     uid = UID.HelpNext,
 
-                    rectangle = grid_rect(7, top, 1, 0.5),
+                    rectangle = grid_rect(6.5, top, 1.5, controlHeight),
                     text = "next",
                     is_enabled = page < #explanations
                 }

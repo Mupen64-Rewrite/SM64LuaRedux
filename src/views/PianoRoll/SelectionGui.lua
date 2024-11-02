@@ -7,8 +7,8 @@ local createdSheetCount = 0
 return {
     Render = function()
 
-        local top = 14.5
-
+        local controlHeight = 0.75
+        local top = 15 - controlHeight
 
         local availablePianoRolls = {}
         for i = 1, #PianoRollContext.all, 1 do
@@ -20,7 +20,7 @@ return {
             {
                 uid = UID.SelectionSpinner,
 
-                rectangle = grid_rect(5, top, 2, 0.5),
+                rectangle = grid_rect(3, top, 4, controlHeight),
                 items = availablePianoRolls,
                 selected_index = selectionIndex,
                 is_enabled = #availablePianoRolls > 1
@@ -30,7 +30,7 @@ return {
         if (ugui.button({
             uid = UID.Delete,
 
-            rectangle = grid_rect(4, top, 1, 0.5),
+            rectangle = grid_rect(2, top, 1, controlHeight),
             text = "-",
             is_enabled = PianoRollContext.all[nextPianoRoll] ~= nil,
         })) then
@@ -40,7 +40,7 @@ return {
         if ugui.button({
             uid = UID.AddPianoRoll,
 
-            rectangle = grid_rect(7, top, 1, 0.5),
+            rectangle = grid_rect(7, top, 1, controlHeight),
             text = "+",
         }) then
             nextPianoRoll = #PianoRollContext.all + 1

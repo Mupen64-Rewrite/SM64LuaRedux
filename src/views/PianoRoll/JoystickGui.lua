@@ -2,10 +2,44 @@ local UID = dofile(views_path .. "PianoRoll/UID.lua")
 
 local function AnyEntries(table) for _ in pairs(table) do return true end return false end
 
+local function MagnitudeControls(draw, pianoRoll, newValues, top)
+    local mediumControlHeight = 0.75
+
+    draw:text(grid_rect(2, top, 2, mediumControlHeight), "end", "Magnitude:")
+    newValues.goal_mag = ugui.numberbox({
+        uid = UID.GoalMag,
+        rectangle = grid_rect(4, top, 1.5, mediumControlHeight),
+        places = 3,
+        value = math.max(0, math.min(127, newValues.goal_mag))
+    })
+    -- a value starting with a 9 likely indicates that the user scrolled down
+    -- on the most significant digit while its value was 0, so we "clamp" to 0 here
+    -- this makes it so typing in a 9 explicitly will set the entire value to 0 as well,
+    -- but I'll accept this weirdness for now until a more coherently bounded numberbox implementation exists.
+    if newValues.goal_mag >= 900 then newValues.goal_mag = 0 end
+
+    if ugui.button({
+        uid = UID.SpeedKick,
+        rectangle = grid_rect(5.5, top, 1.5, mediumControlHeight),
+        text='Spdk',
+    }) then
+        newValues.goal_mag = 48
+    end
+
+    if ugui.button({
+        uid = UID.ResetMag,
+        rectangle = grid_rect(7, top, 1, mediumControlHeight),
+        text='R',
+    }) then
+        newValues.goal_mag = 127
+    end
+end
+
 local function AtanControls(draw, pianoRoll, newValues, top)
+    local controlHeight = 0.75
     local newAtan = ugui.toggle_button({
         uid = UID.AtanStrain,
-        rectangle = grid_rect(0, top, 1, 0.5),
+        rectangle = grid_rect(0, top, 1.5, controlHeight),
         text='Atan',
         is_checked = newValues.atan_strain
     })
@@ -20,41 +54,44 @@ local function AtanControls(draw, pianoRoll, newValues, top)
         newValues.atan_strain = false
     end
 
-    draw:small_text(grid_rect(1, top, 0.5, 0.5), "end", "Qf:")
+    draw:text(grid_rect(1.5, top, 0.75, controlHeight), "end", "Qf:")
     local quarterStep = (newValues.atan_n % 1) * 4
     local newQuarterstep = ugui.spinner({
         uid = UID.AtanN,
 
-        rectangle = grid_rect(1.5, top, 1, 0.5),
+        rectangle = grid_rect(2.25, top, 1.25, controlHeight),
         value = quarterStep == 0 and 4 or quarterStep,
         minimum_value = 1,
         maximum_value = 4,
     })
     newValues.atan_n = math.ceil(newValues.atan_n - 1) + newQuarterstep / 4
 
-    draw:small_text(grid_rect(2.5, top, 0.5, 0.5), "end", "D:")
+    draw:text(grid_rect(3.5, top, 0.75, controlHeight), "end", "D:")
     newValues.atan_d = ugui.spinner({
         uid = UID.AtanD,
 
-        rectangle = grid_rect(3, top, 2, 0.5),
+        rectangle = grid_rect(4.25, top, 2.25, controlHeight),
         value = newValues.atan_d,
-        minimum_value = -10000,
-        maximum_value = 10000,
+        minimum_value = -1000000,
+        maximum_value = 1000000,
         increment = math.pow(10, Settings.atan_exp),
     })
 
-    draw:small_text(grid_rect(5, top, 0.5, 0.5), "end", "E:")
+    draw:text(grid_rect(6.5, top, 0.5, controlHeight), "end", "E:")
     Settings.atan_exp = ugui.spinner({
         uid = UID.AtanE,
 
-        rectangle = grid_rect(5.5, top, 1, 0.5),
+        rectangle = grid_rect(7, top, 1, controlHeight),
         value = Settings.atan_exp,
-        minimum_value = -10,
-        maximum_value = 10,
+        minimum_value = -9,
+        maximum_value = 5,
     })
 end
 
 local function ControlsForSelected(draw)
+
+    local smallControlHeight = 0.5
+    local largeControlHeight = 1.0
     local top = 9
 
     local pianoRoll = PianoRollContext.AssertedCurrent()
@@ -75,16 +112,19 @@ local function ControlsForSelected(draw)
     end
     local previousThickness = ugui.standard_styler.spinner_button_thickness
     ugui.standard_styler.spinner_button_thickness = 4
+    local rect = grid_rect(0, top + 3, 1, smallControlHeight, 0)
+    rect.y = rect.y + Settings.grid_gap
     newValues.manual_joystick_x = ugui.spinner({
         uid = UID.JoypadSpinnerX,
-        rectangle = grid_rect(0, top + 3, 1, 0.5),
+        rectangle = rect,
         value = newValues.manual_joystick_x,
         minimum_value = -128,
         maximum_value = 127
     })
+    rect.x = rect.x + rect.width
     newValues.manual_joystick_y = ugui.spinner({
         uid = UID.JoypadSpinnerY,
-        rectangle = grid_rect(1, top + 3, 1, 0.5),
+        rectangle = rect,
         value = newValues.manual_joystick_y,
         minimum_value = -128,
         maximum_value = 127
@@ -93,28 +133,28 @@ local function ControlsForSelected(draw)
     newValues.goal_angle = math.abs(ugui.numberbox({
         uid = UID.GoalAngle,
         is_enabled = newValues.movement_mode == MovementModes.match_angle,
-        rectangle = grid_rect(2, top + 2, 2, 1),
+        rectangle = grid_rect(3, top + 2, 2, largeControlHeight),
         places = 5,
         value = newValues.goal_angle
     }))
 
     newValues.strain_always = ugui.toggle_button({
         uid = UID.StrainAlways,
-        rectangle = grid_rect(2, top + 1, 1.2, 0.5),
+        rectangle = grid_rect(2, top + 1, 1.5, smallControlHeight),
         text = 'always',
         is_checked = newValues.strain_always
     })
 
     newValues.strain_speed_target = ugui.toggle_button({
         uid = UID.StrainSpeedTarget,
-        rectangle = grid_rect(3.2, top + 1, 0.8, 0.5),
+        rectangle = grid_rect(3.5, top + 1, 1.5, smallControlHeight),
         text = '.99',
         is_checked = newValues.strain_speed_target
     })
 
     if ugui.toggle_button({
         uid = UID.StrainLeft,
-        rectangle = grid_rect(2, top + 1.5, 1, 0.5),
+        rectangle = grid_rect(2, top + 1.5, 1.5, smallControlHeight),
         text = '<',
         is_checked = newValues.strain_left
     }) then
@@ -126,7 +166,7 @@ local function ControlsForSelected(draw)
 
     if ugui.toggle_button({
         uid = UID.StrainRight,
-        rectangle = grid_rect(3, top + 1.5, 1, 0.5),
+        rectangle = grid_rect(3.5, top + 1.5, 1.5, smallControlHeight),
         text = '>',
         is_checked = newValues.strain_right
     }) then
@@ -138,7 +178,7 @@ local function ControlsForSelected(draw)
 
     if ugui.toggle_button({
         uid = UID.MovementModeManual,
-        rectangle = grid_rect(4, top + 1, 1.5, 1),
+        rectangle = grid_rect(5, top + 1, 1.5, largeControlHeight),
         text='Manual',
         is_checked = newValues.movement_mode == MovementModes.manual
     }) then
@@ -147,7 +187,7 @@ local function ControlsForSelected(draw)
 
     if ugui.toggle_button({
         uid = UID.MovementModeMatchYaw,
-        rectangle = grid_rect(5.5, top + 1, 1.5, 1),
+        rectangle = grid_rect(6.5, top + 1, 1.5, largeControlHeight),
         text='Yaw',
         is_checked = newValues.movement_mode == MovementModes.match_yaw
     }) then
@@ -156,7 +196,7 @@ local function ControlsForSelected(draw)
 
     if ugui.toggle_button({
         uid = UID.MovementModeMatchAngle,
-        rectangle = grid_rect(4, top + 2, 1.5, 1),
+        rectangle = grid_rect(5, top + 2, 1.5, largeControlHeight),
         text='Angle',
         is_checked = newValues.movement_mode == MovementModes.match_angle
     }) then
@@ -165,7 +205,7 @@ local function ControlsForSelected(draw)
 
     if ugui.toggle_button({
         uid = UID.MovementModeReverseAngle,
-        rectangle = grid_rect(5.5, top + 2, 1.5, 1),
+        rectangle = grid_rect(6.5, top + 2, 1.5, largeControlHeight),
         text='Reverse',
         is_checked = newValues.movement_mode == MovementModes.reverse_angle
     }) then
@@ -174,39 +214,12 @@ local function ControlsForSelected(draw)
 
     newValues.dyaw = ugui.toggle_button({
         uid = UID.DYaw,
-        rectangle = grid_rect(2, top + 3, 1, 0.5),
+        rectangle = grid_rect(2, top + 2, 1, largeControlHeight),
         text='DYaw',
         is_checked = newValues.dyaw
     })
 
-    if ugui.button({
-        uid = UID.SpeedKick,
-        rectangle = grid_rect(3, top + 3, 1, 0.5),
-        text='Spdk',
-    }) then
-        newValues.goal_mag = 48
-    end
-
-    newValues.goal_mag = ugui.numberbox({
-        uid = UID.GoalMag,
-        rectangle = grid_rect(4, top + 3, 1, 0.5),
-        places = 3,
-        value = math.max(0, math.min(127, newValues.goal_mag))
-    })
-    -- a value starting with a 9 likely indicates that the user scrolled down
-    -- on the most significant digit while its value was 0, so we "clamp" to 0 here
-    -- this makes it so typing in a 9 explicitly will set the entire value to 0 as well,
-    -- but I'll accept this weirdness for now until a more coherently bounded numberbox implementation exists.
-    if newValues.goal_mag >= 900 then newValues.goal_mag = 0 end
-
-    if ugui.button({
-        uid = UID.ResetMag,
-        rectangle = grid_rect(5, top + 3, 0.5, 0.5),
-        text='R',
-    }) then
-        newValues.goal_mag = 127
-    end
-
+    MagnitudeControls(draw, pianoRoll, newValues, top + 3)
     AtanControls(draw, pianoRoll, newValues, top + 4)
 
     ugui.standard_styler.spinner_button_thickness = previousThickness
