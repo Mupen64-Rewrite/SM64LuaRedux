@@ -1,5 +1,4 @@
 local UID = dofile(views_path .. "PianoRoll/UID.lua")
-local PianoRoll = dofile(views_path .. "PianoRoll/PianoRoll.lua")
 
 return {
     Render = function()
@@ -17,7 +16,7 @@ return {
             if (ugui.button({
                 uid = UID.SavePianoRoll,
 
-                rectangle = grid_rect(2, top, 1, 0.5),
+                rectangle = grid_rect(1, top, 1, 0.5),
                 is_enabled = true,
                 text = 'Save'
             })) then
@@ -31,7 +30,7 @@ return {
             if (ugui.button({
                 uid = UID.LoadPianoRoll,
 
-                rectangle = grid_rect(3, top, 1, 0.5),
+                rectangle = grid_rect(2, top, 1, 0.5),
                 is_enabled = true,
                 text = 'Load'
             })) then

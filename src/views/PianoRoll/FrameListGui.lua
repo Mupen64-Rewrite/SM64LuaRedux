@@ -24,25 +24,27 @@ local Buttons = {
 local col0 = 0.0
 local col1 = 1.0
 local col2 = 1.5
-local col3 = 2.0
-local col4 = 2.5
-local col5 = 3.2
-local col6 = 4.15
+local col3 = 1.8
+local col4 = 2.0
+local col5 = 2.8
+local col6 = 3.0
 local col_1 = 8.0
 
 local row0 = -0.25
 local row1 = 0.25
 local row2 = 1.00
 
-local small = 0.25
+local buttonColumnWidth = 0.3
+local buttonSize = 0.22
+local frameColumnHeight = 0.5
 
 local scrollOffset = 0
 
 local buttonColors = {
-    {background={r=000, g=000, b=255, a=100}, button={r=000, g=000, b=190, a=255}},
-    {background={r=000, g=177, b=022, a=100}, button={r=000, g=230, b=044, a=255}},
-    {background={r=111, g=111, b=111, a=100}, button={r=200, g=200, b=200, a=255}},
-    {background={r=200, g=000, b=000, a=100}, button={r=255, g=000, b=000, a=255}},
+    {background={r=000, g=000, b=255, a=100}, button={r=000, g=000, b=190, a=255}}, -- A
+    {background={r=000, g=177, b=022, a=100}, button={r=000, g=230, b=044, a=255}}, -- B
+    {background={r=111, g=111, b=111, a=100}, button={r=200, g=200, b=200, a=255}}, -- Z
+    {background={r=200, g=000, b=000, a=100}, button={r=255, g=000, b=000, a=255}}, -- Start
     {background={r=200, g=200, b=000, a=100}, button={r=255, g=255, b=000, a=255}}, -- 4 C Buttons
     {background={r=111, g=111, b=111, a=100}, button={r=200, g=200, b=200, a=255}}, -- L + R Buttons
     {background={r=055, g=055, b=055, a=100}, button={r=035, g=035, b=035, a=255}}, -- 4 DPad Buttons
@@ -69,7 +71,7 @@ end
 
 local function DrawHeaders(pianoRoll, draw, buttonDrawData)
     local backgroundColor = InterpolateVectorsToInt(draw.backgroundColor, {r = 127, g = 127, b = 127}, 0.25)
-    BreitbandGraphics.fill_rectangle(grid_rect(0, row0, col_1, row2 - row0), backgroundColor)
+    BreitbandGraphics.fill_rectangle(grid_rect(0, row0, col_1, row2 - row0, 0), backgroundColor)
 
     draw:text(grid_rect(0, row0, 2, 1), "start", "Start: " .. pianoRoll.startGT)
 
@@ -96,10 +98,9 @@ local function DrawHeaders(pianoRoll, draw, buttonDrawData)
 end
 
 local function DrawColorCodes()
-    local offset = 0
 
-    local width = small * 1.1
-    local rect = grid_rect(col6 + offset, row2, width, 0.5)
+    local start = grid_rect(col_1, row2, buttonColumnWidth, frameColumnHeight, 0)
+    local rect = { x = start.x - start.width * #Buttons, y = start.y, width = start.width, height = start.height }
     local height = rect.height * NumDisplayFrames()
 
     local i = 1
@@ -115,17 +116,17 @@ local function DrawColorCodes()
             {x = rect.x, y = rect.y, width = rect.width * amount, height = height},
             buttonColors[colorIndex].background
         )
-        rect.x = rect.x + rect.width * amount
         colorIndex = colorIndex + 1
+        rect.x = rect.x + rect.width * amount
     end
 
-    DrawNext(1)
-    DrawNext(1)
-    DrawNext(1)
-    DrawNext(1)
-    DrawNext(4)
-    DrawNext(2)
-    DrawNext(4)
+    DrawNext(1) -- A
+    DrawNext(1) -- B
+    DrawNext(1) -- Z
+    DrawNext(1) -- Start
+    DrawNext(4) -- 4 C Buttons
+    DrawNext(2) -- L + R Buttons
+    DrawNext(4) -- 4 DPad Buttons
 
     return buttonDrawData
 end
@@ -169,11 +170,11 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
         pianoRoll:edit(pianoRoll.selection.endGT)
     end
 
-    local frameRect = grid_rect(col0, row2, col_1 - col0, 0.5)
+    local frameRect = grid_rect(col0, row2, col_1 - col0, frameColumnHeight, 0)
     local anyChange = PlaceAndUnplaceButtons(frameRect, currentInput, pressed, buttonDrawData)
 
     local function span(x1, x2, height)
-        local r = grid_rect(x1, 0, x2 - x1, height)
+        local r = grid_rect(x1, 0, x2 - x1, height, 0)
         return {x = r.x, y = frameRect.y, width = r.width, height = height and r.height or frameRect.height}
     end
 
@@ -217,7 +218,7 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
 
         ugui.joystick({
             uid = uidBase + 1,
-            rectangle = span(col1, col2, 0.5),
+            rectangle = span(col1, col2, frameColumnHeight),
             position = {x = input.preview_joystick_x, y = -input.preview_joystick_y},
         })
 
@@ -235,17 +236,18 @@ local function DrawFramesGui(pianoRoll, draw, buttonDrawData)
             BreitbandGraphics.fill_rectangle(joystickBox, {r = 0, g = 200, b = 0, a = 100})
         end
 
-        draw:text(span(col2, col3, 0.5), "center", ModeTexts[input.movement_mode + 1])
+        draw:text(span(col2, col3), "center", ModeTexts[input.movement_mode + 1])
 
         if input.movement_mode == MovementModes.match_angle then
-            draw:text(span(col4, col5, 0.5), "end", tostring(input.goal_angle))
-            draw:text(span(col5, col6, 0.5), "end", input.strain_left and '<' or (input.strain_right and '>' or '-'))
+            draw:text(span(col4, col5), "end", tostring(input.goal_angle))
+            draw:text(span(col5, col6), "end", input.strain_left and '<' or (input.strain_right and '>' or '-'))
         end
 
-        local sz = 0.22 * Settings.grid_size * Drawing.scale
-        local rect = {x = 0, y = frameRect.y + 0.11 * Settings.grid_size * Drawing.scale, width = sz, height = sz}
+        local unit = Settings.grid_size * Drawing.scale
+        local sz = buttonSize * unit
+        local rect = {x = 0, y = frameRect.y + (frameColumnHeight - buttonSize) * 0.5 * unit, width = sz, height = sz}
         for buttonIndex, v in ipairs(Buttons) do
-            rect.x = buttonDrawData[buttonIndex].x + Drawing.scale * 1
+            rect.x = buttonDrawData[buttonIndex].x + unit * (buttonColumnWidth - buttonSize) * 0.5
             if input.joy[v.input] then
                 BreitbandGraphics.fill_ellipse(rect, buttonColors[buttonDrawData[buttonIndex].colorIndex].button)
             end

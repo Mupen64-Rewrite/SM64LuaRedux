@@ -20,7 +20,7 @@ local function AtanControls(draw, pianoRoll, newValues, top)
         newValues.atan_strain = false
     end
 
-    draw:text(grid_rect(1, top, 0.5, 0.5), "end", "Qf:")
+    draw:small_text(grid_rect(1, top, 0.5, 0.5), "end", "Qf:")
     local quarterStep = (newValues.atan_n % 1) * 4
     local newQuarterstep = ugui.spinner({
         uid = UID.AtanN,
@@ -32,7 +32,7 @@ local function AtanControls(draw, pianoRoll, newValues, top)
     })
     newValues.atan_n = math.ceil(newValues.atan_n - 1) + newQuarterstep / 4
 
-    draw:text(grid_rect(2.5, top, 0.5, 0.5), "end", "D:")
+    draw:small_text(grid_rect(2.5, top, 0.5, 0.5), "end", "D:")
     newValues.atan_d = ugui.spinner({
         uid = UID.AtanD,
 
@@ -43,7 +43,7 @@ local function AtanControls(draw, pianoRoll, newValues, top)
         increment = math.pow(10, Settings.atan_exp),
     })
 
-    draw:text(grid_rect(5, top, 0.5, 0.5), "end", "E:")
+    draw:small_text(grid_rect(5, top, 0.5, 0.5), "end", "E:")
     Settings.atan_exp = ugui.spinner({
         uid = UID.AtanE,
 

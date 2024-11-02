@@ -122,7 +122,7 @@ return {
         BreitbandGraphics.colors.white.a = 110
         ugui.listbox({
             uid = 0,
-            rectangle = grid_rect(-5, 10, 5, 7),
+            rectangle = grid_rect(-6, 10, 6, 7),
             selected_index = nil,
             items = VarWatch.processed_values,
         })
