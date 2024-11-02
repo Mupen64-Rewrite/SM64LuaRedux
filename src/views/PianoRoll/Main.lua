@@ -103,8 +103,8 @@ return {
     name = "Piano Roll",
     draw = function()
 
-        -- if we're showing help, stop rendering anything else
-        if Help.Render() then return end
+        -- if we're showing help or a confirmation dialog, stop rendering anything else
+        if SelectionGui.RenderConfirmDeletionPrompt() or Help.Render() then return end
 
         SelectionGui.Render()
 

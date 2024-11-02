@@ -37,5 +37,7 @@ return {
     AtanE = EnumNext(3),
     TrimEnd = EnumNext(),
     Delete = EnumNext(),
+    ConfirmationYes = EnumNext(),
+    ConfirmationNo = EnumNext(),
     UIDCOUNT = EnumNext(),
 }
