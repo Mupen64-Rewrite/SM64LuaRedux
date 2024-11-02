@@ -52,7 +52,7 @@ ugui = {
                 error('Attempted to show a malformed control.\r\n' .. debug.traceback())
             end
         end,
-        
+
         ---Validates the structure of a control and registers its uid. Must be called in every control function.
         ---@param control table A control which may or may not abide by the mupen-lua-ugui control contract
         validate_and_register_control = function(control)

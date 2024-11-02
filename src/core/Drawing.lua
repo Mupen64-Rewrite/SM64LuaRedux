@@ -19,7 +19,10 @@ function Drawing.size_down()
     wgui.resize(wgui.info().width - (wgui.info().width - Drawing.initial_size.width), wgui.info().height)
 end
 
-function grid(x, y, x_span, y_span, abs)
+function grid(x, y, x_span, y_span, abs, gap)
+    if not gap then
+        gap = Settings.grid_gap
+    end
     if not x_span then
         x_span = 1
     end
@@ -33,13 +36,13 @@ function grid(x, y, x_span, y_span, abs)
     local base_y = (Settings.grid_size * y)
 
     local rect = {
-        base_x + Settings.grid_gap,
-        base_y + Settings.grid_gap,
-        (Settings.grid_size * x_span) - Settings.grid_gap * 2,
-        (Settings.grid_size * y_span) - Settings.grid_gap * 2,
+        base_x + gap,
+        base_y + gap,
+        (Settings.grid_size * x_span) - gap * 2,
+        (Settings.grid_size * y_span) - gap * 2,
     }
 
-    rect[1] = (baseline_x + (Settings.grid_size * x * Drawing.scale)) + Settings.grid_gap
+    rect[1] = (baseline_x + (Settings.grid_size * x * Drawing.scale)) + gap
     rect[2] = rect[2] * Drawing.scale
     rect[3] = rect[3] * Drawing.scale
     rect[4] = rect[4] * Drawing.scale
@@ -66,8 +69,8 @@ local function adjust_rect(rect)
     return rect
 end
 
-function grid_rect(x, y, x_span, y_span)
-    local value = grid(x, y, x_span, y_span, false)
+function grid_rect(x, y, x_span, y_span, gap)
+    local value = grid(x, y, x_span, y_span, false, gap)
     return adjust_rect({
         x = value[1],
         y = value[2],
@@ -76,8 +79,8 @@ function grid_rect(x, y, x_span, y_span)
     })
 end
 
-function grid_rect_abs(x, y, x_span, y_span)
-    local value = grid(x, y, x_span, y_span, true)
+function grid_rect_abs(x, y, x_span, y_span, gap)
+    local value = grid(x, y, x_span, y_span, true, gap)
     return adjust_rect({
         x = value[1],
         y = value[2],
