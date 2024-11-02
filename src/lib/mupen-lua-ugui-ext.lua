@@ -1,6 +1,11 @@
 -- mupen-lua-ugui-ext 1.3.0
 -- https://github.com/Aurumaker72/mupen-lua-ugui
 
+if not ugui then
+    error("ugui must be present in the global scope prior to executing ugui-ext", 0)
+    return
+end
+
 ugui_ext = {
     spread = function(template)
         local result = {}
@@ -120,7 +125,7 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 ugui.spinner = function(control)
-    -- no validate_and_register_control, because the textbox will do this for us
+    ugui.internal.validate_control(control)
 
     if not ugui.standard_styler.spinner_button_thickness then
         ugui.standard_styler.spinner_button_thickness = 15
@@ -129,20 +134,39 @@ ugui.spinner = function(control)
 
     local value = control.value
 
+    local textbox_rect = {
+        x = control.rectangle.x,
+        y = control.rectangle.y,
+        width = control.rectangle.width - ugui.standard_styler.spinner_button_thickness * 2,
+        height = control.rectangle.height,
+    }
+
     local new_text = ugui.textbox({
         uid = control.uid,
-        rectangle = {
-            x = control.rectangle.x,
-            y = control.rectangle.y,
-            width = control.rectangle.width - ugui.standard_styler.spinner_button_thickness * 2,
-            height = control.rectangle.height,
-        },
+        rectangle = textbox_rect,
         text = tostring(value),
     })
 
     if tonumber(new_text) then
         value = tonumber(new_text)
     end
+
+    local ignored = BreitbandGraphics.is_point_inside_any_rectangle(
+        ugui.internal.environment.mouse_position, ugui.internal.hittest_free_rects)
+
+    if control.is_enabled ~= false
+        and not ignored
+        and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, textbox_rect) or ugui.internal.active_control == control.uid)
+        then
+        if ugui.internal.is_mouse_wheel_up() then
+            value = value + increment
+        end
+        if ugui.internal.is_mouse_wheel_down() then
+            value = value - increment
+        end
+    end
+
+    value = ugui.internal.clamp(value, control.minimum_value, control.maximum_value)
 
     if control.is_horizontal then
         if (ugui.button({

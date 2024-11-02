@@ -39,9 +39,9 @@ ugui = {
         -- Map of uids used in an active section (between begin_frame and end_frame)
         used_uids = {},
 
-        ---Validates the structure of a control and registers its uid. Must be called in every control function.
+        ---Validates the structure of a control. Must be called in every control function.
         ---@param control table A control which may or may not abide by the mupen-lua-ugui control contract
-        validate_and_register_control = function(control)
+        validate_control = function(control)
             if not control.uid
                 or not control.rectangle
                 or not control.rectangle.x
@@ -51,11 +51,18 @@ ugui = {
             then
                 error('Attempted to show a malformed control.\r\n' .. debug.traceback())
             end
+        end,
+
+        ---Validates the structure of a control and registers its uid. Must be called in every control function.
+        ---@param control table A control which may or may not abide by the mupen-lua-ugui control contract
+        validate_and_register_control = function(control)
+            ugui.internal.validate_control(control)
             if ugui.internal.used_uids[control.uid] then
                 error(string.format('Attempted to show a control with uid %d, which is already in use! Note that some controls reserve more than one uid slot after them.', control.uid))
             end
             ugui.internal.used_uids[control.uid] = control.uid
         end,
+
         deep_clone = function(obj, seen)
             if type(obj) ~= 'table' then return obj end
             if seen and seen[obj] then return seen[obj] end
@@ -1626,7 +1633,6 @@ ugui = {
     ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
     ---@return _ table The interaction result as (`{ item: table | nil, dismissed: boolean }`). The `item` field is nil if no item was clicked.
     menu = function(control)
-
         -- Avoid tripping the control validation... it's going to be overwritten anyway
         if control.rectangle and not control.rectangle.width then
             control.rectangle.width = 0
@@ -1638,7 +1644,7 @@ ugui = {
         ugui.internal.validate_and_register_control(control)
 
         if not ugui.internal.control_data[control.uid] then
-            print("Top-level menu")
+            print('Top-level menu')
             ugui.internal.control_data[control.uid] = {
                 hovered_index = nil,
                 parent_rectangle = nil,
