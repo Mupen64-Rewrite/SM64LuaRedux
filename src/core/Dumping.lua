@@ -33,6 +33,7 @@ Dumping.update = function()
 
     Dumping.data[#Dumping.data + 1] = {
         frame = #Dumping.data,
+        sample = movie.get_seek_completion()[1],
         input = ugui.internal.deep_clone(Joypad.input),
         memory = ugui.internal.deep_clone(Memory.current),
         varwatch = ugui.internal.deep_clone(VarWatch.processed_values),
