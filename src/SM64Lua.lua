@@ -125,6 +125,8 @@ paint_skipped = false
 -- Flag keeping track of whether atinput has fired for one time
 local first_input = true
 
+local reset_preset_menu_open = false
+local last_rmb_down_position = { x = 0, y = 0 }
 local keys = input.get()
 local last_keys = input.get()
 
@@ -182,6 +184,13 @@ function at_update_screen()
         Hotkeys.on_key_down(keys)
     end
 
+    if keys.rightclick and not last_keys.rightclick then
+        last_rmb_down_position = {
+            x = keys.xmouse,
+            y = keys.ymouse,
+        }
+    end
+
     local focused = emu.ismainwindowinforeground()
 
     ugui_input_context = {
@@ -213,34 +222,57 @@ function at_update_screen()
 
     Settings.tab_index = ugui.carrousel_button({
         uid = -5000,
-        rectangle = grid_rect(0, 15, 8, 1),
+        rectangle = grid_rect(0, 16, 5.5, 1),
         items = lualinq.select_key(views, "name"),
         selected_index = Settings.tab_index,
     })
 
-    for i = 1, #Presets.persistent.presets, 1 do
-        local prev = Presets.persistent.current_index == i
-        local now = ugui.toggle_button({
-            uid = -5000 - 5 * i,
+    local preset_picker_rect = grid_rect(5.5, 16, 2.5, 1)
+    local preset_index = Presets.persistent.current_index
 
-            rectangle = grid_rect(i - 1, 16, 1, 1),
-            text = i,
-            is_checked = Presets.persistent.current_index == i
+
+    if reset_preset_menu_open then
+        local result = ugui.menu({
+            uid = -5010,
+            rectangle = ugui.internal.deep_clone(last_rmb_down_position),
+            items = {
+                {
+                    text = 'Reset',
+                    callback = function()
+                        Presets.reset(Presets.persistent.current_index)
+                        Presets.apply(Presets.persistent.current_index)
+                    end
+                },
+            },
         })
 
-        if now and not prev then
-            Presets.apply(i)
+        if result.dismissed then
+            print("closing menu")
+            reset_preset_menu_open = false
+        else
+            if result.item then
+                result.item.callback()
+                reset_preset_menu_open = false
+            end
         end
     end
 
-    if ugui.button({
-            uid = -6000,
+    if (keys.rightclick and not last_keys.rightclick) and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, preset_picker_rect) then
+        print("opening menu")
+        reset_preset_menu_open = true
+    end
 
-            rectangle = grid_rect(6, 16, 2, 1),
-            text = "Reset"
-        }) then
-        Presets.reset(Presets.persistent.current_index)
-        Presets.apply(Presets.persistent.current_index)
+    preset_index = ugui.carrousel_button({
+        uid = -5005,
+        rectangle = preset_picker_rect,
+        items = lualinq.select(Presets.persistent.presets, function(_, i)
+            return "Preset " .. i
+        end),
+        selected_index = preset_index,
+    })
+
+    if preset_index ~= Presets.persistent.current_index then
+        Presets.apply(preset_index)
     end
 
     ugui.end_frame()

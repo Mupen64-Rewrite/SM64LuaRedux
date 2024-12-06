@@ -9,7 +9,7 @@ lualinq = {}
 lualinq.select = function(collection, predicate)
     local t = {}
     for i = 1, #collection, 1 do
-        t[i] = predicate(collection[i])
+        t[i] = predicate(collection[i], i)
     end
     return t
 end
