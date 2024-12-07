@@ -3,7 +3,7 @@ return {
     draw = function()
         ugui.listbox({
             uid = 0,
-            rectangle = grid_rect(0, 8, 8, 7),
+            rectangle = grid_rect(0, 8, 8, 8),
             selected_index = nil,
             items = VarWatch.processed_values,
         })

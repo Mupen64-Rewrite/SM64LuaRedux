@@ -153,7 +153,7 @@ return {
 
         ugui.listbox({
             uid = 105,
-            rectangle = grid_rect(0, 9, 8, 6),
+            rectangle = grid_rect(0, 9, 8, 7),
             selected_index = nil,
             items = VarWatch.processed_values,
         })
