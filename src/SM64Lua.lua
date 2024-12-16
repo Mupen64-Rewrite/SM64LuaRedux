@@ -251,7 +251,6 @@ function at_update_screen()
         })
 
         if result.dismissed then
-            print("closing menu")
             reset_preset_menu_open = false
         else
             if result.item then
@@ -262,7 +261,6 @@ function at_update_screen()
     end
 
     if (keys.rightclick and not last_keys.rightclick) and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, preset_picker_rect) then
-        print("opening menu")
         reset_preset_menu_open = true
     end
 
