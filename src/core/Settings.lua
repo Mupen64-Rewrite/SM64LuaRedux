@@ -75,6 +75,14 @@ Settings = {
             visible = true,
         },
         {
+            identifier = "yaw_vel",
+            visible = false,
+        },
+        {
+            identifier = "pitch_vel",
+            visible = false,
+        },
+        {
             identifier = "xz_movement",
             visible = true,
         },
