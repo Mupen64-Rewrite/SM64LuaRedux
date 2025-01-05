@@ -26,6 +26,12 @@ local hotkey_funcs = {
     toggle_auto_firsties = function()
         Settings.auto_firsties = not Settings.auto_firsties
     end,
+    angle_down = function()
+        TASState.goal_angle = ugui.internal.clamp(TASState.goal_angle - 1, 0, 99999)
+    end,
+    angle_up = function()
+        TASState.goal_angle = ugui.internal.clamp(TASState.goal_angle + 1, 0, 99999)
+    end
 }
 
 local enabled = true
@@ -65,35 +71,35 @@ return {
             return
         end
 
-            local hotkey = lualinq.first(Settings.hotkeys, function(x)
-                return x.identifier == last_pressed_hotkey
-            end)
+        local hotkey = lualinq.first(Settings.hotkeys, function(x)
+            return x.identifier == last_pressed_hotkey
+        end)
 
         if not hotkey.mode or hotkey.mode == HOTKEY_MODE_ONESHOT then
             return
         end
 
-            local activated = true
+        local activated = true
 
-            for _, key in pairs(hotkey.keys) do
-                if not ugui.internal.environment.held_keys[key] then
-                    activated = false
-                end
+        for _, key in pairs(hotkey.keys) do
+            if not ugui.internal.environment.held_keys[key] then
+                activated = false
             end
+        end
 
-            if activated then
-                local time_since_press = os.clock() - last_pressed_hotkey_time
+        if activated then
+            local time_since_press = os.clock() - last_pressed_hotkey_time
 
-                if time_since_press > 0.75 then
-                    local invocation_frequency = math.ceil(math.pow(time_since_press, 2))
+            if time_since_press > 0.75 then
+                local invocation_frequency = math.ceil(math.pow(time_since_press, 2))
 
-                    for _ = 1, invocation_frequency, 1 do
-                        hotkey_funcs[last_pressed_hotkey]()
+                for _ = 1, invocation_frequency, 1 do
+                    hotkey_funcs[last_pressed_hotkey]()
                     print("Hotkey " .. hotkey.identifier .. " pressed")
-                    end
-                else
-                    if time_since_press > 0.3 then
-                        hotkey_funcs[last_pressed_hotkey]()
+                end
+            else
+                if time_since_press > 0.3 then
+                    hotkey_funcs[last_pressed_hotkey]()
                     print("Hotkey " .. hotkey.identifier .. " pressed")
                 end
             end

@@ -181,6 +181,18 @@ Settings = {
                 "I",
             },
         },
+        {
+            identifier = "angle_down",
+            mode = HOTKEY_MODE_REPEAT,
+            keys = {
+            },
+        },
+        {
+            identifier = "angle_up",
+            mode = HOTKEY_MODE_REPEAT,
+            keys = {
+            },
+        },
     },
     address_source_index = 1,
 }
