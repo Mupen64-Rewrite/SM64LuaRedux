@@ -29,6 +29,8 @@ local hotkey_funcs = {
 }
 
 local enabled = true
+local last_pressed_hotkey = nil
+local last_pressed_hotkey_time = 0
 
 return {
     on_key_down = function(keys)
@@ -49,9 +51,51 @@ return {
             end
 
             if activated then
+                last_pressed_hotkey_time = os.clock()
+                last_pressed_hotkey = hotkey.identifier
                 hotkey_funcs[hotkey.identifier]()
                 print("Hotkey " .. hotkey.identifier .. " pressed")
                 return
+            end
+        end
+    end,
+
+    update = function()
+        if not last_pressed_hotkey then
+            return
+        end
+
+            local hotkey = lualinq.first(Settings.hotkeys, function(x)
+                return x.identifier == last_pressed_hotkey
+            end)
+
+        if not hotkey.mode or hotkey.mode == HOTKEY_MODE_ONESHOT then
+            return
+        end
+
+            local activated = true
+
+            for _, key in pairs(hotkey.keys) do
+                if not ugui.internal.environment.held_keys[key] then
+                    activated = false
+                end
+            end
+
+            if activated then
+                local time_since_press = os.clock() - last_pressed_hotkey_time
+
+                if time_since_press > 0.75 then
+                    local invocation_frequency = math.ceil(math.pow(time_since_press, 2))
+
+                    for _ = 1, invocation_frequency, 1 do
+                        hotkey_funcs[last_pressed_hotkey]()
+                    print("Hotkey " .. hotkey.identifier .. " pressed")
+                    end
+                else
+                    if time_since_press > 0.3 then
+                        hotkey_funcs[last_pressed_hotkey]()
+                    print("Hotkey " .. hotkey.identifier .. " pressed")
+                end
             end
         end
     end,

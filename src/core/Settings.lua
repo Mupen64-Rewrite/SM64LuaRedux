@@ -1,3 +1,6 @@
+HOTKEY_MODE_ONESHOT = 0
+HOTKEY_MODE_REPEAT = 1
+
 Settings = {
     swimming_button = "A",
     controller_index = 1,
@@ -110,6 +113,7 @@ Settings = {
     hotkeys = {
         {
             identifier = "movement_mode_disabled",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "1",
@@ -117,6 +121,7 @@ Settings = {
         },
         {
             identifier = "movement_mode_match_yaw",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "2",
@@ -124,6 +129,7 @@ Settings = {
         },
         {
             identifier = "movement_mode_reverse_angle",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "3",
@@ -131,6 +137,7 @@ Settings = {
         },
         {
             identifier = "movement_mode_match_angle",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "4",
@@ -138,18 +145,21 @@ Settings = {
         },
         {
             identifier = "preset_down",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "leftbracket",
             },
         },
         {
             identifier = "preset_up",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "rightbracket",
             },
         },
         {
             identifier = "copy_yaw_facing_to_match_angle",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "comma",
@@ -157,6 +167,7 @@ Settings = {
         },
         {
             identifier = "copy_yaw_intended_to_match_angle",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "period",
@@ -164,6 +175,7 @@ Settings = {
         },
         {
             identifier = "toggle_auto_firsties",
+            mode = HOTKEY_MODE_ONESHOT,
             keys = {
                 "control",
                 "I",

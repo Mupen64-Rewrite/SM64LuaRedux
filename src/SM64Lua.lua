@@ -184,6 +184,8 @@ function at_update_screen()
         Hotkeys.on_key_down(keys)
     end
 
+    Hotkeys.update()
+
     if keys.rightclick and not last_keys.rightclick then
         last_rmb_down_position = {
             x = keys.xmouse,
