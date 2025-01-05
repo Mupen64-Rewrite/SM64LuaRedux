@@ -28,9 +28,11 @@ local hotkey_funcs = {
     end,
 }
 
+local enabled = true
+
 return {
     on_key_down = function(keys)
-        if not emu.ismainwindowinforeground() then
+        if not emu.ismainwindowinforeground() or not enabled then
             return
         end
         for _, hotkey in pairs(Settings.hotkeys) do
@@ -53,4 +55,8 @@ return {
             end
         end
     end,
+
+    set_enabled = function(value)
+        enabled = value
+    end
 }
