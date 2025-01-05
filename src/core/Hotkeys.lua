@@ -27,9 +27,18 @@ local hotkey_funcs = {
         Settings.auto_firsties = not Settings.auto_firsties
     end,
     angle_down = function()
-        TASState.goal_angle = ugui.internal.clamp(TASState.goal_angle - 1, 0, 99999)
+        if TASState.goal_angle - 1 < 0 then
+            TASState.goal_angle = 65535
+        else
+            TASState.goal_angle = TASState.goal_angle - 1
+        end
     end,
     angle_up = function()
+        if TASState.goal_angle + 1 > 65535 then
+            TASState.goal_angle = 0
+        else
+            TASState.goal_angle = TASState.goal_angle + 1
+        end
         TASState.goal_angle = ugui.internal.clamp(TASState.goal_angle + 1, 0, 99999)
     end
 }
