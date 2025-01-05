@@ -35,11 +35,17 @@ return {
         end
         for _, hotkey in pairs(Settings.hotkeys) do
             local activated = true
-            for _, key in pairs(hotkey.keys) do
-                if not keys[key] then
-                    activated = false
+
+            if #hotkey.keys == 0 then
+                activated = false
+            else
+                for _, key in pairs(hotkey.keys) do
+                    if not keys[key] then
+                        activated = false
+                    end
                 end
             end
+
             if activated then
                 hotkey_funcs[hotkey.identifier]()
                 print("Hotkey " .. hotkey.identifier .. " pressed")
