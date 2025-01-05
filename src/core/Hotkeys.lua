@@ -39,7 +39,6 @@ local hotkey_funcs = {
         else
             TASState.goal_angle = TASState.goal_angle + 1
         end
-        TASState.goal_angle = ugui.internal.clamp(TASState.goal_angle + 1, 0, 99999)
     end
 }
 
