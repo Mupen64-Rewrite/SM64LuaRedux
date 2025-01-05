@@ -37,6 +37,10 @@ for i = 1, 6, 1 do
     Presets.persistent.presets[i] = create_default_preset()
 end
 
+function Presets.get_default_preset()
+    return ugui.internal.deep_clone(default_preset)
+end
+
 Presets.set_style = function(theme)
     local mod_theme = ugui.internal.deep_clone(theme)
 
