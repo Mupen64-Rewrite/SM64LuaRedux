@@ -3,35 +3,35 @@ Engine = {
 }
 
 MovementModes = {
-    disabled = 1,
-    manual = 2,
-    match_yaw = 3,
-    reverse_angle = 4,
-    match_angle = 5,
+	disabled = 1,
+	manual = 2,
+	match_yaw = 3,
+	reverse_angle = 4,
+	match_angle = 5,
 }
 
 function NewTASState()
-    return {
-        movement_mode = 1,
+	return {
+		movement_mode = 1,
 		manual_joystick_x = 0,
 		manual_joystick_y = 0,
-        goal_angle = 0,
-        goal_mag = 127,
-        strain_always = false,
-        high_magnitude = false,
-        strain_left = true,
-        strain_right = false,
-        dyaw = false,
-        strain_speed_target = true,
-        swim = false,
-        framewalk = false,
-        atan_strain = false,
-        reverse_arc = false,
-        atan_start = 0,
-        atan_r = 1.0,
-        atan_d = 0.0,
-        atan_n = 10,
-    }
+		goal_angle = 0,
+		goal_mag = 127,
+		strain_always = false,
+		high_magnitude = false,
+		strain_left = true,
+		strain_right = false,
+		dyaw = false,
+		strain_speed_target = true,
+		swim = false,
+		framewalk = false,
+		atan_strain = false,
+		reverse_arc = false,
+		atan_start = 0,
+		atan_r = 1.0,
+		atan_d = 0.0,
+		atan_n = 10,
+	}
 end
 
 DefaultTASState = NewTASState()
@@ -290,14 +290,16 @@ function Engine.GetQFs(Mariospeed)
 end
 
 function Engine.GetSpeedEfficiency()
-	if Memory.current.mario_x_sliding_speed + Memory.current.mario_z_sliding_speed > 0 then
-		return Engine.get_distance_moved() / math.abs(math.sqrt(
-			Memory.current.mario_x_sliding_speed ^ 2 +
-			Memory.current.mario_z_sliding_speed ^ 2)
-		)
-	else
+	local div = math.abs(math.sqrt(
+		Memory.current.mario_x_sliding_speed ^ 2 +
+		Memory.current.mario_z_sliding_speed ^ 2)
+	)
+	
+	if div == 0 then
 		return 0
 	end
+
+	return Engine.get_distance_moved() / div
 end
 
 function Engine.get_distance_moved()
