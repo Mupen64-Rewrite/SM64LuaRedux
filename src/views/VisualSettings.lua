@@ -16,10 +16,29 @@ local items = {
         end
     },
     {
+        text = "Notifications",
+        func = function(rect)
+
+            local notification_styles = {
+                "Bubble",
+                "Console",
+            }
+
+            local index = ugui.carrousel_button({
+                uid = 5,
+                rectangle = rect,
+                items = notification_styles,
+                selected_index = Settings.notification_style,
+            })
+
+            Settings.notification_style = index
+        end
+    },
+    {
         text = "Angle formatting",
         func = function(rect)
             if ugui.button({
-                    uid = 5,
+                    uid = 10,
                     rectangle = rect,
                     text = Settings.format_angles_degrees and "Degree" or "Short",
                 }) then
@@ -31,7 +50,7 @@ local items = {
         text = "Decimal points",
         func = function(rect)
             Settings.format_decimal_points = math.abs(ugui.numberbox({
-                uid = 10,
+                uid = 15,
                 rectangle = rect,
                 value = Settings.format_decimal_points,
                 places = 1
@@ -43,7 +62,7 @@ local items = {
         tooltip = "Skips every nth frame when fast-forwarding to increase performance.",
         func = function(rect)
             Settings.repaint_throttle = math.max(1, math.abs(ugui.numberbox({
-                uid = 15,
+                uid = 20,
                 rectangle = rect,
                 value = Settings.repaint_throttle,
                 places = 1
@@ -55,7 +74,7 @@ local items = {
         tooltip = "Updates the UI every VI, improving mupen capture sync. Reduces performance.",
         func = function(rect)
             Settings.read_memory_every_vi = ugui.toggle_button({
-                uid = 20,
+                uid = 25,
                 rectangle = rect,
                 text = Settings.read_memory_every_vi and "On" or "Off",
                 is_checked = Settings.read_memory_every_vi

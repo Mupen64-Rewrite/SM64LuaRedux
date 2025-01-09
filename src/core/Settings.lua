@@ -1,6 +1,9 @@
 HOTKEY_MODE_ONESHOT = 0
 HOTKEY_MODE_REPEAT = 1
 
+NOTIFICATION_STYLE_BUBBLE = 1
+NOTIFICATION_STYLE_CONSOLE = 2
+
 Settings = {
     swimming_button = "A",
     controller_index = 1,
@@ -41,6 +44,7 @@ Settings = {
     dump_enabled = false,
     dump_start_frame = 0,
     dump_movie_start_frame = 0,
+    notification_style = NOTIFICATION_STYLE_BUBBLE,
     variables = {
         {
             identifier = "yaw_facing",

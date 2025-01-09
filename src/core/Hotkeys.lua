@@ -46,6 +46,11 @@ local enabled = true
 local last_pressed_hotkey = nil
 local last_pressed_hotkey_time = 0
 
+local function call_hotkey_func(identifier)
+    hotkey_funcs[identifier]()
+    Notifications.show("Hotkey " .. identifier .. " pressed")
+end
+
 return {
     on_key_down = function(keys)
         if not emu.ismainwindowinforeground() or not enabled then
@@ -67,8 +72,7 @@ return {
             if activated then
                 last_pressed_hotkey_time = os.clock()
                 last_pressed_hotkey = hotkey.identifier
-                hotkey_funcs[hotkey.identifier]()
-                print("Hotkey " .. hotkey.identifier .. " pressed")
+                call_hotkey_func(hotkey.identifier)
                 return
             end
         end
@@ -102,13 +106,11 @@ return {
                 local invocation_frequency = math.ceil(math.pow(time_since_press, 2))
 
                 for _ = 1, invocation_frequency, 1 do
-                    hotkey_funcs[last_pressed_hotkey]()
-                    print("Hotkey " .. hotkey.identifier .. " pressed")
+                    call_hotkey_func(last_pressed_hotkey)
                 end
             else
                 if time_since_press > 0.3 then
-                    hotkey_funcs[last_pressed_hotkey]()
-                    print("Hotkey " .. hotkey.identifier .. " pressed")
+                    call_hotkey_func(last_pressed_hotkey)
                 end
             end
         end

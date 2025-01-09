@@ -109,6 +109,8 @@ local processors = {
     dofile(processors_path .. "Framewalk.lua"),
 }
 
+Notifications = dofile(views_path .. "Notifications.lua")
+
 ugui_environment = {}
 local mouse_wheel = 0
 
@@ -214,6 +216,7 @@ function at_update_screen()
 
     WorldVisualizer.draw()
     MiniVisualizer.draw()
+    Notifications.draw()
 
     BreitbandGraphics.fill_rectangle({
         x = Drawing.initial_size.width,
