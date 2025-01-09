@@ -5,6 +5,7 @@ Dumping = {
 Dumping.start = function()
     Settings.dump_enabled = true
     Settings.dump_start_frame = emu.inputcount()
+    Settings.dump_movie_start_frame = movie.get_seek_completion()[1]
     Dumping.data = {}
     print("Dumping started")
 end
@@ -31,9 +32,17 @@ Dumping.update = function()
         return
     end
 
+    local movie_path = nil
+
+    pcall(function ()
+        movie_path = movie.get_filename()
+    end)
+
     Dumping.data[#Dumping.data + 1] = {
         frame = #Dumping.data,
+        movie_path = movie_path,
         sample = movie.get_seek_completion()[1],
+        movie_start_sample = Settings.dump_movie_start_frame,
         input = ugui.internal.deep_clone(Joypad.input),
         memory = ugui.internal.deep_clone(Memory.current),
         varwatch = ugui.internal.deep_clone(VarWatch.processed_values),

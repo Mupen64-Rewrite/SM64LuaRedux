@@ -40,6 +40,7 @@ Settings = {
     -- Writes memory values, input data, and frame indicies to a buffer each frame
     dump_enabled = false,
     dump_start_frame = 0,
+    dump_movie_start_frame = 0,
     variables = {
         {
             identifier = "yaw_facing",
