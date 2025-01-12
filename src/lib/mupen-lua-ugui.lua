@@ -1459,10 +1459,10 @@ ugui = {
             and (BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, control.rectangle)
                 or ugui.internal.active_control == control.uid) then
             for key, _ in pairs(ugui.internal.get_just_pressed_keys()) do
-                if key == 'up' then
+                if key == 'up' and control.selected_index ~= nil then
                     control.selected_index = ugui.internal.clamp(control.selected_index - 1, 1, #control.items)
                 end
-                if key == 'down' then
+                if key == 'down' and control.selected_index ~= nil then
                     control.selected_index = ugui.internal.clamp(control.selected_index + 1, 1, #control.items)
                 end
                 if not y_overflow then
