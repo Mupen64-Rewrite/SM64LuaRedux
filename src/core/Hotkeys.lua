@@ -27,6 +27,10 @@ local hotkey_funcs = {
         Settings.auto_firsties = not Settings.auto_firsties
     end,
     angle_down = function()
+        if ugui.internal.active_control then
+            return false
+        end
+
         TASState.goal_angle = TASState.goal_angle - 16
 
         if TASState.goal_angle < 0 then
@@ -38,6 +42,10 @@ local hotkey_funcs = {
         end
     end,
     angle_up = function()
+        if ugui.internal.active_control then
+            return false
+        end
+
         TASState.goal_angle = TASState.goal_angle + 16
 
         if TASState.goal_angle > 65535 then
@@ -55,8 +63,11 @@ local last_pressed_hotkey = nil
 local last_pressed_hotkey_time = 0
 
 local function call_hotkey_func(identifier)
-    hotkey_funcs[identifier]()
-    Notifications.show("Hotkey " .. identifier .. " pressed")
+    local result = hotkey_funcs[identifier]()
+
+    if result ~= false then
+        Notifications.show("Hotkey " .. identifier .. " pressed")
+    end
 end
 
 return {
