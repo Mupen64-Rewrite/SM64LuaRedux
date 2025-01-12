@@ -27,17 +27,25 @@ local hotkey_funcs = {
         Settings.auto_firsties = not Settings.auto_firsties
     end,
     angle_down = function()
-        if TASState.goal_angle - 1 < 0 then
-            TASState.goal_angle = 65535
-        else
-            TASState.goal_angle = TASState.goal_angle - 1
+        TASState.goal_angle = TASState.goal_angle - 16
+
+        if TASState.goal_angle < 0 then
+            TASState.goal_angle = 65536
+        end
+
+        if TASState.goal_angle % 16 ~= 0 then
+            TASState.goal_angle = math.floor((TASState.goal_angle + 8) / 16) * 16
         end
     end,
     angle_up = function()
-        if TASState.goal_angle + 1 > 65535 then
+        TASState.goal_angle = TASState.goal_angle + 16
+
+        if TASState.goal_angle > 65535 then
             TASState.goal_angle = 0
-        else
-            TASState.goal_angle = TASState.goal_angle + 1
+        end
+
+        if TASState.goal_angle % 16 ~= 0 then
+            TASState.goal_angle = math.floor((TASState.goal_angle + 8) / 16) * 16
         end
     end
 }
