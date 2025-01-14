@@ -1,7 +1,7 @@
 local selected_var_index = 1
 
 return {
-    name = "VarWatch",
+    name = "Varwatch",
     draw = function()
         selected_var_index = ugui.listbox({
             uid = 400,
