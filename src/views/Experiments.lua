@@ -1,6 +1,9 @@
 return {
     name = "Experiments",
     draw = function()
+        local theme = Presets.styles[Settings.active_style_index].theme
+        local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
+
         if ugui.button({
                 uid = 0,
 
@@ -109,5 +112,37 @@ return {
         if not now_dump_enabled and previous_dump_enabled then
             Dumping.stop()
         end
+
+        BreitbandGraphics.draw_text(
+                grid_rect(0, 6, 8, 1),
+                "start",
+                "center",
+                { aliased = theme.pixelated_text },
+                foreground_color,
+                theme.font_size * Drawing.scale * 1.25,
+                theme.font_name,
+                "RNG")
+
+        Settings.override_rng = ugui.toggle_button({
+            uid = 55,
+            rectangle = grid_rect(0, 7, 2, 1),
+            text = "Lock to",
+            is_checked = Settings.override_rng,
+        })
+        Settings.override_rng_use_index = ugui.toggle_button({
+            uid = 60,
+            is_enabled = Settings.override_rng,
+            rectangle = grid_rect(6, 7, 2, 1),
+            text = "Use Index",
+            is_checked = Settings.override_rng_use_index,
+        })
+        Settings.override_rng_value = math.floor(ugui.spinner({
+            uid = 65,
+            is_enabled = Settings.override_rng,
+            rectangle = grid_rect(2, 7, 4, 1),
+            value = Settings.override_rng_value,
+            minimum_value = math.mininteger,
+            maximum_value = math.maxinteger
+        }))
     end
 }

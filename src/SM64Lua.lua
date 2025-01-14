@@ -96,7 +96,6 @@ local views = {
     dofile(views_path .. "Timer.lua"),
     dofile(views_path .. "Timer2.lua"),
     dofile(views_path .. "Experiments.lua"),
-    dofile(views_path .. "RNG.lua"),
     dofile(views_path .. "Ghost.lua"),
 }
 
