@@ -5,7 +5,7 @@ local DUMPING_ROW = 7
 local EXPERIMENTS_ROW = 9
 
 return {
-    name = "Experiments",
+    name = "Tools",
     draw = function()
         local theme = Presets.styles[Settings.active_style_index].theme
         local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
