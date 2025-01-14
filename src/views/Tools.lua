@@ -2,7 +2,8 @@ local RNG_ROW = 1
 local AUTO_GRIND_ROW = 3
 local LOOKAHEAD_ROW = 5
 local DUMPING_ROW = 7
-local EXPERIMENTS_ROW = 9
+local GHOST_ROW = 9
+local EXPERIMENTS_ROW = 11
 
 return {
     name = "Tools",
@@ -134,6 +135,25 @@ return {
             Dumping.stop()
         end
 
+
+        BreitbandGraphics.draw_text(
+            grid_rect(0, GHOST_ROW - 1, 8, 1),
+            "start",
+            "center",
+            { aliased = theme.pixelated_text },
+            foreground_color,
+            theme.font_size * Drawing.scale * 1.25,
+            theme.font_name,
+            "Ghost")
+
+        if ugui.button({
+                uid = 100,
+                rectangle = grid_rect(0, GHOST_ROW, 4, 1),
+                text = Ghost.is_recording and "Stop Recording" or "Start Recording",
+            }) then
+            Ghost.toggle_recording()
+        end
+
         BreitbandGraphics.draw_text(
             grid_rect(0, EXPERIMENTS_ROW - 1, 8, 1),
             "start",
@@ -143,7 +163,6 @@ return {
             theme.font_size * Drawing.scale * 1.25,
             theme.font_name,
             "Experiments")
-
 
         Settings.visualize_objects = ugui.toggle_button({
             uid = 30,
@@ -184,6 +203,5 @@ return {
             text = 'Ignore Y',
             is_checked = Settings.moved_distance_ignore_y
         })
-
     end
 }

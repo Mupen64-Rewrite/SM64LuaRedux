@@ -96,7 +96,6 @@ local views = {
     dofile(views_path .. "Timer.lua"),
     dofile(views_path .. "Timer2.lua"),
     dofile(views_path .. "Tools.lua"),
-    dofile(views_path .. "Ghost.lua"),
 }
 
 local processors = {
