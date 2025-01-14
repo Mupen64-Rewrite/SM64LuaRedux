@@ -93,9 +93,9 @@ local views = {
     dofile(views_path .. "TAS.lua"),
     dofile(views_path .. "PianoRoll/Main.lua"),
     dofile(views_path .. "Settings.lua"),
+    dofile(views_path .. "Tools.lua"),
     dofile(views_path .. "Timer.lua"),
     dofile(views_path .. "Timer2.lua"),
-    dofile(views_path .. "Tools.lua"),
 }
 
 local processors = {
