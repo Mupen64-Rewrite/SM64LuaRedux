@@ -119,7 +119,8 @@ return {
             assigning_hotkey = true
         end
 
-        Hotkeys.set_enabled(not assigning_hotkey)
+        Settings.hotkeys_enabled = not assigning_hotkey
+        
 
         if assigning_hotkey then
             if ugui.internal.environment.held_keys["control"] then

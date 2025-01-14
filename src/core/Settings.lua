@@ -45,6 +45,7 @@ Settings = {
     dump_start_frame = 0,
     dump_movie_start_frame = 0,
     notification_style = NOTIFICATION_STYLE_BUBBLE,
+    hotkeys_enabled = true,
     variables = {
         {
             identifier = "yaw_facing",

@@ -58,7 +58,6 @@ local hotkey_funcs = {
     end
 }
 
-local enabled = true
 local last_pressed_hotkey = nil
 local last_pressed_hotkey_time = 0
 
@@ -72,7 +71,7 @@ end
 
 return {
     on_key_down = function(keys)
-        if not emu.ismainwindowinforeground() or not enabled then
+        if not emu.ismainwindowinforeground() or not Settings.hotkeys_enabled then
             return
         end
         for _, hotkey in pairs(Settings.hotkeys) do
@@ -134,8 +133,4 @@ return {
             end
         end
     end,
-
-    set_enabled = function(value)
-        enabled = value
-    end
 }
