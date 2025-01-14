@@ -34,11 +34,11 @@ local hotkey_funcs = {
         TASState.goal_angle = TASState.goal_angle - 16
 
         if TASState.goal_angle < 0 then
-            TASState.goal_angle = 65536
-        end
-
-        if TASState.goal_angle % 16 ~= 0 then
-            TASState.goal_angle = math.floor((TASState.goal_angle + 8) / 16) * 16
+            TASState.goal_angle = 65535
+        else
+            if TASState.goal_angle % 16 ~= 0 then
+                TASState.goal_angle = math.floor((TASState.goal_angle + 8) / 16) * 16
+            end
         end
     end,
     angle_up = function()
