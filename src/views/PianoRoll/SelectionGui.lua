@@ -6,7 +6,7 @@ local createdSheetCount = 0
 local deletionIndex = nil
 
 local controlHeight = 0.75
-local top = 15 - controlHeight
+local top = 16 - controlHeight
 
 local function SelectCurrent()
     PianoRollContext.current = PianoRollContext.all[selectionIndex]

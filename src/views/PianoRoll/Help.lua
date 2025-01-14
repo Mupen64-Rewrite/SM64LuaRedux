@@ -68,7 +68,7 @@ return {
         local foregroundColor = theme.listbox.text_colors[1]
 
         local controlHeight = 0.75
-        local top = 15 - controlHeight
+        local top = 16 - controlHeight
         local buttonPosition = grid_rect(0, top, 1.5, controlHeight)
         if ugui.button(
             {
