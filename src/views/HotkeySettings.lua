@@ -90,6 +90,7 @@ return {
         if ugui.button({
                 uid = 405,
                 rectangle = grid_rect(0, 8, 2, 1),
+                is_enabled = not Settings.hotkeys_assigning,
                 text = "Clear",
             }) then
             Settings.hotkeys[Settings.hotkeys_selected_index].keys = {}
@@ -98,10 +99,11 @@ return {
         if ugui.button({
                 uid = 410,
                 rectangle = grid_rect(2, 8, 2, 1),
+                is_enabled = not Settings.hotkeys_assigning,
                 text = "Reset",
             }) then
             Settings.hotkeys[Settings.hotkeys_selected_index].keys = Presets.get_default_preset().hotkeys
-            [Settings.hotkeys_selected_index].keys
+                [Settings.hotkeys_selected_index].keys
         end
 
         if ugui.button({

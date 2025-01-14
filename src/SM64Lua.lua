@@ -232,6 +232,7 @@ function at_update_screen()
     Settings.tab_index = ugui.carrousel_button({
         uid = -5000,
         rectangle = grid_rect(0, 16, 5.5, 1),
+        is_enabled = not Settings.hotkeys_assigning,
         items = lualinq.select_key(views, "name"),
         selected_index = Settings.tab_index,
     })
@@ -265,13 +266,16 @@ function at_update_screen()
         end
     end
 
-    if (keys.rightclick and not last_keys.rightclick) and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, preset_picker_rect) then
+    if (keys.rightclick and not last_keys.rightclick)
+        and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, preset_picker_rect)
+        and not Settings.hotkeys_assigning then
         reset_preset_menu_open = true
     end
 
     preset_index = ugui.carrousel_button({
         uid = -5005,
         rectangle = preset_picker_rect,
+        is_enabled = not Settings.hotkeys_assigning,
         items = lualinq.select(Presets.persistent.presets, function(_, i)
             return "Preset " .. i
         end),
