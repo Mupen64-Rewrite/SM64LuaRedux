@@ -1,6 +1,3 @@
-local selected_hotkey_index = 1
-local assigning_hotkey = false
-
 local ctrl = false
 local shift = false
 local alt = false
@@ -79,10 +76,10 @@ return {
             prev_draw_text(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name, text)
         end
 
-        selected_hotkey_index = ugui.listbox({
+        Settings.hotkeys_selected_index = ugui.listbox({
             uid = 400,
             rectangle = grid_rect(0, 0, 8, 8),
-            selected_index = selected_hotkey_index,
+            selected_index = Settings.hotkeys_selected_index,
             items = lualinq.select(Settings.hotkeys, function(x)
                 return x.identifier .. " - " .. hotkey_to_string(x)
             end),
@@ -95,7 +92,7 @@ return {
                 rectangle = grid_rect(0, 8, 2, 1),
                 text = "Clear",
             }) then
-            Settings.hotkeys[selected_hotkey_index].keys = {}
+            Settings.hotkeys[Settings.hotkeys_selected_index].keys = {}
         end
 
         if ugui.button({
@@ -103,26 +100,26 @@ return {
                 rectangle = grid_rect(2, 8, 2, 1),
                 text = "Reset",
             }) then
-            Settings.hotkeys[selected_hotkey_index].keys = Presets.get_default_preset().hotkeys[selected_hotkey_index]
-                .keys
+            Settings.hotkeys[Settings.hotkeys_selected_index].keys = Presets.get_default_preset().hotkeys
+            [Settings.hotkeys_selected_index].keys
         end
 
         if ugui.button({
                 uid = 415,
                 rectangle = grid_rect(4, 8, 4, 1),
-                text = assigning_hotkey and hotkey_to_string({ keys = get_current_keys() }) or "Assign",
+                text = Settings.hotkeys_assigning and hotkey_to_string({ keys = get_current_keys() }) or "Assign",
             }) then
             ctrl = false
             shift = false
             alt = false
             key = nil
-            assigning_hotkey = true
+            Settings.hotkeys_assigning = true
         end
 
-        Settings.hotkeys_enabled = not assigning_hotkey
-        
+        Settings.hotkeys_enabled = not Settings.hotkeys_assigning
 
-        if assigning_hotkey then
+        -- FIXME: Early return
+        if Settings.hotkeys_assigning then
             if ugui.internal.environment.held_keys["control"] then
                 ctrl = true
             end
@@ -140,9 +137,9 @@ return {
                 end
 
                 if vkey == CONFIRM_KEY then
-                    Settings.hotkeys[selected_hotkey_index].keys = get_current_keys()
-                    selected_hotkey_index = math.min(selected_hotkey_index + 1, #Settings.hotkeys)
-                    assigning_hotkey = false
+                    Settings.hotkeys[Settings.hotkeys_selected_index].keys = get_current_keys()
+                    Settings.hotkeys_selected_index = math.min(Settings.hotkeys_selected_index + 1, #Settings.hotkeys)
+                    Settings.hotkeys_assigning = false
                 end
             end
 
