@@ -60,6 +60,41 @@ local function project(vec3)
     return p
 end
 
+local function draw_moved_dist_start_marker(rect)
+    local text = "Moved Dist Start"
+    local theme = Presets.styles[Settings.active_style_index].theme
+    local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
+    local text_scale = math.max(1.25, 20 / rect.width)
+
+    local size = BreitbandGraphics.get_text_size(text, theme.font_size * Drawing.scale * text_scale,
+        theme.font_name)
+
+    local padding = ugui.standard_styler.params.textbox.padding.x
+
+    size.width = size.width + padding
+    size.height = size.height + padding
+
+
+    local container_rect = {
+        x = rect.x - size.width / 2,
+        y = rect.y - size.height / 2,
+        width = rect.width + size.width,
+        height = rect.height + size.height
+    }
+    BreitbandGraphics.fill_rectangle(container_rect, theme.background_color)
+
+    BreitbandGraphics.fill_ellipse(rect, { r = 0, g = 0, b = 255, a = 128 })
+
+    BreitbandGraphics.draw_text(
+        container_rect,
+        "center",
+        "center",
+        { aliased = not theme.cleartype },
+        foreground_color,
+        theme.font_size * Drawing.scale * text_scale,
+        theme.font_name,
+        text)
+end
 
 WorldVisualizer.draw = function()
     if not Settings.worldviz_enabled then
@@ -74,6 +109,15 @@ WorldVisualizer.draw = function()
 
 
     local objects = get_objects()
+
+    objects[#objects + 1] = {
+        x = Settings.moved_distance_axis.x,
+        y = Settings.moved_distance_axis.y,
+        z = Settings.moved_distance_axis.z,
+        close = 50,
+        far = 5000,
+        draw = draw_moved_dist_start_marker,
+    }
 
     for _, o in pairs(objects) do
         local p = project(o);
@@ -90,7 +134,13 @@ WorldVisualizer.draw = function()
             width = math.floor(offset),
             height = math.floor(offset),
         }
-        BreitbandGraphics.draw_rectangle(rect, BreitbandGraphics.colors.red, 1)
+
+        if o.draw then
+            o.draw(rect)
+        else
+            BreitbandGraphics.draw_rectangle(rect, o.color or BreitbandGraphics.colors.red, 1)
+        end
+
         ::continue::
     end
 end
