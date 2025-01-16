@@ -313,10 +313,10 @@ return {
         local buttonDrawData = DrawColorCodes()
         DrawHeaders(pianoRoll, draw, buttonDrawData)
 
-        local prev_joystick_tip_size = ugui.standard_styler.joystick_tip_size
-        ugui.standard_styler.joystick_tip_size = 4 * Drawing.scale
+        local prev_joystick_tip_size = ugui.standard_styler.params.joystick.tip_size
+        ugui.standard_styler.params.joystick.tip_size = 4 * Drawing.scale
         local anyChange = DrawFramesGui(pianoRoll, draw, buttonDrawData)
-        ugui.standard_styler.joystick_tip_size = prev_joystick_tip_size
+        ugui.standard_styler.params.joystick.tip_size = prev_joystick_tip_size
 
         return anyChange
     end,
