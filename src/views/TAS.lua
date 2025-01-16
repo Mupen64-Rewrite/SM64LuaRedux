@@ -42,7 +42,7 @@ return {
             TASState.high_magnitude = false
         end
 
-        local foreground_color = theme.background_color
+        local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
 
         BreitbandGraphics.draw_text(
             grid_rect(4, 6, 2, 1),
