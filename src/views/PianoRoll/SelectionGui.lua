@@ -22,7 +22,7 @@ return {
         local confirmationText = "[Confirm deletion]\n\nAre you sure you want to delete \"" .. PianoRollContext.current.name .. "\"?\nThis action cannot be undone."
 
         local theme = Presets.styles[Settings.active_style_index].theme
-        local foregroundColor = theme.listbox.text_colors[1]
+        local foregroundColor = theme.listbox_item.text[1]
 
         BreitbandGraphics.draw_text(
             grid_rect(0, top - 8, 8, 8),
@@ -56,7 +56,7 @@ return {
     end,
     Render = function()
         local theme = Presets.styles[Settings.active_style_index].theme
-        local foregroundColor = theme.listbox.text_colors[1]
+        local foregroundColor = theme.listbox_item.text[1]
 
         local availablePianoRolls = {}
         for i = 1, #PianoRollContext.all, 1 do
@@ -69,7 +69,7 @@ return {
                 grid_rect(0, 0, 8, 16),
                 "center",
                 "center",
-                {},
+                { aliased = not ugui.standard_styler.params.cleartype},
                 foregroundColor,
                 theme.font_size * 1.2 * Drawing.scale,
                 theme.font_name,
@@ -80,7 +80,7 @@ return {
                     grid_rect(0, 0, 8, 16),
                     "center",
                     "center",
-                    {},
+                    { aliased = not ugui.standard_styler.params.cleartype },
                     foregroundColor,
                     theme.font_size * 1.2 * Drawing.scale,
                     theme.font_name,

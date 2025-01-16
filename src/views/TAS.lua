@@ -1,6 +1,8 @@
 return {
     name = "TAS",
     draw = function()
+        local theme = Presets.styles[Settings.active_style_index].theme
+
         ugui.listbox({
             uid = 0,
             rectangle = grid_rect(0, 8, 8, 8),
@@ -40,30 +42,29 @@ return {
             TASState.high_magnitude = false
         end
 
-        local foreground_color = BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme
-        .background_color)
+        local foreground_color = theme.background_color
+
         BreitbandGraphics.draw_text(
             grid_rect(4, 6, 2, 1),
             "center",
             "center",
-            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
+            { aliased = not theme.cleartype },
             foreground_color,
-            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
+            theme.font_size * Drawing.scale * 1.25,
             "Consolas",
             "X: " .. Engine.stick_for_input_x(TASState))
         BreitbandGraphics.draw_text(
             grid_rect(6, 6, 2, 1),
             "center",
             "center",
-            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
+            { aliased = not theme.cleartype },
             foreground_color,
-            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
+            theme.font_size * Drawing.scale * 1.25,
             "Consolas",
             "Y: " .. Engine.stick_for_input_y(TASState))
 
         if ugui.button({
                 uid = 25,
-
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
@@ -73,7 +74,6 @@ return {
 
         TASState.framewalk = ugui.toggle_button({
             uid = 30,
-
             rectangle = grid_rect(6, 5, 2, 1),
             text = 'Framewalk',
             is_checked = TASState.framewalk
@@ -88,7 +88,6 @@ return {
         })
         TASState.strain_speed_target = ugui.toggle_button({
             uid = 40,
-
             rectangle = grid_rect(7, 0, 1, 1),
             text = '.99',
             is_checked = TASState.strain_speed_target
@@ -109,25 +108,23 @@ return {
         })
 
         if ugui.toggle_button({
-            uid = 55,
-
-            rectangle = grid_rect(6, 1, 1, 1),
-            text = '<',
-            is_checked = TASState.strain_left
-        }) then
+                uid = 55,
+                rectangle = grid_rect(6, 1, 1, 1),
+                text = '<',
+                is_checked = TASState.strain_left
+            }) then
             TASState.strain_right = false
             TASState.strain_left = true
-	    else
-		    TASState.strain_left = false
-	    end
+        else
+            TASState.strain_left = false
+        end
 
         if ugui.toggle_button({
-            uid = 60,
-
-            rectangle = grid_rect(7, 1, 1, 1),
-            text = '>',
-            is_checked = TASState.strain_right
-        }) then
+                uid = 60,
+                rectangle = grid_rect(7, 1, 1, 1),
+                text = '>',
+                is_checked = TASState.strain_right
+            }) then
             TASState.strain_left = false
             TASState.strain_right = true
         else
@@ -135,7 +132,7 @@ return {
         end
 
         local joystick_rect = grid(0, 4, 4, 4)
-        local displayPosition = {x = Engine.stick_for_input_x(TASState), y = -Engine.stick_for_input_y(TASState)}
+        local displayPosition = { x = Engine.stick_for_input_x(TASState), y = -Engine.stick_for_input_y(TASState) }
         local newPosition = ugui.joystick({
             uid = 70,
             rectangle = {

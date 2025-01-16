@@ -17,17 +17,21 @@ end
 
 
 local function draw_field(rect, text, scale)
+    local theme = Presets.styles[Settings.active_style_index].theme
+
     BreitbandGraphics.draw_text(rect, "start", "center",
-        { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
-        BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
-        Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * scale,
-        Presets.styles[Settings.active_style_index].theme.font_name,
+        { aliased = not theme.cleartype },
+        BreitbandGraphics.invert_color(theme.background_color),
+        theme.font_size * Drawing.scale * scale,
+        theme.font_name,
         text)
 end
 
 return {
     name = "Timer 2",
     draw = function()
+        local theme = Presets.styles[Settings.active_style_index].theme
+
         local x_offset = 0.5
 
         ugui.joystick({
@@ -40,21 +44,21 @@ return {
             mag = 0
         })
         BreitbandGraphics.draw_text(grid_rect(4 + x_offset, 0.5, 4 - x_offset, 1), "center", "center",
-            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
-            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
-            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 2,
+            { aliased = not theme.cleartype },
+            BreitbandGraphics.invert_color(theme.background_color),
+            theme.font_size * Drawing.scale * 2,
             "Consolas",
             "X: " .. Joypad.input.X)
         BreitbandGraphics.draw_text(grid_rect(4 + x_offset, 1.5, 4 - x_offset, 1), "center", "center",
-            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
-            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
-            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 2,
+            { aliased = not theme.cleartype },
+            BreitbandGraphics.invert_color(theme.background_color),
+            theme.font_size * Drawing.scale * 2,
             "Consolas",
             "Y: " .. Joypad.input.Y)
-            BreitbandGraphics.draw_text(grid_rect(4 + x_offset, 2.5, 4 - x_offset, 1), "center", "center",
-            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
-            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
-            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 2,
+        BreitbandGraphics.draw_text(grid_rect(4 + x_offset, 2.5, 4 - x_offset, 1), "center", "center",
+            { aliased = not theme.cleartype },
+            BreitbandGraphics.invert_color(theme.background_color),
+            theme.font_size * Drawing.scale * 2,
             "Consolas",
             Timer.get_frame_text())
 

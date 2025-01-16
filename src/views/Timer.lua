@@ -1,6 +1,8 @@
 return {
     name = "Timer",
     draw = function()
+        local theme = Presets.styles[Settings.active_style_index].theme
+
         if ugui.button({
                 uid = 10,
 
@@ -41,15 +43,14 @@ return {
         })
 
         BreitbandGraphics.draw_text(grid_rect(0, 5, 8, 1), "center", "center",
-            { aliased = Presets.styles[Settings.active_style_index].theme.pixelated_text },
-            BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme.background_color),
-            Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 2,
+            { aliased = not theme.cleartype },
+            BreitbandGraphics.invert_color(theme.background_color),
+            theme.font_size * Drawing.scale * 2,
             "Consolas",
             Timer.get_frame_text())
 
         ugui.toggle_button({
             uid = 35,
-
             rectangle = grid_rect(4, 6, 2),
             text = "A",
             is_checked = Joypad.input.A
@@ -57,7 +58,6 @@ return {
 
         ugui.toggle_button({
             uid = 40,
-
             rectangle = grid_rect(2, 6, 2),
             text = "B",
             is_checked = Joypad.input.B
@@ -65,7 +65,6 @@ return {
 
         ugui.toggle_button({
             uid = 45,
-
             rectangle = grid_rect(3, 8, 1),
             text = "Z",
             is_checked = Joypad.input.Z
@@ -73,7 +72,6 @@ return {
 
         ugui.toggle_button({
             uid = 50,
-
             rectangle = grid_rect(4, 8, 1),
             text = "S",
             is_checked = Joypad.input.start
@@ -81,7 +79,6 @@ return {
 
         ugui.toggle_button({
             uid = 55,
-
             rectangle = grid_rect(1, 7),
             text = "L",
             is_checked = Joypad.input.L
@@ -89,7 +86,6 @@ return {
 
         ugui.toggle_button({
             uid = 60,
-
             rectangle = grid_rect(6, 7),
             text = "R",
             is_checked = Joypad.input.R

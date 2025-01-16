@@ -80,15 +80,15 @@ local function DrawHeaders(pianoRoll, draw, buttonDrawData)
     draw:text(grid_rect(0, row0, 2, 1), "start", "Start: " .. pianoRoll.startGT)
 
     draw:text(grid_rect(3, 0, 1, 0.5), "start", "Name")
-    local prev_font_size = ugui.standard_styler.font_size
-    ugui.standard_styler.font_size = ugui.standard_styler.font_size * 0.75
+    local prev_font_size = ugui.standard_styler.params.font_size
+    ugui.standard_styler.params.font_size = ugui.standard_styler.params.font_size * 0.75
     pianoRoll.name = ugui.textbox({
         uid = UID.PianoRollName,
         is_enabled = true,
         rectangle = grid_rect(4, 0, 4, 0.5),
         text = pianoRoll.name
     })
-    ugui.standard_styler.font_size = prev_font_size
+    ugui.standard_styler.params.font_size = prev_font_size
 
     draw:text(grid_rect(col0, row1, col1 - col0, 1), "start", "Frame")
     draw:text(grid_rect(col1, row1, col6 - col1, 1), "start", "Joystick")

@@ -34,7 +34,7 @@ return {
             local size = BreitbandGraphics.get_text_size(notification.text, theme.font_size * Drawing.scale * text_scale,
                 theme.font_name)
 
-            local padding = ugui.standard_styler.textbox_padding
+            local padding = ugui.standard_styler.params.textbox.padding.x
 
             size.width = size.width + padding
             size.height = size.height + padding
@@ -55,7 +55,7 @@ return {
                 },
                 "start",
                 "start",
-                { aliased = theme.pixelated_text },
+                { aliased = not theme.cleartype },
                 foreground_color,
                 theme.font_size * Drawing.scale * text_scale,
                 theme.font_name,

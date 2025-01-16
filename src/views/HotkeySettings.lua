@@ -152,7 +152,7 @@ return {
                 grid_rect(0, 9, 8, 0.5),
                 "start",
                 "center",
-                { aliased = theme.pixelated_text },
+                { aliased = not theme.cleartype },
                 foreground_color,
                 theme.font_size * Drawing.scale,
                 theme.font_name,

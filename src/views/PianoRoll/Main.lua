@@ -87,7 +87,7 @@ local function DrawFactory(theme)
         foregroundColor = BreitbandGraphics.invert_color(theme.background_color),
         backgroundColor = theme.background_color,
         fontSize = theme.font_size * Drawing.scale * 0.75,
-        style = { aliased = theme.pixelated_text },
+        style = { aliased = not theme.cleartype },
 
         text = function(self, rect, horizontal_alignment, text)
             BreitbandGraphics.draw_text(rect, horizontal_alignment, "center", self.style, self.foregroundColor, self.fontSize, "Consolas", text)

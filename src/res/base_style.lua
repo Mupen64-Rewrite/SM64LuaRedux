@@ -1,16 +1,18 @@
 function get_base_style()
     return {
         background_color = BreitbandGraphics.repeated_to_color(240),
-        item_height = 15,
-        font_size = 12,
+
         font_name = 'MS Sans Serif',
+        font_size = 12,
+
         button = {
-            text_colors = {
+            text = {
                 [1] = BreitbandGraphics.colors.black,
                 [2] = BreitbandGraphics.colors.black,
                 [3] = BreitbandGraphics.colors.black,
                 [0] = BreitbandGraphics.repeated_to_color(131),
             },
+
             states = {
                 [1] = {
                     source = expand_rect({ 1, 1, 11, 9 }),
@@ -31,12 +33,15 @@ function get_base_style()
             }
         },
         textbox = {
-            text_colors = {
+            item_height = 15,
+
+            text = {
                 [1] = BreitbandGraphics.colors.black,
                 [2] = BreitbandGraphics.colors.black,
                 [3] = BreitbandGraphics.colors.black,
                 [0] = BreitbandGraphics.repeated_to_color(109),
             },
+
             states = {
                 [1] = {
                     source = expand_rect({ 74, 1, 5, 5 }),
@@ -57,7 +62,7 @@ function get_base_style()
             }
         },
         listbox = {
-            text_colors = {
+            text = {
                 [1] = BreitbandGraphics.colors.black,
                 [2] = BreitbandGraphics.colors.black,
                 [3] = BreitbandGraphics.colors.white,
@@ -123,37 +128,37 @@ function get_base_style()
             }
         },
         joystick = {
-            back_colors = {
+            back = {
                 [1] = BreitbandGraphics.hex_to_color('#FFFFFF'),
                 [2] = BreitbandGraphics.hex_to_color('#FFFFFF'),
                 [3] = BreitbandGraphics.hex_to_color('#FFFFFF'),
                 [0] = BreitbandGraphics.hex_to_color('#FFFFFF'),
             },
-            outline_colors = {
+            outline  = {
                 [1] = BreitbandGraphics.hex_to_color('#000000'),
                 [2] = BreitbandGraphics.hex_to_color('#000000'),
                 [3] = BreitbandGraphics.hex_to_color('#000000'),
                 [0] = BreitbandGraphics.hex_to_color('#000000'),
             },
-            tip_colors = {
+            tip = {
                 [1] = BreitbandGraphics.hex_to_color('#FF0000'),
                 [2] = BreitbandGraphics.hex_to_color('#FF0000'),
                 [3] = BreitbandGraphics.hex_to_color('#FF0000'),
                 [0] = BreitbandGraphics.hex_to_color('#FF8080'),
             },
-            line_colors = {
+            line = {
                 [1] = BreitbandGraphics.hex_to_color('#0000FF'),
                 [2] = BreitbandGraphics.hex_to_color('#0000FF'),
                 [3] = BreitbandGraphics.hex_to_color('#0000FF'),
                 [0] = BreitbandGraphics.hex_to_color('#8080FF'),
             },
-            inner_mag_colors = {
+            inner_mag = {
                 [1] = BreitbandGraphics.hex_to_color('#FF000022'),
                 [2] = BreitbandGraphics.hex_to_color('#FF000022'),
                 [3] = BreitbandGraphics.hex_to_color('#FF000022'),
                 [0] = BreitbandGraphics.hex_to_color('#00000000'),
             },
-            outer_mag_colors = {
+            outer_mag = {
                 [1] = BreitbandGraphics.hex_to_color('#FF0000'),
                 [2] = BreitbandGraphics.hex_to_color('#FF0000'),
                 [3] = BreitbandGraphics.hex_to_color('#FF0000'),
