@@ -140,7 +140,6 @@ function at_input()
     -- frame stage 1: set everything up
     new_frame = true
     Joypad.update()
-    Engine.input()
 
     if Settings.override_rng then
         if Settings.override_rng_use_index then
@@ -296,8 +295,6 @@ function at_vi()
             new_frame = false
         end
     end
-
-    Engine.vi()
 end
 
 function at_loadstate()

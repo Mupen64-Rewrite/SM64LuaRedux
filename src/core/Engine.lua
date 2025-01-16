@@ -294,7 +294,7 @@ function Engine.GetSpeedEfficiency()
 		Memory.current.mario_x_sliding_speed ^ 2 +
 		Memory.current.mario_z_sliding_speed ^ 2)
 	)
-	
+
 	if div == 0 then
 		return 0
 	end
@@ -413,40 +413,4 @@ Engine.scaleInputsForMagnitude = function(result, goal_mag, use_high_mag)
 	if math.abs(closest_y) < 8 then closest_y = 0 end
 
 	result.X, result.Y = closest_x, closest_y
-end
-
--- Lag Frame Counter --
-
-local vi_count = 0
-local inp_count = 0
-local frame_count_vi = {}
-local frame_count_inp = {}
-
-function Engine.ResetLagVars()
-	vi_count = 0
-	inp_count = 0
-	frame_count_vi = {}
-	frame_count_inp = {}
-end
-
-function Engine.vi()
-	frame_count_vi[#frame_count_vi] = emu.framecount()
-	if emu.getpause() then
-		return 0
-	else
-		vi_count = vi_count + 1
-	end
-end
-
-function Engine.input()
-	frame_count_inp[#frame_count_inp] = emu.framecount()
-	if emu.getpause() then
-		return 0
-	else
-		inp_count = inp_count + 1
-	end
-end
-
-function Engine.GetLagFrames()
-	return vi_count - (inp_count * 2)
 end
