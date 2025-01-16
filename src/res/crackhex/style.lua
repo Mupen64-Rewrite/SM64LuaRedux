@@ -56,6 +56,41 @@ theme.joystick.tip = {
     [3] = BreitbandGraphics.hex_to_color("#EEAFC0"),
     [0] = BreitbandGraphics.hex_to_color("#EEAFC0"),
 }
+theme.menu = {
+    back = {
+        [1] = BreitbandGraphics.hex_to_color('#1A1A1C'),
+        [2] = BreitbandGraphics.hex_to_color('#1A1A1C'),
+        [3] = BreitbandGraphics.hex_to_color('#1A1A1C'),
+        [0] = BreitbandGraphics.hex_to_color('#1A1A1C'),
+    },
+    border = {
+        [1] = BreitbandGraphics.hex_to_color('#386A87'),
+        [2] = BreitbandGraphics.hex_to_color('#386A87'),
+        [3] = BreitbandGraphics.hex_to_color('#386A87'),
+        [0] = BreitbandGraphics.hex_to_color('#386A87'),
+    },
+}
+theme.menu_item = {
+    back = {
+        [1] = BreitbandGraphics.hex_to_color('#00000000'),
+        [2] = BreitbandGraphics.hex_to_color('#73CFF4'),
+        [3] = BreitbandGraphics.hex_to_color('#73CFF4'),
+        [0] = BreitbandGraphics.hex_to_color('#00000000'),
+    },
+    border = {
+        [1] = BreitbandGraphics.hex_to_color('#00000000'),
+        [2] = BreitbandGraphics.hex_to_color('#00091E'),
+        [3] = BreitbandGraphics.hex_to_color('#00091E'),
+        [0] = BreitbandGraphics.hex_to_color('#00000000'),
+    },
+    text = {
+        [1] = BreitbandGraphics.hex_to_color('#F7A8B8'),
+        [2] = BreitbandGraphics.hex_to_color('#000000'),
+        [3] = BreitbandGraphics.hex_to_color('#000000'),
+        [0] = BreitbandGraphics.hex_to_color('#F7A8B8'),
+    }
+}
+
 return {
     name = 'Crackhex',
     theme = theme
