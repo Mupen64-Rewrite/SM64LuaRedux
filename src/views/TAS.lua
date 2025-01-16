@@ -1,7 +1,7 @@
 return {
     name = "TAS",
     draw = function()
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
 
         ugui.listbox({
             uid = 0,

@@ -77,6 +77,7 @@ dofile(core_path .. "RNGToIndex.lua")
 dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
 dofile(core_path .. "VarWatch.lua")
+dofile(core_path .. "Styles.lua")
 dofile(core_path .. "Presets.lua")
 dofile(core_path .. "Dumping.lua")
 Hotkeys = dofile(core_path .. "Hotkeys.lua")
@@ -220,7 +221,7 @@ function at_update_screen()
         y = 0,
         width = Drawing.size.width - Drawing.initial_size.width,
         height = Drawing.size.height
-    }, Presets.styles[Settings.active_style_index].theme.background_color)
+    }, Styles.theme().background_color)
 
     views[Settings.tab_index].draw()
 

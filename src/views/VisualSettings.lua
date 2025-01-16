@@ -5,13 +5,13 @@ local items = {
             local new_active_style_index = ugui.combobox({
                 uid = 1,
                 rectangle = rect,
-                items = lualinq.select_key(Presets.styles, "name"),
+                items = Styles.theme_names(),
                 selected_index = Settings.active_style_index,
             })
 
             if new_active_style_index ~= Settings.active_style_index then
                 Settings.active_style_index = new_active_style_index
-                Presets.set_style(Presets.styles[Settings.active_style_index].theme)
+                Styles.update_style()
             end
         end
     },
@@ -86,7 +86,7 @@ local items = {
 return {
     name = "Visuals",
     draw = function()
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
         local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
 
         local y = 0.1

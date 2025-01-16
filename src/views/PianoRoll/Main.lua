@@ -110,7 +110,7 @@ return {
 
         if PianoRollContext.current == nil then return end
 
-        local draw = DrawFactory(Presets.styles[Settings.active_style_index].theme)
+        local draw = DrawFactory(Styles.theme())
 
         ToolsGui.Render()
         if FrameListGui.Render(draw) or JoystickGui.Render(draw) then

@@ -21,7 +21,7 @@ return {
 
         local confirmationText = "[Confirm deletion]\n\nAre you sure you want to delete \"" .. PianoRollContext.current.name .. "\"?\nThis action cannot be undone."
 
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
         local foregroundColor = theme.listbox_item.text[1]
 
         BreitbandGraphics.draw_text(
@@ -55,7 +55,7 @@ return {
         return true
     end,
     Render = function()
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
         local foregroundColor = theme.listbox_item.text[1]
 
         local availablePianoRolls = {}

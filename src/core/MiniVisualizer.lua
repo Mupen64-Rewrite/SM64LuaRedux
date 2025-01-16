@@ -5,7 +5,7 @@ MiniVisualizer.draw = function()
         return
     end
     BreitbandGraphics.fill_rectangle(grid_rect_abs(3, 14, 5, 2),
-        Presets.styles[Settings.active_style_index].theme.background_color)
+        Styles.theme().background_color)
     ugui.joystick({
         uid = -100,
         rectangle = grid_rect_abs(0, 14, 3, 3),
@@ -45,33 +45,33 @@ MiniVisualizer.draw = function()
         text = "R",
         is_checked = Joypad.input.R
     })
-    local foreground_color = BreitbandGraphics.invert_color(Presets.styles[Settings.active_style_index].theme
+    local foreground_color = BreitbandGraphics.invert_color(Styles.theme()
         .background_color)
     BreitbandGraphics.draw_text(
         grid_rect_abs(3, 15, 5, 1),
         "center",
         "center",
-        { aliased = not Presets.styles[Settings.active_style_index].theme.cleartype },
+        { aliased = not Styles.theme().cleartype },
         foreground_color,
-        Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale,
+        Styles.theme().font_size * Drawing.scale,
         "Consolas",
         VarWatch_compute_value("action"))
     BreitbandGraphics.draw_text(
         grid_rect_abs(3, 14, 2.5, 1),
         "center",
         "center",
-        { aliased = not Presets.styles[Settings.active_style_index].theme.cleartype },
+        { aliased = not Styles.theme().cleartype },
         foreground_color,
-        Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
+        Styles.theme().font_size * Drawing.scale * 1.25,
         "Consolas",
         "X: " .. Joypad.input.X)
     BreitbandGraphics.draw_text(
         grid_rect_abs(5.5, 14, 2.5, 1),
         "center",
         "center",
-        { aliased = not Presets.styles[Settings.active_style_index].theme.cleartype },
+        { aliased = not Styles.theme().cleartype },
         foreground_color,
-        Presets.styles[Settings.active_style_index].theme.font_size * Drawing.scale * 1.25,
+        Styles.theme().font_size * Drawing.scale * 1.25,
         "Consolas",
         "Y: " .. Joypad.input.Y)
 end

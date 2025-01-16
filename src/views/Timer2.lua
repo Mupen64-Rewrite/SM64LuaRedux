@@ -17,7 +17,7 @@ end
 
 
 local function draw_field(rect, text, scale)
-    local theme = Presets.styles[Settings.active_style_index].theme
+    local theme = Styles.theme()
 
     BreitbandGraphics.draw_text(rect, "start", "center",
         { aliased = not theme.cleartype },
@@ -30,7 +30,7 @@ end
 return {
     name = "Timer 2",
     draw = function()
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
 
         local x_offset = 0.5
 

@@ -1,7 +1,7 @@
 return {
     name = "Timer",
     draw = function()
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
 
         if ugui.button({
                 uid = 10,

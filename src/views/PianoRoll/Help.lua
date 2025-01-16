@@ -64,7 +64,7 @@ You can always cycle to "Off" to disable Piano Rolls entirely.
 
 return {
     Render = function()
-        local theme = Presets.styles[Settings.active_style_index].theme
+        local theme = Styles.theme()
         local foregroundColor = theme.listbox_item.text[1]
 
         local controlHeight = 0.75

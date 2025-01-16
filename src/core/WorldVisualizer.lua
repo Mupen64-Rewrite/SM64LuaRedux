@@ -62,7 +62,7 @@ end
 
 local function draw_moved_dist_start_marker(rect)
     local text = "Moved Dist Start"
-    local theme = Presets.styles[Settings.active_style_index].theme
+    local theme = Styles.theme()
     local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
     local text_scale = math.max(1.25, 20 / rect.width)
 
