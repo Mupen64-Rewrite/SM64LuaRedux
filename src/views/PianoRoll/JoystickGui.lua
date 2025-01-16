@@ -110,8 +110,8 @@ local function ControlsForSelected(draw)
         newValues.manual_joystick_x = math.min(127, math.floor(newPosition.x + 0.5)) or TASState.manual_joystick_x
         newValues.manual_joystick_y = math.min(127, -math.floor(newPosition.y + 0.5)) or TASState.manual_joystick_y
     end
-    local previousThickness = ugui.standard_styler.spinner_button_thickness
-    ugui.standard_styler.spinner_button_thickness = 4
+    local previousThickness = ugui.standard_styler.params.spinner.button_size
+    ugui.standard_styler.params.spinner.button_size = 4
     local rect = grid_rect(0, top + 3, 1, smallControlHeight, 0)
     rect.y = rect.y + Settings.grid_gap
     newValues.manual_joystick_x = ugui.spinner({
@@ -222,7 +222,7 @@ local function ControlsForSelected(draw)
     MagnitudeControls(draw, pianoRoll, newValues, top + 3)
     AtanControls(draw, pianoRoll, newValues, top + 4)
 
-    ugui.standard_styler.spinner_button_thickness = previousThickness
+    ugui.standard_styler.params.spinner.button_size = previousThickness
 
     local changes = CloneInto(TASState, newValues)
     local anyChanges = AnyEntries(changes)
