@@ -204,7 +204,7 @@ function at_update_screen()
         held_keys = keys,
         window_size = {
             x = Drawing.size.width,
-            y = Drawing.size.height,
+            y = Drawing.size.height - 23,
         }
     }
     ugui.begin_frame(ugui_environment)
