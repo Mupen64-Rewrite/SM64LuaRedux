@@ -62,7 +62,7 @@ end
 
 
 WorldVisualizer.draw = function()
-    if not Settings.visualize_objects then
+    if not Settings.worldviz_enabled then
         return
     end
 

@@ -164,11 +164,11 @@ return {
             theme.font_name,
             "Experiments")
 
-        Settings.visualize_objects = ugui.toggle_button({
+        Settings.worldviz_enabled = ugui.toggle_button({
             uid = 30,
             rectangle = grid_rect(0, EXPERIMENTS_ROW + 2, 4, 1),
-            text = "Object Visualizer",
-            is_checked = Settings.visualize_objects
+            text = "World Visualizer",
+            is_checked = Settings.worldviz_enabled
         })
         Settings.auto_firsties = ugui.toggle_button({
             uid = 35,

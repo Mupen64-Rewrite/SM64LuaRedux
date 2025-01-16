@@ -40,7 +40,7 @@ or...
 - Divegrind Automation[^4]
 - n-Frame Lookahead[^5]
 - Customizable formatting[^6]
-- 3D Object Visualization[^7]
+- 3D World Visualization[^7]
 
 [^2]: The script will resize its elements intelligently to fit, and will thus work on small and huge resolutions
 [^3]: A preset saves your current choices (e.g.: Match Yaw with DYaw = 11111), and allow you to change between saved presets for spontaneously testing new strats or reusing older known configurations
