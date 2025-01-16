@@ -299,21 +299,31 @@ function Engine.GetSpeedEfficiency()
 		return 0
 	end
 
-	return Engine.get_distance_moved() / div
+	return Engine.get_xz_distance_moved_since_last_frame() / div
 end
 
-function Engine.get_distance_moved()
+function Engine.get_xz_distance_moved_since_last_frame()
 	return math.sqrt((Memory.previous.mario_x - Memory.current.mario_x) ^
 		2 + (Memory.previous.mario_z - Memory.current.mario_z) ^ 2)
 end
 
-function Engine.GetTotalDistMoved()
-	eckswhy = (Settings.moved_distance_axis.x - Memory.current.mario_x) ^ 2 +
-		(Settings.moved_distance_axis.z - Memory.current.mario_z) ^ 2
-	if (Settings.moved_distance_ignore_y == false) then
-		eckswhy = eckswhy + (Settings.moved_distance_axis.y - Memory.current.mario_y) ^ 2
+function Engine.get_distance_moved()
+	local x = (Settings.moved_distance_axis.x - Memory.current.mario_x) ^ 2
+	local y = (Settings.moved_distance_axis.y - Memory.current.mario_y) ^ 2
+	local z = (Settings.moved_distance_axis.z - Memory.current.mario_z) ^ 2
+
+	local sum = 0
+	if Settings.moved_distance_x then
+		sum = sum + x
 	end
-	return math.sqrt(eckswhy)
+	if Settings.moved_distance_y then
+		sum = sum + y
+	end
+	if Settings.moved_distance_z then
+		sum = sum + z
+	end
+
+	return math.sqrt(sum)
 end
 
 function Engine.GetHSlidingSpeed()

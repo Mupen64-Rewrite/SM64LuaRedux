@@ -40,7 +40,7 @@ local var_funcs = {
         return string.format("Pitch Vel: %s", Formatter.angle(Memory.current.mario_pitch_vel))
     end,
     ["xz_movement"] = function()
-        return string.format("XZ Movement: %s", Formatter.u(Engine.get_distance_moved()))
+        return string.format("XZ Movement: %s", Formatter.u(Engine.get_xz_distance_moved_since_last_frame()))
     end,
     ["action"] = function()
         local name = Actions.name_from_value(Memory.current.mario_action)
@@ -50,7 +50,7 @@ local var_funcs = {
         return "RNG: " .. Memory.current.rng_value .. " (index: " .. get_index(Memory.current.rng_value) .. ")"
     end,
     ["moved_dist"] = function()
-        local dist = Settings.track_moved_distance and Engine.GetTotalDistMoved() or Settings.moved_distance
+        local dist = Settings.track_moved_distance and Engine.get_distance_moved() or Settings.moved_distance
         return string.format("Moved Dist: %s", Formatter.u(dist))
     end,
     ["atan_basic"] = function()

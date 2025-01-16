@@ -195,13 +195,25 @@ return {
             Settings.moved_distance_axis.z = Memory.current.mario_z
         end
         if not Settings.track_moved_distance and previous_track_moved_distance then
-            Settings.moved_distance = Engine.GetTotalDistMoved()
+            Settings.moved_distance = Engine.get_distance_moved()
         end
-        Settings.moved_distance_ignore_y = ugui.toggle_button({
+        Settings.moved_distance_x = ugui.toggle_button({
             uid = 45,
-            rectangle = grid_rect(3, EXPERIMENTS_ROW, 2, 1),
-            text = 'Ignore Y',
-            is_checked = Settings.moved_distance_ignore_y
+            rectangle = grid_rect(3, EXPERIMENTS_ROW, 1, 1),
+            text = 'X',
+            is_checked = Settings.moved_distance_x
+        })
+        Settings.moved_distance_y = ugui.toggle_button({
+            uid = 99,
+            rectangle = grid_rect(4, EXPERIMENTS_ROW, 1, 1),
+            text = 'Y',
+            is_checked = Settings.moved_distance_y
+        })
+        Settings.moved_distance_z = ugui.toggle_button({
+            uid = 101,
+            rectangle = grid_rect(5, EXPERIMENTS_ROW, 1, 1),
+            text = 'Z',
+            is_checked = Settings.moved_distance_z
         })
     end
 }
