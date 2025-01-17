@@ -516,6 +516,26 @@ ugui_ext.apply_nineslice = function(style)
     end
     ugui_ext.free()
 
+    ugui.standard_styler.draw_icon = function(rectangle, color, visual_state, key)
+        local rectangles = style.icons[key]
+
+        if rectangles then
+            local rect = rectangles[visual_state]
+
+            local centered_rect = {
+                x = math.ceil(rectangle.x + rectangle.width / 2 - rect.width / 2),
+                y = math.ceil(rectangle.y + rectangle.height / 2 - rect.height / 2),
+                width = rect.width,
+                height = rect.height,
+            }
+
+            BreitbandGraphics.draw_image(centered_rect, rectangles[visual_state], Styles.theme().path,
+                BreitbandGraphics.colors.white, "linear")
+        else
+            BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
+        end
+    end
+
     ugui.standard_styler.draw_raised_frame = function(control, visual_state)
         local key = ugui_ext.internal.params_to_key('raised_frame', control.rectangle, visual_state)
 

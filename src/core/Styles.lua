@@ -73,6 +73,6 @@ Styles.theme = function()
     return styles[Settings.active_style_index].theme
 end
 
-Styles.theme_names = function ()
+Styles.theme_names = function()
     return lualinq.select_key(styles, "name")
 end
