@@ -8,6 +8,8 @@ Drawing = {
 function Drawing.size_up()
     Drawing.initial_size = wgui.info()
     Drawing.scale = (Drawing.initial_size.height - 23) / 600
+    Drawing.scale = MoreMaths.round(Drawing.scale, 2)
+
     local extra_space = (Settings.grid_size * 8) * Drawing.scale
     wgui.resize(math.floor(Drawing.initial_size.width + extra_space),
         Drawing.initial_size.height)
