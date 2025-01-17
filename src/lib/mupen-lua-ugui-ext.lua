@@ -43,7 +43,9 @@ ugui_ext = {
 }
 
 if d2d.draw_to_image then
-    print('mupen-lua-ugui-ext: Using high-performance cached drawing for mupen64-rr-lua 1.1.7+')
+    if not UGUI_QUIET then
+        print('mupen-lua-ugui-ext: Using high-performance cached drawing for mupen64-rr-lua 1.1.7+')
+    end
 
     ugui_ext.internal.cached_draw = function(key, rectangle, draw_callback)
         if not ugui_ext.internal.drawings[key] then
@@ -410,12 +412,14 @@ ugui.numberbox = function(control)
 
     local text = string.format('%0' .. tostring(control.places) .. 'd', control.value)
 
-    BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-        { aliased = not ugui.standard_styler.params.cleartype },
-        ugui.standard_styler.params.textbox.text[visual_state],
-        font_size,
-        font_name, text)
-
+    BreitbandGraphics.draw_text2({
+        text = text,
+        rectangle = control.rectangle,
+        color = ugui.standard_styler.params.textbox.text[visual_state],
+        font_name = font_name,
+        font_size = font_size,
+        aliased = not ugui.standard_styler.params.cleartype,
+    })
 
     local text_width_up_to_caret = BreitbandGraphics.get_text_size(
         text:sub(1, ugui.internal.control_data[control.uid].caret_index - 1),
@@ -486,11 +490,14 @@ ugui.numberbox = function(control)
         -- draw the char at caret index in inverted color
         BreitbandGraphics.fill_rectangle(selected_char_rect, BreitbandGraphics.hex_to_color('#0078D7'))
         BreitbandGraphics.push_clip(selected_char_rect)
-        BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-            { aliased = not ugui.standard_styler.params.cleartype },
-            BreitbandGraphics.invert_color(ugui.standard_styler.params.textbox.text[visual_state]),
-            font_size,
-            font_name, text)
+        BreitbandGraphics.draw_text2({
+            text = text,
+            rectangle = control.rectangle,
+            color = BreitbandGraphics.invert_color(ugui.standard_styler.params.textbox.text[visual_state]),
+            font_name = font_name,
+            font_size = font_size,
+            aliased = not ugui.standard_styler.params.cleartype,
+        })
         BreitbandGraphics.pop_clip()
     end
 
@@ -521,7 +528,7 @@ ugui_ext.apply_nineslice = function(style)
     end
 
     ugui.standard_styler.draw_edit_frame = function(control, rectangle,
-                                                    visual_state)
+        visual_state)
         local key = ugui_ext.internal.params_to_key('edit_frame', rectangle, visual_state)
 
         ugui_ext.internal.cached_draw(key, rectangle, function(eff_rectangle)
@@ -555,16 +562,24 @@ ugui_ext.apply_nineslice = function(style)
             style.listbox_item.states[visual_state].source,
             style.listbox_item.states[visual_state].center,
             style.path, BreitbandGraphics.colors.white, 'nearest')
-        BreitbandGraphics.draw_text({
-                x = rectangle.x + 2,
-                y = rectangle.y,
-                width = rectangle.width,
-                height = rectangle.height,
-            }, 'start', 'center', { clip = true, aliased = not ugui.standard_styler.params.cleartype },
-            ugui.standard_styler.params.listbox_item.text[visual_state],
-            ugui.standard_styler.params.font_size,
-            ugui.standard_styler.params.font_name,
-            item)
+
+        local text_rect = {
+            x = rectangle.x + 2,
+            y = rectangle.y,
+            width = rectangle.width,
+            height = rectangle.height,
+        }
+
+        BreitbandGraphics.draw_text2({
+            text = item,
+            rectangle = text_rect,
+            color = ugui.standard_styler.params.listbox_item.text[visual_state],
+            align_x = BreitbandGraphics.alignment.start,
+            font_name = ugui.standard_styler.params.font_name,
+            font_size = ugui.standard_styler.params.font_size,
+            clip = true,
+            aliased = not ugui.standard_styler.params.cleartype,
+        })
     end
 
     ugui.standard_styler.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)

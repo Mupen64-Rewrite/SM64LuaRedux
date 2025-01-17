@@ -8,10 +8,10 @@ if d2d and d2d.create_render_target then
 end
 
 ---@class Color
----@field public r number The red channel in the range 0 - 255.
----@field public g number The green channel in the range 0 - 255.
----@field public b number The blue channel in the range 0 - 255.
----@field public a number? The alpha channel in the range 0 - 255. If nil, 255 is assumed.
+---@field public r integer The red channel in the range 0 - 255.
+---@field public g integer The green channel in the range 0 - 255.
+---@field public b integer The blue channel in the range 0 - 255.
+---@field public a integer? The alpha channel in the range 0 - 255. If nil, 255 is assumed.
 
 ---@class FloatColor
 ---@field public r number The red channel in the range 0.0 - 1.0.
@@ -34,6 +34,21 @@ end
 ---@field public height number The height.
 
 ---@class TextStyle
+---@field public is_bold boolean? Whether the text is bold. If nil, false is assumed.
+---@field public is_italic boolean? Whether the text is italic. If nil, false is assumed.
+---@field public clip boolean? Whether the text should be clipped to the bounding rectangle. If nil, false is assumed.
+---@field public grayscale boolean? Whether the text should be drawn in grayscale. If nil, false is assumed.
+---@field public aliased boolean? Whether the text should be drawn with no text filtering. If nil, false is assumed.
+---@field public fit boolean? Whether the text should be resized to fit the bounding rectangle. If nil, false is assumed.
+
+---@class DrawTextParams
+---@field public text string? The text. If nil, no text will be drawn.
+---@field public rectangle Rectangle The text's bounding rectangle.
+---@field public color Color The text color.
+---@field public font_name string The font name.
+---@field public font_size number The font size.
+---@field public align_x Alignment? The text's horizontal alignment inside the bounding rectangle. If nil, Alignment.center is assumed.
+---@field public align_y Alignment? The text's vertical alignment inside the bounding rectangle. If nil, Alignment.center is assumed.
 ---@field public is_bold boolean? Whether the text is bold. If nil, false is assumed.
 ---@field public is_italic boolean? Whether the text is italic. If nil, false is assumed.
 ---@field public clip boolean? Whether the text should be clipped to the bounding rectangle. If nil, false is assumed.
@@ -73,6 +88,19 @@ BreitbandGraphics = {
             end
             return BreitbandGraphics.internal.images[path]
         end,
+    },
+
+    ---@enum Alignment
+    --- The alignment inside a container.
+    alignment = {
+        --- The item is aligned to the start of the container.
+        start = 1,
+        --- The item is aligned to the center of the container.
+        center = 2,
+        --- The item is aligned to the end of the container.
+        ['end'] = 3,
+        --- The item is stretched to fill the container.
+        stretch = 4,
     },
 
     --- Converts a color value to its corresponding hexadecimal representation.
@@ -338,6 +366,7 @@ BreitbandGraphics = {
     end,
 
     ---Draws text with the specified parameters.
+    ---Deprecated, use `draw_text2` instead.
     ---@param rectangle Rectangle The text's bounding rectangle.
     ---@param horizontal_alignment "center"|"start"|"end"|"stretch" The text's horizontal alignment inside the bounding rectangle.
     ---@param vertical_alignment "center"|"start"|"end"|"stretch" The text's vertical alignment inside the bounding rectangle.
@@ -346,7 +375,7 @@ BreitbandGraphics = {
     ---@param font_size number The font size.
     ---@param font_name string The font name.
     ---@param text string The text.
-    ---TODO: Creates draw_text2, which takes in a big configuration table and uses a table enum for the alignments!
+    ---@deprecated
     draw_text = function(rectangle, horizontal_alignment, vertical_alignment, style, color, font_size, font_name,
         text)
         if text == nil then
@@ -446,6 +475,104 @@ BreitbandGraphics = {
             rect_y + rect_h,
             text,
             font_name,
+            font_size,
+            d_weight,
+            d_style,
+            d_horizontal_alignment,
+            d_vertical_alignment,
+            d_options,
+            brush)
+    end,
+
+    ---Draws text with the specified parameters.
+    ---@param params DrawTextParams The text drawing parameters.
+    draw_text2 = function(params)
+        if not params.text then
+            return
+        end
+
+        local internal_alignment_to_d2d_alignment_map = {
+            [BreitbandGraphics.alignment.start] = 0,
+            [BreitbandGraphics.alignment.center] = 2,
+            [BreitbandGraphics.alignment['end']] = 1,
+            [BreitbandGraphics.alignment.stretch] = 3,
+        }
+
+        local rect_x = params.rectangle.x
+        local rect_y = params.rectangle.y
+        local rect_w = params.rectangle.width
+        local rect_h = params.rectangle.height
+        local brush = BreitbandGraphics.internal.brush_from_color(params.color)
+        local d_horizontal_alignment = params.align_x and internal_alignment_to_d2d_alignment_map[params.align_x] or internal_alignment_to_d2d_alignment_map[BreitbandGraphics.alignment.center]
+        local d_vertical_alignment = params.align_y and internal_alignment_to_d2d_alignment_map[params.align_y] or internal_alignment_to_d2d_alignment_map[BreitbandGraphics.alignment.center]
+        local d_style = 0
+        local d_weight = 400
+        local d_options = 0
+        local d_text_antialias_mode = 1
+        local font_size = params.font_size
+
+        if params.is_bold then
+            d_weight = 700
+        end
+        if params.is_italic then
+            d_style = 2
+        end
+        if params.clip then
+            d_options = d_options | 0x00000002
+        end
+        if params.grayscale then
+            d_text_antialias_mode = 2
+        end
+        if params.aliased then
+            d_text_antialias_mode = 3
+        end
+        if params.fit then
+            -- Try to fit the text into the specified rectangle by reducing the font size
+            local text_size = d2d.get_text_size(params.text, params.font_name, params.font_size, math.maxinteger, math.maxinteger)
+
+            if text_size.width > params.rectangle.width then
+                font_size = font_size / math.max(0.01, (text_size.width / params.rectangle.width))
+            end
+            if text_size.height > params.rectangle.height then
+                font_size = font_size / math.max(0.01, (text_size.height / params.rectangle.height))
+            end
+
+            local text_size = d2d.get_text_size(params.text, params.font_name, font_size, math.maxinteger, math.maxinteger)
+
+            -- Since the rect stays the same, the text will want to wrap.
+            -- We solve that by recomputing the rect and alignments
+            if params.align_x == BreitbandGraphics.alignment.center or params.align_x == BreitbandGraphics.alignment.stretch then
+                rect_x = rect_x + rect_w / 2 - text_size.width / 2
+            elseif params.align_x == BreitbandGraphics.alignment.start then
+                rect_x = rect_x
+            elseif params.align_x == BreitbandGraphics.alignment['end'] then
+                rect_x = rect_x + rect_w - text_size.width
+            end
+
+            if params.align_y == BreitbandGraphics.alignment.center or params.align_y == BreitbandGraphics.alignment.stretch then
+                rect_y = rect_y + rect_h / 2 - text_size.height / 2
+            elseif params.align_y == BreitbandGraphics.alignment.start then
+                rect_y = rect_y
+            elseif params.align_y == BreitbandGraphics.alignment['end'] then
+                rect_y = rect_y + rect_h - text_size.height
+            end
+
+            d_horizontal_alignment = 0
+            d_vertical_alignment = 0
+
+            rect_w = text_size.width + 1
+            rect_h = text_size.height + 1
+        end
+
+
+        d2d.set_text_antialias_mode(d_text_antialias_mode)
+        d2d.draw_text(
+            rect_x,
+            rect_y,
+            rect_x + rect_w,
+            rect_y + rect_h,
+            params.text,
+            params.font_name,
             font_size,
             d_weight,
             d_style,

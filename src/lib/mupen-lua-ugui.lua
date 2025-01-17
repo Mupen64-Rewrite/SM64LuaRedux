@@ -125,6 +125,9 @@ ugui = {
         -- Map of uids used in an active section (between begin_frame and end_frame). Used to prevent uid collisions.
         used_uids = {},
 
+        ---Whether a frame is currently in progress.
+        frame_in_progress = false,
+
         ---Validates the structure of a control. Must be called in every control function.
         ---@param control Control A control which may or may not abide by the mupen-lua-ugui control contract
         validate_control = function(control)
@@ -665,42 +668,45 @@ ugui = {
                 return
             end
 
+            local font_name = 'Segoe UI Mono'
+            local font_size = ugui.standard_styler.params.font_size
+
             if key == 'arrow_left' then
-                BreitbandGraphics.draw_text(rectangle,
-                    'center',
-                    'center',
-                    {aliased = not ugui.standard_styler.params.cleartype},
-                    color,
-                    ugui.standard_styler.params.font_size,
-                    'Segoe UI Mono',
-                    '<')
+                BreitbandGraphics.draw_text2({
+                    text = '<',
+                    rectangle = rectangle,
+                    color = color,
+                    font_name = font_name,
+                    font_size = font_size,
+                    aliased = not ugui.standard_styler.params.cleartype,
+                })
             elseif key == 'arrow_right' then
-                BreitbandGraphics.draw_text(rectangle,
-                    'center',
-                    'center',
-                    {aliased = not ugui.standard_styler.params.cleartype},
-                    color,
-                    ugui.standard_styler.params.font_size,
-                    'Segoe UI Mono',
-                    '>')
+                BreitbandGraphics.draw_text2({
+                    text = '>',
+                    rectangle = rectangle,
+                    color = color,
+                    font_name = font_name,
+                    font_size = font_size,
+                    aliased = not ugui.standard_styler.params.cleartype,
+                })
             elseif key == 'arrow_up' then
-                BreitbandGraphics.draw_text(rectangle,
-                    'center',
-                    'center',
-                    {aliased = not ugui.standard_styler.params.cleartype},
-                    color,
-                    ugui.standard_styler.params.font_size,
-                    'Segoe UI Mono',
-                    '^')
+                BreitbandGraphics.draw_text2({
+                    text = '^',
+                    rectangle = rectangle,
+                    color = color,
+                    font_name = font_name,
+                    font_size = font_size,
+                    aliased = not ugui.standard_styler.params.cleartype,
+                })
             elseif key == 'arrow_down' then
-                BreitbandGraphics.draw_text(rectangle,
-                    'center',
-                    'center',
-                    {aliased = not ugui.standard_styler.params.cleartype},
-                    color,
-                    ugui.standard_styler.params.font_size,
-                    'Segoe UI Mono',
-                    'v')
+                BreitbandGraphics.draw_text2({
+                    text = 'v',
+                    rectangle = rectangle,
+                    color = color,
+                    font_name = font_name,
+                    font_size = font_size,
+                    aliased = not ugui.standard_styler.params.cleartype,
+                })
             elseif key == 'checkmark' then
                 local connection_point = {x = rectangle.x + rectangle.width * 0.3, y = rectangle.y + rectangle.height}
                 BreitbandGraphics.draw_line({x = rectangle.x, y = rectangle.y + rectangle.height / 2}, connection_point, color, 1)
@@ -833,16 +839,22 @@ ugui = {
 
             local size = BreitbandGraphics.get_text_size(item, ugui.standard_styler.params.font_size, ugui.standard_styler.params.font_name)
 
-            BreitbandGraphics.draw_text({
-                    x = rectangle.x + 2,
-                    y = rectangle.y,
-                    width = size.width * 2,
-                    height = rectangle.height,
-                }, 'start', 'center', {aliased = not ugui.standard_styler.params.cleartype},
-                ugui.standard_styler.params.listbox_item.text[visual_state],
-                ugui.standard_styler.params.font_size,
-                ugui.standard_styler.params.font_name,
-                item)
+            local text_rect = {
+                x = rectangle.x + 2,
+                y = rectangle.y,
+                width = size.width * 2,
+                height = rectangle.height,
+            }
+
+            BreitbandGraphics.draw_text2({
+                text = item,
+                rectangle = text_rect,
+                color = ugui.standard_styler.params.listbox_item.text[visual_state],
+                align_x = BreitbandGraphics.alignment.start,
+                font_name = ugui.standard_styler.params.font_name,
+                font_size = ugui.standard_styler.params.font_size,
+                aliased = not ugui.standard_styler.params.cleartype,
+            })
         end,
 
         ---Draws a list with the specified parameters.
@@ -851,6 +863,10 @@ ugui = {
         draw_list = function(control, rectangle)
             local visual_state = ugui.get_visual_state(control)
             ugui.standard_styler.draw_list_frame(rectangle, visual_state)
+
+            if not control.items then
+                return
+            end
 
             local content_bounds = ugui.standard_styler.get_desired_listbox_content_bounds(control)
             -- item y position:
@@ -943,16 +959,23 @@ ugui = {
                 ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.params.menu_item.height[visual_state], nil, 'arrow_right')
             end
 
-            BreitbandGraphics.draw_text({
-                    x = rectangle.x + ugui.standard_styler.params.menu_item.left_padding,
-                    y = rectangle.y,
-                    width = 9999999,
-                    height = rectangle.height,
-                }, 'start', 'center', {aliased = not ugui.standard_styler.params.cleartype},
-                ugui.standard_styler.params.menu_item.text[visual_state],
-                ugui.standard_styler.params.font_size,
-                ugui.standard_styler.params.font_name,
-                item.text)
+            local text_rect = {
+                x = rectangle.x + ugui.standard_styler.params.menu_item.left_padding,
+                y = rectangle.y,
+                width = 9999999,
+                height = rectangle.height,
+            }
+
+            BreitbandGraphics.draw_text2({
+                text = item.text,
+                rectangle = text_rect,
+                color = ugui.standard_styler.params.menu_item.text[visual_state],
+                align_x = BreitbandGraphics.alignment.start,
+                font_name = ugui.standard_styler.params.font_name,
+                font_size = ugui.standard_styler.params.font_size,
+                aliased = not ugui.standard_styler.params.cleartype,
+            })
+
             BreitbandGraphics.pop_clip()
         end,
 
@@ -999,11 +1022,15 @@ ugui = {
 
             ugui.standard_styler.draw_raised_frame(control, visual_state)
 
-            BreitbandGraphics.draw_text(control.rectangle, 'center', 'center',
-                {clip = true, aliased = not ugui.standard_styler.params.cleartype},
-                ugui.standard_styler.params.button.text[visual_state],
-                ugui.standard_styler.params.font_size,
-                ugui.standard_styler.params.font_name, control.text)
+            BreitbandGraphics.draw_text2({
+                text = control.text,
+                rectangle = control.rectangle,
+                color = ugui.standard_styler.params.button.text[visual_state],
+                font_name = ugui.standard_styler.params.font_name,
+                font_size = ugui.standard_styler.params.font_size,
+                clip = true,
+                aliased = not ugui.standard_styler.params.cleartype,
+            })
         end,
 
         ---Draws a ToggleButton with the specified parameters.
@@ -1081,15 +1108,24 @@ ugui = {
                     BreitbandGraphics.hex_to_color('#0078D7'))
             end
 
-            BreitbandGraphics.draw_text({
-                    x = control.rectangle.x + ugui.standard_styler.params.textbox.padding.x,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width - ugui.standard_styler.params.textbox.padding.x * 2,
-                    height = control.rectangle.height,
-                }, 'start', 'start', {clip = true, aliased = not ugui.standard_styler.params.cleartype},
-                ugui.standard_styler.params.textbox.text[visual_state],
-                ugui.standard_styler.params.font_size,
-                ugui.standard_styler.params.font_name, text)
+            local text_rect = {
+                x = control.rectangle.x + ugui.standard_styler.params.textbox.padding.x,
+                y = control.rectangle.y,
+                width = control.rectangle.width - ugui.standard_styler.params.textbox.padding.x * 2,
+                height = control.rectangle.height,
+            }
+
+            BreitbandGraphics.draw_text2({
+                text = text,
+                rectangle = text_rect,
+                color = ugui.standard_styler.params.textbox.text[visual_state],
+                align_x = BreitbandGraphics.alignment.start,
+                align_y = BreitbandGraphics.alignment.start,
+                font_name = ugui.standard_styler.params.font_name,
+                font_size = ugui.standard_styler.params.font_size,
+                clip = true,
+                aliased = not ugui.standard_styler.params.cleartype,
+            })
 
             if should_visualize_selection then
                 local lower = ugui.internal.control_data[control.uid].selection_start
@@ -1122,16 +1158,26 @@ ugui = {
                     width = selection_end_x - selection_start_x,
                     height = control.rectangle.height,
                 })
-                BreitbandGraphics.draw_text({
-                        x = control.rectangle.x + ugui.standard_styler.params.textbox.padding.x,
-                        y = control.rectangle.y,
-                        width = control.rectangle.width - ugui.standard_styler.params.textbox.padding.x * 2,
-                        height = control.rectangle.height,
-                    }, 'start', 'start', {clip = true, aliased = not ugui.standard_styler.params.cleartype},
-                    BreitbandGraphics.invert_color(ugui.standard_styler.params.textbox.text
-                        [visual_state]),
-                    ugui.standard_styler.params.font_size,
-                    ugui.standard_styler.params.font_name, text)
+
+                local text_rect = {
+                    x = control.rectangle.x + ugui.standard_styler.params.textbox.padding.x,
+                    y = control.rectangle.y,
+                    width = control.rectangle.width - ugui.standard_styler.params.textbox.padding.x * 2,
+                    height = control.rectangle.height,
+                }
+
+                BreitbandGraphics.draw_text2({
+                    text = text,
+                    rectangle = text_rect,
+                    color = BreitbandGraphics.invert_color(ugui.standard_styler.params.textbox.text[visual_state]),
+                    align_x = BreitbandGraphics.alignment.start,
+                    align_y = BreitbandGraphics.alignment.start,
+                    font_name = ugui.standard_styler.params.font_name,
+                    font_size = ugui.standard_styler.params.font_size,
+                    clip = true,
+                    aliased = not ugui.standard_styler.params.cleartype,
+                })
+
                 BreitbandGraphics.pop_clip()
             end
 
@@ -1273,15 +1319,23 @@ ugui = {
 
             local text_color = ugui.standard_styler.params.button.text[visual_state]
 
-            BreitbandGraphics.draw_text({
-                    x = control.rectangle.x + ugui.standard_styler.params.textbox.padding.x * 2,
-                    y = control.rectangle.y,
-                    width = control.rectangle.width,
-                    height = control.rectangle.height,
-                }, 'start', 'center', {clip = true, aliased = not ugui.standard_styler.params.cleartype}, text_color,
-                ugui.standard_styler.params.font_size,
-                ugui.standard_styler.params.font_name,
-                selected_item)
+            local text_rect = {
+                x = control.rectangle.x + ugui.standard_styler.params.textbox.padding.x * 2,
+                y = control.rectangle.y,
+                width = control.rectangle.width,
+                height = control.rectangle.height,
+            }
+
+            BreitbandGraphics.draw_text2({
+                text = selected_item,
+                rectangle = text_rect,
+                color = text_color,
+                align_x = BreitbandGraphics.alignment.start,
+                font_name = ugui.standard_styler.params.font_name,
+                font_size = ugui.standard_styler.params.font_size,
+                clip = true,
+                aliased = not ugui.standard_styler.params.cleartype,
+            })
 
             ugui.standard_styler.draw_icon({
                 x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.params.icon_size - ugui.standard_styler.params.textbox.padding.x * 2,
@@ -1326,6 +1380,12 @@ ugui = {
     ---Begins a new frame.
     ---@param environment Environment The environment for the current frame.
     begin_frame = function(environment)
+        if ugui.internal.frame_in_progress then
+            error('Tried to call begin_frame() while a frame is already in progress. End the previous frame with end_frame() before starting a new one.')
+        end
+
+        ugui.internal.frame_in_progress = true
+
         if not ugui.internal.environment then
             ugui.internal.environment = environment
         end
@@ -1344,7 +1404,10 @@ ugui = {
 
     --- Ends the current frame.
     end_frame = function()
-        -- FIXME: end_frame & begin_frame should throw an error when unbalanced (begin_frame(), begin_frame())
+        if not ugui.internal.frame_in_progress then
+            error("Tried to call end_frame() while a frame wasn't already in progress. Start a frame with begin_frame() before ending an in-progress one.")
+        end
+
         for i = 1, #ugui.internal.late_callbacks, 1 do
             ugui.internal.late_callbacks[i]()
         end
@@ -1356,6 +1419,8 @@ ugui = {
         if not ugui.internal.environment.is_primary_down and ugui.internal.clear_active_control_after_mouse_up then
             ugui.internal.active_control = nil
         end
+
+        ugui.internal.frame_in_progress = false
     end,
 
     ---Places a Button.
