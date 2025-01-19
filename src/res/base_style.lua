@@ -5,6 +5,8 @@ function get_base_style()
         font_name = 'MS Sans Serif',
         font_size = 12,
 
+        icon_size = 10,
+
         button = {
             text = {
                 [1] = BreitbandGraphics.colors.black,

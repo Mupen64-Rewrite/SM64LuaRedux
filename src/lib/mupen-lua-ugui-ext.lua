@@ -508,6 +508,43 @@ ugui.numberbox = function(control)
     return math.floor(control.value) * (is_positive and 1 or -1)
 end
 
+local function scale_and_center(inner, outer, max_size, adjust_even_odd)
+    local inner_aspect = inner.width / inner.height
+    local outer_aspect = outer.width / outer.height
+
+    local scale
+    
+    if inner_aspect > outer_aspect then
+        scale = outer.width / inner.width
+    else
+        scale = outer.height / inner.height
+    end
+    if max_size then
+        scale = math.min(scale, max_size / inner.width, max_size / inner.height)
+    end
+
+    local new_width = inner.width * scale
+    local new_height = inner.height * scale
+
+    local new_x = outer.x + (outer.width - new_width) / 2
+    local new_y = outer.y + (outer.height - new_height) / 2
+
+    if adjust_even_odd then
+        if (inner.width % 2 == 0 and new_width % 2 ~= 0) or (inner.width % 2 ~= 0 and new_width % 2 == 0) then
+            new_width = new_width + 1
+        end
+        if (inner.height % 2 == 0 and new_height % 2 ~= 0) or (inner.height % 2 ~= 0 and new_height % 2 == 0) then
+            new_height = new_height + 1
+        end
+    end
+
+    return {
+        x = math.ceil(new_x),
+        y = math.ceil(new_y),
+        width = math.ceil(new_width),
+        height = math.ceil(new_height)
+    }
+end
 
 ugui_ext.apply_nineslice = function(style)
     if not d2d then
@@ -521,15 +558,8 @@ ugui_ext.apply_nineslice = function(style)
 
         if rectangles then
             local rect = rectangles[visual_state]
-
-            local centered_rect = {
-                x = math.ceil(rectangle.x + rectangle.width / 2 - rect.width / 2),
-                y = math.ceil(rectangle.y + rectangle.height / 2 - rect.height / 2),
-                width = rect.width,
-                height = rect.height,
-            }
-
-            BreitbandGraphics.draw_image(centered_rect, rectangles[visual_state], Styles.theme().path,
+            local adjusted_rect = scale_and_center(rect, rectangle, ugui.standard_styler.params.icon_size, true)
+            BreitbandGraphics.draw_image(adjusted_rect, rectangles[visual_state], Styles.theme().path,
                 BreitbandGraphics.colors.white, "linear")
         else
             BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
@@ -548,7 +578,7 @@ ugui_ext.apply_nineslice = function(style)
     end
 
     ugui.standard_styler.draw_edit_frame = function(control, rectangle,
-        visual_state)
+                                                    visual_state)
         local key = ugui_ext.internal.params_to_key('edit_frame', rectangle, visual_state)
 
         ugui_ext.internal.cached_draw(key, rectangle, function(eff_rectangle)
