@@ -3,6 +3,7 @@ Styles = {}
 local files = {
     "windows-11",
     "windows-11-v2",
+    "windows-11-dark",
     "windows-10",
     "windows-10-dark",
     "windows-3-pink",
