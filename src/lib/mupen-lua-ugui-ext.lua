@@ -1,4 +1,4 @@
--- mupen-lua-ugui-ext 1.3.0
+-- mupen-lua-ugui-ext 2.0.0
 -- https://github.com/Aurumaker72/mupen-lua-ugui
 
 if not ugui then
@@ -229,6 +229,7 @@ ugui.spinner = function(control)
         end
     end
 
+    ugui.internal.handle_tooltip(control)
     return clamp_value(value)
 end
 
@@ -241,6 +242,7 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ table A table structured as follows: { selected_index, rectangle }
 ugui.tabcontrol = function(control)
+    ugui.internal.do_layout(control)
     ugui.internal.validate_and_register_control(control)
 
     ugui.internal.control_data[control.uid] = {
@@ -261,8 +263,7 @@ ugui.tabcontrol = function(control)
     for i = 1, num_items, 1 do
         local item = control.items[i]
 
-        local width = BreitbandGraphics.get_text_size(item, ugui.standard_styler.params.font_size,
-            ugui.standard_styler.params.font_name).width + 10
+        local width = ugui.standard_styler.compute_rich_text(item, control.plaintext).size.x + 10
 
         -- if it would overflow, we wrap onto a new line
         if x + width > control.rectangle.width then
@@ -291,6 +292,7 @@ ugui.tabcontrol = function(control)
         x = x + width + ugui.standard_styler.params.tabcontrol.gap_x
     end
 
+    ugui.internal.handle_tooltip(control)
     return {
         selected_index = selected_index,
         rectangle = {
@@ -311,14 +313,15 @@ end
 ---@param control table A table abiding by the mupen-lua-ugui control contract (`{ uid, is_enabled, rectangle }`)
 ---@return _ number The new value
 ugui.numberbox = function(control)
+    ugui.internal.do_layout(control)
     ugui.internal.validate_and_register_control(control)
 
-    if not ugui.internal.control_data[control.uid] then
-        ugui.internal.control_data[control.uid] = {
-            caret_index = 1,
-        }
+    if ugui.internal.control_data[control.uid] == nil then
+        ugui.internal.control_data[control.uid] = {}
     end
-
+    if ugui.internal.control_data[control.uid].caret_index == nil then
+        ugui.internal.control_data[control.uid].caret_index = 1
+    end
 
     local is_positive = control.value >= 0
 
@@ -505,6 +508,7 @@ ugui.numberbox = function(control)
         ugui.internal.control_data[control.uid].caret_index, 1,
         control.places)
 
+    ugui.internal.handle_tooltip(control)
     return math.floor(control.value) * (is_positive and 1 or -1)
 end
 
@@ -600,7 +604,7 @@ ugui_ext.apply_nineslice = function(style)
         end)
     end
 
-    ugui.standard_styler.draw_list_item = function(item, rectangle, visual_state)
+    ugui.standard_styler.draw_list_item = function(control, item, rectangle, visual_state)
         if not item then
             return
         end
@@ -620,16 +624,7 @@ ugui_ext.apply_nineslice = function(style)
             height = rectangle.height,
         }
 
-        BreitbandGraphics.draw_text2({
-            text = item,
-            rectangle = text_rect,
-            color = ugui.standard_styler.params.listbox_item.text[visual_state],
-            align_x = BreitbandGraphics.alignment.start,
-            font_name = ugui.standard_styler.params.font_name,
-            font_size = ugui.standard_styler.params.font_size,
-            clip = true,
-            aliased = not ugui.standard_styler.params.cleartype,
-        })
+        ugui.standard_styler.draw_rich_text(text_rect, BreitbandGraphics.alignment.start, nil, item, ugui.standard_styler.params.listbox_item.text[visual_state], control.plaintext)
     end
 
     ugui.standard_styler.draw_scrollbar = function(container_rectangle, thumb_rectangle, visual_state)
