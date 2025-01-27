@@ -969,9 +969,10 @@ ugui = {
         ---@param align_x Alignment? The rich text's horizontal alignment inside the rectangle. If nil, the default is assumed.
         ---@param align_y Alignment? The rich text's vertical alignment inside the rectangle. If nil, the default is assumed.
         ---@param text RichText The rich text.
-        ---@param color Color The rich text's color.
+        ---@param color Color The colors for rich text.
+        ---@param visual_state VisualState The visual state for rich icons.
         ---@param plaintext boolean? Whether the text is drawn without rich formatting. If nil, false is assumed.
-        draw_rich_text = function(rectangle, align_x, align_y, text, color, plaintext)
+        draw_rich_text = function(rectangle, align_x, align_y, text, color, visual_state, plaintext)
             align_x = align_x or BreitbandGraphics.alignment.center
             align_y = align_y or BreitbandGraphics.alignment.center
 
@@ -1029,7 +1030,7 @@ ugui = {
             -- 3. Draw the segments
             for _, data in pairs(segment_data) do
                 if data.segment.type == 'icon' then
-                    ugui.standard_styler.draw_icon(data.rectangle, color, nil, data.segment.value)
+                    ugui.standard_styler.draw_icon(data.rectangle, nil, visual_state, data.segment.value)
                 end
                 if data.segment.type == 'text' then
                     BreitbandGraphics.draw_text2({
@@ -1182,7 +1183,7 @@ ugui = {
                 height = rectangle.height,
             }
 
-            ugui.standard_styler.draw_rich_text(text_rect, BreitbandGraphics.alignment.start, nil, item, ugui.standard_styler.params.listbox_item.text[visual_state], control.plaintext)
+            ugui.standard_styler.draw_rich_text(text_rect, BreitbandGraphics.alignment.start, nil, item, ugui.standard_styler.params.listbox_item.text[visual_state], visual_state, control.plaintext)
         end,
 
         ---Draws a list with the specified parameters.
@@ -1395,7 +1396,7 @@ ugui = {
                 rectangle.width = 99999
             end
 
-            ugui.standard_styler.draw_rich_text(rectangle, BreitbandGraphics.alignment.start, nil, text, ugui.standard_styler.params.menu_item.text[ugui.visual_states.normal], control.plaintext)
+            ugui.standard_styler.draw_rich_text(rectangle, BreitbandGraphics.alignment.start, nil, text, ugui.standard_styler.params.menu_item.text[ugui.visual_states.normal], ugui.visual_states.normal, control.plaintext)
         end,
 
         ---Draws a Button with the specified parameters.
@@ -1410,7 +1411,7 @@ ugui = {
             end
 
             ugui.standard_styler.draw_raised_frame(control, visual_state)
-            ugui.standard_styler.draw_rich_text(control.rectangle, nil, nil, control.text, ugui.standard_styler.params.button.text[visual_state], control.plaintext)
+            ugui.standard_styler.draw_rich_text(control.rectangle, nil, nil, control.text, ugui.standard_styler.params.button.text[visual_state], visual_state, control.plaintext)
         end,
 
         ---Draws a ToggleButton with the specified parameters.
@@ -1706,7 +1707,7 @@ ugui = {
                 height = control.rectangle.height,
             }
 
-            ugui.standard_styler.draw_rich_text(text_rect, BreitbandGraphics.alignment.start, nil, selected_item, text_color, control.plaintext)
+            ugui.standard_styler.draw_rich_text(text_rect, BreitbandGraphics.alignment.start, nil, selected_item, text_color, visual_state, control.plaintext)
             ugui.standard_styler.draw_icon({
                 x = control.rectangle.x + control.rectangle.width - ugui.standard_styler.params.icon_size - ugui.standard_styler.params.textbox.padding.x * 2,
                 y = control.rectangle.y,

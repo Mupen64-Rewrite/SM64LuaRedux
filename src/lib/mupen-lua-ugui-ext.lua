@@ -517,7 +517,7 @@ local function scale_and_center(inner, outer, max_size, adjust_even_odd)
     local outer_aspect = outer.width / outer.height
 
     local scale
-    
+
     if inner_aspect > outer_aspect then
         scale = outer.width / inner.width
     else
@@ -546,7 +546,7 @@ local function scale_and_center(inner, outer, max_size, adjust_even_odd)
         x = math.ceil(new_x),
         y = math.ceil(new_y),
         width = math.ceil(new_width),
-        height = math.ceil(new_height)
+        height = math.ceil(new_height),
     }
 end
 
@@ -557,17 +557,26 @@ ugui_ext.apply_nineslice = function(style)
     end
     ugui_ext.free()
 
+    local function draw_icon_placeholder(rectangle)
+        BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
+    end
     ugui.standard_styler.draw_icon = function(rectangle, color, visual_state, key)
         local rectangles = style.icons[key]
 
-        if rectangles then
-            local rect = rectangles[visual_state]
-            local adjusted_rect = scale_and_center(rect, rectangle, ugui.standard_styler.params.icon_size, true)
-            BreitbandGraphics.draw_image(adjusted_rect, rectangles[visual_state], Styles.theme().path,
-                BreitbandGraphics.colors.white, "linear")
-        else
-            BreitbandGraphics.fill_rectangle(rectangle, BreitbandGraphics.colors.red)
+        if not rectangles then
+            draw_icon_placeholder(rectangle)
+            return
         end
+
+        local rect = rectangles[visual_state]
+        if not rect then
+            draw_icon_placeholder(rectangle)
+            return
+        end
+
+        local adjusted_rect = scale_and_center(rect, rectangle, ugui.standard_styler.params.icon_size, true)
+        BreitbandGraphics.draw_image(adjusted_rect, rectangles[visual_state], Styles.theme().path,
+            BreitbandGraphics.colors.white, 'linear')
     end
 
     ugui.standard_styler.draw_raised_frame = function(control, visual_state)
@@ -582,7 +591,7 @@ ugui_ext.apply_nineslice = function(style)
     end
 
     ugui.standard_styler.draw_edit_frame = function(control, rectangle,
-                                                    visual_state)
+        visual_state)
         local key = ugui_ext.internal.params_to_key('edit_frame', rectangle, visual_state)
 
         ugui_ext.internal.cached_draw(key, rectangle, function(eff_rectangle)
