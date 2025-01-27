@@ -57,6 +57,18 @@ local items = {
         end
     },
     {
+        text = "Spd Efficiency Visualization",
+        func = function(rect)
+            if ugui.button({
+                    uid = 30,
+                    rectangle = rect,
+                    text = Settings.spd_efficiency_fraction and "Fraction" or "Percentage",
+                }) then
+                Settings.spd_efficiency_fraction = not Settings.spd_efficiency_fraction
+            end
+        end
+    },
+    {
         text = "Fast-forward frame skip",
         func = function(rect)
             Settings.repaint_throttle = math.max(1, math.abs(ugui.numberbox({

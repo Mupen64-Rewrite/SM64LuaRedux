@@ -19,7 +19,22 @@ local var_funcs = {
         return string.format("Y Spd: %s", Formatter.ups(y_speed))
     end,
     ["spd_efficiency"] = function()
-        return string.format("Spd Efficiency: %s", Formatter.percent(Engine.GetSpeedEfficiency()))
+        if Settings.spd_efficiency_fraction then
+            local spd_efficiency = Engine.GetSpeedEfficiency()
+            local d
+            if spd_efficiency < 0.25 then
+                d = 1
+            elseif spd_efficiency < 0.5 then
+                d = 2
+            elseif spd_efficiency < 0.75 then
+                d = 3
+            else
+                d = 4
+            end
+            return string.format("Spd Efficiency: %d/4", d)
+        else
+            return string.format("Spd Efficiency: %s", Formatter.percent(Engine.GetSpeedEfficiency()))
+        end
     end,
     ["position_x"] = function()
         return string.format("X: %s", Formatter.u(Memory.current.mario_x))
@@ -36,7 +51,7 @@ local var_funcs = {
     ["yaw_vel"] = function()
         return string.format("Yaw Vel: %s", Formatter.angle(Memory.current.mario_yaw_vel))
     end,
-    ["pitch_vel"] = function() 
+    ["pitch_vel"] = function()
         return string.format("Pitch Vel: %s", Formatter.angle(Memory.current.mario_pitch_vel))
     end,
     ["xz_movement"] = function()

@@ -50,6 +50,7 @@ Settings = {
     hotkeys_enabled = true,
     hotkeys_assigning = false,
     hotkeys_selected_index = 1,
+    spd_efficiency_fraction = false,
     variables = {
         {
             identifier = "yaw_facing",
