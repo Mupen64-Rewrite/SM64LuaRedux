@@ -34,41 +34,6 @@ local items = {
         end
     },
     {
-        text = "Angle formatting",
-        func = function(rect)
-            if ugui.button({
-                    uid = 10,
-                    rectangle = rect,
-                    text = Settings.format_angles_degrees and "Degree" or "Short",
-                }) then
-                Settings.format_angles_degrees = not Settings.format_angles_degrees
-            end
-        end
-    },
-    {
-        text = "Decimal points",
-        func = function(rect)
-            Settings.format_decimal_points = math.abs(ugui.numberbox({
-                uid = 15,
-                rectangle = rect,
-                value = Settings.format_decimal_points,
-                places = 1
-            }))
-        end
-    },
-    {
-        text = "Spd Efficiency Visualization",
-        func = function(rect)
-            if ugui.button({
-                    uid = 30,
-                    rectangle = rect,
-                    text = Settings.spd_efficiency_fraction and "Fraction" or "Percentage",
-                }) then
-                Settings.spd_efficiency_fraction = not Settings.spd_efficiency_fraction
-            end
-        end
-    },
-    {
         text = "Fast-forward frame skip",
         func = function(rect)
             Settings.repaint_throttle = math.max(1, math.abs(ugui.numberbox({
