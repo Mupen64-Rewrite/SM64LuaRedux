@@ -19,7 +19,7 @@ return {
                 uid = 450,
                 is_enabled = selected_var_index > 1,
                 rectangle = grid_rect(0, 13, 1, 1),
-                text = "^"
+                text = '[icon:arrow_up]'
             }) then
             swap(Settings.variables, selected_var_index, selected_var_index - 1)
             selected_var_index = selected_var_index - 1
@@ -29,7 +29,7 @@ return {
                 uid = 500,
                 is_enabled = selected_var_index < #Settings.variables,
                 rectangle = grid_rect(1, 13, 1, 1),
-                text = "v"
+                text = '[icon:arrow_down]'
             }) then
             swap(Settings.variables, selected_var_index, selected_var_index + 1)
             selected_var_index = selected_var_index + 1
