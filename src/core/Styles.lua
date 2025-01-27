@@ -17,32 +17,6 @@ local files = {
 
 local styles = {}
 
-local function deep_merge(a, b)
-    local result = {}
-
-    local function merge(t1, t2)
-        local merged = {}
-        for key, value in pairs(t1) do
-            if type(value) == "table" and type(t2[key]) == "table" then
-                merged[key] = merge(value, t2[key])
-            else
-                merged[key] = value
-            end
-        end
-
-        for key, value in pairs(t2) do
-            if type(value) == "table" and type(t1[key]) == "table" then
-            else
-                merged[key] = value
-            end
-        end
-
-        return merged
-    end
-
-    return merge(a, b)
-end
-
 for i = 1, #files, 1 do
     local name = files[i]
     styles[i] = dofile(res_path .. name .. "\\" .. "style.lua")

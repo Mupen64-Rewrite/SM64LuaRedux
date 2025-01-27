@@ -6,7 +6,6 @@ local default_preset = create_default_preset()
 
 Presets = {
     persistent = {
-        protocol = 12,
         current_index = 1,
         presets = {},
     },
@@ -43,11 +42,7 @@ function Presets.restore()
     local deserialized = persistence.load("presets.lua")
     if (deserialized == nil) then return end
 
-    -- We can't load old protocol presets
-    if deserialized.protocol < Presets.persistent.protocol then
-        print("Preset is outdated")
-        return
-    end
+    deserialized = deep_merge(Presets.persistent, deserialized)
 
     Presets.persistent = deserialized
 end
