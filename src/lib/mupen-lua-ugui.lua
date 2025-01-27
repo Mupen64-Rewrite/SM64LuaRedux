@@ -1897,12 +1897,12 @@ ugui = {
         ugui.internal.do_layout(control)
         ugui.internal.validate_and_register_control(control)
 
-        if not ugui.internal.control_data[control.uid] then
-            ugui.internal.control_data[control.uid] = {
-                caret_index = 1,
-                selection_start = nil,
-                selection_end = nil,
-            }
+        ugui.internal.control_data[control.uid] = ugui.internal.control_data[control.uid] or {}
+        if ugui.internal.control_data[control.uid].caret_index == nil then
+            ugui.internal.control_data[control.uid].caret_index = 1
+        end
+        if ugui.internal.control_data[control.uid].caret_index == nil then
+            ugui.internal.control_data[control.uid].caret_index = 1
         end
 
         local pushed = ugui.internal.process_push(control)
@@ -2042,10 +2042,9 @@ ugui = {
         ugui.internal.do_layout(control)
         ugui.internal.validate_and_register_control(control)
 
-        if not ugui.internal.control_data[control.uid] then
-            ugui.internal.control_data[control.uid] = {
-                active = false,
-            }
+        ugui.internal.control_data[control.uid] = ugui.internal.control_data[control.uid] or {}
+        if ugui.internal.control_data[control.uid].active == nil then
+            ugui.internal.control_data[control.uid].active = false
         end
 
         local pushed = ugui.internal.process_push(control)
@@ -2078,11 +2077,12 @@ ugui = {
         ugui.internal.do_layout(control)
         ugui.internal.validate_and_register_control(control)
 
-        if not ugui.internal.control_data[control.uid] then
-            ugui.internal.control_data[control.uid] = {
-                is_open = false,
-                hovered_index = control.selected_index,
-            }
+        ugui.internal.control_data[control.uid] = ugui.internal.control_data[control.uid] or {}
+        if ugui.internal.control_data[control.uid].is_open == nil then
+            ugui.internal.control_data[control.uid].is_open = false
+        end
+        if ugui.internal.control_data[control.uid].hovered_index == nil then
+            ugui.internal.control_data[control.uid].hovered_index = control.selected_index
         end
 
         if control.is_enabled == false then
@@ -2143,16 +2143,11 @@ ugui = {
         ugui.internal.do_layout(control)
         ugui.internal.validate_and_register_control(_control)
 
-        if not ugui.internal.control_data[_control.uid] then
-            ugui.internal.control_data[_control.uid] = {
-                scroll_x = 0,
-                scroll_y = 0,
-            }
-        end
-        if not ugui.internal.control_data[_control.uid].scroll_x then
+        ugui.internal.control_data[_control.uid] = ugui.internal.control_data[_control.uid] or {}
+        if ugui.internal.control_data[_control.uid].scroll_x == nil then
             ugui.internal.control_data[_control.uid].scroll_x = 0
         end
-        if not ugui.internal.control_data[_control.uid].scroll_y then
+        if ugui.internal.control_data[_control.uid].scroll_y == nil then
             ugui.internal.control_data[_control.uid].scroll_y = 0
         end
 

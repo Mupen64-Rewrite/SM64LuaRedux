@@ -245,9 +245,11 @@ ugui.tabcontrol = function(control)
     ugui.internal.do_layout(control)
     ugui.internal.validate_and_register_control(control)
 
-    ugui.internal.control_data[control.uid] = {
-        y_translation = 0,
-    }
+    ugui.internal.control_data[control.uid] = ugui.internal.control_data[control.uid] or {}
+
+    if ugui.internal.control_data[control.uid].y_translation == nil then
+        ugui.internal.control_data[control.uid].y_translation = 0
+    end
 
     if ugui.standard_styler.params.tabcontrol.draw_frame then
         local clone = ugui.internal.deep_clone(control)
@@ -316,9 +318,7 @@ ugui.numberbox = function(control)
     ugui.internal.do_layout(control)
     ugui.internal.validate_and_register_control(control)
 
-    if ugui.internal.control_data[control.uid] == nil then
-        ugui.internal.control_data[control.uid] = {}
-    end
+    ugui.internal.control_data[control.uid] = ugui.internal.control_data[control.uid] or {}
     if ugui.internal.control_data[control.uid].caret_index == nil then
         ugui.internal.control_data[control.uid].caret_index = 1
     end
