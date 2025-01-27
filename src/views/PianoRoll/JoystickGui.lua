@@ -155,7 +155,7 @@ local function ControlsForSelected(draw)
     if ugui.toggle_button({
         uid = UID.StrainLeft,
         rectangle = grid_rect(2, top + 1.5, 1.5, smallControlHeight),
-        text = '<',
+        text = '[icon:arrow_left]',
         is_checked = newValues.strain_left
     }) then
         newValues.strain_right = false
@@ -167,7 +167,7 @@ local function ControlsForSelected(draw)
     if ugui.toggle_button({
         uid = UID.StrainRight,
         rectangle = grid_rect(3.5, top + 1.5, 1.5, smallControlHeight),
-        text = '>',
+        text = '[icon:arrow_right]',
         is_checked = newValues.strain_right
     }) then
         newValues.strain_left = false
