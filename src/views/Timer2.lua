@@ -71,10 +71,10 @@ return {
             BreitbandGraphics.hex_to_color("#009245"))
         draw_square_button(65, "A", "A", grid_rect(3 + x_offset, 6 + 0.5, 1, 1),
             BreitbandGraphics.hex_to_color("#3366CC"))
-        draw_square_button(70, "Cleft", "<", grid_rect(4 + x_offset, 6, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
-        draw_square_button(75, "Cup", "^", grid_rect(5 + x_offset, 5, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
-        draw_square_button(80, "Cright", ">", grid_rect(6 + x_offset, 6, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
-        draw_square_button(85, "Cdown", "v", grid_rect(5 + x_offset, 7, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
+        draw_square_button(70, "Cleft", "[icon:arrow_left]", grid_rect(4 + x_offset, 6, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
+        draw_square_button(75, "Cup", "[icon:arrow_up]", grid_rect(5 + x_offset, 5, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
+        draw_square_button(80, "Cright", "[icon:arrow_right]", grid_rect(6 + x_offset, 6, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
+        draw_square_button(85, "Cdown", "[icon:arrow_down]", grid_rect(5 + x_offset, 7, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
 
         draw_field(grid_rect(x_offset, 8, 16, 0.5), string.format("Frame %s", Timer.get_frames()), 1)
 
