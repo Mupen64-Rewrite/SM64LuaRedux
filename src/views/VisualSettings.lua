@@ -18,7 +18,6 @@ local items = {
     {
         text = "Notifications",
         func = function(rect)
-
             local notification_styles = {
                 "Bubble",
                 "Console",
@@ -59,25 +58,25 @@ local items = {
     },
     {
         text = "Fast-forward frame skip",
-        tooltip = "Skips every nth frame when fast-forwarding to increase performance.",
         func = function(rect)
             Settings.repaint_throttle = math.max(1, math.abs(ugui.numberbox({
                 uid = 20,
                 rectangle = rect,
+                tooltip = "Skips every nth frame when fast-forwarding to increase performance.",
                 value = Settings.repaint_throttle,
-                places = 1
+                places = 1,
             })))
         end
     },
     {
         text = "Update every VI",
-        tooltip = "Updates the UI every VI, improving mupen capture sync. Reduces performance.",
         func = function(rect)
             Settings.read_memory_every_vi = ugui.toggle_button({
                 uid = 25,
                 rectangle = rect,
+                tooltip = "Updates the UI every VI, improving mupen capture sync. Reduces performance.",
                 text = Settings.read_memory_every_vi and "On" or "Off",
-                is_checked = Settings.read_memory_every_vi
+                is_checked = Settings.read_memory_every_vi,
             })
         end
     },
@@ -104,22 +103,6 @@ return {
                 item.text)
 
             item.func(grid_rect(0, y + 0.6, 4, 1))
-
-            if item.tooltip and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, grid_rect(0, y, 8, 0.5)) then
-                ugui.menu({
-                    uid = 999,
-                    rectangle = {
-                        x = ugui.internal.environment.mouse_position.x,
-                        y = ugui.internal.environment.mouse_position.y,
-                    },
-                    items = {
-                        {
-                            text = item.tooltip,
-                            callback = function() end
-                        }
-                    }
-                })
-            end
 
             y = y + 1.75
         end
