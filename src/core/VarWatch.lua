@@ -22,7 +22,9 @@ local var_funcs = {
         if Settings.spd_efficiency_fraction then
             local spd_efficiency = Engine.GetSpeedEfficiency()
             local d
-            if spd_efficiency < 0.25 then
+            if spd_efficiency < 0.01 then
+                d = 0
+            elseif spd_efficiency < 0.25 then
                 d = 1
             elseif spd_efficiency < 0.5 then
                 d = 2
