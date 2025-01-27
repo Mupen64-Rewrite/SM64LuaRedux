@@ -110,7 +110,7 @@ return {
         if ugui.toggle_button({
                 uid = 55,
                 rectangle = grid_rect(6, 1, 1, 1),
-                text = '<',
+                text = '[icon:arrow_left]',
                 is_checked = TASState.strain_left
             }) then
             TASState.strain_right = false
@@ -122,7 +122,7 @@ return {
         if ugui.toggle_button({
                 uid = 60,
                 rectangle = grid_rect(7, 1, 1, 1),
-                text = '>',
+                text = '[icon:arrow_right]',
                 is_checked = TASState.strain_right
             }) then
             TASState.strain_left = false
