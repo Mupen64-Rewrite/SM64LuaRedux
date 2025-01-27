@@ -1,3 +1,18 @@
+local items = {
+    {
+        text = "Hotkey Activation",
+        func = function(rect)
+            if ugui.button({
+                    uid = 10,
+                    rectangle = rect,
+                    text = Settings.hotkeys_allow_with_active_control and "Always" or "When no control focus",
+                }) then
+                Settings.hotkeys_allow_with_active_control = not Settings.hotkeys_allow_with_active_control
+            end
+        end
+    },
+}
+
 local ctrl = false
 local shift = false
 local alt = false
@@ -158,5 +173,7 @@ return {
                 theme.font_name,
                 "Press Enter to confirm")
         end
+
+        Drawing.setting_list(items, { x = 0, y = 9 })
     end
 }

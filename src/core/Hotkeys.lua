@@ -62,6 +62,11 @@ local last_pressed_hotkey = nil
 local last_pressed_hotkey_time = 0
 
 local function call_hotkey_func(identifier)
+    if not Settings.hotkeys_allow_with_active_control
+        and ugui.internal.active_control then
+        return
+    end
+
     local result = hotkey_funcs[identifier]()
 
     if result ~= false then

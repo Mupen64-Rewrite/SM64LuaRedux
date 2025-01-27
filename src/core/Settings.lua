@@ -50,6 +50,7 @@ Settings = {
     hotkeys_enabled = true,
     hotkeys_assigning = false,
     hotkeys_selected_index = 1,
+    hotkeys_allow_with_active_control = true,
     spd_efficiency_fraction = false,
     variables = {
         {
