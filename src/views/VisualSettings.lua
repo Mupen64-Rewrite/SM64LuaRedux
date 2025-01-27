@@ -97,26 +97,6 @@ local items = {
 return {
     name = "Visuals",
     draw = function()
-        local theme = Styles.theme()
-        local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
-
-        local y = 0.1
-        for i = 1, #items, 1 do
-            local item = items[i]
-
-            BreitbandGraphics.draw_text(
-                grid_rect(0, y, 8, 0.5),
-                "start",
-                "center",
-                { aliased = not theme.cleartype },
-                foreground_color,
-                theme.font_size * Drawing.scale * 1.25,
-                theme.font_name,
-                item.text)
-
-            item.func(grid_rect(0, y + 0.6, 4, 1))
-
-            y = y + 1.75
-        end
+        Drawing.setting_list(items, { x = 0, y = 0.1 })
     end
 }

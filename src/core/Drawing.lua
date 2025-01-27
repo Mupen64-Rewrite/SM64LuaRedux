@@ -63,6 +63,32 @@ function Drawing.pop_offset()
     table.remove(Drawing.offset_stack, #Drawing.offset_stack)
 end
 
+---Draws a setting item list.
+---@param items { text: string, func: fun(rect: Rectangle) }[] An array of setting items with their names and control spawning functions.
+---@param pos Vector2 The initial position of the settings list in grid coordinates.
+function Drawing.setting_list(items, pos)
+    local theme = Styles.theme()
+    local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
+    local y = pos.y
+    for i = 1, #items, 1 do
+        local item = items[i]
+
+        BreitbandGraphics.draw_text(
+            grid_rect(pos.x, y, 8, 0.5),
+            "start",
+            "center",
+            { aliased = not theme.cleartype },
+            foreground_color,
+            theme.font_size * Drawing.scale * 1.25,
+            theme.font_name,
+            item.text)
+
+        item.func(grid_rect(pos.x, y + 0.6, 4, 1))
+
+        y = y + 1.75
+    end
+end
+
 local function adjust_rect(rect)
     for _, value in pairs(Drawing.offset_stack) do
         rect.x = rect.x + value.x
