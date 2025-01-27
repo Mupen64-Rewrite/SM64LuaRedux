@@ -66,13 +66,13 @@ return {
         Settings.grind_left = ugui.toggle_button({
             uid = 5,
             rectangle = grid_rect(6, AUTO_GRIND_ROW, 1, 1),
-            text = "<",
+            text = "[icon:arrow_left]",
             is_checked = Settings.grind_left
         })
         Settings.grind_left = not ugui.toggle_button({
             uid = 10,
             rectangle = grid_rect(7, AUTO_GRIND_ROW, 1, 1),
-            text = ">",
+            text = "[icon:arrow_right]",
             is_checked = not Settings.grind_left
         })
         Settings.grind_divisor = math.abs(ugui.numberbox({
