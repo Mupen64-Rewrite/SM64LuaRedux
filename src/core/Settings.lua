@@ -205,6 +205,13 @@ Settings = {
             keys = {
             },
         },
+        {
+            identifier = "spdkick",
+            keys = {
+                "control",
+                "K",
+            },
+        },
     },
     address_source_index = 1,
 }

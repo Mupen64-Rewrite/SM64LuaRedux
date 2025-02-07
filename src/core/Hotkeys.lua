@@ -55,6 +55,9 @@ local hotkey_funcs = {
         if TASState.goal_angle % 16 ~= 0 then
             TASState.goal_angle = math.floor((TASState.goal_angle + 8) / 16) * 16
         end
+    end,
+    spdkick = function ()
+        Engine.setup_speedkick()
     end
 }
 

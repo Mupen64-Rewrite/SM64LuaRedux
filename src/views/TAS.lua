@@ -68,8 +68,7 @@ return {
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
-            TASState.goal_mag = 48
-            TASState.high_magnitude = true
+            Engine.setup_speedkick()
         end
 
         TASState.framewalk = ugui.toggle_button({
