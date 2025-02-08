@@ -56,4 +56,15 @@ function Presets.restore()
     deserialized = deep_merge(Presets.persistent, deserialized)
 
     Presets.persistent = deserialized
+
+    -- Purge all hotkeys which dont have a corresponding hotkey_funcs entry
+    for _, preset in pairs(Presets.persistent.presets) do
+        local hotkeys = ugui.internal.deep_clone(preset.hotkeys)
+        for i, hotkey in pairs(hotkeys) do
+            if not Hotkeys.hotkey_exists(hotkey.identifier) then
+                print(string.format("Hotkey %s doesn't exist anymore, purging it.", hotkey.identifier))
+                table.remove(preset.hotkeys, i)
+            end
+        end
+    end
 end
