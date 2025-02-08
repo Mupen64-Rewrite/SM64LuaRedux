@@ -68,7 +68,7 @@ return {
                 rectangle = grid_rect(4, 5, 2, 1),
                 text = 'Spdkick',
             }) then
-            Engine.setup_speedkick()
+            Engine.toggle_speedkick()
         end
 
         TASState.framewalk = ugui.toggle_button({

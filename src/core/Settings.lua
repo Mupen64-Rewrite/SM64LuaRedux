@@ -206,7 +206,7 @@ Settings = {
             },
         },
         {
-            identifier = "spdkick",
+            identifier = "toggle_spdkick",
             keys = {
                 "control",
                 "K",

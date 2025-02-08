@@ -56,8 +56,8 @@ local hotkey_funcs = {
             TASState.goal_angle = math.floor((TASState.goal_angle + 8) / 16) * 16
         end
     end,
-    spdkick = function ()
-        Engine.setup_speedkick()
+    toggle_spdkick = function ()
+        Engine.toggle_speedkick()
     end
 }
 
@@ -66,9 +66,9 @@ local last_pressed_hotkey_time = 0
 
 local function call_hotkey_func(identifier)
     if not Settings.hotkeys_allow_with_active_control
-        and ugui.internal.active_control then
+    and ugui.internal.active_control then
         return
-    end
+    end 
 
     local result = hotkey_funcs[identifier]()
 
@@ -141,4 +141,10 @@ return {
             end
         end
     end,
+
+    ---Gets whether a hotkey with the specified identifier has a callback.
+    ---@param identifier string The hotkey identifier.
+    hotkey_exists = function (identifier)
+        return hotkey_funcs[identifier] ~= nil        
+    end
 }
