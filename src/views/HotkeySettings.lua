@@ -164,8 +164,8 @@ return {
             local foreground_color = BreitbandGraphics.invert_color(theme.background_color)
 
             BreitbandGraphics.draw_text(
-                grid_rect(0, 9, 8, 0.5),
-                "start",
+                grid_rect(0, 7, 8, 0.5),
+                "center",
                 "center",
                 { aliased = not theme.cleartype },
                 foreground_color,
