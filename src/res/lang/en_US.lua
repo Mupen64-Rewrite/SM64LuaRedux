@@ -1,0 +1,17 @@
+return {
+    name = "English (US)",
+    DISABLED = "Disabled",
+    MATCH_YAW = "Match Yaw",
+    REVERSE_ANGLE = "Reverse Angle",
+    MATCH_ANGLE = "Match Angle",
+    ALWAYS = "Always",
+    D99 = ".99",
+    DYAW = "D-Yaw",
+    ATAN_STRAIN = "Arctan Strain",
+    ATAN_STRAIN_REV = "I",
+    MAG_RESET = "R",
+    MAG_HI = "H",
+    SPDKICK = "Spdkick",
+    FRAMEWALK = "Framewalk",
+    SWIM = "Swim",
+}

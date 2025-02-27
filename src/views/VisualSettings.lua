@@ -16,6 +16,18 @@ local items = {
         end
     },
     {
+        text = "Locale",
+        func = function(rect)
+            local new_locale_index = ugui.combobox({
+                uid = 3,
+                rectangle = rect,
+                items = Locales.names(),
+                selected_index = Settings.locale_index,
+            })
+            Settings.locale_index = new_locale_index
+        end
+    },
+    {
         text = "Notifications",
         func = function(rect)
             local notification_styles = {

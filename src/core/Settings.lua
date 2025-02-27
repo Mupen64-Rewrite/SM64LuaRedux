@@ -35,6 +35,7 @@ Settings = {
     worldviz_enabled = false,
     truncate_effective_angle = false,
     active_style_index = 2,
+    locale_index = 1,
     tab_index = 1,
     settings_tab_index = 1,
     autodetect_address = true,

@@ -75,6 +75,7 @@ end
 
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
 styles_path = folder .. "res\\styles\\"
+locales_path = folder .. "res\\lang\\"
 views_path = folder .. "views\\"
 core_path = folder .. "core\\"
 lib_path = folder .. "lib\\"
@@ -104,6 +105,7 @@ dofile(core_path .. "IndexToRNG.lua")
 dofile(core_path .. "Ghost.lua")
 dofile(core_path .. "VarWatch.lua")
 dofile(core_path .. "Styles.lua")
+dofile(core_path .. "Locales.lua")
 dofile(core_path .. "Presets.lua")
 dofile(core_path .. "Dumping.lua")
 Hotkeys = dofile(core_path .. "Hotkeys.lua")

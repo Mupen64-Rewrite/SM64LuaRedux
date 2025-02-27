@@ -26,17 +26,15 @@ return {
 
         TASState.high_magnitude = ugui.toggle_button({
             uid = 15,
-
             rectangle = grid_rect(7, 4, 1, 1),
-            text = 'H',
+            text = Locales.str("MAG_HI"),
             is_checked = TASState.high_magnitude
         })
 
         if ugui.button({
                 uid = 20,
-
                 rectangle = grid_rect(6, 4, 1, 1),
-                text = 'R',
+                text = Locales.str("MAG_RESET"),
             }) then
             TASState.goal_mag = 127
             TASState.high_magnitude = false
@@ -66,7 +64,7 @@ return {
         if ugui.button({
                 uid = 25,
                 rectangle = grid_rect(4, 5, 2, 1),
-                text = 'Spdkick',
+                text = Locales.str("SPDKICK"),
             }) then
             Engine.toggle_speedkick()
         end
@@ -74,7 +72,7 @@ return {
         TASState.framewalk = ugui.toggle_button({
             uid = 30,
             rectangle = grid_rect(6, 5, 2, 1),
-            text = 'Framewalk',
+            text = Locales.str("FRAMEWALK"),
             is_checked = TASState.framewalk
         })
 
@@ -82,27 +80,27 @@ return {
             uid = 35,
             is_enabled = TASState.strain_speed_target,
             rectangle = grid_rect(4, 0, 3, 1),
-            text = 'Always',
+            text = Locales.str("ALWAYS"),
             is_checked = TASState.strain_always
         })
         TASState.strain_speed_target = ugui.toggle_button({
             uid = 40,
             rectangle = grid_rect(7, 0, 1, 1),
-            text = '.99',
+            text = Locales.str("D99"),
             is_checked = TASState.strain_speed_target
         })
 
         TASState.swim = ugui.toggle_button({
             uid = 45,
             rectangle = grid_rect(6.5, 7, 1.5, 1),
-            text = 'Swim',
+            text = Locales.str("SWIM"),
             is_checked = TASState.swim
         })
         TASState.dyaw = ugui.toggle_button({
             uid = 50,
             is_enabled = TASState.movement_mode == MovementModes.match_angle,
             rectangle = grid_rect(4, 1, 2, 1),
-            text = 'D-Yaw',
+            text = Locales.str("DYAW"),
             is_checked = TASState.dyaw
         })
 
@@ -152,7 +150,7 @@ return {
         local atan_strain = ugui.toggle_button({
             uid = 75,
             rectangle = grid_rect(4, 2, 3, 1),
-            text = 'Arctan Strain',
+            text = Locales.str("ATAN_STRAIN"),
             is_checked = TASState.atan_strain
         })
 
@@ -166,7 +164,7 @@ return {
         TASState.reverse_arc = ugui.toggle_button({
             uid = 80,
             rectangle = grid_rect(7, 2, 1, 1),
-            text = 'I',
+            text = Locales.str("ATAN_STRAIN_REV"),
             is_checked = TASState.reverse_arc
         })
 
@@ -251,7 +249,7 @@ return {
         if ugui.toggle_button({
                 uid = 145,
                 rectangle = grid_rect(0, 0, 4, 1),
-                text = 'Disabled',
+                text = Locales.str("DISABLED"),
                 is_checked = TASState.movement_mode == MovementModes.disabled
             }) ~= (TASState.movement_mode == MovementModes.disabled) then
             TASState.movement_mode = MovementModes.disabled
