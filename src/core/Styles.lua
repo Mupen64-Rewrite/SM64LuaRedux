@@ -19,8 +19,8 @@ local styles = {}
 
 for i = 1, #files, 1 do
     local name = files[i]
-    styles[i] = dofile(res_path .. name .. "\\" .. "style.lua")
-    styles[i].theme.path = res_path .. name .. "\\" .. "style.png"
+    styles[i] = dofile(styles_path .. name .. "\\" .. "style.lua")
+    styles[i].theme.path = styles_path .. name .. "\\" .. "style.png"
     styles[i].theme = deep_merge(ugui.internal.deep_clone(ugui.standard_styler.params), styles[i].theme)
 end
 

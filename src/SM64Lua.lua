@@ -74,7 +74,7 @@ function dictlen(t)
 end
 
 folder = debug.getinfo(1).source:sub(2):match("(.*\\)")
-res_path = folder .. "res\\"
+styles_path = folder .. "res\\styles\\"
 views_path = folder .. "views\\"
 core_path = folder .. "core\\"
 lib_path = folder .. "lib\\"
@@ -85,7 +85,7 @@ dofile(lib_path .. "mupen-lua-ugui-ext.lua")
 dofile(lib_path .. "linq.lua")
 persistence = dofile(lib_path .. "persistence.lua")
 json = dofile(lib_path .. "json.lua")
-dofile(res_path .. "base_style.lua")
+dofile(styles_path .. "base_style.lua")
 dofile(core_path .. "Settings.lua")
 dofile(core_path .. "Formatter.lua")
 dofile(core_path .. "Drawing.lua")
