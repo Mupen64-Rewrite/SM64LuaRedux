@@ -160,7 +160,6 @@ return {
             -- FIXME: do we really need to update memory
             Memory.update()
             TASState.atan_start = Memory.current.mario_global_timer
-            VarWatch_update()
         end
         TASState.atan_strain = atan_strain
 
@@ -177,7 +176,6 @@ return {
                 text = '+',
             }) then
             TASState.atan_r = TASState.atan_r + math.pow(10, Settings.atan_exp)
-            VarWatch_update()
         end
         if ugui.button({
                 uid = 90,
@@ -185,7 +183,6 @@ return {
                 text = '-',
             }) then
             TASState.atan_r = TASState.atan_r - math.pow(10, Settings.atan_exp)
-            VarWatch_update()
         end
 
 
@@ -195,7 +192,6 @@ return {
                 text = '+',
             }) then
             TASState.atan_d = TASState.atan_d + math.pow(10, Settings.atan_exp)
-            VarWatch_update()
         end
         if ugui.button({
                 uid = 100,
@@ -203,7 +199,6 @@ return {
                 text = '-',
             }) then
             TASState.atan_d = TASState.atan_d - math.pow(10, Settings.atan_exp)
-            VarWatch_update()
         end
 
         if ugui.button({
@@ -213,7 +208,6 @@ return {
             }) then
             TASState.atan_n = math.max(0,
                 TASState.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
-            VarWatch_update()
         end
         if ugui.button({
                 uid = 110,
@@ -222,7 +216,6 @@ return {
             }) then
             TASState.atan_n = math.max(0,
                 TASState.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
-            VarWatch_update()
         end
 
         if ugui.button({
@@ -231,7 +224,6 @@ return {
                 text = '+',
             }) then
             TASState.atan_start = math.max(0, TASState.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
-            VarWatch_update()
         end
         if ugui.button({
                 uid = 120,
@@ -239,7 +231,6 @@ return {
                 text = '-',
             }) then
             TASState.atan_start = math.max(0, TASState.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
-            VarWatch_update()
         end
 
         if ugui.button({
@@ -248,7 +239,6 @@ return {
                 text = '+',
             }) then
             Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp + 1, 4))
-            VarWatch_update()
         end
         if ugui.button({
                 uid = 140,
@@ -256,7 +246,6 @@ return {
                 text = '-',
             }) then
             Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp - 1, 4))
-            VarWatch_update()
         end
 
         if ugui.toggle_button({

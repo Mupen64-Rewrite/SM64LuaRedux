@@ -31,7 +31,6 @@ function Presets.apply(i)
     Presets.persistent.current_index = ugui.internal.clamp(i, 1, #Presets.persistent.presets)
     Settings = Presets.persistent.presets[Presets.persistent.current_index]
     Styles.update_style()
-    VarWatch_update()
 
     -- HACK: See above
     for key, value in pairs(TASState) do

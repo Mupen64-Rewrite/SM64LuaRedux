@@ -111,7 +111,6 @@ Addresses = dofile(core_path .. "Addresses.lua")
 
 Memory.initialize()
 Joypad.update()
-VarWatch_update()
 Drawing.size_up()
 Presets.restore()
 Presets.apply(Presets.persistent.current_index)
@@ -219,6 +218,8 @@ function at_update_screen()
         }
     end
 
+    VarWatch_update()
+
     local focused = emu.ismainwindowinforeground()
 
     ugui_environment = {
@@ -317,7 +318,6 @@ function at_vi()
     if new_frame or Settings.read_memory_every_vi then
         Memory.update_previous()
         Memory.update()
-        VarWatch_update()
         if not Settings.read_memory_every_vi then
             new_frame = false
         end
@@ -329,7 +329,6 @@ function at_loadstate()
     -- What do we do at this point, leave it like this and let the engine calculate wrong diffs, or copy current state to previous one?
     Memory.update_previous()
     Memory.update()
-    VarWatch_update()
 end
 
 emu.atloadstate(at_loadstate)

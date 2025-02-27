@@ -119,7 +119,6 @@ return {
 
         -- hack to make the listbox transparent
         Memory.update()
-        VarWatch_update()
         local previousAlpha = BreitbandGraphics.colors.white.a
         BreitbandGraphics.colors.white.a = 110
         ugui.listbox({
