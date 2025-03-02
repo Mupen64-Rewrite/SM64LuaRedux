@@ -1091,7 +1091,7 @@ ugui.standard_styler = {
                         x = data.rectangle.x,
                         y = data.rectangle.y,
                         width = data.rectangle.width + 1,
-                        height = data.rectangle.height,
+                        height = data.rectangle.height + 1,
                     },
                     color = color,
                     align_x = BreitbandGraphics.alignment.start,
