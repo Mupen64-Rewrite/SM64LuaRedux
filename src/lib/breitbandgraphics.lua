@@ -21,6 +21,21 @@ end
 ---@field public b number The blue channel in the range 0.0 - 1.0.
 ---@field public a number? The alpha channel in the range 0.0 - 1.0. If nil, 1.0 is assumed.
 
+---@alias ArrayColor { [1]: integer, [2]: integer, [3]: integer, [4]: integer? }
+---An integer color array in the format `{r, g, b, a?}`, with channels in the range 0 - 255.
+
+---@alias ArrayFloatColor { [1]: number, [2]: number, [3]: number, [4]: number? }
+---An integer color array in the format `{r, g, b, a?}`, with channels in the range 0.0 - 1.0.
+
+---@alias HexColor string
+---A hexadecimal color string in the format `#RRGGBB` or `#RRGGBBAA`.
+
+---@alias RawColor integer
+---A raw color value in the format `0xRRGGBBAA`.
+
+---@alias ColorSource Color|FloatColor|ArrayColor|ArrayFloatColor|HexColor|RawColor
+---A color-providing object that can be converted to a Color.
+
 ---@class Vector2
 ---@field public x number The X component.
 ---@field public y number The Y component.
@@ -46,7 +61,7 @@ end
 ---@class DrawTextParams
 ---@field public text string? The text. If nil, no text will be drawn.
 ---@field public rectangle Rectangle The text's bounding rectangle.
----@field public color Color The text color.
+---@field public color ColorSource The text color.
 ---@field public font_name string The font name.
 ---@field public font_size number The font size.
 ---@field public align_x Alignment? The text's horizontal alignment inside the bounding rectangle. If nil, Alignment.center is assumed.
@@ -57,105 +72,6 @@ end
 ---@field public grayscale boolean? Whether the text should be drawn in grayscale. If nil, false is assumed.
 ---@field public aliased boolean? Whether the text should be drawn with no text filtering. If nil, false is assumed.
 ---@field public fit boolean? Whether the text should be resized to fit the bounding rectangle. If nil, false is assumed.
-
-BreitbandGraphics.internal = {
-    ---@type table<string, integer>
-    ---Map of color keys to brush handles.
-    brushes = {},
-
-    ---@type table<string, integer>
-    ---Map of image paths to image handles.
-    images = {},
-
-    ---Gets a brush from a color value, creating one and caching it if it doesn't already exist in the cache.
-    ---@param color Color The color value to create a brush from.
-    ---@return integer # The brush handle.
-    brush_from_color = function(color)
-        local key = (color.r << 24) | (color.g << 16) | (color.b << 8) | (color.a and color.a or 255)
-        if not BreitbandGraphics.internal.brushes[key] then
-            local float_color = BreitbandGraphics.color_to_float(color)
-            BreitbandGraphics.internal.brushes[key] = d2d.create_brush(float_color.r, float_color.g, float_color.b,
-                float_color.a)
-        end
-        return BreitbandGraphics.internal.brushes[key]
-    end,
-
-    ---Gets an image from a path, creating one and caching it if it doesn't already exist in the cache.
-    ---@param path string The path to the image.
-    ---@return integer # The image handle.
-    image_from_path = function(path)
-        if not BreitbandGraphics.internal.images[path] then
-            BreitbandGraphics.internal.images[path] = d2d.load_image(path)
-        end
-        return BreitbandGraphics.internal.images[path]
-    end,
-}
-
----@enum Alignment
---- The alignment inside a container.
-BreitbandGraphics.alignment = {
-    --- The item is aligned to the start of the container.
-    start = 1,
-    --- The item is aligned to the center of the container.
-    center = 2,
-    --- The item is aligned to the end of the container.
-    ['end'] = 3,
-    --- The item is stretched to fill the container.
-    stretch = 4,
-}
-
---- Converts a color value to its corresponding hexadecimal representation.
---- @param color Color The color value to convert.
---- @returns string # The hexadecimal representation of the color.
-BreitbandGraphics.color_to_hex = function(color)
-    return string.format('#%06X',
-        (color.r * 0x10000) + (color.g * 0x100) + color.b)
-end
-
---- Converts a color's hexadecimal representation into a color table.
---- @param hex string The hexadecimal color to convert.
---- @return Color # The color.
-BreitbandGraphics.hex_to_color = function(hex)
-    if #hex > 7 then
-        return
-        {
-            r = tonumber(hex:sub(2, 3), 16),
-            g = tonumber(hex:sub(4, 5), 16),
-            b = tonumber(hex:sub(6, 7), 16),
-            a = tonumber(hex:sub(8, 9), 16),
-        }
-    end
-    return
-    {
-        r = tonumber(hex:sub(2, 3), 16),
-        g = tonumber(hex:sub(4, 5), 16),
-        b = tonumber(hex:sub(6, 7), 16),
-    }
-end
-
---- Creates a color with the red, green and blue channels assigned to the specified value.
---- @param value number The value to be used for the red, green and blue channels.
---- @return Color # The color with the red, green and blue channels set to the specified value.
-BreitbandGraphics.repeated_to_color = function(value)
-    return
-    {
-        r = value,
-        g = value,
-        b = value,
-    }
-end
-
----Inverts a color.
----@param value Color The color value to invert.
----@return Color # The new inverted color.
-BreitbandGraphics.invert_color = function(value)
-    return {
-        r = 255 - value.r,
-        g = 255 - value.r,
-        b = 255 - value.r,
-        a = value.a,
-    }
-end
 
 ---@enum StandardColors
 --- A table of standard colors.
@@ -217,6 +133,206 @@ BreitbandGraphics.colors = {
     },
 }
 
+--- Creates a FloatColor from a Color.
+--- Channels with nil values will be converted to `0.0`, unless they are the alpha channel, in which case it will be converted to `1.0`.
+--- @param color Color The color to be converted.
+--- @return FloatColor # The color with remapped channels.
+local function color_to_float(color)
+    return {
+        r = (color.r and (color.r / 255.0) or 0.0),
+        g = (color.g and (color.g / 255.0) or 0.0),
+        b = (color.b and (color.b / 255.0) or 0.0),
+        a = (color.a and (color.a / 255.0) or 1.0),
+    }
+end
+
+---Convers a color source to a FloatColor.
+---@param source ColorSource The color source.
+---@return FloatColor # The converted color.
+local function color_source_to_float_color(source)
+
+    -- Match RawColor
+    if math.type(source) == "integer" then
+        return {
+            r = (source >> 24) & 0xFF,
+            g = (source >> 16) & 0xFF,
+            b = (source >> 8) & 0xFF,
+            a = source & 0xFF,
+        }
+    end
+
+    -- Match HexColor
+    if type(source) == 'string' then
+        return color_to_float(BreitbandGraphics.hex_to_color(source))
+    end
+
+    -- Match ArrayColor and ArrayFloatColor
+    if source[1] or source[2] or source[3] or source[4] then
+        -- Match ArrayFloatColor
+        if math.type(source[1]) == 'float' or math.type(source[2]) == 'float' or math.type(source[3]) == 'float' then
+            return {
+                r = source[1] or 0.0,
+                g = source[2] or 0.0,
+                b = source[3] or 0.0,
+                a = source[4] or 1.0,
+            }
+        end
+
+        -- Match ArrayColor
+        return color_to_float({
+            r = source[1] or 0,
+            g = source[2] or 0,
+            b = source[3] or 0,
+            a = source[4] or 255,
+        })
+    end
+
+    -- Match FloatColor
+    if math.type(source.r) == 'float' or math.type(source.g) == 'float' or math.type(source.b) == 'float' then
+        return {
+            r = source.r and source.r or 0.0,
+            g = source.g and source.g or 0.0,
+            b = source.b and source.b or 0.0,
+            a = source.a and source.a or 1.0,
+        }
+    end
+
+    -- Match Color
+    if math.type(source.r) == 'integer' or math.type(source.g) == 'integer' or math.type(source.b) == 'integer' then
+        return color_to_float(source)
+    end
+
+    if type(source) == "table" then
+        return color_to_float({})        
+    end
+
+    print('Invalid color source:')
+    print(source)
+    error('See above.')
+end
+
+
+BreitbandGraphics.internal = {
+    ---@type table<string, integer>
+    ---Map of color keys to brush handles.
+    brushes = {},
+
+    ---@type table<string, integer>
+    ---Map of image paths to image handles.
+    images = {},
+
+    ---Gets a brush from a color value, creating one and caching it if it doesn't already exist in the cache.
+    ---@param color ColorSource The color value to create a brush from.
+    ---@return integer # The brush handle.
+    brush_from_color = function(color)
+        local float = color_source_to_float_color(color)
+        local converted = BreitbandGraphics.float_to_color(float)
+        local key = (converted.r << 24) | (converted.g << 16) | (converted.b << 8) | (converted.a and converted.a or 255)
+        if not BreitbandGraphics.internal.brushes[key] then
+            BreitbandGraphics.internal.brushes[key] = d2d.create_brush(float.r, float.g, float.b, float.a)
+        end
+        return BreitbandGraphics.internal.brushes[key]
+    end,
+
+    ---Gets an image from a path, creating one and caching it if it doesn't already exist in the cache.
+    ---@param path string The path to the image.
+    ---@return integer # The image handle.
+    image_from_path = function(path)
+        if not BreitbandGraphics.internal.images[path] then
+            BreitbandGraphics.internal.images[path] = d2d.load_image(path)
+        end
+        return BreitbandGraphics.internal.images[path]
+    end,
+}
+
+---@enum Alignment
+--- The alignment inside a container.
+BreitbandGraphics.alignment = {
+    --- The item is aligned to the start of the container.
+    start = 1,
+    --- The item is aligned to the center of the container.
+    center = 2,
+    --- The item is aligned to the end of the container.
+    ['end'] = 3,
+    --- The item is stretched to fill the container.
+    stretch = 4,
+}
+
+--- Converts a color to its corresponding hexadecimal representation.
+--- @param color ColorSource The color source to convert.
+--- @returns string # The hexadecimal representation of the color.
+BreitbandGraphics.color_to_hex = function(color)
+    local converted = BreitbandGraphics.float_to_color(color_source_to_float_color(color))
+    return string.format('#%06X', (converted.r * 0x10000) + (converted.g * 0x100) + converted.b)
+end
+
+--- Converts a color's hexadecimal representation into a color table.
+--- @param hex string The hexadecimal color to convert.
+--- @return Color # The color.
+BreitbandGraphics.hex_to_color = function(hex)
+    if #hex > 7 then
+        return
+        {
+            r = tonumber(hex:sub(2, 3), 16),
+            g = tonumber(hex:sub(4, 5), 16),
+            b = tonumber(hex:sub(6, 7), 16),
+            a = tonumber(hex:sub(8, 9), 16),
+        }
+    end
+    return
+    {
+        r = tonumber(hex:sub(2, 3), 16),
+        g = tonumber(hex:sub(4, 5), 16),
+        b = tonumber(hex:sub(6, 7), 16),
+    }
+end
+
+--- Creates a color with the red, green and blue channels assigned to the specified value.
+--- @param value number The value to be used for the red, green and blue channels.
+--- @return Color # The color with the red, green and blue channels set to the specified value.
+BreitbandGraphics.repeated_to_color = function(value)
+    return
+    {
+        r = value,
+        g = value,
+        b = value,
+    }
+end
+
+---Inverts a color source.
+---@param color ColorSource The color source to invert.
+---@return Color # The new inverted color.
+BreitbandGraphics.invert_color = function(color)
+    local converted = color_source_to_float_color(color)
+    return BreitbandGraphics.float_to_color({
+        r = 1.0 - converted.r,
+        g = 1.0 - converted.r,
+        b = 1.0 - converted.r,
+        a = converted.a,
+    })
+end
+
+--- Creates a FloatColor from a ColorSource.
+--- Channels with nil values will be converted to `0.0`, unless they are the alpha channel, in which case it will be converted to `1.0`.
+--- @param color ColorSource The color to be converted.
+--- @return FloatColor # The color with remapped channels.
+BreitbandGraphics.color_to_float = function(color)
+    return color_source_to_float_color(color)
+end
+
+--- Creates a Color from a FloatColor.
+--- Channels with nil values will be converted to `0`, unless they are the alpha channel, in which case it will be converted to `255`.
+--- @param color FloatColor The color to be converted.
+--- @return Color # The color with remapped channels.
+BreitbandGraphics.float_to_color = function(color)
+    return {
+        r = (color.r and (math.tointeger(math.floor(color.r * 255 + 0.5))) or 0),
+        g = (color.g and (math.tointeger(math.floor(color.g * 255 + 0.5))) or 0),
+        b = (color.b and (math.tointeger(math.floor(color.b * 255 + 0.5))) or 0),
+        a = (color.a and (math.tointeger(math.floor(color.a * 255 + 0.5))) or 255),
+    }
+end
+
 ---Checks whether a point is inside a rectangle.
 ---@param point Vector2 The point.
 ---@param rectangle Rectangle The rectangle.
@@ -254,19 +370,6 @@ BreitbandGraphics.inflate_rectangle = function(rectangle, amount)
     }
 end
 
---- Creates a FloatColor from a Color.
---- Channels with nil values will be converted to `0.0`, unless they are the alpha channel, in which case it will be converted to `1.0`.
---- @param color Color The color to be converted.
---- @return FloatColor # The color with remapped channels.
-BreitbandGraphics.color_to_float = function(color)
-    return {
-        r = (color.r and (color.r / 255.0) or 0.0),
-        g = (color.g and (color.g / 255.0) or 0.0),
-        b = (color.b and (color.b / 255.0) or 0.0),
-        a = (color.a and (color.a / 255.0) or 1.0),
-    }
-end
-
 ---Computes the bounding box of a text string given a font size and font name.
 ---@param text string The string to be measured.
 ---@param font_size number The font size.
@@ -278,7 +381,7 @@ end
 
 ---Draws a rectangle's outline.
 ---@param rectangle Rectangle The shape's bounding rectangle.
----@param color Color The outline's color.
+---@param color ColorSource The outline's color.
 ---@param thickness number The outline's thickness.
 BreitbandGraphics.draw_rectangle = function(rectangle, color, thickness)
     local brush = BreitbandGraphics.internal.brush_from_color(color)
@@ -293,7 +396,7 @@ end
 
 ---Draws a filled-in rectangle.
 ---@param rectangle Rectangle The shape's bounding rectangle.
----@param color Color The fill color.
+---@param color ColorSource The fill color.
 BreitbandGraphics.fill_rectangle = function(rectangle, color)
     local brush = BreitbandGraphics.internal.brush_from_color(color)
     d2d.fill_rectangle(
@@ -306,7 +409,7 @@ end
 
 ---Draws a rounded rectangle's outline.
 ---@param rectangle Rectangle The shape's bounding rectangle.
----@param color Color The outline's color.
+---@param color ColorSource The outline's color.
 ---@param radii Vector2 The corner radii.
 ---@param thickness number The outline's thickness.
 BreitbandGraphics.draw_rounded_rectangle = function(rectangle, color, radii, thickness)
@@ -324,7 +427,7 @@ end
 
 ---Draws a filled-in rounded rectangle.
 ---@param rectangle Rectangle The shape's bounding rectangle.
----@param color Color The fill color.
+---@param color ColorSource The fill color.
 ---@param radii Vector2 The corner radii.
 BreitbandGraphics.fill_rounded_rectangle = function(rectangle, color, radii)
     local brush = BreitbandGraphics.internal.brush_from_color(color)
@@ -340,7 +443,7 @@ end
 
 ---Draws an ellipse's outline.
 ---@param rectangle Rectangle The shape's bounding rectangle.
----@param color Color The outline's color.
+---@param color ColorSource The outline's color.
 ---@param thickness number The outline's thickness.
 BreitbandGraphics.draw_ellipse = function(rectangle, color, thickness)
     local brush = BreitbandGraphics.internal.brush_from_color(color)
@@ -355,7 +458,7 @@ end
 
 ---Draws a filled-in ellipse.
 ---@param rectangle Rectangle The shape's bounding rectangle.
----@param color Color The fill color.
+---@param color ColorSource The fill color.
 BreitbandGraphics.fill_ellipse = function(rectangle, color)
     local brush = BreitbandGraphics.internal.brush_from_color(color)
     d2d.fill_ellipse(
@@ -372,7 +475,7 @@ end
 ---@param horizontal_alignment "center"|"start"|"end"|"stretch" The text's horizontal alignment inside the bounding rectangle.
 ---@param vertical_alignment "center"|"start"|"end"|"stretch" The text's vertical alignment inside the bounding rectangle.
 ---@param style TextStyle The text style options.
----@param color Color The text color.
+---@param color ColorSource The text color.
 ---@param font_size number The font size.
 ---@param font_name string The font name.
 ---@param text string The text.
@@ -586,7 +689,7 @@ end
 ---Draws a line between two points.
 ---@param from Vector2 The start point.
 ---@param to Vector2 The end point.
----@param color Color The line's color.
+---@param color ColorSource The line's color.
 ---@param thickness number The line's thickness.
 BreitbandGraphics.draw_line = function(from, to, color, thickness)
     local brush = BreitbandGraphics.internal.brush_from_color(color)
@@ -616,7 +719,7 @@ end
 ---@param destination_rectangle Rectangle The destination rectangle on the screen.
 ---@param source_rectangle Rectangle The source rectangle from the image.
 ---@param path string The image's absolute path on disk.
----@param color Color The color filter applied to the image. If white, the image is drawn as-is.
+---@param color ColorSource The color filter applied to the image. If white, the image is drawn as-is.
 ---@param filter "nearest" | "linear" The texture filter applied to the image.
 ---TODO: Make source_rectangle optional and default to the whole image.
 ---TODO: Make color optional and default to white.
@@ -624,7 +727,7 @@ BreitbandGraphics.draw_image = function(destination_rectangle, source_rectangle,
     if not filter then
         filter = 'nearest'
     end
-    local float_color = BreitbandGraphics.color_to_float(color)
+    local float_color = color_source_to_float_color(color)
     local image = BreitbandGraphics.internal.image_from_path(path)
     local interpolation = filter == 'nearest' and 0 or 1
 
@@ -647,7 +750,7 @@ end
 ---@param source_rectangle Rectangle The source rectangle from the image.
 ---@param source_rectangle_center Rectangle The source rectangle for the center of the image.
 ---@param path string The image's absolute path on disk.
----@param color Color The color filter applied to the image. If white, the image is drawn as-is.
+---@param color ColorSource The color filter applied to the image. If white, the image is drawn as-is.
 ---@param filter "nearest" | "linear" The texture filter applied to the image.
 BreitbandGraphics.draw_image_nineslice = function(destination_rectangle, source_rectangle, source_rectangle_center, path,
     color, filter)
