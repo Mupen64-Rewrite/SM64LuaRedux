@@ -1089,7 +1089,7 @@ ugui.standard_styler = {
                     text = data.segment.value,
                     rectangle = {
                         x = data.rectangle.x,
-                        y = data.rectangle.y,
+                        y = data.rectangle.y - 1,
                         width = data.rectangle.width + 1,
                         height = data.rectangle.height + 1,
                     },
