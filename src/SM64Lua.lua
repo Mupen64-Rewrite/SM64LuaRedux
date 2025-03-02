@@ -81,8 +81,8 @@ core_path = folder .. "core\\"
 lib_path = folder .. "lib\\"
 processors_path = folder .. "processors\\"
 
-dofile(lib_path .. "mupen-lua-ugui.lua")
-dofile(lib_path .. "mupen-lua-ugui-ext.lua")
+ugui = dofile(lib_path .. "mupen-lua-ugui.lua")
+ugui_ext = dofile(lib_path .. "mupen-lua-ugui-ext.lua")
 dofile(lib_path .. "linq.lua")
 persistence = dofile(lib_path .. "persistence.lua")
 json = dofile(lib_path .. "json.lua")
