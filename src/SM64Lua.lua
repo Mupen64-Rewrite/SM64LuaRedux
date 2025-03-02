@@ -81,8 +81,15 @@ core_path = folder .. "core\\"
 lib_path = folder .. "lib\\"
 processors_path = folder .. "processors\\"
 
+---@module 'breitbandgraphics'
+BreitbandGraphics = dofile(lib_path .. "breitbandgraphics.lua")
+
+---@module 'mupen-lua-ugui'
 ugui = dofile(lib_path .. "mupen-lua-ugui.lua")
+
+---@module 'mupen-lua-ugui-ext'
 ugui_ext = dofile(lib_path .. "mupen-lua-ugui-ext.lua")
+
 dofile(lib_path .. "linq.lua")
 persistence = dofile(lib_path .. "persistence.lua")
 json = dofile(lib_path .. "json.lua")
