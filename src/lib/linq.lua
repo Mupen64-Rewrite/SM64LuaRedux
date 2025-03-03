@@ -1,6 +1,6 @@
 local lualinq = {
     _VERSION = 'v0.1.0',
-    _URL = 'https://github.com/Aurumaker72/mupen-lua-ugui',
+    _URL = 'https://github.com/aurumaker72/lualinq',
     _DESCRIPTION = 'Simple LINQ-like functions for Lua',
     _LICENSE = 'GPL-3',
 }
