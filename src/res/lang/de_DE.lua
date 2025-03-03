@@ -1,3 +1,3 @@
 return {
-    name = "Deutsch (Deutschland)",
+    name = "Deutsch (WIP)",
 }

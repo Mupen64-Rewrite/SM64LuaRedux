@@ -1,5 +1,5 @@
 return {
-    name = "English (US)",
+    name = "English",
     DISABLED = "Disabled",
     MATCH_YAW = "Match Yaw",
     REVERSE_ANGLE = "Reverse Angle",
