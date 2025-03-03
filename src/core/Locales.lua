@@ -4,7 +4,6 @@ local locales = {}
 
 local files = {
     "en_US",
-    "de_DE",
 }
 
 for i = 1, #files, 1 do
