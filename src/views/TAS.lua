@@ -173,30 +173,29 @@ return {
                 rectangle = grid_rect(4, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            TASState.atan_r = TASState.atan_r + math.pow(10, Settings.atan_exp)
+            Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp + 1, 4))
         end
         if ugui.button({
                 uid = 90,
                 rectangle = grid_rect(4, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            TASState.atan_r = TASState.atan_r - math.pow(10, Settings.atan_exp)
+        Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp - 1, 4))
         end
-
 
         if ugui.button({
                 uid = 95,
                 rectangle = grid_rect(4.5, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            TASState.atan_d = TASState.atan_d + math.pow(10, Settings.atan_exp)
+            TASState.atan_r = TASState.atan_r + math.pow(10, Settings.atan_exp)
         end
         if ugui.button({
                 uid = 100,
                 rectangle = grid_rect(4.5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            TASState.atan_d = TASState.atan_d - math.pow(10, Settings.atan_exp)
+            TASState.atan_r = TASState.atan_r - math.pow(10, Settings.atan_exp)
         end
 
         if ugui.button({
@@ -204,16 +203,14 @@ return {
                 rectangle = grid_rect(5, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            TASState.atan_n = math.max(0,
-                TASState.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+            TASState.atan_d = TASState.atan_d + math.pow(10, Settings.atan_exp)
         end
         if ugui.button({
                 uid = 110,
                 rectangle = grid_rect(5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            TASState.atan_n = math.max(0,
-                TASState.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
+            TASState.atan_d = TASState.atan_d - math.pow(10, Settings.atan_exp)
         end
 
         if ugui.button({
@@ -221,14 +218,14 @@ return {
                 rectangle = grid_rect(5.5, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            TASState.atan_start = math.max(0, TASState.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
+            TASState.atan_n = math.max(0, TASState.atan_n + math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
         end
         if ugui.button({
                 uid = 120,
                 rectangle = grid_rect(5.5, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            TASState.atan_start = math.max(0, TASState.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
+            TASState.atan_n = math.max(0, TASState.atan_n - math.pow(10, math.max(-0.6020599913279624, Settings.atan_exp)), 2)
         end
 
         if ugui.button({
@@ -236,14 +233,14 @@ return {
                 rectangle = grid_rect(6, 7, 0.5, 0.5),
                 text = '+',
             }) then
-            Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp + 1, 4))
+            TASState.atan_start = math.max(0, TASState.atan_start + math.pow(10, math.max(0, Settings.atan_exp)))
         end
         if ugui.button({
                 uid = 140,
                 rectangle = grid_rect(6, 7.5, 0.5, 0.5),
                 text = '-',
             }) then
-            Settings.atan_exp = math.max(-4, math.min(Settings.atan_exp - 1, 4))
+            TASState.atan_start = math.max(0, TASState.atan_start - math.pow(10, math.max(0, Settings.atan_exp)))
         end
 
         if ugui.toggle_button({
@@ -257,7 +254,7 @@ return {
         if ugui.toggle_button({
                 uid = 150,
                 rectangle = grid_rect(0, 1, 4, 1),
-                text = 'Match Yaw',
+                text = Locales.str("MATCH_YAW"),
                 is_checked = TASState.movement_mode == MovementModes.match_yaw
             }) ~= (TASState.movement_mode == MovementModes.match_yaw) then
             TASState.movement_mode = MovementModes.match_yaw
@@ -265,7 +262,7 @@ return {
         if ugui.toggle_button({
                 uid = 155,
                 rectangle = grid_rect(0, 2, 4, 1),
-                text = 'Reverse Angle',
+                text = Locales.str("REVERSE_ANGLE"),
                 is_checked = TASState.movement_mode == MovementModes.reverse_angle
             }) ~= (TASState.movement_mode == MovementModes.reverse_angle) then
             TASState.movement_mode = MovementModes.reverse_angle
@@ -273,7 +270,7 @@ return {
         if ugui.toggle_button({
                 uid = 160,
                 rectangle = grid_rect(0, 3, 4, 1),
-                text = 'Match Angle',
+                text = Locales.str("MATCH_ANGLE"),
                 is_checked = TASState.movement_mode == MovementModes.match_angle
             }) ~= (TASState.movement_mode == MovementModes.match_angle) then
             TASState.movement_mode = MovementModes.match_angle
