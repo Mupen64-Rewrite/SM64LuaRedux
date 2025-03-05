@@ -100,7 +100,7 @@ local function DrawFactory(theme)
 end
 
 return {
-    name = "Piano Roll",
+    name = Locales.str("PIANO_ROLL_TAB_NAME"),
     draw = function()
 
         -- if we're showing help or a confirmation dialog, stop rendering anything else

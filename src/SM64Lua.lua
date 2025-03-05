@@ -283,7 +283,7 @@ function at_update_screen()
             rectangle = ugui.internal.deep_clone(last_rmb_down_position),
             items = {
                 {
-                    text = 'Reset',
+                    text = Locales.str("GENERIC_RESET"),
                     callback = function()
                         Presets.reset(Presets.persistent.current_index)
                         Presets.apply(Presets.persistent.current_index)
@@ -313,7 +313,7 @@ function at_update_screen()
         rectangle = preset_picker_rect,
         is_enabled = not Settings.hotkeys_assigning,
         items = lualinq.select(Presets.persistent.presets, function(_, i)
-            return "Preset " .. i
+            return Locales.str("PRESET") .. i
         end),
         selected_index = preset_index,
     })

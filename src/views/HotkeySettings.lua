@@ -1,11 +1,11 @@
 local items = {
     {
-        text = "Hotkey Activation",
+        text = Locales.str("SETTINGS_HOTKEYS_ACTIVATION"),
         func = function(rect)
             if ugui.button({
                     uid = 10,
                     rectangle = rect,
-                    text = Settings.hotkeys_allow_with_active_control and "Always" or "When no control focus",
+                    text = Settings.hotkeys_allow_with_active_control and Locales.str("SETTINGS_HOTKEYS_ACTIVATION_ALWAYS") or Locales.str("SETTINGS_HOTKEYS_ACTIVATION_WHEN_NO_FOCUS"),
                 }) then
                 Settings.hotkeys_allow_with_active_control = not Settings.hotkeys_allow_with_active_control
             end
@@ -20,7 +20,7 @@ local key = nil
 
 local function hotkey_to_string(hotkey)
     if not hotkey.keys or #hotkey.keys == 0 then
-        return "(nothing)"
+        return Locales.str("SETTINGS_HOTKEYS_NOTHING")
     end
 
     local str = ""
@@ -81,7 +81,7 @@ local function get_current_keys()
 end
 
 return {
-    name = "Hotkeys",
+    name = Locales.str("SETTINGS_HOTKEYS_TAB_NAME"),
     draw = function()
         local prev_draw_text = BreitbandGraphics.draw_text
 
@@ -106,7 +106,7 @@ return {
                 uid = 405,
                 rectangle = grid_rect(0, 8, 2, 1),
                 is_enabled = not Settings.hotkeys_assigning,
-                text = "Clear",
+                text = Locales.str("SETTINGS_HOTKEYS_CLEAR"),
             }) then
             Settings.hotkeys[Settings.hotkeys_selected_index].keys = {}
         end
@@ -115,7 +115,7 @@ return {
                 uid = 410,
                 rectangle = grid_rect(2, 8, 2, 1),
                 is_enabled = not Settings.hotkeys_assigning,
-                text = "Reset",
+                text = Locales.str("SETTINGS_HOTKEYS_RESET"),
             }) then
             Settings.hotkeys[Settings.hotkeys_selected_index].keys = Presets.get_default_preset().hotkeys
                 [Settings.hotkeys_selected_index].keys
@@ -124,7 +124,7 @@ return {
         if ugui.button({
                 uid = 415,
                 rectangle = grid_rect(4, 8, 4, 1),
-                text = Settings.hotkeys_assigning and hotkey_to_string({ keys = get_current_keys() }) or "Assign",
+                text = Settings.hotkeys_assigning and hotkey_to_string({ keys = get_current_keys() }) or Locales.str("SETTINGS_HOTKEYS_ASSIGN"),
             }) then
             ctrl = false
             shift = false
@@ -171,7 +171,7 @@ return {
                 foreground_color,
                 theme.font_size * Drawing.scale,
                 theme.font_name,
-                "Press Enter to confirm")
+                Locales.str("SETTINGS_HOTKEYS_CONFIRMATION"))
         end
 
         Drawing.setting_list(items, { x = 0, y = 9 })

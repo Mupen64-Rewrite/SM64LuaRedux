@@ -77,9 +77,9 @@ local function DrawHeaders(pianoRoll, draw, buttonDrawData)
     local backgroundColor = InterpolateVectorsToInt(draw.backgroundColor, {r = 127, g = 127, b = 127}, 0.25)
     BreitbandGraphics.fill_rectangle(grid_rect(0, row0, col_1, row2 - row0, 0), backgroundColor)
 
-    draw:text(grid_rect(0, row0, 2, 1), "start", "Start: " .. pianoRoll.startGT)
+    draw:text(grid_rect(0, row0, 2, 1), "start", Locales.str("PIANO_ROLL_FRAMELIST_START") .. pianoRoll.startGT)
 
-    draw:text(grid_rect(3, 0, 1, 0.5), "start", "Name")
+    draw:text(grid_rect(3, 0, 1, 0.5), "start", Locales.str("PIANO_ROLL_FRAMELIST_NAME"))
     local prev_font_size = ugui.standard_styler.params.font_size
     ugui.standard_styler.params.font_size = ugui.standard_styler.params.font_size * 0.75
     pianoRoll.name = ugui.textbox({
@@ -90,8 +90,8 @@ local function DrawHeaders(pianoRoll, draw, buttonDrawData)
     })
     ugui.standard_styler.params.font_size = prev_font_size
 
-    draw:text(grid_rect(col0, row1, col1 - col0, 1), "start", "Frame")
-    draw:text(grid_rect(col1, row1, col6 - col1, 1), "start", "Joystick")
+    draw:text(grid_rect(col0, row1, col1 - col0, 1), "start", Locales.str("PIANO_ROLL_FRAMELIST_FRAME"))
+    draw:text(grid_rect(col1, row1, col6 - col1, 1), "start", Locales.str("PIANO_ROLL_FRAMELIST_STICK"))
 
     local rect = grid_rect(0, row1, 0.333, 1)
     for i, v in ipairs(Buttons) do

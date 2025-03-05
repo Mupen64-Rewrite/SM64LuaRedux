@@ -1,18 +1,18 @@
 local items = {
     {
-        text = "Angle formatting",
+        text = Locales.str("SETTINGS_VARWATCH_ANGLE_FORMAT"),
         func = function(rect)
             if ugui.button({
                     uid = 10,
                     rectangle = rect,
-                    text = Settings.format_angles_degrees and "Degree" or "Short",
+                    text = Settings.format_angles_degrees and Locales.str("SETTINGS_VARWATCH_ANGLE_FORMAT_DEGREE") or Locales.str("SETTINGS_VARWATCH_ANGLE_FORMAT_SHORT"),
                 }) then
                 Settings.format_angles_degrees = not Settings.format_angles_degrees
             end
         end
     },
     {
-        text = "Decimal points",
+        text = Locales.str("SETTINGS_VARWATCH_DECIMAL_POINTS"),
         func = function(rect)
             Settings.format_decimal_points = math.abs(ugui.numberbox({
                 uid = 15,
@@ -23,12 +23,12 @@ local items = {
         end
     },
     {
-        text = "Spd Efficiency Visualization",
+        text = Locales.str("SETTINGS_VARWATCH_SPD_EFFICIENCY"),
         func = function(rect)
             if ugui.button({
                     uid = 30,
                     rectangle = rect,
-                    text = Settings.spd_efficiency_fraction and "Fraction" or "Percentage",
+                    text = Settings.spd_efficiency_fraction and Locales.str("SETTINGS_VARWATCH_SPD_EFFICIENCY_FRACTION") or Locales.str("SETTINGS_VARWATCH_SPD_EFFICIENCY_PERCENTAGE"),
                 }) then
                 Settings.spd_efficiency_fraction = not Settings.spd_efficiency_fraction
             end
@@ -38,7 +38,7 @@ local items = {
 local selected_var_index = 1
 
 return {
-    name = "Varwatch",
+    name = Locales.str("SETTINGS_VARWATCH_TAB_NAME"),
     draw = function()
         selected_var_index = ugui.listbox({
             uid = 400,
@@ -46,7 +46,7 @@ return {
             selected_index = selected_var_index,
             items = lualinq.select(Settings.variables, function(x)
                 if not x.visible then
-                    return x.identifier .. " (disabled)"
+                    return x.identifier .. " " .. Locales.str("SETTINGS_VARWATCH_DISABLED")
                 end
                 return x.identifier
             end),
@@ -75,7 +75,7 @@ return {
         Settings.variables[selected_var_index].visible = not ugui.toggle_button({
             uid = 550,
             rectangle = grid_rect(2, 8, 2, 1),
-            text = "Hide",
+            text = Locales.str("SETTINGS_VARWATCH_HIDE"),
             is_checked = not Settings.variables[selected_var_index].visible
         })
 

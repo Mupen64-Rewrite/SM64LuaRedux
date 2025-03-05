@@ -28,7 +28,7 @@ local function draw_field(rect, text, scale)
 end
 
 return {
-    name = "Timer 2",
+    name = Locales.str("TIMER2_TAB_NAME"),
     draw = function()
         local theme = Styles.theme()
 
@@ -76,7 +76,7 @@ return {
         draw_square_button(80, "Cright", "[icon:arrow_right]", grid_rect(6 + x_offset, 6, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
         draw_square_button(85, "Cdown", "[icon:arrow_down]", grid_rect(5 + x_offset, 7, 1, 1), BreitbandGraphics.hex_to_color("#FFFF00"))
 
-        draw_field(grid_rect(x_offset, 8, 16, 0.5), string.format("Frame %s", Timer.get_frames()), 1)
+        draw_field(grid_rect(x_offset, 8, 16, 0.5), string.format(Locales.str("TIMER2_FRAME"), Timer.get_frames()), 1)
 
         draw_field(grid_rect(x_offset, 8.75, 16, 0.5), VarWatch_compute_value("yaw_facing"),
             1.25)
@@ -85,10 +85,10 @@ return {
 
         draw_field(grid_rect(x_offset, 10, 16, 0.5), VarWatch_compute_value("h_spd"), 1.25)
         draw_field(grid_rect(x_offset, 10.5, 16, 0.5),
-            string.format("H Sliding Spd: %s",
+            string.format(Locales.str("VARWATCH_H_SLIDING"),
                 Formatter.ups(Engine.GetHSlidingSpeed())), 1)
         draw_field(grid_rect(x_offset, 11, 16, 0.5),
-            string.format("XZ Movement: %s", Memory.current.mario_intended_yaw), 1)
+            string.format(Locales.str("VARWATCH_XZ_MOVEMENT"), Formatter.u(Engine.get_xz_distance_moved_since_last_frame())), 1)
 
 
         draw_field(grid_rect(x_offset, 11.75, 16, 0.5), VarWatch_compute_value("v_spd"), 1.25)

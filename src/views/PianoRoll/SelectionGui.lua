@@ -19,7 +19,7 @@ return {
     RenderConfirmDeletionPrompt = function()
         if deletionIndex == nil then return false end
 
-        local confirmationText = "[Confirm deletion]\n\nAre you sure you want to delete \"" .. PianoRollContext.current.name .. "\"?\nThis action cannot be undone."
+        local confirmationText = string.format(Locales.str("PIANO_ROLL_SHEET_DELETE_CONFIRMATION"), PianoRollContext.current.name)
 
         local theme = Styles.theme()
         local foregroundColor = theme.listbox_item.text[1]
@@ -38,7 +38,7 @@ return {
         if ugui.button({
             uid = UID.ConfirmationYes,
             rectangle = grid_rect(4, top, 2, controlHeight),
-            text = 'Yes'
+            text = Locales.str("PIANO_ROLL_SHEET_DELETE_YES")
         }) then
             table.remove(PianoRollContext.all, selectionIndex)
             SelectCurrent()
@@ -47,13 +47,15 @@ return {
         if ugui.button({
             uid = UID.ConfirmationNo,
             rectangle = grid_rect(2, top, 2, controlHeight),
-            text = 'No'
+            text = Locales.str("PIANO_ROLL_SHEET_DELETE_NO")
         }) then
             deletionIndex = nil
         end
 
         return true
     end,
+
+    -- the text "Off" is directly used for comparing. might be a problem for localisation
     Render = function()
         local theme = Styles.theme()
         local foregroundColor = theme.listbox_item.text[1]
@@ -73,7 +75,7 @@ return {
                 foregroundColor,
                 theme.font_size * 1.2 * Drawing.scale,
                 theme.font_name,
-                "No piano roll sheets available.\nCreate one to proceed.")
+                Locales.str("PIANO_ROLL_SHEET_NO_SHEET"))
         else
             if availablePianoRolls[selectionIndex] == "Off" then
                 BreitbandGraphics.draw_text(
@@ -84,7 +86,7 @@ return {
                     foregroundColor,
                     theme.font_size * 1.2 * Drawing.scale,
                     theme.font_name,
-                    "No piano roll sheet selected.\nSelect one to proceed.")
+                    Locales.str("PIANO_ROLL_SHEET_NO_SELECTED"))
             end
         end
 
@@ -109,6 +111,7 @@ return {
             deletionIndex = selectionIndex
         end
 
+        -- the sheet name cannot be localised, as it could potentially contain an invalid character
         if ugui.button({
             uid = UID.AddPianoRoll,
 
