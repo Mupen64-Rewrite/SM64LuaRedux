@@ -1,6 +1,6 @@
 local items = {
     {
-        text = "Style",
+        text = Locales.str("SETTINGS_VISUALS_STYLE"),
         func = function(rect)
             local new_active_style_index = ugui.combobox({
                 uid = 1,
@@ -16,7 +16,7 @@ local items = {
         end
     },
     {
-        text = "Locale",
+        text = Locales.str("SETTINGS_VISUALS_LOCALE"),
         func = function(rect)
             local new_locale_index = ugui.combobox({
                 uid = 3,
@@ -28,11 +28,11 @@ local items = {
         end
     },
     {
-        text = "Notifications",
+        text = Locales.str("SETTINGS_VISUALS_NOTIFICATIONS"),
         func = function(rect)
             local notification_styles = {
-                "Bubble",
-                "Console",
+                Locales.str("SETTINGS_VISUALS_NOTIFICATIONS_BUBBLE"),
+                Locales.str("SETTINGS_VISUALS_NOTIFICATIONS_CONSOLE"),
             }
 
             local index = ugui.carrousel_button({
@@ -46,25 +46,25 @@ local items = {
         end
     },
     {
-        text = "Fast-forward frame skip",
+        text = Locales.str("SETTINGS_VISUALS_FRAMESKIP"),
         func = function(rect)
             Settings.repaint_throttle = math.max(1, math.abs(ugui.numberbox({
                 uid = 20,
                 rectangle = rect,
-                tooltip = "Skips every nth frame when fast-forwarding to increase performance.",
+                tooltip = Locales.str("SETTINGS_VISUALS_FRAMESKIP_TOOLTIP"),
                 value = Settings.repaint_throttle,
                 places = 1,
             })))
         end
     },
     {
-        text = "Update every VI",
+        text = Locales.str("SETTINGS_VISUALS_UPDATE_EVERY_VI"),
         func = function(rect)
             Settings.read_memory_every_vi = ugui.toggle_button({
                 uid = 25,
                 rectangle = rect,
-                tooltip = "Updates the UI every VI, improving mupen capture sync. Reduces performance.",
-                text = Settings.read_memory_every_vi and "On" or "Off",
+                tooltip = Locales.str("SETTINGS_VISUALS_UPDATE_EVERY_VI_TOOLTIP"),
+                text = Settings.read_memory_every_vi and Locales.str("GENERIC_ON") or Locales.str("GENERIC_OFF"),
                 is_checked = Settings.read_memory_every_vi,
             })
         end
@@ -72,7 +72,7 @@ local items = {
 }
 
 return {
-    name = "Visuals",
+    name = Locales.str("SETTINGS_VISUALS_TAB_NAME"),
     draw = function()
         Drawing.setting_list(items, { x = 0, y = 0.1 })
     end

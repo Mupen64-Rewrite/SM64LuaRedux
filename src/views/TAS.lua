@@ -1,5 +1,5 @@
 return {
-    name = "TAS",
+    name = Locales.str("TAS_TAB_NAME"),
     draw = function()
         local theme = Styles.theme()
 
@@ -80,7 +80,7 @@ return {
             uid = 35,
             is_enabled = TASState.strain_speed_target,
             rectangle = grid_rect(4, 0, 3, 1),
-            text = Locales.str("ALWAYS"),
+            text = Locales.str("D99_ALWAYS"),
             is_checked = TASState.strain_always
         })
         TASState.strain_speed_target = ugui.toggle_button({

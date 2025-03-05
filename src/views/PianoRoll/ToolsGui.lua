@@ -9,7 +9,7 @@ return {
         if ugui.button({
             uid = UID.TrimEnd,
             rectangle = grid_rect(0, top, 1.5, controlHeight),
-            text = "Trim",
+            text = Locales.str("PIANO_ROLL_TOOL_TRIM"),
         }) then
             PianoRollContext.current:trimEnd()
         end
@@ -17,7 +17,7 @@ return {
         PianoRollContext.copyEntireState = ugui.toggle_button({
             uid = UID.CopyEntireState,
             rectangle = grid_rect(4.5, top, 3.5, controlHeight),
-            text = "Copy entire state",
+            text = Locales.str("PIANO_ROLL_TOOL_COPY_ENTIRE_STATE"),
             is_checked = PianoRollContext.copyEntireState,
         })
 
@@ -27,7 +27,7 @@ return {
 
                 rectangle = grid_rect(1.5, top, 1.5, controlHeight),
                 is_enabled = true,
-                text = 'Save'
+                text = Locales.str("PIANO_ROLL_TOOL_SAVE")
             })) then
                 ugui.end_frame()
                 local filePath = iohelper.filediag("*.pianoroll", 1)
@@ -41,7 +41,7 @@ return {
 
                 rectangle = grid_rect(3, top, 1.5, controlHeight),
                 is_enabled = true,
-                text = 'Load'
+                text = Locales.str("PIANO_ROLL_TOOL_LOAD")
             })) then
                 ugui.end_frame()
                 local filePath = iohelper.filediag("*.pianoroll", 0)

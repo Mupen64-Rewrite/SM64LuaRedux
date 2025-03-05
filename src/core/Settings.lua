@@ -111,6 +111,10 @@ Settings = {
             visible = true,
         },
         {
+            identifier = "global_timer",
+            visible = false,
+        },
+        {
             identifier = "moved_dist",
             visible = true
         },

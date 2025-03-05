@@ -5,7 +5,7 @@ local function AnyEntries(table) for _ in pairs(table) do return true end return
 local function MagnitudeControls(draw, pianoRoll, newValues, top)
     local mediumControlHeight = 0.75
 
-    draw:text(grid_rect(2, top, 2, mediumControlHeight), "end", "Magnitude:")
+    draw:text(grid_rect(2, top, 2, mediumControlHeight), "end", Locales.str("PIANO_ROLL_CONTROL_MAG"))
     newValues.goal_mag = ugui.numberbox({
         uid = UID.GoalMag,
         rectangle = grid_rect(4, top, 1.5, mediumControlHeight),
@@ -21,15 +21,19 @@ local function MagnitudeControls(draw, pianoRoll, newValues, top)
     if ugui.button({
         uid = UID.SpeedKick,
         rectangle = grid_rect(5.5, top, 1.5, mediumControlHeight),
-        text='Spdk',
+        text=Locales.str("PIANO_ROLL_CONTROL_SPDKICK"),
     }) then
-        newValues.goal_mag = 48
+        if newValues.goal_mag ~= 48 then
+            newValues.goal_mag = 48
+        else
+            newValues.goal_mag = 127
+        end
     end
 
     if ugui.button({
         uid = UID.ResetMag,
         rectangle = grid_rect(7, top, 1, mediumControlHeight),
-        text='R',
+        text=Locales.str("MAG_RESET"),
     }) then
         newValues.goal_mag = 127
     end
@@ -40,7 +44,7 @@ local function AtanControls(draw, pianoRoll, newValues, top)
     local newAtan = ugui.toggle_button({
         uid = UID.AtanStrain,
         rectangle = grid_rect(0, top, 1.5, controlHeight),
-        text='Atan',
+        text=Locales.str("PIANO_ROLL_CONTROL_ATAN"),
         is_checked = newValues.atan_strain
     })
     if pianoRoll.selection ~= nil and newAtan and not newValues.atan_strain then
@@ -141,14 +145,14 @@ local function ControlsForSelected(draw)
     newValues.strain_always = ugui.toggle_button({
         uid = UID.StrainAlways,
         rectangle = grid_rect(2, top + 1, 1.5, smallControlHeight),
-        text = 'always',
+        text = Locales.str("D99_ALWAYS"),
         is_checked = newValues.strain_always
     })
 
     newValues.strain_speed_target = ugui.toggle_button({
         uid = UID.StrainSpeedTarget,
         rectangle = grid_rect(3.5, top + 1, 1.5, smallControlHeight),
-        text = '.99',
+        text = Locales.str("D99"),
         is_checked = newValues.strain_speed_target
     })
 
@@ -179,7 +183,7 @@ local function ControlsForSelected(draw)
     if ugui.toggle_button({
         uid = UID.MovementModeManual,
         rectangle = grid_rect(5, top + 1, 1.5, largeControlHeight),
-        text='Manual',
+        text=Locales.str("PIANO_ROLL_CONTROL_MANUAL"),
         is_checked = newValues.movement_mode == MovementModes.manual
     }) then
         newValues.movement_mode = MovementModes.manual
@@ -188,7 +192,7 @@ local function ControlsForSelected(draw)
     if ugui.toggle_button({
         uid = UID.MovementModeMatchYaw,
         rectangle = grid_rect(6.5, top + 1, 1.5, largeControlHeight),
-        text='Yaw',
+        text=Locales.str("PIANO_ROLL_CONTROL_MATCH_YAW"),
         is_checked = newValues.movement_mode == MovementModes.match_yaw
     }) then
         newValues.movement_mode = MovementModes.match_yaw
@@ -197,7 +201,7 @@ local function ControlsForSelected(draw)
     if ugui.toggle_button({
         uid = UID.MovementModeMatchAngle,
         rectangle = grid_rect(5, top + 2, 1.5, largeControlHeight),
-        text='Angle',
+        text=Locales.str("PIANO_ROLL_CONTROL_MATCH_ANGLE"),
         is_checked = newValues.movement_mode == MovementModes.match_angle
     }) then
         newValues.movement_mode = MovementModes.match_angle
@@ -206,7 +210,7 @@ local function ControlsForSelected(draw)
     if ugui.toggle_button({
         uid = UID.MovementModeReverseAngle,
         rectangle = grid_rect(6.5, top + 2, 1.5, largeControlHeight),
-        text='Reverse',
+        text=Locales.str("PIANO_ROLL_CONTROL_REVERSE_ANGLE"),
         is_checked = newValues.movement_mode == MovementModes.reverse_angle
     }) then
         newValues.movement_mode = MovementModes.reverse_angle
@@ -215,7 +219,7 @@ local function ControlsForSelected(draw)
     newValues.dyaw = ugui.toggle_button({
         uid = UID.DYaw,
         rectangle = grid_rect(2, top + 2, 1, largeControlHeight),
-        text='DYaw',
+        text=Locales.str("PIANO_ROLL_CONTROL_DYAW"),
         is_checked = newValues.dyaw
     })
 
