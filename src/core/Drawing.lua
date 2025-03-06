@@ -21,6 +21,21 @@ function Drawing.size_down()
     wgui.resize(wgui.info().width - (wgui.info().width - Drawing.initial_size.width), wgui.info().height)
 end
 
+local function adjust_rect(rect)
+    for _, value in pairs(Drawing.offset_stack) do
+        rect.x = rect.x + value.x
+        rect.y = rect.y + value.y
+    end
+    return rect
+end
+local function adjust_raw_rect(rect)
+    for _, value in pairs(Drawing.offset_stack) do
+        rect[1] = rect[1] + value.x
+        rect[2] = rect[2] + value.y
+    end
+    return rect
+end
+
 function grid(x, y, x_span, y_span, abs, gap)
     if not gap then
         gap = Settings.grid_gap
@@ -49,7 +64,7 @@ function grid(x, y, x_span, y_span, abs, gap)
     rect[3] = rect[3] * Drawing.scale
     rect[4] = rect[4] * Drawing.scale
 
-    return { math.floor(rect[1]), math.floor(rect[2]), math.floor(rect[3]), math.floor(rect[4]) }
+    return adjust_raw_rect({ math.floor(rect[1]), math.floor(rect[2]), math.floor(rect[3]), math.floor(rect[4]) })
 end
 
 function Drawing.push_offset(x, y)
@@ -89,30 +104,22 @@ function Drawing.setting_list(items, pos)
     end
 end
 
-local function adjust_rect(rect)
-    for _, value in pairs(Drawing.offset_stack) do
-        rect.x = rect.x + value.x
-        rect.y = rect.y + value.y
-    end
-    return rect
-end
-
 function grid_rect(x, y, x_span, y_span, gap)
     local value = grid(x, y, x_span, y_span, false, gap)
-    return adjust_rect({
+    return {
         x = value[1],
         y = value[2],
         width = value[3],
         height = value[4],
-    })
+    }
 end
 
 function grid_rect_abs(x, y, x_span, y_span, gap)
     local value = grid(x, y, x_span, y_span, true, gap)
-    return adjust_rect({
+    return {
         x = value[1],
         y = value[2],
         width = value[3],
         height = value[4],
-    })
+    }
 end
