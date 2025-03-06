@@ -1,7 +1,24 @@
 local theme = get_base_style()
 
 theme.background_color = BreitbandGraphics.hex_to_color("#222222")
-
+theme.button.states = {
+    [1] = {
+        source = expand_rect({ 1, 1, 11, 9 }),
+        center = expand_rect({ 2, 2, 8, 6 }),
+    },
+    [2] = {
+        source = expand_rect({ 1, 12, 11, 9 }),
+        center = expand_rect({ 2, 13, 8, 6 }),
+    },
+    [3] = {
+        source = expand_rect({ 1, 23, 11, 9 }),
+        center = expand_rect({ 2, 24, 8, 6 }),
+    },
+    [0] = {
+        source = expand_rect({ 1, 34, 11, 9 }),
+        center = expand_rect({ 2, 35, 8, 6 }),
+    }
+}
 theme.button.text = {
     [1] = BreitbandGraphics.colors.black,
     [2] = BreitbandGraphics.colors.white,
