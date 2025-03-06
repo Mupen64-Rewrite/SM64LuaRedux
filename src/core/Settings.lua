@@ -37,6 +37,7 @@ Settings = {
     active_style_index = 2,
     locale_index = 1,
     tab_index = 1,
+    navbar_visible = true,
     settings_tab_index = 1,
     autodetect_address = true,
     auto_firsties = false,
@@ -215,6 +216,13 @@ Settings = {
             keys = {
                 "control",
                 "K",
+            },
+        },
+        {
+            identifier = "toggle_navbar",
+            keys = {
+                "shift",
+                "T",
             },
         },
     },

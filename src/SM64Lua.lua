@@ -200,6 +200,68 @@ function at_input()
     Dumping.update()
 end
 
+local function draw_navbar()
+    if not Settings.navbar_visible then
+        return
+    end
+    Settings.tab_index = ugui.carrousel_button({
+        uid = -5000,
+        rectangle = grid_rect(0, 16, 5.5, 1),
+        is_enabled = not Settings.hotkeys_assigning,
+        items = lualinq.select_key(views, "name"),
+        selected_index = Settings.tab_index,
+    })
+
+    local preset_picker_rect = grid_rect(5.5, 16, 2.5, 1)
+    local preset_index = Presets.persistent.current_index
+
+
+    if reset_preset_menu_open then
+        local result = ugui.menu({
+            uid = -5010,
+            rectangle = ugui.internal.deep_clone(last_rmb_down_position),
+            items = {
+                {
+                    text = Locales.str("GENERIC_RESET"),
+                    callback = function()
+                        Presets.reset(Presets.persistent.current_index)
+                        Presets.apply(Presets.persistent.current_index)
+                    end
+                },
+            },
+        })
+
+        if result.dismissed then
+            reset_preset_menu_open = false
+        else
+            if result.item then
+                result.item.callback()
+                reset_preset_menu_open = false
+            end
+        end
+    end
+
+    if (keys.rightclick and not last_keys.rightclick)
+        and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, preset_picker_rect)
+        and not Settings.hotkeys_assigning then
+        reset_preset_menu_open = true
+    end
+
+    preset_index = ugui.carrousel_button({
+        uid = -5005,
+        rectangle = preset_picker_rect,
+        is_enabled = not Settings.hotkeys_assigning,
+        items = lualinq.select(Presets.persistent.presets, function(_, i)
+            return Locales.str("PRESET") .. i
+        end),
+        selected_index = preset_index,
+    })
+
+    if preset_index ~= Presets.persistent.current_index then
+        Presets.apply(preset_index)
+    end
+end
+
 function at_update_screen()
     paints = paints + 1
     paint_skipped = (paints % Settings.repaint_throttle) ~= 0 and emu.get_ff and emu.get_ff()
@@ -261,66 +323,14 @@ function at_update_screen()
         height = Drawing.size.height
     }, Styles.theme().background_color)
 
+    if not Settings.navbar_visible then
+        local one_cell_height = grid_rect(0, 0, 0, 1.25).height
+        Drawing.push_offset(0, one_cell_height / 2)
+    end
     views[Settings.tab_index].draw()
+    Drawing.pop_offset()
 
-    -- navigation and presets
-
-    Settings.tab_index = ugui.carrousel_button({
-        uid = -5000,
-        rectangle = grid_rect(0, 16, 5.5, 1),
-        is_enabled = not Settings.hotkeys_assigning,
-        items = lualinq.select_key(views, "name"),
-        selected_index = Settings.tab_index,
-    })
-
-    local preset_picker_rect = grid_rect(5.5, 16, 2.5, 1)
-    local preset_index = Presets.persistent.current_index
-
-
-    if reset_preset_menu_open then
-        local result = ugui.menu({
-            uid = -5010,
-            rectangle = ugui.internal.deep_clone(last_rmb_down_position),
-            items = {
-                {
-                    text = Locales.str("GENERIC_RESET"),
-                    callback = function()
-                        Presets.reset(Presets.persistent.current_index)
-                        Presets.apply(Presets.persistent.current_index)
-                    end
-                },
-            },
-        })
-
-        if result.dismissed then
-            reset_preset_menu_open = false
-        else
-            if result.item then
-                result.item.callback()
-                reset_preset_menu_open = false
-            end
-        end
-    end
-
-    if (keys.rightclick and not last_keys.rightclick)
-        and BreitbandGraphics.is_point_inside_rectangle(ugui.internal.environment.mouse_position, preset_picker_rect)
-        and not Settings.hotkeys_assigning then
-        reset_preset_menu_open = true
-    end
-
-    preset_index = ugui.carrousel_button({
-        uid = -5005,
-        rectangle = preset_picker_rect,
-        is_enabled = not Settings.hotkeys_assigning,
-        items = lualinq.select(Presets.persistent.presets, function(_, i)
-            return Locales.str("PRESET") .. i
-        end),
-        selected_index = preset_index,
-    })
-
-    if preset_index ~= Presets.persistent.current_index then
-        Presets.apply(preset_index)
-    end
+    draw_navbar()
 
     ugui.end_frame()
 end

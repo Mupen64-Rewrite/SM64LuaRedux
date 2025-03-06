@@ -58,7 +58,10 @@ local hotkey_funcs = {
     end,
     toggle_spdkick = function ()
         Engine.toggle_speedkick()
-    end
+    end,
+    toggle_navbar = function ()
+        Settings.navbar_visible = not Settings.navbar_visible
+    end,
 }
 
 local last_pressed_hotkey = nil
