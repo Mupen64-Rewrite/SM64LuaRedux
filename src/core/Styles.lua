@@ -9,6 +9,7 @@ local files = {
     "windows-3-pink",
     "windows-7",
     "windows-xp",
+    "input-direction",
     "crackhex",
     "neptune",
     "fl-studio",
