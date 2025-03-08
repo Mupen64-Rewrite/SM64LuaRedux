@@ -171,6 +171,8 @@ function at_input()
         first_input = false
     end
 
+    Memory.update_previous()
+
     Joypad.update()
 
     if Settings.override_rng then
@@ -196,7 +198,6 @@ function at_input()
 end
 
 local function at_vi()
-    Memory.update_previous()
     Memory.update()
 end
 
