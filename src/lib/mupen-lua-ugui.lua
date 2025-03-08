@@ -1359,7 +1359,7 @@ ugui.standard_styler = {
                 width = rectangle.height,
                 height = rectangle.height,
             }, -7)
-            ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.params.menu_item.height[visual_state], nil, 'checkmark')
+            ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.params.menu_item.height, nil, 'checkmark')
         end
 
         if item.items then
@@ -1369,7 +1369,7 @@ ugui.standard_styler = {
                 width = ugui.standard_styler.params.menu_item.right_padding,
                 height = rectangle.height,
             }, -7)
-            ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.params.menu_item.height[visual_state], nil, 'arrow_right')
+            ugui.standard_styler.draw_icon(icon_rect, ugui.standard_styler.params.menu_item.height, nil, 'arrow_right')
         end
 
         local text_rect = {
