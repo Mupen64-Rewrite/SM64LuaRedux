@@ -164,8 +164,6 @@ local keys = input.get()
 local last_keys = input.get()
 
 function at_input()
-    print("at_input")
-
     -- TODO: Move this to Memory.lua
     if first_input then
         if Settings.autodetect_address then
