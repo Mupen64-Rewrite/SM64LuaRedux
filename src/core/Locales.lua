@@ -19,3 +19,7 @@ Locales.str = function (id)
     local val = locales[Settings.locale_index][id]
     return val or id
 end
+
+Locales.raw = function ()
+    return locales[Settings.locale_index]
+end

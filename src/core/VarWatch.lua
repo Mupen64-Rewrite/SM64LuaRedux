@@ -60,8 +60,9 @@ local var_funcs = {
         return string.format(Locales.str("VARWATCH_XZ_MOVEMENT"), Formatter.u(Engine.get_xz_distance_moved_since_last_frame()))
     end,
     ["action"] = function()
-        local name = Actions.name_from_value(Memory.current.mario_action)
-        return Locales.str("VARWATCH_ACTION") .. (name or (Locales.str("VARWATCH_UNKNOWN_ACTION") .. Memory.current.mario_action))
+        local name = Locales.raw().ACTIONS[Memory.current.mario_action]
+        local fallback = Locales.str("VARWATCH_UNKNOWN_ACTION") .. Memory.current.mario_action
+        return Locales.str("VARWATCH_ACTION") .. (name or fallback)
     end,
     ["rng"] = function()
         return Locales.str("VARWATCH_RNG") .. Memory.current.rng_value .. " (" .. Locales.str("VARWATCH_RNG_INDEX") .. get_index(Memory.current.rng_value) .. ")"
