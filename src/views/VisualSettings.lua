@@ -57,18 +57,6 @@ local items = {
             })))
         end
     },
-    {
-        text = Locales.str("SETTINGS_VISUALS_UPDATE_EVERY_VI"),
-        func = function(rect)
-            Settings.read_memory_every_vi = ugui.toggle_button({
-                uid = 25,
-                rectangle = rect,
-                tooltip = Locales.str("SETTINGS_VISUALS_UPDATE_EVERY_VI_TOOLTIP"),
-                text = Settings.read_memory_every_vi and Locales.str("GENERIC_ON") or Locales.str("GENERIC_OFF"),
-                is_checked = Settings.read_memory_every_vi,
-            })
-        end
-    },
 }
 
 return {

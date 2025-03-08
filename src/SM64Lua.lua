@@ -149,10 +149,6 @@ Notifications = dofile(views_path .. "Notifications.lua")
 ugui_environment = {}
 local mouse_wheel = 0
 
--- Reading memory in at_input returns stale data from previous frame, so we read it in atvi
--- However, we use this flag to prevent reading multiple times per frame, as it is very expensive
-local new_frame = true
-
 -- Amount of updatescreen invocations, used for throttling repaints during ff
 local paints = 0
 
@@ -168,14 +164,16 @@ local keys = input.get()
 local last_keys = input.get()
 
 function at_input()
+    print("at_input")
+
+    -- TODO: Move this to Memory.lua
     if first_input then
         if Settings.autodetect_address then
             Settings.address_source_index = Memory.find_matching_address_source_index()
         end
         first_input = false
     end
-    -- frame stage 1: set everything up
-    new_frame = true
+
     Joypad.update()
 
     if Settings.override_rng then
@@ -198,6 +196,11 @@ function at_input()
     Joypad.send()
     Ghost.update()
     Dumping.update()
+end
+
+local function at_vi()
+    Memory.update_previous()
+    Memory.update()
 end
 
 local function draw_navbar()
@@ -335,16 +338,6 @@ function at_update_screen()
     ugui.end_frame()
 end
 
-function at_vi()
-    if new_frame or Settings.read_memory_every_vi then
-        Memory.update_previous()
-        Memory.update()
-        if not Settings.read_memory_every_vi then
-            new_frame = false
-        end
-    end
-end
-
 function at_loadstate()
     -- Previous state is now messed up, since it's not the actual previous frame but some other game state
     -- What do we do at this point, leave it like this and let the engine calculate wrong diffs, or copy current state to previous one?
@@ -354,8 +347,8 @@ end
 
 emu.atloadstate(at_loadstate)
 emu.atinput(at_input)
-emu.atupdatescreen(at_update_screen)
 emu.atvi(at_vi)
+emu.atupdatescreen(at_update_screen)
 emu.atstop(function()
     Presets.save()
     Drawing.size_down()

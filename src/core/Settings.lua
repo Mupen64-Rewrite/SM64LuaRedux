@@ -43,7 +43,6 @@ Settings = {
     auto_firsties = false,
     mini_visualizer = false,
     repaint_throttle = 2,
-    read_memory_every_vi = false,
     -- Writes memory values, input data, and frame indicies to a buffer each frame
     dump_enabled = false,
     dump_start_frame = 0,
