@@ -53,6 +53,7 @@ Settings = {
     hotkeys_selected_index = 1,
     hotkeys_allow_with_active_control = true,
     spd_efficiency_fraction = false,
+    persist_tas_state = true,
     variables = {
         {
             identifier = "yaw_facing",

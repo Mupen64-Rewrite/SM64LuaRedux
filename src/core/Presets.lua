@@ -33,8 +33,10 @@ function Presets.apply(i)
     Styles.update_style()
 
     -- HACK: See above
-    for key, value in pairs(TASState) do
-        TASState[key] = Settings["tasstate_" .. key] == nil and NewTASState()[key] or Settings["tasstate_" .. key]
+    if Settings.persist_tas_state then
+        for key, value in pairs(TASState) do
+            TASState[key] = Settings["tasstate_" .. key] == nil and NewTASState()[key] or Settings["tasstate_" .. key]
+        end
     end
 end
 

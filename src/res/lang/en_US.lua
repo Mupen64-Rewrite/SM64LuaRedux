@@ -15,6 +15,8 @@ return {
     TIMER_TAB_NAME = "Timer",
     TIMER2_TAB_NAME = "Timer 2",
     PRESET = "Preset ",
+    -- Preset Context Menu
+    PRESET_CONTEXT_MENU_PERSIST_TAS_STATE = "Remember TAS State",
     -- TAS Tab
     DISABLED = "Disabled",
     MATCH_YAW = "Match Yaw",

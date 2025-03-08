@@ -228,6 +228,13 @@ local function draw_navbar()
                         Presets.apply(Presets.persistent.current_index)
                     end
                 },
+                {
+                    text = Locales.str("PRESET_CONTEXT_MENU_PERSIST_TAS_STATE"),
+                    checked = Settings.persist_tas_state,
+                    callback = function()
+                        Settings.persist_tas_state = not Settings.persist_tas_state
+                    end
+                }
             },
         })
 
