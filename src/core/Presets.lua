@@ -44,6 +44,7 @@ end
 
 function Presets.save()
     print("Saving preset...")
+    Presets.apply(Presets.persistent.current_index)
     persistence.store("presets.lua", Presets.persistent)
 end
 
