@@ -171,17 +171,18 @@ function at_input()
         first_input = false
     end
 
-    Memory.update_previous()
-
-    Joypad.update()
-
     if Settings.override_rng then
+        local address_source = Addresses[Settings.address_source_index]
+
         if Settings.override_rng_use_index then
-            memory.writeword(0x80B8EEE0, get_value(Settings.override_rng_value))
+            memory.writeword(address_source.rng_value, get_value(Settings.override_rng_value))
         else
-            memory.writeword(0x80B8EEE0, Settings.override_rng_value)
+            memory.writeword(address_source.rng_value, Settings.override_rng_value)
         end
     end
+
+    Memory.update_previous()
+    Joypad.update()
 
     -- frame stage 2: let domain code loose on everything, then perform transformations or inspections (e.g.: swimming, rng override, ghost)
     -- TODO: make this into a priority callback system?
