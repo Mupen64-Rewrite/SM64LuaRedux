@@ -126,7 +126,7 @@ end
 
 ---@class Spinner : Control
 ---@field public value number The spinner's numerical value.
----@field public increment number The increment applied when the + or - buttons are clicked.
+---@field public increment number? The increment applied when the + or - buttons are clicked (negated when - is clicked). If nil, 1 is assumed.
 ---@field public minimum_value number? The minimum value.
 ---@field public maximum_value number? The maximum value.
 ---@field public is_horizontal boolean? Whether the increment buttons are stacked horizontally.
