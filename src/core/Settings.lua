@@ -54,6 +54,7 @@ Settings = {
     hotkeys_allow_with_active_control = true,
     spd_efficiency_fraction = false,
     persist_tas_state = true,
+    timer_auto = true,
     variables = {
         {
             identifier = "yaw_facing",
